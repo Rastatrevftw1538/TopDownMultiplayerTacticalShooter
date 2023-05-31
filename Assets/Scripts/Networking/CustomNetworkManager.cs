@@ -15,11 +15,19 @@ public class CustomNetworkManager : NetworkManager
     }
     public override void OnStartClient()
     {
+        /*
         Debug.Log("Client Started");
-
+        SceneManager.LoadScene(1);
+        GameObject player = Instantiate(playerPrefab);
+        NetworkIdentity networkIdentity = player.GetComponent<NetworkIdentity>();
+        NetworkServer.Spawn(player,networkIdentity.connectionToClient);
+        Debug.Log("Server Add Player"+networkIdentity.connectionToClient.connectionId);
+        //SpawnPlayerWithAuthority(conn);
+        */
     }
     public override void OnClientConnect()
     {
+        Debug.Log("Client Connected");
         
     }
     public override void OnClientDisconnect()

@@ -78,9 +78,8 @@ public class Weapon : NetworkBehaviour
 
     private void Update()
     {
-        if (!isLocalPlayer){
-            return;
-        }
+        if (isLocalPlayer){
+
         if (isReloading)
         return;
 
@@ -106,6 +105,7 @@ public class Weapon : NetworkBehaviour
         if(!shootingJoystick.isShooting){
             spread = 0f;
         }
+    }
     }
     IEnumerator Reload()
     {
@@ -135,24 +135,22 @@ void CmdFire(Vector2 direction)
 
         if (hit.collider != null)
         {
-            Transform objectOrigin = hit.collider.gameObject.transform.parent;
-            //Transform canvas = objectOrigin.GetChild(2).transform;
-            //Slider slider = canvas.transform.GetChild(0).GetComponent<Slider>();
-            if(hit.collider.gameObject.name == "Bullseye!"){
-                damageDone = 2*damage;
-                
+            Transform objectOrigin = hit.collider.transform.parent.parent;
+            if (objectOrigin != null)
+            {
+                Debug.Log(objectOrigin.name);
+                PlayerHealth enemyHealth = objectOrigin.GetComponent<PlayerHealth>();
+                if(enemyHealth != null){
+                    if(hit.collider.gameObject.name == "Bullseye!"){
+                        damageDone = 2*damage;
+                        
+                        }
+                    else{
+                        damageDone = damage;
+                    }
+                    enemyHealth.TakeDamage(damageDone);
                 }
-            else{
-                damageDone = damage;
             }
-
-            //slider.value -= damageDone;
-            Debug.Log(hit.collider.gameObject.name+" "+damageDone);
-            //HitText hitText = hit.collider.gameObject.GetComponentInChildren<HitText>();
-            
-            // Update the text and position it on the object that was hit
-            //hitText.ShowHitText(hit.point,this);
-            //DestroyImmediate(hit.collider.gameObject);
         }
         else
         {
@@ -172,9 +170,7 @@ void RpcOnFire(RaycastHit2D hit, Vector3 spreadDirection,int damage)
         {
             trailRender.SetTargetPosition(hit.point);
             Transform objectOrigin = hit.collider.gameObject.transform.parent;
-            Slider slider = objectOrigin.GetChild(2).transform.GetChild(0).GetComponent<Slider>();
-            slider.value -= damage;
-            Debug.Log(hit.collider.gameObject.name+" "+slider.value);
+            
         }
         else
         {

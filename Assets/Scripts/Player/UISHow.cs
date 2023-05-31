@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class CameraFollow : NetworkBehaviour
+public class UISHow : NetworkBehaviour
 {
     public Transform target; // Reference to the character's transform
     public GameObject cameraHolder;
+    public GameObject internalUI;
 
     public override void OnStartAuthority()
     {
         cameraHolder.SetActive(true);
+        internalUI.SetActive(true);
     }
     private void Update()
     {
