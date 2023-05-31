@@ -4,39 +4,51 @@ using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
 
-public class PlayerHealth : NetworkBehaviour 
+public class PlayerHealth : NetworkBehaviour
 {
-
     public const int maxHealth = 100;
-    [SyncVar(hook ="OnChangedHealth")]public int currentHealth = maxHealth;
-    private Slider[] sliderArray;
+
+    [SyncVar(hook = "OnChangedHealth")]
+    public int currentHealth = maxHealth;
+
+    private Slider healthbarInternal;
+    [SerializeField] private Image healthbarExternal;
 
     public int GetHealth()
     {
-        return this.currentHealth;
+        return currentHealth;
     }
 
     private void Awake()
     {
-        sliderArray = GetComponentsInChildren<Slider>();
+        healthbarInternal = GetComponentInChildren<Slider>();
+
     }
 
-    public void TakeDamage(int amount){
-        if(!isServer){
-            return;
-        }
+    public void TakeDamage(int amount)
+    {
+
         currentHealth -= amount;
-        if(currentHealth <= 0){
+        if (currentHealth <= 0)
+        {
             currentHealth = 0;
             Debug.Log("DEAD");
         }
-        
     }
-    void OnChangedHealth(int oldHealth, int health){
-        foreach (var slider in sliderArray)
+
+    void OnChangedHealth(int oldHealth, int health)
+    {
+        if (healthbarInternal != null)
         {
-            slider.value = currentHealth;
+            healthbarInternal.value = health;
         }
+
+        if (healthbarExternal != null)
+        {
+            Debug.Log("Health: "+(float)health);
+            healthbarExternal.fillAmount = (float)health/(float)maxHealth;
+            Debug.Log("Health Changed - Bar: "+healthbarExternal.fillAmount+" Health: "+currentHealth);
+        }
+        //Debug.Log("Health Changed");
     }
 }
-
