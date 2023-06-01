@@ -20,4 +20,4 @@ MonoBehaviour:
   ammo: 4
   reloadTime: 5
   zoomOutValue: 125
-  spreadIncreasePerSecond: 1000
+  spreadIncreasePerSecond: 100000

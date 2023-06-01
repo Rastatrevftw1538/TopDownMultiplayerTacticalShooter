@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,8 @@ public class Weapon : NetworkBehaviour
     public Transform firePoint;
 
     public SpriteRenderer weaponLooks;
+    public SpriteRenderer spreadCone;
+    public float coneSpreadFactor;
     public LayerMask targetLayers;
     public GameObject bulletPrefab;
     public float fireRange = 100f;
@@ -41,7 +44,7 @@ public class Weapon : NetworkBehaviour
     private float spread = 0f;
 
     private RaycastHit2D tempHitLocation;
-    private Vector3 tempSpreadDirection;
+    //private Vector3 tempSpreadDirection;
     private void Awake() {
         if(weaponSpecs != null){
             damage = weaponSpecs.damagePerBullet;
@@ -52,7 +55,7 @@ public class Weapon : NetworkBehaviour
             magSize = weaponSpecs.ammo;
             reloadTime = weaponSpecs.reloadTime;
             zoomValue = weaponSpecs.zoomOutValue;
-            spreadValue = weaponSpecs.spreadIncreasePerSecond;
+            spreadValue = weaponSpecs.spreadIncreasePerSecond * 1000;
         }
         currentAmmo = magSize;
         totalMags = 3;
@@ -82,16 +85,25 @@ public class Weapon : NetworkBehaviour
 
         if (isReloading)
         return;
+        float coneScale = 1f + (spread * coneSpreadFactor);
 
+        spreadCone.transform.localScale = new Vector3(Mathf.Clamp(coneScale,0,35), spreadCone.transform.localScale.y, 1f);
+        //Debug.Log(Mathf.Clamp((Mathf.Clamp(spread,0f,100f)-0)/(100-0),0.25f,0.75f));
+        spreadCone.color = new Color(1,0,0,Mathf.Clamp((Mathf.Clamp(spread,0f,100f)-0)/(100-0),0.25f,0.75f));
         if (shootingJoystick.isShooting && Time.time >= nextFireTime && !outOfAmmo)
         {
             nextFireTime = Time.time + fireRate; // update the next fire time
             Vector2 direction = firePoint.transform.up; // use the up direction instead of right for topdown 2D
-            float spreadAngle = Mathf.Clamp(Random.Range(0, spread) - spread / 2f,-45,45);
+            float spreadAngle = Mathf.Clamp(UnityEngine.Random.Range(0, spread) - spread / 2f,-45,45);
             Quaternion spreadRotation = Quaternion.Euler(0, 0, spreadAngle);
             direction = spreadRotation * direction;
             CmdFire(direction); // Call the Command method to fire the bullet on the server
-            spread += Time.deltaTime * spreadValue;
+            if(this.GetComponent<PlayerScript>().isRunning){
+                spread += Time.deltaTime * (spreadValue*2);
+            }
+            else{
+                spread += Time.deltaTime * spreadValue;
+            }
             currentAmmo -= 1;
                 }
         if(currentAmmo <= 0){
@@ -110,6 +122,8 @@ public class Weapon : NetworkBehaviour
     IEnumerator Reload()
     {
         isReloading = true;
+        spread = 0;
+        spreadCone.color = new Color(1,1,1,0);
         yield return new WaitForSeconds(reloadTime);
         currentAmmo = magSize;
         totalMags -= 1;
@@ -122,23 +136,23 @@ void CmdFire(Vector2 direction)
     for (int i = 0; i < numOfBulletsPerShot; i++)
     {
         Vector3 spreadDirection = direction;
-        tempSpreadDirection = spreadDirection;
         if (numOfBulletsPerShot > 1)
         {
-            float spreadAngle = i * (spread / numOfBulletsPerShot) + Random.Range(0, spread) - spread / 2f;;
+            float spreadAngle = Mathf.Clamp(i * (spread / numOfBulletsPerShot) + UnityEngine.Random.Range(0, spreadValue) - spreadValue / 2f,-5,5);
             Quaternion spreadRotation = Quaternion.Euler(0, 0, spreadAngle);
             spreadDirection = spreadRotation * direction;
+            //Debug.Log(spread);
         }
 
         var hit = Physics2D.Raycast(firePoint.position, spreadDirection, fireRange, targetLayers);
-        tempHitLocation = hit;
 
         if (hit.collider != null)
         {
+            if(hit.collider.name.Equals("HitBox") || hit.collider.name.Equals("Bullseye!")){
             Transform objectOrigin = hit.collider.transform.parent.parent;
             if (objectOrigin != null)
             {
-                Debug.Log(objectOrigin.name);
+                //Debug.Log(objectOrigin.name);
                 PlayerHealth enemyHealth = objectOrigin.GetComponent<PlayerHealth>();
                 if(enemyHealth != null){
                     if(hit.collider.gameObject.name == "Bullseye!"){
@@ -151,32 +165,31 @@ void CmdFire(Vector2 direction)
                     enemyHealth.TakeDamage(damageDone);
                 }
             }
+            }
         }
-        else
-        {
-            Debug.Log("Hit Nothing");
-        }
+        //Debug.Log("Bullet Fired Server " +hit.point+" direction "+spreadDirection);
+        RpcOnFire(hit,spreadDirection,damageDone);
     }
-    
-    RpcOnFire(tempHitLocation,tempSpreadDirection,damageDone);
 }
 
 [ClientRpc]
-void RpcOnFire(RaycastHit2D hit, Vector3 spreadDirection,int damage)
+void RpcOnFire(RaycastHit2D hit, Vector3 spreadDirection, int damage)
 {
+    
+    Vector2 endPoint;
+    if (hit.collider != null)
+    {
+        endPoint = hit.point;
+    }
+    else
+    {
+        endPoint = firePoint.position + spreadDirection * fireRange;
+    }
     var bulletInstance = Instantiate(bulletPrefab, firePoint.position, transform.rotation);
     BulletScript trailRender = bulletInstance.GetComponent<BulletScript>();
-    if (hit.collider != null)
-        {
-            trailRender.SetTargetPosition(hit.point);
-            Transform objectOrigin = hit.collider.gameObject.transform.parent;
-            
-        }
-        else
-        {
-            var endPoint = firePoint.position + spreadDirection * fireRange;
-            trailRender.SetTargetPosition(endPoint);
-        }
+    trailRender.SetTargetPosition(endPoint);
+    //Debug.Log("Bullet Fired Client " + endPoint+" direction "+spreadDirection);
 }
+
 
 }

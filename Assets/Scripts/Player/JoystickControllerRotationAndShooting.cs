@@ -77,7 +77,7 @@ public class JoystickControllerRotationAndShooting : MonoBehaviour, IDragHandler
     public virtual void OnPointerUp(PointerEventData ped)
     {
         bgImg.color = Color.white;
-        inputVector = Vector3.zero;
+        //inputVector = Vector3.zero;
         joystickImg.rectTransform.anchoredPosition = Vector3.zero;
         isShooting = false;
         //EventSystem.current.SetSelectedGameObject(null);

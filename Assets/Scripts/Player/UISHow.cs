@@ -19,7 +19,8 @@ public class UiShow : NetworkBehaviour
     }
     private void Update()
     {
-        cameraHolder.transform.position = transform.position;
-        //transform.LookAt(targetPosition);
+        if(cameraHolder!=null){
+            cameraHolder.transform.position = transform.position;
+        }
     }
 }

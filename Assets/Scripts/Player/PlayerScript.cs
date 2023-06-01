@@ -20,15 +20,19 @@ public class PlayerScript : NetworkBehaviour
 
     public Quaternion rotate;
 
-    public bool isWalking;
+    public bool isRunning;
     private bool isShooting;
+    private bool canMove = true;
 
-private void Start() {
+    private void Start() {
     if (isLocalPlayer)
     {
         Debug.Log("local Player" + netId);
         return;
     }
+}
+public void setCanMove(bool newCanMove){
+    this.canMove = newCanMove;
 }
 [ClientCallback]
 private void Update()
@@ -45,33 +49,33 @@ private void Update()
 
     JoystickControllerRotationAndShooting rotationJoystick = joystickRotateHandle.GetComponent<JoystickControllerRotationAndShooting>();
     Quaternion rotationInput = rotationJoystick.GetRotationInput();
-    bool isShooting = rotationJoystick.isShooting;
-    bool isWalking = joystickController.isWalking;
+    isShooting = rotationJoystick.isShooting;
+    isRunning = joystickController.isRunning;
     Vector2 movement = new Vector2(horizontal, vertical).normalized;
 
     // Apply movement to the rigidbody
-    if (isWalking)
-    {
-        this.transform.Translate( movement * walkSpeed);
-        //Debug.Log("Walking");
+    if(canMove){
+        if (isRunning)
+        {
+            this.transform.Translate(movement * runSpeed);
+            //Debug.Log("Walking");
+        }
+        else
+        {
+            this.transform.Translate(movement * walkSpeed);
+            //Debug.Log("Running");
+        }
+        this.transform.rotation = rotationInput;
+        // Update the position and rotation variables
+        position = this.transform.position;
+        rotate = this.transform.rotation;
+
+        // Update the position and rotation on all clients
+        OnPositionUpdated(position, rotate);
+
+        // Send movement command to the server
+        CmdSendMovement(movement, rotate, isRunning);
     }
-    else
-    {
-        this.transform.Translate(movement * runSpeed);
-        //Debug.Log("Running");
-    }
-
-    this.transform.rotation = rotationInput;
-
-    // Update the position and rotation variables
-    position = this.transform.position;
-    rotate = this.transform.rotation;
-
-    // Update the position and rotation on all clients
-    OnPositionUpdated(position, rotate);
-
-    // Send movement command to the server
-    CmdSendMovement(movement, rotate, isWalking);
 }
 
 [Command]
@@ -139,6 +143,7 @@ private void OnPositionUpdated(Vector2 newPosition, Quaternion newRotation)
 
         // Set the player's outline to Yellow
         this.transform.GetChild(0).GetChild(3).GetChild(1).GetComponent<SpriteRenderer>().color = new Color(1,1,0,1);
+        this.GetComponent<Weapon>().spreadCone.enabled = true;
 
         // Request authority from the server
         CmdRequestAuthority();

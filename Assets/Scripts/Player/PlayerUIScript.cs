@@ -19,7 +19,7 @@ public class PlayerUIScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(gun.isGunReloading()){
+        if(gun.isGunReloading ()){
             ammoUI.text = "Reloading";
         }
         else if (gun.isOutOfAmmo()){

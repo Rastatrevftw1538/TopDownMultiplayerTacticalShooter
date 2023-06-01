@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0d332ebd4ca0354fb4b0febea93c68f, type: 3}
   m_Name: AR
   m_EditorClassIdentifier: 
-  damagePerBullet: 35
+  damagePerBullet: 15
   fireRate: 0.165
   fireRange: 18
   numOfBulletsPerShot: 1
@@ -20,4 +20,4 @@ MonoBehaviour:
   ammo: 30
   reloadTime: 2
   zoomOutValue: 100
-  spreadIncreasePerSecond: 20
+  spreadIncreasePerSecond: 6.5

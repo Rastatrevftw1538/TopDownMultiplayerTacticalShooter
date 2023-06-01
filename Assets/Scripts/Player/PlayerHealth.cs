@@ -31,8 +31,7 @@ public class PlayerHealth : NetworkBehaviour
         currentHealth -= amount;
         if (currentHealth <= 0)
         {
-            currentHealth = 0;
-            Debug.Log("DEAD");
+            RpcDie();
         }
     }
 
@@ -50,5 +49,28 @@ public class PlayerHealth : NetworkBehaviour
             Debug.Log("Health Changed - Bar: "+healthbarExternal.fillAmount+" Health: "+currentHealth);
         }
         //Debug.Log("Health Changed");
+    }
+    [ClientRpc]
+    void RpcDie()
+    {
+        if (isLocalPlayer)
+        {
+            // Stop player movement
+            GetComponent<PlayerScript>().setCanMove(false);
+            GetComponent<Weapon>().enabled = false;
+
+            // Teleport player back to Vector.zero
+            transform.position = NetworkManager.startPositions[Random.Range(0,NetworkManager.startPositions.Count)].transform.position;
+
+            // Restore health after 3 seconds
+            StartCoroutine(RestoreHealth());
+        }
+    }
+    IEnumerator RestoreHealth()
+    {
+        yield return new WaitForSeconds(5f);
+        currentHealth = maxHealth;
+        GetComponent<Weapon>().enabled = true;
+        GetComponent<PlayerScript>().setCanMove(true);
     }
 }

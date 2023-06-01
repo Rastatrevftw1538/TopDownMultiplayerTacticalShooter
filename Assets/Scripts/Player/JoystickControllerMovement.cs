@@ -16,7 +16,7 @@ public class JoystickControllerMovement : MonoBehaviour, IDragHandler, IPointerU
 
     [HideInInspector]
     
-    public bool isWalking;
+    public bool isRunning;
     private void Start()
     {
         bgImg = GetComponent<Image>();
@@ -41,16 +41,16 @@ public class JoystickControllerMovement : MonoBehaviour, IDragHandler, IPointerU
         if (inputVector.magnitude < deadZone)
         {
             bgImg.color = Color.white;
-            isWalking=true;
+            isRunning=false;
             inputVector = Vector2.zero;
         }
         if(inputVector.magnitude <= walkZone && inputVector.magnitude > deadZone){
-            isWalking=true;
+            isRunning=false;
             bgImg.color = Color.green;
         }
         else{
             bgImg.color = Color.red;
-            isWalking=false;
+            isRunning=true;
             
         }
         joystickImg.rectTransform.anchoredPosition =
@@ -66,7 +66,7 @@ public class JoystickControllerMovement : MonoBehaviour, IDragHandler, IPointerU
     public virtual void OnPointerUp(PointerEventData ped)
     {
         bgImg.color = Color.white;
-        isWalking=true;
+        isRunning=false;
         inputVector = Vector3.zero;
         joystickImg.rectTransform.anchoredPosition = Vector3.zero;
         //EventSystem.current.SetSelectedGameObject(null);

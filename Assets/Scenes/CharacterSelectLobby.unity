@@ -711,6 +711,7 @@ MonoBehaviour:
   playerSpawnMethod: 0
   spawnPrefabs:
   - {fileID: 209056261796185724, guid: e88e32b0ab60951458b5460b47a868f1, type: 3}
+  - {fileID: 1351942601874193225, guid: 4da59042fc1b0b54685f5c2395e79b71, type: 3}
   snapshotSettings:
     bufferTimeMultiplier: 2
     catchupNegativeThreshold: -1
@@ -837,7 +838,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 165.65
+  m_fontSize: 194.8
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
