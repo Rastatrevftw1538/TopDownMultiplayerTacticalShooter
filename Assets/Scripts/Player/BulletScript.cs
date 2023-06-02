@@ -22,6 +22,6 @@ public class BulletScript : MonoBehaviour
     }
 
     public void SetTargetPosition(Vector3 targetPosition){
-        _targetPosition = targetPosition = new Vector3(targetPosition.x,targetPosition.y,-1);
+        _targetPosition = new Vector3(targetPosition.x,targetPosition.y,-1);
     }
 }
