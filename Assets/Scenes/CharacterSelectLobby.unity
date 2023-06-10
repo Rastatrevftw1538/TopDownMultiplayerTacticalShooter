@@ -704,7 +704,7 @@ MonoBehaviour:
   onlineScene: Assets/Scenes/LevelTemplate.unity
   transport: {fileID: 1281707323}
   networkAddress: localhost
-  maxConnections: 6
+  maxConnections: 2
   authenticator: {fileID: 0}
   playerPrefab: {fileID: 2692482570812366574, guid: 12c5d4ce7875c104fbb61ea2f22dc3bb, type: 3}
   autoCreatePlayer: 1
@@ -712,6 +712,7 @@ MonoBehaviour:
   spawnPrefabs:
   - {fileID: 209056261796185724, guid: e88e32b0ab60951458b5460b47a868f1, type: 3}
   - {fileID: 1351942601874193225, guid: 4da59042fc1b0b54685f5c2395e79b71, type: 3}
+  - {fileID: 5052289419411090261, guid: 72fb85b14ec658142abbcae480b45061, type: 3}
   snapshotSettings:
     bufferTimeMultiplier: 2
     catchupNegativeThreshold: -1
@@ -723,7 +724,7 @@ MonoBehaviour:
     dynamicAdjustmentTolerance: 1
     deliveryTimeEmaDuration: 2
   timeInterpolationGui: 0
-  ui: {fileID: 653121737}
+  gameManager: {fileID: 0}
 --- !u!114 &1281707323
 MonoBehaviour:
   m_ObjectHideFlags: 0

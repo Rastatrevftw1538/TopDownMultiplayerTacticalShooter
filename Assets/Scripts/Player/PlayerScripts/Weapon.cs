@@ -13,13 +13,13 @@ public class Weapon : NetworkBehaviour
 
     public SpriteRenderer weaponLooks;
     public SpriteRenderer spreadCone;
-    public float coneSpreadFactor;
+    private float coneSpreadFactor = 0.1f;
     public LayerMask targetLayers;
     public GameObject bulletPrefab;
-    public float fireRange = 100f;
-    public int numOfBulletsPerShot;
+    private float fireRange = 100f;
+    private int numOfBulletsPerShot;
 
-    public float zoomValue = 100f;
+    private float zoomValue = 100f;
 
     private int damage;
     private float spreadValue;
@@ -29,7 +29,7 @@ public class Weapon : NetworkBehaviour
     private int currentAmmo;
 
     private int totalMags;
-    public float fireRate = 0.2f; // added fire rate variable
+    private float fireRate = 0.2f; // added fire rate variable
 
     [SerializeField]
     private JoystickControllerRotationAndShooting shootingJoystick;
@@ -37,7 +37,7 @@ public class Weapon : NetworkBehaviour
     private float nextFireTime = 0f;
 
     private bool outOfAmmo = false;
-    public float reloadTime = 2f; // added reload time variable
+    private float reloadTime = 2f; // added reload time variable
 
     private bool isReloading = false; // flag to check if reloading is in progress
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,9 @@ public class PlayerHealth : NetworkBehaviour
 
     private Slider healthbarInternal;
     [SerializeField] private Image healthbarExternal;
+
+    // Event for player death
+    public event Action<PlayerHealth> PlayerDied;
 
     public int GetHealth()
     {
@@ -60,8 +64,11 @@ public class PlayerHealth : NetworkBehaviour
             GetComponent<Weapon>().enabled = false;
 
             // Teleport player back to Vector.zero
-            transform.position = NetworkManager.startPositions[Random.Range(0,NetworkManager.startPositions.Count)].transform.position;
+            transform.position = NetworkManager.startPositions[UnityEngine.Random.Range(0,NetworkManager.startPositions.Count)].transform.position;
 
+            // Raise the PlayerDied event
+            PlayerDied?.Invoke(this);
+            
             // Restore health after 3 seconds
             StartCoroutine(RestoreHealth());
         }
