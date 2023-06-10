@@ -5,6 +5,8 @@ public class BulletScript : MonoBehaviour
     private Vector3 _startPosition;
     private Vector3 _targetPosition;
     private float _progress;
+    [SerializeField] public GameObject bloodPrefab;
+
 
     [SerializeField] private float _bulletSpeed = 25f;
 

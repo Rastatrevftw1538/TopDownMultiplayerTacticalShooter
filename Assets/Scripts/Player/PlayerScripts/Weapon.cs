@@ -184,12 +184,17 @@ void RpcOnFire(RaycastHit2D hit, Vector3 spreadDirection, int damage)
     else
     {
         endPoint = firePoint.position + spreadDirection * fireRange;
+
     }
     var bulletInstance = Instantiate(bulletPrefab, firePoint.position, transform.rotation);
     BulletScript trailRender = bulletInstance.GetComponent<BulletScript>();
     trailRender.SetTargetPosition(endPoint);
-    //Debug.Log("Bullet Fired Client " + endPoint+" direction "+spreadDirection);
-}
+        if (hit.collider.CompareTag("Player"))
+        {
+            Instantiate(trailRender.bloodPrefab, trailRender.transform);
+        }
+        //Debug.Log("Bullet Fired Client " + endPoint+" direction "+spreadDirection);
+    }
 
 
 }
