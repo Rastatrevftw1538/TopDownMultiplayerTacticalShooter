@@ -5,7 +5,7 @@ public class BulletScript : MonoBehaviour
     private Vector3 _startPosition;
     private Vector3 _targetPosition;
     private float _progress;
-    [SerializeField] public GameObject bloodPrefab;
+    [SerializeField] public GameObject effectPrefab;
 
 
     [SerializeField] private float _bulletSpeed = 25f;
@@ -25,5 +25,9 @@ public class BulletScript : MonoBehaviour
 
     public void SetTargetPosition(Vector3 targetPosition){
         _targetPosition = new Vector3(targetPosition.x,targetPosition.y,-1);
+    }
+    public void SetColor(Color color)
+    {
+        effectPrefab.GetComponent<ParticleSystem>().startColor = color;
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Net.NetworkInformation;
-using System;
+﻿using System;
 using System.Net;
 
 namespace Mirror.Discovery
@@ -16,6 +15,5 @@ namespace Mirror.Discovery
         // Prevent duplicate server appearance when a connection can be made via LAN on multiple NICs
         public long serverId;
 
-        public double ping;
     }
 }

@@ -23,26 +23,20 @@ public class StartMenu : MonoBehaviour
     }
     public void StartGame()
     {
-        
+
         //networkManager.networkAddress = "localhost"; // set the IP address of the server
         Debug.Log(discoveredServers.Count);
-        if(discoveredServers.Count >= 1){
-            foreach(long serverKey in discoveredServers.Keys){
+        if (discoveredServers.Count >= 1) {
+            foreach (long serverKey in discoveredServers.Keys) {
                 Debug.Log(serverKey);
                 Debug.Log(discoveredServers[serverKey].uri);
-                double pingToBeat = 10;
-                if(discoveredServers[serverKey].ping * 1000 <= pingToBeat){
                     networkDiscovery.StopDiscovery();
                     NetworkManager.singleton.StartClient(discoveredServers[serverKey].uri); // start the client and connect to the server
                     //SceneManager.LoadScene(1);
                     break;
-                }
-                else{
-                    pingToBeat += 10;
-                }
             }
         }
-        else{
+        else {
             Debug.Log("No servers are running at the moment");
         }
     }

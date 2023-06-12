@@ -17,40 +17,37 @@ public class PlayerScript : NetworkBehaviour
     private GameObject joystickMovementUI;
     [SerializeField]
     private GameObject joystickRotateUI;
+    
+    public float runSpeed = 5f;
+    public float walkSpeed = 0.5f;
 
-    [HideInInspector] private float runSpeed = 5f;
-    [HideInInspector] private float walkSpeed = 0.5f;
+    [SerializeField]
+    private Rigidbody2D rb;
 
-    [HideInInspector]
-    private Vector2 playerPosition;
-    [HideInInspector]
-    private Quaternion playerRotation;
+    public Vector2 position;
 
-    [HideInInspector] public bool isRunning;
+    public Quaternion rotate;
+
+    public bool isRunning;
     private bool isShooting;
     private bool canMove = true;
 
-    private void Start()
+    private void Start() {
+    if (isLocalPlayer)
     {
-        if (isLocalPlayer)
-        {
-            Debug.Log("local Player" + netId);
-            return;
-        }
+        Debug.Log("local Player" + netId);
+        return;
     }
-
+}
     public Team PlayerTeam
     {
         get { return playerTeam; }
         set { playerTeam = value; }
     }
-
-    public void setCanMove(bool newCanMove)
-    {
-        this.canMove = newCanMove;
-    }
-
-    [ClientCallback]
+    public void setCanMove(bool newCanMove){
+    this.canMove = newCanMove;
+}
+[ClientCallback]
 private void Update()
 {
     if (!isLocalPlayer)
@@ -67,99 +64,107 @@ private void Update()
     Quaternion rotationInput = rotationJoystick.GetRotationInput();
     isShooting = rotationJoystick.isShooting;
     isRunning = joystickController.isRunning;
-
     Vector2 movement = new Vector2(horizontal, vertical).normalized;
 
-    // Apply movement to the character's position
-    if (canMove)
-    {
-        if (!isRunning)
+    // Apply movement to the rigidbody
+    if(canMove){
+        if (isRunning)
         {
-            // Walk speed
-            this.transform.Translate(movement * walkSpeed);
+            this.transform.Translate(movement * runSpeed);
+            //Debug.Log("Walking");
         }
         else
         {
-            // Run speed
-            this.transform.Translate(movement * runSpeed);
+            this.transform.Translate(movement * walkSpeed);
+            //Debug.Log("Running");
         }
-
+        this.transform.rotation = rotationInput;
         // Update the position and rotation variables
-        playerPosition = this.transform.position;
-        playerRotation = this.transform.rotation;
+        position = this.transform.position;
+        rotate = this.transform.rotation;
 
         // Update the position and rotation on all clients
-        OnPositionUpdated(playerPosition, playerRotation);
+        OnPositionUpdated(position, rotate);
 
         // Send movement command to the server
-        CmdSendMovement(playerPosition, playerRotation, isRunning);
+        CmdSendMovement(movement, rotate, isRunning);
     }
 }
+
 [Command]
-private void CmdSendMovement(Vector2 position, Quaternion rotate, bool isWalking)
+private void CmdSendMovement(Vector2 movement, Quaternion rotate, bool isWalking)
 {
-    
-    playerPosition = position;
-    playerRotation = rotate;
+    rb.velocity = movement * (isWalking ? walkSpeed : runSpeed);
+
+    // Update the position and rotation variables
+    position = rb.position;
+    this.transform.rotation = rotate;
 
     // Update the position and rotation on all clients
-    RpcUpdateMovement(playerPosition, playerRotation);
+    RpcUpdateMovement(position, rotate);
 }
 
-[ClientRpc]
-private void RpcUpdateMovement(Vector2 position, Quaternion rotation)
-{
-    // Update the player's position and rotation on all clients except the owner
-    if (!isLocalPlayer)
+    [ClientRpc]
+    private void RpcUpdateMovement(Vector2 position,Quaternion rotation)
     {
-        // Update the position
-        transform.position = position;
-
-        // Update the rotation
-        transform.rotation = rotation;
-    }
-}
-
-    private void OnPositionUpdated(Vector2 newPosition, Quaternion newRotation)
-    {
+        // Update the player's position on all clients except the owner
         if (!isLocalPlayer)
         {
-            // The player's position should only be updated for the local player
+            rb.position = position;
+            this.transform.rotation = rotation;
+        }
+    }
+    
+private void OnPositionUpdated(Vector2 newPosition, Quaternion newRotation)
+{
+    if (!isLocalPlayer)
+    {
+        // The player's position should only be updated for the local player
+        return;
+    }
+
+    // Calculate the distance between the old position and the new position
+    float distance = Vector2.Distance(rb.position, newPosition);
+
+    // If the distance is too great, teleport the player to the new position
+    if (distance > 2f)
+    {
+        transform.position = newPosition;
+    }
+    // Otherwise, move the player smoothly towards the new position
+    else
+    {
+        transform.position = Vector2.Lerp(transform.position, newPosition, Time.deltaTime * 10f);
+    }
+
+    // Update the player's rotation
+    transform.rotation = newRotation;
+}
+    private void OnRotationUpdated(Quaternion oldRotation,Quaternion newRotation)
+    {
+        if (isLocalPlayer)
+        {
             return;
         }
 
-        // Calculate the distance between the old position and the new position
-        float distance = Vector2.Distance(transform.position, newPosition);
-
-        // If the distance is too great, teleport the player to the new position
-        if (distance > 2f)
-        {
-            transform.position = newPosition;
-        }
-        // Otherwise, move the player smoothly towards the new position
-        else
-        {
-            transform.position = Vector2.Lerp(transform.position, newPosition, Time.deltaTime * 10f);
-        }
-
-        // Update the player's rotation
-        transform.rotation = newRotation;
+        // Update the player's rotation on all clients except the owner
+        this.transform.rotation = newRotation;
     }
 
     public override void OnStartLocalPlayer()
     {
+
         // Set the player's outline to Yellow
-        this.transform.GetChild(0).GetChild(3).GetChild(1).GetComponent<SpriteRenderer>().color = new Color(1, 1, 0, 1);
+        this.transform.GetChild(0).GetChild(3).GetChild(1).GetComponent<SpriteRenderer>().color = new Color(1,1,0,1);
         this.GetComponent<Weapon>().spreadCone.enabled = true;
 
         // Request authority from the server
         CmdRequestAuthority();
     }
-
-    [Command]
-    private void CmdRequestAuthority()
-    {
-        if (!isLocalPlayer)
+[Command]
+private void CmdRequestAuthority()
+{
+    if (!isLocalPlayer)
         {
             // Assign authority to the player object
             NetworkIdentity networkIdentity = this.gameObject.GetComponent<NetworkIdentity>();
@@ -176,11 +181,10 @@ private void RpcUpdateMovement(Vector2 position, Quaternion rotation)
                 }
             }
             */
-            Debug.Log(networkIdentity.assetId + " taking Authority for " + this.gameObject.name);
+            Debug.Log(networkIdentity.assetId+" taking Authority for "+ this.gameObject.name);
         }
-    }
-
-    public override void OnStopClient()
+}
+public override void OnStopClient()
     {
         // Clear authority when the client stops
         if (isLocalPlayer)

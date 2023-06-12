@@ -1,15 +1,19 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using UnityEngine.UI;
+using System.Diagnostics;
+using Debug = UnityEngine.Debug;
 
 public class Weapon : NetworkBehaviour
 {
     [SerializeField]
     public WeaponData weaponSpecs;
-    public Transform firePoint;
+    [SerializeField]
+    private Transform firePoint;
+    private Vector2 endPoint;
 
     public SpriteRenderer weaponLooks;
     public SpriteRenderer spreadCone;
@@ -44,6 +48,7 @@ public class Weapon : NetworkBehaviour
     private float spread = 0f;
 
     private RaycastHit2D tempHitLocation;
+
     //private Vector3 tempSpreadDirection;
     private void Awake() {
         if(weaponSpecs != null){
@@ -144,11 +149,12 @@ void CmdFire(Vector2 direction)
             //Debug.Log(spread);
         }
 
-        var hit = Physics2D.Raycast(firePoint.position, spreadDirection, fireRange, targetLayers);
-
+            var hit = Physics2D.Raycast(firePoint.position, spreadDirection, fireRange, targetLayers);
+            bool hitSomething = false;
         if (hit.collider != null)
         {
-            if(hit.collider.name.Equals("HitBox") || hit.collider.name.Equals("Bullseye!")){
+                hitSomething = true;
+            if (hit.collider.name.Equals("HitBox") || hit.collider.name.Equals("Bullseye!")){
             Transform objectOrigin = hit.collider.transform.parent.parent;
             if (objectOrigin != null)
             {
@@ -167,34 +173,47 @@ void CmdFire(Vector2 direction)
             }
             }
         }
-        //Debug.Log("Bullet Fired Server " +hit.point+" direction "+spreadDirection);
-        RpcOnFire(hit,spreadDirection,damageDone);
+            endPoint = hit.point;
+            //colliderHit = hit.collider;
+        Debug.Log("Bullet Fired Server " + hit.point+" direction "+spreadDirection);
+        RpcOnFire(hit, spreadDirection,endPoint, hitSomething);
     }
 }
 
 [ClientRpc]
-void RpcOnFire(RaycastHit2D hit, Vector3 spreadDirection, int damage)
+void RpcOnFire(RaycastHit2D hit, Vector3 spreadDirection,Vector3 collisionPoint,bool hitSomething)
 {
-    
-    Vector2 endPoint;
-    if (hit.collider != null)
+        Debug.Log("Collision Point: " + collisionPoint);
+        Debug.Log("Hit: " + hit);
+        if (hitSomething)
     {
-        endPoint = hit.point;
+            //endPoint = hit.point;
+            Debug.Log("Hit " + collisionPoint);
+            
     }
     else
     {
-        endPoint = firePoint.position + spreadDirection * fireRange;
+            collisionPoint = (collisionPoint + spreadDirection * fireRange);
+            Debug.Log("Hit Nothing:");
 
-    }
-    var bulletInstance = Instantiate(bulletPrefab, firePoint.position, transform.rotation);
-    BulletScript trailRender = bulletInstance.GetComponent<BulletScript>();
-    trailRender.SetTargetPosition(endPoint);
-        if (hit.collider.CompareTag("Player"))
-        {
-            Instantiate(trailRender.bloodPrefab, trailRender.transform);
         }
-        //Debug.Log("Bullet Fired Client " + endPoint+" direction "+spreadDirection);
+        
+    var bulletInstance = Instantiate(bulletPrefab, firePoint.position, new Quaternion(0,0,0,0));
+    BulletScript trailRender = bulletInstance.GetComponent<BulletScript>();
+        //Debug.Log("DIs is blood " + trailRender.bloodPrefab.name);
+        /*
+        if (hit.collider.tag == "Player")
+        {
+            trailRender.SetColor(Color.red);
+        }
+        else if (hit.collider.tag == "Wall") {
+            trailRender.SetColor(Color.grey);
+        }
+        */
+        Instantiate(trailRender.effectPrefab, collisionPoint, new Quaternion(0, 0, 0, 0));
+        trailRender.SetTargetPosition(collisionPoint);
+        
+        
+        Debug.Log("Bullet Fired Client " + hit.point+ " direction "+spreadDirection);
     }
-
-
 }

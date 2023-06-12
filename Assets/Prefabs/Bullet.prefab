@@ -93,7 +93,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 100
-  m_Time: 0.1
+  m_Time: 0.01
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -115,23 +115,23 @@ TrailRenderer:
     colorGradient:
       serializedVersion: 2
       key0: {r: 1, g: 0, b: 0, a: 1}
-      key1: {r: 1, g: 0.25131878, b: 0, a: 1}
-      key2: {r: 1, g: 0.8525556, b: 0.007843137, a: 0.75686276}
+      key1: {r: 0.572, g: 0, b: 0, a: 1}
+      key2: {r: 1, g: 0.9513185, b: 0.29411763, a: 0.75686276}
       key3: {r: 1, g: 1, b: 1, a: 0.07058824}
       key4: {r: 1, g: 0, b: 0, a: 1}
       key5: {r: 0, g: 0, b: 0, a: 0}
       key6: {r: 0, g: 0, b: 0, a: 0}
       key7: {r: 0, g: 0, b: 0, a: 0}
-      ctime0: 3277
-      ctime1: 11180
-      ctime2: 46646
+      ctime0: 1542
+      ctime1: 18311
+      ctime2: 31804
       ctime3: 50115
       ctime4: 57054
       ctime5: 0
       ctime6: 0
       ctime7: 0
       atime0: 0
-      atime1: 8867
+      atime1: 46067
       atime2: 42983
       atime3: 65535
       atime4: 65535
@@ -139,15 +139,15 @@ TrailRenderer:
       atime6: 0
       atime7: 0
       m_Mode: 0
-      m_NumColorKeys: 3
-      m_NumAlphaKeys: 4
+      m_NumColorKeys: 4
+      m_NumAlphaKeys: 2
     numCornerVertices: 0
     numCapVertices: 0
     alignment: 0
     textureMode: 0
     shadowBias: 0.5
     generateLightingData: 1
-  m_MinVertexDistance: 0.1
+  m_MinVertexDistance: 0.01
   m_Autodestruct: 1
   m_Emitting: 1
 --- !u!114 &7184269193396625851
@@ -162,5 +162,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4e72bd317901024cb9c8adb33c08894, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bloodPrefab: {fileID: 0}
+  effectPrefab: {fileID: 5706064857750014841, guid: 1b6d18f608de54c9787fbfd66144957d, type: 3}
   _bulletSpeed: 50

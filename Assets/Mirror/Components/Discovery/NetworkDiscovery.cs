@@ -1,4 +1,3 @@
-using System.Net.NetworkInformation;
 using System;
 using System.Net;
 using UnityEngine;
@@ -7,7 +6,7 @@ using UnityEngine.Events;
 namespace Mirror.Discovery
 {
     [Serializable]
-    public class ServerFoundUnityEvent : UnityEvent<ServerResponse> {};
+    public class ServerFoundUnityEvent<TResponseType> : UnityEvent<TResponseType> {};
 
     [DisallowMultipleComponent]
     [AddComponentMenu("Network/Network Discovery")]
@@ -39,8 +38,7 @@ namespace Mirror.Discovery
                 return new ServerResponse
                 {
                     serverId = ServerId,
-                    uri = transport.ServerUri(),
-                    ping = NetworkTime.rtt
+                    uri = transport.ServerUri()
                 };
             }
             catch (NotImplementedException)

@@ -13,7 +13,7 @@ namespace Mirror.Examples.Benchmark
             float h = Input.GetAxis("Horizontal");
             float v = Input.GetAxis("Vertical");
 
-            Vector3 dir = new Vector2(h,v);
+            Vector3 dir = new Vector3(h, 0, v);
             transform.position += dir.normalized * (Time.deltaTime * speed);
         }
     }

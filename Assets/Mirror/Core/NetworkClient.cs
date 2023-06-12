@@ -534,14 +534,12 @@ namespace Mirror
                 return;
             }
 
+            // disallow child NetworkIdentities.
+            // TODO likely not necessary anymore due to the new check in
+            // NetworkIdentity.OnValidate.
             NetworkIdentity[] identities = prefab.GetComponentsInChildren<NetworkIdentity>();
             if (identities.Length > 1)
             {
-                for (int i = 0; i < identities.Length; i++)
-                {
-                    Debug.LogError(identities[i].gameObject.name);
-                }
-                
                 Debug.LogError($"Prefab '{prefab.name}' has multiple NetworkIdentity components. There should only be one NetworkIdentity on a prefab, and it must be on the root object.");
             }
 
