@@ -185,8 +185,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   ui: {fileID: 7211614684024322227}
-  redTeam: []
-  blueTeam: []
   blueTeamScore: 0
   redTeamScore: 0
   gameTime: 180
