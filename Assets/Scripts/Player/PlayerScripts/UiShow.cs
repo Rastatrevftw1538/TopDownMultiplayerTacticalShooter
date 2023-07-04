@@ -19,14 +19,16 @@ public class UiShow : NetworkBehaviour
         internalUI.SetActive(true);
         playerTransform = this.transform.GetChild(0).GetComponent<Transform>();
     }
+    
     private void Update(){
     if (cameraHolder != null && playerTransform != null)
         {
             // Apply the offset to the camera holder position to keep the player centered
-            //cameraHolder.transform.localPosition = new Vector3(this.transform.localPosition.x,this.transform.localPosition.y,0f);
+            cameraHolder.transform.localPosition = new Vector3(this.transform.localPosition.x,this.transform.localPosition.y,0f);
 
             // Reset the camera holder rotation to prevent unwanted rotation
             cameraHolder.transform.localPosition = new Vector3(this.transform.position.x,this.transform.position.y,0f);
         }
     }
+    
 }

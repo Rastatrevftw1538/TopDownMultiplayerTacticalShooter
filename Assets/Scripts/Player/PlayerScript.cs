@@ -47,7 +47,7 @@ public class PlayerScript : NetworkBehaviour
     public void setCanMove(bool newCanMove){
     this.canMove = newCanMove;
 }
-[ClientCallback]
+//[ClientCallback]
 private void Update()
 {
     if (!isLocalPlayer)
@@ -64,39 +64,54 @@ private void Update()
     Quaternion rotationInput = rotationJoystick.GetRotationInput();
     isShooting = rotationJoystick.isShooting;
     isRunning = joystickController.isRunning;
-    Vector2 movement = new Vector2(horizontal, vertical).normalized;
+        Vector2 movement = new Vector2(horizontal, vertical).normalized * (isRunning ? runSpeed : walkSpeed);
 
     // Apply movement to the rigidbody
     if(canMove){
-        if (isRunning)
-        {
-            this.transform.Translate(movement * runSpeed);
-            //Debug.Log("Walking");
-        }
-        else
-        {
-            this.transform.Translate(movement * walkSpeed);
-            //Debug.Log("Running");
-        }
-        this.transform.rotation = rotationInput;
+        CmdMove(movement);
+        //this.transform.rotation = rotationInput;
         // Update the position and rotation variables
-        position = this.transform.position;
-        rotate = this.transform.rotation;
-
+        this.transform.SetPositionAndRotation(this.transform.position,rotationInput);
+        
+        //position = this.transform.position;
+        //rotate = this.transform.rotation;
+        
+/*
         // Update the position and rotation on all clients
-        OnPositionUpdated(position, rotate);
+        OnPositionUpdated(new Vector2(horizontal, vertical).normalized, rotationInput);
 
         // Send movement command to the server
-        CmdSendMovement(movement, rotate, isRunning);
+        CmdSendMovement(movement, rotationInput, isRunning);
+        */
     }
 }
 
 [Command]
+    private void CmdMove(Vector2 movement)
+    {
+        RpcMove(movement);
+        transform.Translate(movement * Time.deltaTime);    }
+
+    [ClientRpc]
+    private void RpcMove(Vector2 movement)
+    {
+        if (!isLocalPlayer)
+            return;
+
+        transform.Translate(movement * Time.deltaTime);
+    }
+
+//COMMENTED OUT CODE WAS FOR SERVER SIDE IMPLEMENTATION
+
+
+/*
+[Command]
 private void CmdSendMovement(Vector2 movement, Quaternion rotate, bool isWalking)
 {
-    rb.velocity = movement * (isWalking ? walkSpeed : runSpeed);
+    //rb.velocity = movement * (isWalking ? walkSpeed : runSpeed);
 
     // Update the position and rotation variables
+    this.transform.Translate(movement * (isWalking ? walkSpeed : runSpeed));
     position = rb.position;
     this.transform.rotation = rotate;
 
@@ -150,7 +165,7 @@ private void OnPositionUpdated(Vector2 newPosition, Quaternion newRotation)
         // Update the player's rotation on all clients except the owner
         this.transform.rotation = newRotation;
     }
-
+        */
     public override void OnStartLocalPlayer()
     {
 

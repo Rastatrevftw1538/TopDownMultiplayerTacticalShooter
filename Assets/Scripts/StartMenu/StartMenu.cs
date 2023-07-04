@@ -31,13 +31,15 @@ public class StartMenu : MonoBehaviour
                 Debug.Log(serverKey);
                 Debug.Log(discoveredServers[serverKey].uri);
                     networkDiscovery.StopDiscovery();
-                    NetworkManager.singleton.StartClient(discoveredServers[serverKey].uri); // start the client and connect to the server
+                    networkManager.StartClient(discoveredServers[serverKey].uri); // start the client and connect to the server
                     //SceneManager.LoadScene(1);
                     break;
             }
         }
         else {
-            Debug.Log("No servers are running at the moment");
+            Debug.Log("launching Server on Client");
+            networkDiscovery.StopDiscovery();
+            networkManager.OnStartHost(); // start the client and create server
         }
     }
     public void OnDiscoveredServer(ServerResponse info)
