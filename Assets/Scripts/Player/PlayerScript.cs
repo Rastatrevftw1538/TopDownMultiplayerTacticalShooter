@@ -13,21 +13,25 @@ public class PlayerScript : NetworkBehaviour
     }
     [SyncVar]
     private Team playerTeam;
+
+    [Header("Controller")]
     [SerializeField]
     private GameObject joystickMovementUI;
     [SerializeField]
     private GameObject joystickRotateUI;
     
+    [Header("Player Stats")]
     public float runSpeed = 5f;
     public float walkSpeed = 0.5f;
 
+    [Header("Player Components")]
     [SerializeField]
     private Rigidbody2D rb;
-
+    public Vector2 movement;
     public Vector2 position;
-
     public Quaternion rotate;
 
+    [Header("Player Status")]
     public bool isRunning;
     private bool isShooting;
     private bool canMove = true;
@@ -38,7 +42,8 @@ public class PlayerScript : NetworkBehaviour
         Debug.Log("local Player" + netId);
         return;
     }
-}
+    }
+
     public Team PlayerTeam
     {
         get { return playerTeam; }
@@ -46,9 +51,10 @@ public class PlayerScript : NetworkBehaviour
     }
     public void setCanMove(bool newCanMove){
     this.canMove = newCanMove;
-}
+    }
+
 [ClientCallback]
-private void FixedUpdate()
+public void FixedUpdate()
 {
     if (!isLocalPlayer)
     {
@@ -64,19 +70,19 @@ private void FixedUpdate()
     Quaternion rotationInput = rotationJoystick.GetRotationInput();
     isShooting = rotationJoystick.isShooting;
     isRunning = joystickController.isRunning;
-        Vector2 movement = new Vector2(horizontal, vertical).normalized * (isRunning ? runSpeed : walkSpeed);
+        movement = new Vector2(horizontal, vertical).normalized * (isRunning ? runSpeed : walkSpeed);
 
     // Apply movement to the rigidbody
     if(canMove){
         CmdMove(movement);
         //this.transform.rotation = rotationInput;
         // Update the position and rotation variables
-        this.transform.GetChild(0).transform.SetPositionAndRotation(this.transform.GetChild(0).transform.position,rotationInput);
+        this.transform.GetChild(0).transform.SetPositionAndRotation(this.transform.GetChild(0).transform.position,rotationInput); //POSSIBLY MAKE THIS FIND THE 'PlayerBody' RATHER THAN JUST FINDING THE FIRST CHILD OF THE GAMEOBJECT
         
         //position = this.transform.position;
         //rotate = this.transform.rotation;
         
-/*
+        /*
         // Update the position and rotation on all clients
         OnPositionUpdated(new Vector2(horizontal, vertical).normalized, rotationInput);
 
@@ -90,7 +96,9 @@ private void FixedUpdate()
     private void CmdMove(Vector2 movement)
     {
         RpcMove(movement);
-        transform.Translate(movement * Time.deltaTime);    }
+        transform.Translate(movement * Time.deltaTime);    
+    }
+    // FIGURE OUT HOW THE SERVER RECIEVES THIS INFO
 
 [ClientRpc]
     private void RpcMove(Vector2 movement)

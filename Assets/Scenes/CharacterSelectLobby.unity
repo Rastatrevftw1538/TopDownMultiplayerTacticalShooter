@@ -710,7 +710,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
   runInBackground: 1
-  autoStartServerBuild: 0
+  autoStartServerBuild: 1
   autoConnectClientBuild: 0
   sendRate: 30
   offlineScene: Assets/Scenes/CharacterSelectLobby.unity

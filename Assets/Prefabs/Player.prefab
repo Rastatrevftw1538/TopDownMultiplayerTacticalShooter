@@ -781,6 +781,8 @@ MonoBehaviour:
   joystickRotateUI: {fileID: 6713901557967857310}
   runSpeed: 5
   walkSpeed: 2
+  abilities:
+  - {fileID: 0}
   rb: {fileID: 4143833247472281596}
   position: {x: 0, y: 0}
   rotate: {x: 0, y: 0, z: 0, w: 0}
