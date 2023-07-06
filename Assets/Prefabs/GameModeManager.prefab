@@ -185,9 +185,12 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   ui: {fileID: 7211614684024322227}
-  blueTeamScore: 0
-  redTeamScore: 0
+  redTeam: []
+  blueTeam: []
+  blueTeamBaseHealth: 0
+  redTeamBaseHealth: 0
   gameTime: 180
+  rounds: 3
   connectedPlayersCount: 0
 --- !u!114 &1949206844942319753
 MonoBehaviour:

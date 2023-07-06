@@ -139,7 +139,7 @@ public class Weapon : NetworkBehaviour
         isReloading = false;
     }
 
-    [Command(requiresAuthority = false)]
+    [Command]
     void CmdFire(Vector2 direction)
     {
         var damageDone = 0;
@@ -154,11 +154,10 @@ public class Weapon : NetworkBehaviour
             }
 
             var hit = Physics2D.Raycast(firePoint.position, spreadDirection, fireRange, targetLayers);
-            bool hitSomething = false;
-
+            String whatWasHit = "";
             if (hit.collider != null)
             {
-                hitSomething = true;
+                whatWasHit = hit.collider.tag;
                 if (hit.collider.name.Equals("HitBox") || hit.collider.name.Equals("Bullseye!"))
                 {
                     Transform objectOrigin = hit.collider.transform.parent.parent;
@@ -179,35 +178,44 @@ public class Weapon : NetworkBehaviour
                         }
                     }
                 }
+                
             }
 
             endPoint = hit.point;
-            RpcOnFire(hit, spreadDirection, endPoint, hitSomething);
+            RpcOnFire(hit, spreadDirection, endPoint, whatWasHit);
         }
     }
 
     [ClientRpc]
-    void RpcOnFire(RaycastHit2D hit, Vector3 spreadDirection, Vector3 collisionPoint, bool hitSomething)
+    void RpcOnFire(RaycastHit2D hit, Vector3 spreadDirection, Vector3 collisionPoint, String whatWasHit)
     {
         Debug.Log("Collision Point: " + collisionPoint);
-        Debug.Log("Hit: " + hit);
-
-        if (hitSomething)
+        Debug.Log("Hit: " + whatWasHit);
+        
+        if (hit)
         {
             Debug.Log("Hit " + collisionPoint);
+            collisionPoint = endPoint;
         }
         else
         {
             collisionPoint = (collisionPoint + spreadDirection * fireRange);
             Debug.Log("Hit Nothing:");
         }
-
         var bulletInstance = Instantiate(bulletPrefab, firePoint.position, new Quaternion(0, 0, 0, 0));
         BulletScript trailRender = bulletInstance.GetComponent<BulletScript>();
-
+        GameObject particleEffect = trailRender.effectPrefab;
+            if(whatWasHit == "Base"){
+                particleEffect.GetComponent<ParticleSystem>().startColor = Color.cyan;
+            }
+            else if(whatWasHit == "Player"){
+                particleEffect.GetComponent<ParticleSystem>().startColor = Color.red;
+            }
+            else if(whatWasHit == "Wall"){
+                particleEffect.GetComponent<ParticleSystem>().startColor = Color.gray;
+            }
         Instantiate(trailRender.effectPrefab, collisionPoint, new Quaternion(0, 0, 0, 0));
         trailRender.SetTargetPosition(collisionPoint);
-
         Debug.Log("Bullet Fired Client " + hit.point+ " direction "+spreadDirection);
     }
 }

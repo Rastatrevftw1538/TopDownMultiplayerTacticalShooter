@@ -47,8 +47,8 @@ public class PlayerScript : NetworkBehaviour
     public void setCanMove(bool newCanMove){
     this.canMove = newCanMove;
 }
-//[ClientCallback]
-private void Update()
+[ClientCallback]
+private void FixedUpdate()
 {
     if (!isLocalPlayer)
     {
@@ -71,7 +71,7 @@ private void Update()
         CmdMove(movement);
         //this.transform.rotation = rotationInput;
         // Update the position and rotation variables
-        this.transform.SetPositionAndRotation(this.transform.position,rotationInput);
+        this.transform.GetChild(0).transform.SetPositionAndRotation(this.transform.GetChild(0).transform.position,rotationInput);
         
         //position = this.transform.position;
         //rotate = this.transform.rotation;
@@ -92,7 +92,7 @@ private void Update()
         RpcMove(movement);
         transform.Translate(movement * Time.deltaTime);    }
 
-    [ClientRpc]
+[ClientRpc]
     private void RpcMove(Vector2 movement)
     {
         if (!isLocalPlayer)

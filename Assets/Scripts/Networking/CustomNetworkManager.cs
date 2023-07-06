@@ -8,7 +8,7 @@ using Mirror;
 public class CustomNetworkManager : NetworkManager
 {
     [HideInInspector]
-    public BountyGameManager gameManager;
+    public HeistGameManager gameManager;
     
     public override void OnStartServer()
     {
@@ -22,7 +22,7 @@ public class CustomNetworkManager : NetworkManager
         if (gameScene.IsValid() && gameScene.isLoaded)
         {
             Debug.Log("Searching for It!");
-            gameManager = GameObject.FindObjectOfType<BountyGameManager>();
+            gameManager = GameObject.FindObjectOfType<HeistGameManager>();
                 if(gameManager!=null){
                     Debug.Log("Found It!");
                 }
@@ -36,7 +36,7 @@ public class CustomNetworkManager : NetworkManager
         Debug.Log("Player connected: " + conn.identity);
         
         // Notify the game manager that a player has connected
-        BountyGameManager.instance.OnPlayerConnected(conn);
+        HeistGameManager.instance.OnPlayerConnected(conn);
     }
     
     public override void OnStartClient()
@@ -62,6 +62,23 @@ public class CustomNetworkManager : NetworkManager
         base.OnClientDisconnect();
         SceneManager.LoadScene(0);
     }
+    private void Update() {
+        bool allReady = false;
+        foreach(NetworkConnectionToClient conn in NetworkServer.connections.Values){
+            if(conn.isReady){
+                allReady = true;
+            }
+            else{
+                allReady = false;
+                break;
+            }
+        }
+        if(NetworkServer.connections.Count >= 2 && allReady && gameManager.HasGameStarted()==false){
+                Debug.Log("Game Starting!!!");
+                gameManager.StartGame();
+            }
+        
+    }
     public override void OnServerConnect(NetworkConnectionToClient conn)
     {
         base.OnServerConnect(conn);
@@ -71,10 +88,6 @@ public class CustomNetworkManager : NetworkManager
             // Server is full, disconnect the client
             conn.Disconnect();
             return;
-        }
-        if(NetworkServer.connections.Count == CustomNetworkManager.singleton.maxConnections){
-            Debug.Log("Game Starting!!!");
-            gameManager.StartCoroutine(gameManager.StartGame());
         }
         
     }

@@ -21,16 +21,20 @@ public class StartMenu : MonoBehaviour
 
         //UnityEditor.Events.UnityEventTools.AddPersistentListener(networkDiscovery.OnServerFound, OnDiscoveredServer);
     }
+    private void Update() {
+        Debug.Log("Servers Found = " + discoveredServers.Count);
+    }
     public void StartGame()
     {
-
+        discoveredServers.Clear();
+        networkDiscovery.StartDiscovery();
         //networkManager.networkAddress = "localhost"; // set the IP address of the server
-        Debug.Log(discoveredServers.Count);
+        
         if (discoveredServers.Count >= 1) {
             foreach (long serverKey in discoveredServers.Keys) {
                 Debug.Log(serverKey);
                 Debug.Log(discoveredServers[serverKey].uri);
-                    networkDiscovery.StopDiscovery();
+                    //networkDiscovery.StopDiscovery();
                     networkManager.StartClient(discoveredServers[serverKey].uri); // start the client and connect to the server
                     //SceneManager.LoadScene(1);
                     break;
@@ -38,8 +42,9 @@ public class StartMenu : MonoBehaviour
         }
         else {
             Debug.Log("launching Server on Client");
-            networkDiscovery.StopDiscovery();
-            networkManager.OnStartHost(); // start the client and create server
+            //networkDiscovery.StopDiscovery();
+            networkManager.StartHost(); // start the client and create server
+            networkDiscovery.AdvertiseServer();
         }
     }
     public void OnDiscoveredServer(ServerResponse info)

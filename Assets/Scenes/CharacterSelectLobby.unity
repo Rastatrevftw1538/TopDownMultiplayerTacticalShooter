@@ -639,8 +639,8 @@ GameObject:
   - component: {fileID: 1281707319}
   - component: {fileID: 1281707322}
   - component: {fileID: 1281707316}
-  - component: {fileID: 1281707323}
   - component: {fileID: 1281707324}
+  - component: {fileID: 1281707323}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -663,11 +663,23 @@ MonoBehaviour:
   enableActiveDiscovery: 1
   BroadcastAddress: 
   serverBroadcastListenPort: 47777
-  ActiveDiscoveryInterval: 3
-  transport: {fileID: 1281707323}
+  ActiveDiscoveryInterval: 1
+  transport: {fileID: 1281707324}
   OnServerFound:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1281707323}
+        m_TargetAssemblyTypeName: Mirror.Discovery.NetworkDiscoveryHUD, Mirror.Components
+        m_MethodName: OnDiscoveredServer
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   secretHandshake: -3266908110832559711
 --- !u!4 &1281707319
 Transform:
@@ -703,17 +715,16 @@ MonoBehaviour:
   sendRate: 30
   offlineScene: Assets/Scenes/CharacterSelectLobby.unity
   onlineScene: Assets/Scenes/LevelTemplate.unity
-  transport: {fileID: 1281707323}
+  transport: {fileID: 1281707324}
   networkAddress: localhost
   maxConnections: 2
   authenticator: {fileID: 0}
   playerPrefab: {fileID: 2692482570812366574, guid: 12c5d4ce7875c104fbb61ea2f22dc3bb, type: 3}
   autoCreatePlayer: 1
-  playerSpawnMethod: 0
+  playerSpawnMethod: 1
   spawnPrefabs:
   - {fileID: 209056261796185724, guid: e88e32b0ab60951458b5460b47a868f1, type: 3}
   - {fileID: 1351942601874193225, guid: 4da59042fc1b0b54685f5c2395e79b71, type: 3}
-  - {fileID: 5052289419411090261, guid: 72fb85b14ec658142abbcae480b45061, type: 3}
   - {fileID: 5706064857750014841, guid: 1b6d18f608de54c9787fbfd66144957d, type: 3}
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -728,6 +739,19 @@ MonoBehaviour:
   timeInterpolationGui: 0
   gameManager: {fileID: 0}
 --- !u!114 &1281707323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1281707312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88c37d3deca7a834d80cfd8d3cfcc510, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  networkDiscovery: {fileID: 1281707316}
+--- !u!114 &1281707324
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -756,20 +780,6 @@ MonoBehaviour:
   debugLog: 0
   statisticsGUI: 0
   statisticsLog: 0
---- !u!114 &1281707324
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1281707312}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6442dc8070ceb41f094e44de0bf87274, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  offsetX: 0
-  offsetY: 0
 --- !u!1 &1290391961
 GameObject:
   m_ObjectHideFlags: 0
