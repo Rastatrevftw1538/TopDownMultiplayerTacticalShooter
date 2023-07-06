@@ -11,14 +11,14 @@ public class BountyGameManager : NetworkBehaviour
     [SerializeField] private GameObject ui;
     public static BountyGameManager instance;
 
-    public List<GameObject> redTeam;
-    public List<GameObject> blueTeam;
+    [SyncVar][SerializeField] public List<GameObject> redTeam;
+    [SyncVar][SerializeField] public List<GameObject> blueTeam;
 
-    public int blueTeamScore;
-    public int redTeamScore;
-    public int gameTime = 180;
+    [SyncVar] public int blueTeamScore;
+    [SyncVar] public int redTeamScore;
+    [SyncVar] public int gameTime = 180;
 
-[HideInInspector]
+    [HideInInspector]
     public int connectedPlayersCount = 0;
     private bool gameStarted = false;
 
@@ -32,7 +32,7 @@ public class BountyGameManager : NetworkBehaviour
 
     private void Start()
     {
-
+        ui = this.transform.GetChild(0).gameObject;
     }
     public void OnPlayerConnected(NetworkConnection conn)
     {
@@ -50,7 +50,6 @@ public class BountyGameManager : NetworkBehaviour
         // Example:
         Debug.Log("Player died: " + playerHealth.gameObject.name);
     }
-
     public IEnumerator StartGame()
     {
 
@@ -58,20 +57,17 @@ public class BountyGameManager : NetworkBehaviour
         blueTeamScore = 0;
         redTeamScore = 0;
         int playerindex = 0;
+        ui.transform.GetChild(2).GetComponent<TMP_Text>().text = gameTime.ToString();
+        ui.transform.GetChild(0).GetComponent<TMP_Text>().text = "Blue: " + blueTeamScore.ToString();
+        ui.transform.GetChild(1).GetComponent<TMP_Text>().text = "Red: " + redTeamScore.ToString();
         Debug.Log("Values Set!");
         Debug.Log(NetworkServer.connections.Count);
         GameObject bountyLogicObject = Instantiate(CustomNetworkManager.singleton.spawnPrefabs[2]);
         NetworkClient.RegisterPrefab(bountyLogicObject);
         foreach(NetworkConnectionToClient conn in NetworkServer.connections.Values){
-            if( conn.isAuthenticated){
-                if(playerindex%2 == 0){
-                    redTeam.Add(conn.identity.gameObject);
-                    conn.identity.gameObject.GetComponent<PlayerScript>().PlayerTeam = PlayerScript.Team.Red; 
-                }
-                else{
-                    blueTeam.Add(conn.identity.gameObject);
-                    conn.identity.gameObject.GetComponent<PlayerScript>().PlayerTeam = PlayerScript.Team.Blue;
-                }
+            if(conn.isAuthenticated){
+                Debug.Log("Player index: "+playerindex+" Player: "+ conn.identity.gameObject.name);
+                addToTeam(conn.identity.gameObject, playerindex);
                 NetworkServer.Spawn(bountyLogicObject, conn.identity.connectionToClient);
                 // NetworkIdentity identity = bountyLogicObject.GetComponent<NetworkIdentity>();
                 // if (identity != null)
@@ -87,6 +83,20 @@ public class BountyGameManager : NetworkBehaviour
 
         // End the game
         EndGame();
+    }
+    [ClientRpc]
+    private void addToTeam(GameObject player,int index)
+    {
+        if (index % 2 == 0)
+        {
+            redTeam.Add(player);
+            player.GetComponent<PlayerScript>().PlayerTeam = PlayerScript.Team.Red;
+        }
+        else
+        {
+            blueTeam.Add(player);
+            player.GetComponent<PlayerScript>().PlayerTeam = PlayerScript.Team.Blue;
+        }
     }
 
     private IEnumerator GameLoop()
