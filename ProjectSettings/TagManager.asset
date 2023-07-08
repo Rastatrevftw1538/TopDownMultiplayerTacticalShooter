@@ -5,7 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Wall
-  - Base
+  - Grass
   layers:
   - Default
   - TransparentFX
@@ -13,8 +13,8 @@ TagManager:
   - 
   - Water
   - UI
-  - Client
-  - Enemy
+  - 
+  - 
   - 
   - 
   - 
@@ -42,13 +42,4 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
-    locked: 0
-  - name: ForEnemy
-    uniqueID: 4281939711
-    locked: 0
-  - name: ForTeam
-    uniqueID: 4133788565
-    locked: 0
-  - name: ForMe
-    uniqueID: 3331052279
     locked: 0
