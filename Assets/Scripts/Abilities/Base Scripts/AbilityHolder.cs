@@ -16,10 +16,24 @@ public class AbilityHolder : MonoBehaviour
         cooldown
     }
 
+    //DETECT KEYCODE PRESSED
+    private Event e;
+    void OnGUI()
+    {
+        e = Event.current;
+        if (e.isKey)
+        {
+            Debug.Log("Detected key code: " + e.keyCode);
+        }
+    }
+
+    //INSTANTLY SET ALL ABILITIES TO READY
     AbilityState state = AbilityState.ready;
 
-    public KeyCode debugKey;
+    //WILL BE REPLACED WITH IF THE BUTTON ON THE UI IS CLICKED OR NOT
+    public List<KeyCode> debugKeys = new List<KeyCode>();
 
+    int indx;
     private void Update()
     {
         //DIFFERENT ABILITY STATES
@@ -27,11 +41,12 @@ public class AbilityHolder : MonoBehaviour
             //READY
             case AbilityState.ready:
                 //IF THE DEBUG KEY IS PRESSED, ACTIVATE THE ABILITY
-                if (Input.GetKeyDown(debugKey))
+                if (e.isKey && search(debugKeys.ToArray(), debugKeys.Count, e.keyCode) != -1)
                 {
-                    abilities[0].Activate(this.gameObject); //FOR NOW, JUST ACTIVATE THE FIRST ABILITY
+                    indx = debugKeys.FindIndex(x => x == e.keyCode);
+                    abilities[indx].Activate(this.gameObject); //FOR NOW, JUST ACTIVATE THE FIRST ABILITY
                     state = AbilityState.active; //SET THE ABILITY TO READY
-                    activeTime = abilities[0].activeTime; //SET THE ACTIVE TIME TO THE ABILITY'S ACTIVE TIME AND START THE 
+                    activeTime = abilities[indx].activeTime; //SET THE ACTIVE TIME TO THE ABILITY'S ACTIVE TIME AND START THE 
                     
                     Debug.Log("activated");
                 }
@@ -43,8 +58,9 @@ public class AbilityHolder : MonoBehaviour
                     activeTime -= Time.deltaTime; //SUBTRACT TIME UNTIL IT HITS 0
                 }
                 else{
+                    abilities[indx].BeginCooldown(this.gameObject);
                     state = AbilityState.cooldown; //AND THEN PUT THE ABILITY ON COOLDOWN
-                    cooldownTime = abilities[0].cooldownTime; //SET THE COOLDOWN TIME TO THE ABILITY'S COOLDOWN TIME AND THEN START THE COOLDOWN TIMER
+                    cooldownTime = abilities[indx].cooldownTime; //SET THE COOLDOWN TIME TO THE ABILITY'S COOLDOWN TIME AND THEN START THE COOLDOWN TIMER
                 }
             break;
 
@@ -52,12 +68,28 @@ public class AbilityHolder : MonoBehaviour
             case AbilityState.cooldown:
                 if(cooldownTime > 0){ //WHILE THE ABILITY IS ON COOLDOWN
                     cooldownTime -= Time.deltaTime; //SUBTRACT TIME FROM THE COOLDOWN TIMER UNTIL THE ABILITY IS READY AGAIN
+
+                    Debug.Log("on cooldown");
                 }
                 else{
                     state = AbilityState.ready; //AND THEN SET THE ABILITY TO READY
+
+                    Debug.Log("ability ready to use");
                 }
             break;  
 
         }
     }
+
+    #region Search Functions
+    int search(KeyCode[] arr, int N, KeyCode x)
+    {
+        for (int i = 0; i < N; i++)
+            if (arr[i] == x)
+                return i;
+
+        return -1;
+    }
+    #endregion
+
 }

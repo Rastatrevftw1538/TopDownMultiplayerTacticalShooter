@@ -23,6 +23,10 @@ public class PlayerScript : NetworkBehaviour
     [Header("Player Stats")]
     public float runSpeed = 5f;
     public float walkSpeed = 0.5f;
+    [HideInInspector]
+    public float runSpeedNormal = 5f;
+    [HideInInspector]
+    public float walkSpeedNormal = 0.5f;
 
     [Header("Player Components")]
     [SerializeField]
@@ -37,11 +41,15 @@ public class PlayerScript : NetworkBehaviour
     private bool canMove = true;
 
     private void Start() {
-    if (isLocalPlayer)
-    {
-        Debug.Log("local Player" + netId);
-        return;
-    }
+        runSpeedNormal = 5f;
+        walkSpeedNormal = 0.5f;
+
+        if (isLocalPlayer)
+        {
+            Debug.Log("local Player" + netId);
+            return;
+        }
+
     }
 
     public Team PlayerTeam
@@ -71,14 +79,17 @@ public void FixedUpdate()
     isShooting = rotationJoystick.isShooting;
     isRunning = joystickController.isRunning;
         movement = new Vector2(horizontal, vertical).normalized * (isRunning ? runSpeed : walkSpeed);
-
-    // Apply movement to the rigidbody
-    if(canMove){
+        //Debug.Log(canMove);
+        //Debug.Log("horizontal" + horizontal);
+        //Debug.Log("vertical" + vertical);
+        //Debug.Log("running: " + runSpeed);
+        //Debug.Log("walking: " + walkSpeed);
+        // Apply movement to the rigidbody
+        if (canMove){
         CmdMove(movement);
         //this.transform.rotation = rotationInput;
         // Update the position and rotation variables
         this.transform.GetChild(0).transform.SetPositionAndRotation(this.transform.GetChild(0).transform.position,rotationInput); //POSSIBLY MAKE THIS FIND THE 'PlayerBody' RATHER THAN JUST FINDING THE FIRST CHILD OF THE GAMEOBJECT
-        
         //position = this.transform.position;
         //rotate = this.transform.rotation;
         
@@ -91,8 +102,10 @@ public void FixedUpdate()
         */
     }
 }
+    #region ryan messing stuff up
+    #endregion
 
-[Command]
+    [Command]
     private void CmdMove(Vector2 movement)
     {
         RpcMove(movement);
@@ -103,9 +116,6 @@ public void FixedUpdate()
 [ClientRpc]
     private void RpcMove(Vector2 movement)
     {
-        if (!isLocalPlayer)
-            return;
-
         transform.Translate(movement * Time.deltaTime);
     }
 

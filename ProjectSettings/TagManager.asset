@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Wall
   - Base
+  - PlayerObject
   layers:
   - Default
   - TransparentFX
@@ -51,4 +52,7 @@ TagManager:
     locked: 0
   - name: ForMe
     uniqueID: 3331052279
+    locked: 0
+  - name: Player
+    uniqueID: 1910647081
     locked: 0

@@ -10,8 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f955669090062d84192b13e9cbbe1aac, type: 3}
-  m_Name: Test_Ability
+  m_Name: Ability Base
   m_EditorClassIdentifier: 
-  name: 
-  abilityType:
-  - {fileID: 0}
+  name: Test
+  abilityType: 0
+  playerEffects: 2
+  activationMethod: 2
+  abilityAppliance: 0
+  activeTime: 1
+  cooldownTime: 4
