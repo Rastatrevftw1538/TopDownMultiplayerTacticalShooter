@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: AR
   m_EditorClassIdentifier: 
   damagePerBullet: 15
-  fireRate: 0.165
-  fireRange: 18
+  fireRate: 0.05
+  fireRange: 5
   numOfBulletsPerShot: 1
   weaponSprite: {fileID: 21300000, guid: 1bb69cd91685d9248a58b144052746f3, type: 3}
   ammo: 30
   reloadTime: 2
   zoomOutValue: 100
-  spreadIncreasePerSecond: 0.25
+  spreadIncreasePerSecond: 0.15

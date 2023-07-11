@@ -28,7 +28,8 @@ public class Weapon : NetworkBehaviour
     private int damage;
     private float spreadValue;
 
-    public int magSize;
+    public int mags = 3;
+    private int magSize;
 
     private int currentAmmo;
 
@@ -63,7 +64,7 @@ public class Weapon : NetworkBehaviour
             spreadValue = weaponSpecs.spreadIncreasePerSecond * 1000;
         }
         currentAmmo = magSize;
-        totalMags = 3;
+        totalMags = mags;
     }
     public int getDamage(){
         return this.damage;
@@ -78,7 +79,12 @@ public class Weapon : NetworkBehaviour
         return this.currentAmmo;
     }
     public int getTotalMags(){
-        return this.totalMags;
+        if(totalMags !>= 99){
+            return this.totalMags;
+        }
+        else{
+            return 9999;
+        }
     }
     public float getSpread(){
         return this.spread;
@@ -135,7 +141,9 @@ public class Weapon : NetworkBehaviour
         spreadCone.color = new Color(1,1,1,0);
         yield return new WaitForSeconds(reloadTime);
         currentAmmo = magSize;
-        totalMags -= 1;
+        if(totalMags !>= 99){
+            totalMags -= 1;
+        }
         isReloading = false;
     }
 
