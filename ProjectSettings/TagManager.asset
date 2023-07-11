@@ -5,8 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Wall
+  - Grass
   - Base
-  - PlayerObject
   layers:
   - Default
   - TransparentFX
@@ -41,18 +41,15 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: Default
-    uniqueID: 0
+  - name: ForTeam
+    uniqueID: 2983278349
     locked: 0
   - name: ForEnemy
-    uniqueID: 4281939711
-    locked: 0
-  - name: ForTeam
-    uniqueID: 4133788565
+    uniqueID: 1444612223
     locked: 0
   - name: ForMe
-    uniqueID: 3331052279
+    uniqueID: 4059340215
     locked: 0
-  - name: Player
-    uniqueID: 1910647081
+  - name: Default
+    uniqueID: 0
     locked: 0

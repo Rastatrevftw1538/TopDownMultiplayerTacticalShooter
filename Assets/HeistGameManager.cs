@@ -158,16 +158,4 @@ public class HeistGameManager : NetworkBehaviour
         // Restart the game or perform other actions as needed
         StartGame();
     }
-
-    private void OnBountyChanged(int oldValue, int newValue)
-    {
-        // Handle the bounty value change (e.g., update UI)
-        // You can access the bounty value from the Bounty Prefab and update the UI accordingly
-        // For example:
-        GameObject bountyPrefab = FindObjectOfType<BountyLogic>().gameObject;
-        if (bountyPrefab != null)
-        {
-            //bountyPrefab.UpdateBountyUI(newValue);
-        }
-    }
 }
