@@ -736,7 +736,7 @@ GameObject:
   - component: {fileID: 1743068645055459421}
   - component: {fileID: 7487439993578561020}
   - component: {fileID: 4915017394269462623}
-  - component: {fileID: 4143833247472281596}
+  - component: {fileID: 9002932500590422946}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -781,7 +781,7 @@ MonoBehaviour:
   joystickRotateUI: {fileID: 6713901557967857310}
   runSpeed: 5
   walkSpeed: 2
-  rb: {fileID: 4143833247472281596}
+  rb: {fileID: 9002932500590422946}
   position: {x: 0, y: 0}
   rotate: {x: 0, y: 0, z: 0, w: 0}
   isRunning: 0
@@ -923,7 +923,7 @@ MonoBehaviour:
   compressRotation: 0
   positionPrecision: 0.01
   scalePrecision: 0.01
---- !u!50 &4143833247472281596
+--- !u!50 &9002932500590422946
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -940,10 +940,10 @@ Rigidbody2D:
   m_AngularDrag: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
+  m_CollisionDetection: 1
+  m_Constraints: 7
 --- !u!1 &3290744501492193073
 GameObject:
   m_ObjectHideFlags: 0
