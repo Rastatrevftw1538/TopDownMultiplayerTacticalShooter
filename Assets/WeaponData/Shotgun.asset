@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0d332ebd4ca0354fb4b0febea93c68f, type: 3}
   m_Name: Shotgun
   m_EditorClassIdentifier: 
-  damagePerBullet: 10
+  damagePerBullet: 5
   fireRate: 0.5
   fireRange: 10
-  numOfBulletsPerShot: 5
+  numOfBulletsPerShot: 20
   weaponSprite: {fileID: 21300000, guid: ed130aac49764ad4f9d35454c297b75a, type: 3}
   ammo: 6
   reloadTime: 6
   zoomOutValue: 75
-  spreadIncreasePerSecond: 50
+  spreadIncreasePerSecond: 2

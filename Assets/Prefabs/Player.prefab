@@ -805,7 +805,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  weaponSpecs: {fileID: 11400000, guid: d1fced67c7aa7274db13b6c60f45317f, type: 2}
+  weaponSpecs: {fileID: 11400000, guid: 72506b139dfff094388a5807e868896f, type: 2}
   firePoint: {fileID: 3525035225075943314}
   weaponLooks: {fileID: 1728614716099988865}
   spreadCone: {fileID: 4790736005001819478}
