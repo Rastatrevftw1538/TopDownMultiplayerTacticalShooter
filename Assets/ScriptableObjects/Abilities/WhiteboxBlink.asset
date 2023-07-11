@@ -17,6 +17,6 @@ MonoBehaviour:
   playerEffects: 2
   activationMethod: 2
   abilityAppliance: 0
-  activeTime: 0.01
+  activeTime: 0
   cooldownTime: 2
   blinkDistance: 10
