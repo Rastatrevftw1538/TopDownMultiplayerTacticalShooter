@@ -39,7 +39,7 @@ public class HeistGameManager : NetworkBehaviour
     private void Start()
     {
         ui = this.transform.GetChild(0).gameObject;
-        heistSpawnPoints = Level.transform.GetChild(0).gameObject;
+        heistSpawnPoints = Level.transform.Find("BaseSpawnPoints").gameObject;
     }
     public void OnPlayerConnected(NetworkConnection conn)
     {
@@ -53,12 +53,16 @@ public class HeistGameManager : NetworkBehaviour
     {
         Debug.Log("Player died: " + playerHealth.gameObject.name);
     }
+    [ClientRpc]
     public void StartGame()
     {
         // Initialize scores
-        foreach(Transform baseLocal in heistSpawnPoints.GetComponentsInChildren<Transform>()){
-            Instantiate(heistBase,baseLocal.position,baseLocal.rotation,heistSpawnPoints.transform);
-        }
+        /*
+        foreach (GameObject baseLocal in heistSpawnPoints.GetComponentsInChildren<GameObject>()){
+            if (!baseLocal.name.Equals("BaseSpawnPoints")) {
+                Debug.Log("Base Team Affiliation: " + baseLocal.tag);
+            }
+        }*/
         gameStarted = true;
         blueTeamBaseHealth = 1000;
         redTeamBaseHealth = 1000;
@@ -97,16 +101,19 @@ public class HeistGameManager : NetworkBehaviour
     [ClientRpc]
     private void addToTeam(GameObject player,int index)
     {
-        if (index % 2 == 0)
-        {
-            redTeam.Add(player);
-            player.GetComponent<PlayerScript>().PlayerTeam = PlayerScript.Team.Red;
+        if (isLocalPlayer) {
+            if (index % 2 == 0)
+            {
+                redTeam.Add(player);
+                player.GetComponent<PlayerScript>().PlayerTeam = PlayerScript.Team.Red;
+            }
+            else
+            {
+                blueTeam.Add(player);
+                player.GetComponent<PlayerScript>().PlayerTeam = PlayerScript.Team.Blue;
+            }
         }
-        else
-        {
-            blueTeam.Add(player);
-            player.GetComponent<PlayerScript>().PlayerTeam = PlayerScript.Team.Blue;
-        }
+        
     }
 
     private IEnumerator GameLoop()

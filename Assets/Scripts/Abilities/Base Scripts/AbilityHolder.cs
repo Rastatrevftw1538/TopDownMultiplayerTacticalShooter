@@ -41,9 +41,17 @@ public class AbilityHolder : MonoBehaviour
             //READY
             case AbilityState.ready:
                 //IF THE DEBUG KEY IS PRESSED, ACTIVATE THE ABILITY
-                if (e.isKey && search(debugKeys.ToArray(), debugKeys.Count, e.keyCode) != -1)
+                if (Input.GetKeyDown(debugKeys[0]) || Input.GetKeyDown(debugKeys[1]))
                 {
-                    indx = debugKeys.FindIndex(x => x == e.keyCode);
+                    //indx = debugKeys.FindIndex(x => x == e.keyCode);
+                    if (Input.GetKeyDown(debugKeys[0]))
+                    {
+                        indx = 0;
+                    }
+                    else
+                    {
+                        indx = 1;
+                    }
                     abilities[indx].Activate(this.gameObject); //FOR NOW, JUST ACTIVATE THE FIRST ABILITY
                     state = AbilityState.active; //SET THE ABILITY TO READY
                     activeTime = abilities[indx].activeTime; //SET THE ACTIVE TIME TO THE ABILITY'S ACTIVE TIME AND START THE 

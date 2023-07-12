@@ -23,8 +23,6 @@ public class Weapon : NetworkBehaviour
     private float fireRange = 100f;
     private int numOfBulletsPerShot;
 
-    private float zoomValue = 100f;
-
     private int damage;
     private float spreadValue;
 
@@ -61,7 +59,6 @@ public class Weapon : NetworkBehaviour
             weaponLooks.sprite = weaponSpecs.weaponSprite;
             magSize = weaponSpecs.ammo;
             reloadTime = weaponSpecs.reloadTime;
-            zoomValue = weaponSpecs.zoomOutValue;
             spreadValue = weaponSpecs.spreadIncreasePerSecond * 1000;
         }
         currentAmmo = magSize;
@@ -178,9 +175,9 @@ public class Weapon : NetworkBehaviour
                     if (objectOrigin != null)
                     {
                         PlayerHealth enemyHealth = objectOrigin.GetComponent<PlayerHealth>();
-                        if(enemyHealth != null)
+                        if (enemyHealth != null)
                         {
-                            if(hit.collider.gameObject.name == "Bullseye!")
+                            if (hit.collider.gameObject.name == "Bullseye!")
                             {
                                 damageDone = 2 * damage;
                             }
@@ -192,9 +189,13 @@ public class Weapon : NetworkBehaviour
                         }
                     }
                 }
-                
-            }
 
+            }
+            else
+            {
+               hit.point =  new Vector3(hit.point.x + spreadDirection.x * fireRange, hit.point.y + spreadDirection.y * fireRange);
+            }
+            Debug.Log("HUh? Server: " + hit.point);
             endPoint = hit.point;
             RpcOnFire(hit, spreadDirection, endPoint, whatWasHit);
         }
@@ -205,11 +206,12 @@ public class Weapon : NetworkBehaviour
     {
         Debug.Log("Collision Point: " + collisionPoint);
         Debug.Log("Hit: " + whatWasHit);
+        Debug.Log("HUh? Client: " + hit.point);
         
         if (hit)
         {
             Debug.Log("Hit " + collisionPoint);
-            collisionPoint = endPoint;
+            //collisionPoint = endPoint;
         }
         else
         {
@@ -230,6 +232,6 @@ public class Weapon : NetworkBehaviour
             }
         Instantiate(trailRender.effectPrefab, collisionPoint, new Quaternion(0, 0, 0, 0));
         trailRender.SetTargetPosition(collisionPoint);
-        Debug.Log("Bullet Fired Client " + hit.point+ " direction "+spreadDirection);
+        Debug.Log("Bullet Fired Client " + collisionPoint+ " direction "+spreadDirection);
     }
 }

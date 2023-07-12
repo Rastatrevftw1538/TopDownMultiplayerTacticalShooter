@@ -9,8 +9,7 @@ public class PlayerHealth : NetworkBehaviour
 {
     public const int maxHealth = 100;
 
-    [SyncVar(hook = "OnChangedHealth")]
-    public int currentHealth = maxHealth;
+    [SyncVar]public int currentHealth = maxHealth;
 
     private Slider healthbarInternal;
     [SerializeField] private Image healthbarExternal;
@@ -38,7 +37,22 @@ public class PlayerHealth : NetworkBehaviour
             RpcDie();
         }
     }
+    private void Update()
+    {
+        if (healthbarInternal != null)
+        {
+            healthbarInternal.value = currentHealth;
+        }
 
+        if (healthbarExternal != null)
+        {
+            Debug.Log("Health: " + (float)currentHealth);
+            healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
+            Debug.Log("Health Changed - Bar: " + healthbarExternal.fillAmount + " Health: " + currentHealth);
+        }
+    }
+    /*
+    [ClientRpc]
     void OnChangedHealth(int oldHealth, int health)
     {
         if (healthbarInternal != null)
@@ -54,25 +68,29 @@ public class PlayerHealth : NetworkBehaviour
         }
         //Debug.Log("Health Changed");
     }
+    */
     [ClientRpc]
     void RpcDie()
     {
-        if (isLocalPlayer)
-        {
+        
             // Stop player movement
             GetComponent<PlayerScript>().setCanMove(false);
             GetComponent<Weapon>().enabled = false;
 
-            // Teleport player back to Vector.zero
-            transform.position = NetworkManager.startPositions[UnityEngine.Random.Range(0,NetworkManager.startPositions.Count)].transform.position;
-
+            // Teleport player back to spawn
+            foreach (Transform spawnPoint in NetworkManager.startPositions) {
+                if (spawnPoint.tag.Equals(this.GetComponent<PlayerScript>().PlayerTeam)) {
+                    transform.position = spawnPoint.position;
+                }
+            }
             // Raise the PlayerDied event
             PlayerDied?.Invoke(this);
             
             // Restore health after 3 seconds
             StartCoroutine(RestoreHealth());
-        }
+        
     }
+    
     IEnumerator RestoreHealth()
     {
         yield return new WaitForSeconds(5f);

@@ -38,8 +38,6 @@ public class PlayerScript : NetworkBehaviour
     public float walkSpeedNormal;
 
     [Header("Player Components")]
-    [SerializeField]
-    private Rigidbody2D rb;
     public Vector2 movement;
     public Quaternion rotation;
 
@@ -73,7 +71,7 @@ public class PlayerScript : NetworkBehaviour
     }
 
 [ClientCallback]
-public void FixedUpdate()
+public void Update()
 {
     if (!isLocalPlayer)
     {
@@ -87,7 +85,7 @@ public void FixedUpdate()
         if(Input.GetKey(KeyCode.LeftShift)){
             isRunning = true;
         }
-        if(Input.GetKeyUp(KeyCode.LeftShift)){
+        else if(Input.GetKeyUp(KeyCode.LeftShift)){
             isRunning = false;
         }
         if(Input.GetKey(KeyCode.W)){
@@ -110,7 +108,7 @@ public void FixedUpdate()
         Vector3 mouseWorldPosition = playerCamera.ScreenToWorldPoint(mousePosition);
         Vector3 aimDirection = mouseWorldPosition - transform.position;
         rotation = Quaternion.LookRotation(Vector3.forward, aimDirection);
-        print(rotation);
+        //print(rotation);
     }
     if(deviceType == DeviceType.Mobile){
     
