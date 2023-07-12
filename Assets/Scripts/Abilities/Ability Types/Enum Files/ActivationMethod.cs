@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovementAbility : Ability
+public enum ActivationMethod
 {
-    //public float waitTime;
+    HITSCAN,
+    PROJECTILE,
+    ON_SELF,
+    AURA
 }
