@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
+using static PlayerScript;
 
 public class PlayerHealth : NetworkBehaviour
 {
@@ -14,8 +15,12 @@ public class PlayerHealth : NetworkBehaviour
     private Slider healthbarInternal;
     [SerializeField] private Image healthbarExternal;
 
-    // Event for player death
-    public event Action<PlayerHealth> PlayerDied;
+    private bool isAlive = true;
+
+    public bool checkIfAlive
+    {
+        get { return isAlive; }
+    }
 
     public int GetHealth()
     {
@@ -83,8 +88,6 @@ public class PlayerHealth : NetworkBehaviour
                     transform.position = spawnPoint.position;
                 }
             }
-            // Raise the PlayerDied event
-            PlayerDied?.Invoke(this);
             
             // Restore health after 3 seconds
             StartCoroutine(RestoreHealth());

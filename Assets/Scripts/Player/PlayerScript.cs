@@ -160,7 +160,20 @@ public void Update()
     {
 
         // Set the player's outline to Yellow
-        this.transform.GetChild(0).GetChild(3).GetChild(1).GetComponent<SpriteRenderer>().color = new Color(1,1,0,1);
+        this.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1,1,0,1);
+        foreach (NetworkConnectionToClient players in NetworkServer.connections.Values) {
+            if (!isLocalPlayer)
+            {
+                if (players.identity.GetComponent<PlayerScript>().PlayerTeam != this.playerTeam || players.identity.GetComponent<PlayerScript>().PlayerTeam == Team.None)
+                {
+                    players.identity.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.red;
+                }
+                else
+                {
+                    players.identity.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.blue;
+                }
+            }
+        }
         this.GetComponent<Weapon>().spreadCone.enabled = true;
 
         // Request authority from the server

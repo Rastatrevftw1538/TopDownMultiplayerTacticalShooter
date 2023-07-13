@@ -15,6 +15,9 @@ public class HeistGameManager : NetworkBehaviour
     [SyncVar][SerializeField] public List<GameObject> redTeam;
     [SyncVar][SerializeField] public List<GameObject> blueTeam;
 
+    private List<GameObject> redTeamDead;
+    private List<GameObject> blueTeamDead;
+
     [SyncVar] public int blueTeamBaseHealth;
     [SyncVar] public int redTeamBaseHealth;
     [SyncVar] public int gameTime = 180;
@@ -44,9 +47,9 @@ public class HeistGameManager : NetworkBehaviour
     public void OnPlayerConnected(NetworkConnection conn)
     {
         PlayerHealth playerHealth = conn.identity.GetComponent<PlayerHealth>();
-        if (playerHealth != null)
+        if (!playerHealth.checkIfAlive)
         {
-            playerHealth.PlayerDied += OnPlayerDied;
+            OnPlayerDied(playerHealth);
         }
     }
     private void OnPlayerDied(PlayerHealth playerHealth)
