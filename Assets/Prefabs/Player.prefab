@@ -941,8 +941,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   abilities:
-  - {fileID: 11400000, guid: 981e8893798a5c74ab03138ff1f8219c, type: 2}
   - {fileID: 11400000, guid: 0ce926fe6e0529542ba84cc0a26249ec, type: 2}
+  - {fileID: 11400000, guid: 981e8893798a5c74ab03138ff1f8219c, type: 2}
   debugKeys: 6500000067000000
 --- !u!96 &-354695964791044671
 TrailRenderer:

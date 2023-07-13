@@ -19,4 +19,5 @@ MonoBehaviour:
   abilityAppliance: 0
   activeTime: 0
   cooldownTime: 2
-  blinkDistance: 10
+  blinkDistance: 5
+  BlinkMultiplier: 1
