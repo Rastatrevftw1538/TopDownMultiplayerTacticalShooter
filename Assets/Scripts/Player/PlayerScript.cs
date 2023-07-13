@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class PlayerScript : NetworkBehaviour
 {
+    private Camera playerCamera;
     public enum Team
     {
         None,
@@ -13,159 +14,150 @@ public class PlayerScript : NetworkBehaviour
     }
     [SyncVar]
     private Team playerTeam;
+    
+    public enum DeviceType
+    {
+        PC,
+        Mobile
+    }
+    [SerializeField]
+    private DeviceType deviceType;
+
+    [Header("Controller")]
     [SerializeField]
     private GameObject joystickMovementUI;
     [SerializeField]
     private GameObject joystickRotateUI;
     
+    [Header("Player Stats")]
     public float runSpeed = 5f;
     public float walkSpeed = 0.5f;
+    [HideInInspector]
+    public float runSpeedNormal;
+    [HideInInspector]
+    public float walkSpeedNormal;
 
+    [Header("Player Components")]
     [SerializeField]
     private Rigidbody2D rb;
+    public Vector2 movement;
+    public Quaternion rotation;
 
-    public Vector2 position;
-
-    public Quaternion rotate;
-
+    [Header("Player Status")]
     public bool isRunning;
     private bool isShooting;
     private bool canMove = true;
 
     private void Start() {
-    if (isLocalPlayer)
-    {
-        Debug.Log("local Player" + netId);
-        return;
+        runSpeedNormal = runSpeed;
+        walkSpeedNormal = walkSpeed;
+
+        if (isLocalPlayer)
+        {
+            Debug.Log("local Player" + netId);
+            return;
+        }
+
     }
-}
+
     public Team PlayerTeam
     {
         get { return playerTeam; }
         set { playerTeam = value; }
     }
+    public DeviceType PlayerDevice{
+        get { return deviceType; }
+    }
     public void setCanMove(bool newCanMove){
     this.canMove = newCanMove;
-}
+    }
+
 [ClientCallback]
-private void FixedUpdate()
+public void FixedUpdate()
 {
     if (!isLocalPlayer)
     {
         return;
     }
-
+    if(deviceType == DeviceType.PC){
+        if(!playerCamera){
+            playerCamera = GameObject.Find("ClientCamera").GetComponent<Camera>();
+            print("Camera Set");
+        }
+        if(Input.GetKey(KeyCode.LeftShift)){
+            isRunning = true;
+        }
+        if(Input.GetKeyUp(KeyCode.LeftShift)){
+            isRunning = false;
+        }
+        if(Input.GetKey(KeyCode.W)){
+            movement = new Vector2(0, 1).normalized * (isRunning ? runSpeed : walkSpeed);
+        }
+        else if(Input.GetKey(KeyCode.S)){
+            movement = new Vector2(0, -1).normalized * (isRunning ? runSpeed : walkSpeed);
+        }
+        else if(Input.GetKey(KeyCode.A)){
+            movement = new Vector2(-1, 0).normalized * (isRunning ? runSpeed : walkSpeed);
+        }
+        else if(Input.GetKey(KeyCode.D)){
+            movement = new Vector2(1, 0).normalized * (isRunning ? runSpeed : walkSpeed);
+        }
+        else{
+            movement = new Vector2(0, 0);
+        }
+        Vector3 mousePosition = Input.mousePosition;
+        mousePosition.z = -playerCamera.transform.position.z;
+        Vector3 mouseWorldPosition = playerCamera.ScreenToWorldPoint(mousePosition);
+        Vector3 aimDirection = mouseWorldPosition - transform.position;
+        rotation = Quaternion.LookRotation(Vector3.forward, aimDirection);
+        print(rotation);
+    }
+    if(deviceType == DeviceType.Mobile){
+    
     JoystickControllerMovement joystickController = joystickMovementUI.GetComponent<JoystickControllerMovement>();
 
     float horizontal = joystickController.GetHorizontalInput();
     float vertical = joystickController.GetVerticalInput();
 
     JoystickControllerRotationAndShooting rotationJoystick = joystickRotateUI.GetComponent<JoystickControllerRotationAndShooting>();
-    Quaternion rotationInput = rotationJoystick.GetRotationInput();
+    rotation = rotationJoystick.GetRotationInput();
     isShooting = rotationJoystick.isShooting;
     isRunning = joystickController.isRunning;
-        Vector2 movement = new Vector2(horizontal, vertical).normalized * (isRunning ? runSpeed : walkSpeed);
-
-    // Apply movement to the rigidbody
-    if(canMove){
+    movement = new Vector2(horizontal, vertical).normalized * (isRunning ? runSpeed : walkSpeed);
+    }
+        if (canMove){
         CmdMove(movement);
-        //this.transform.rotation = rotationInput;
-        // Update the position and rotation variables
-        this.transform.GetChild(0).transform.SetPositionAndRotation(this.transform.GetChild(0).transform.position,rotationInput);
-        
-        //position = this.transform.position;
-        //rotate = this.transform.rotation;
-        
-/*
-        // Update the position and rotation on all clients
-        OnPositionUpdated(new Vector2(horizontal, vertical).normalized, rotationInput);
-
-        // Send movement command to the server
-        CmdSendMovement(movement, rotationInput, isRunning);
-        */
+        CmdRotate(rotation);
+    
     }
 }
+    #region ryan messing stuff up
+    #endregion
 
-[Command]
+    [Command]
     private void CmdMove(Vector2 movement)
     {
         RpcMove(movement);
-        transform.Translate(movement * Time.deltaTime);    }
-
-[ClientRpc]
+        transform.Translate(movement * Time.deltaTime);    
+    }
+    // FIGURE OUT HOW THE SERVER RECIEVES THIS INFO
+    [Command]
+    private void CmdRotate(Quaternion rotation)
+    {
+        RpcRotation(rotation);
+        transform.GetChild(0).transform.rotation = rotation;
+    }
+    [ClientRpc]
     private void RpcMove(Vector2 movement)
     {
-        if (!isLocalPlayer)
-            return;
-
         transform.Translate(movement * Time.deltaTime);
     }
-
-//COMMENTED OUT CODE WAS FOR SERVER SIDE IMPLEMENTATION
-
-
-/*
-[Command]
-private void CmdSendMovement(Vector2 movement, Quaternion rotate, bool isWalking)
-{
-    //rb.velocity = movement * (isWalking ? walkSpeed : runSpeed);
-
-    // Update the position and rotation variables
-    this.transform.Translate(movement * (isWalking ? walkSpeed : runSpeed));
-    position = rb.position;
-    this.transform.rotation = rotate;
-
-    // Update the position and rotation on all clients
-    RpcUpdateMovement(position, rotate);
-}
-
     [ClientRpc]
-    private void RpcUpdateMovement(Vector2 position,Quaternion rotation)
+    private void RpcRotation(Quaternion rotation)
     {
-        // Update the player's position on all clients except the owner
-        if (!isLocalPlayer)
-        {
-            rb.position = position;
-            this.transform.rotation = rotation;
-        }
-    }
-    
-private void OnPositionUpdated(Vector2 newPosition, Quaternion newRotation)
-{
-    if (!isLocalPlayer)
-    {
-        // The player's position should only be updated for the local player
-        return;
+        transform.GetChild(0).transform.rotation = rotation;
     }
 
-    // Calculate the distance between the old position and the new position
-    float distance = Vector2.Distance(rb.position, newPosition);
-
-    // If the distance is too great, teleport the player to the new position
-    if (distance > 2f)
-    {
-        transform.position = newPosition;
-    }
-    // Otherwise, move the player smoothly towards the new position
-    else
-    {
-        transform.position = Vector2.Lerp(transform.position, newPosition, Time.deltaTime * 10f);
-    }
-
-    // Update the player's rotation
-    transform.rotation = newRotation;
-}
-    private void OnRotationUpdated(Quaternion oldRotation,Quaternion newRotation)
-    {
-        if (isLocalPlayer)
-        {
-            return;
-        }
-
-        // Update the player's rotation on all clients except the owner
-        this.transform.rotation = newRotation;
-    }
-        */
     public override void OnStartLocalPlayer()
     {
 

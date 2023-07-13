@@ -28,7 +28,8 @@ public class Weapon : NetworkBehaviour
     private int damage;
     private float spreadValue;
 
-    public int magSize;
+    public int mags = 3;
+    private int magSize;
 
     private int currentAmmo;
 
@@ -48,6 +49,7 @@ public class Weapon : NetworkBehaviour
     private float spread = 0f;
 
     private RaycastHit2D tempHitLocation;
+    private bool shootingGun;
 
     //private Vector3 tempSpreadDirection;
     private void Awake() {
@@ -63,7 +65,7 @@ public class Weapon : NetworkBehaviour
             spreadValue = weaponSpecs.spreadIncreasePerSecond * 1000;
         }
         currentAmmo = magSize;
-        totalMags = 3;
+        totalMags = mags;
     }
     public int getDamage(){
         return this.damage;
@@ -78,7 +80,12 @@ public class Weapon : NetworkBehaviour
         return this.currentAmmo;
     }
     public int getTotalMags(){
-        return this.totalMags;
+        if(totalMags !>= 99){
+            return this.totalMags;
+        }
+        else{
+            return 9999;
+        }
     }
     public float getSpread(){
         return this.spread;
@@ -91,12 +98,17 @@ public class Weapon : NetworkBehaviour
 
         if (isReloading)
             return;
-
+        
         float coneScale = 1f + (spread * coneSpreadFactor);
         spreadCone.transform.localScale = new Vector3(Mathf.Clamp(coneScale,0,35), spreadCone.transform.localScale.y, 1f);
         spreadCone.color = new Color(1,0,0,Mathf.Clamp((Mathf.Clamp(spread,0f,100f)-0)/(100-0),0.25f,0.75f));
-
-        if (shootingJoystick.isShooting && Time.time >= nextFireTime && !outOfAmmo)
+        if(this.transform.GetComponent<PlayerScript>().PlayerDevice == PlayerScript.DeviceType.Mobile){
+            shootingGun = shootingJoystick.isShooting ;
+        }
+        else if(this.transform.GetComponent<PlayerScript>().PlayerDevice == PlayerScript.DeviceType.PC){
+            shootingGun = Input.GetMouseButton(0);
+        }
+        if (shootingGun && Time.time >= nextFireTime && !outOfAmmo)
         {
             nextFireTime = Time.time + fireRate;
             Vector2 direction = firePoint.transform.up;
@@ -123,7 +135,7 @@ public class Weapon : NetworkBehaviour
             weaponLooks.color = Color.red;
         }
 
-        if(!shootingJoystick.isShooting){
+        if(!shootingGun){
             spread = 0f;
         }
     }
@@ -135,7 +147,9 @@ public class Weapon : NetworkBehaviour
         spreadCone.color = new Color(1,1,1,0);
         yield return new WaitForSeconds(reloadTime);
         currentAmmo = magSize;
-        totalMags -= 1;
+        if(totalMags !>= 99){
+            totalMags -= 1;
+        }
         isReloading = false;
     }
 
