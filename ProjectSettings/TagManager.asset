@@ -7,6 +7,9 @@ TagManager:
   - Wall
   - Grass
   - Base
+  - PlayerObject
+  - Red
+  - Blue
   layers:
   - Default
   - TransparentFX
@@ -41,15 +44,6 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: ForTeam
-    uniqueID: 2983278349
-    locked: 0
-  - name: ForEnemy
-    uniqueID: 1444612223
-    locked: 0
-  - name: ForMe
-    uniqueID: 4059340215
-    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

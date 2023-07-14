@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
 [CreateAssetMenu(menuName = "Player Abilities/Movement/Dash")]
 public class Dash : MovementAbility
@@ -24,7 +25,13 @@ public class Dash : MovementAbility
         player.runSpeed = dashVelocity;
         player.walkSpeed = dashVelocity;
 
-        TrailRenderer tr = parent.GetComponent<TrailRenderer>();
+        DoPretty(parent);
+        
+    }
+    [ClientRpc]
+    void DoPretty(GameObject player)
+    {
+        TrailRenderer tr = player.GetComponent<TrailRenderer>();
         tr.emitting = true;
     }
 
