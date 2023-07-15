@@ -51,9 +51,9 @@ public class PlayerHealth : NetworkBehaviour
 
         if (healthbarExternal != null)
         {
-            Debug.Log("Health: " + (float)currentHealth);
+            //Debug.Log("Health: " + (float)currentHealth);
             healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
-            Debug.Log("Health Changed - Bar: " + healthbarExternal.fillAmount + " Health: " + currentHealth);
+            //Debug.Log("Health Changed - Bar: " + healthbarExternal.fillAmount + " Health: " + currentHealth);
         }
     }
     /*

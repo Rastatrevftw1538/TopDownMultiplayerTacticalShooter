@@ -112,6 +112,7 @@ public class Weapon : NetworkBehaviour
             float spreadAngle = Mathf.Clamp(UnityEngine.Random.Range(0, spread) - spread / 2f,-45,45);
             Quaternion spreadRotation = Quaternion.Euler(0, 0, spreadAngle);
             direction = spreadRotation * direction;
+            print("Direction thing: "+direction);
             CmdFire(direction);
             if(this.GetComponent<PlayerScript>().isRunning){
                 spread += Time.deltaTime * (spreadValue*2);
@@ -157,6 +158,7 @@ public class Weapon : NetworkBehaviour
         for (int i = 0; i < numOfBulletsPerShot; i++)
         {
             Vector3 spreadDirection = direction;
+            print("Direction thing SERVER: "+ spreadDirection);
             if (numOfBulletsPerShot > 1)
             {
                 float spreadAngle = Mathf.Clamp(i * (spread / numOfBulletsPerShot) + UnityEngine.Random.Range(0, spreadValue) - spreadValue / 2f,-5,5);
@@ -191,11 +193,13 @@ public class Weapon : NetworkBehaviour
                 }
 
             }
+            
             else
             {
-               hit.point =  new Vector3(hit.point.x + spreadDirection.x * fireRange, hit.point.y + spreadDirection.y * fireRange);
+                whatWasHit ="NOTHING";
             }
-            Debug.Log("HUh? Server: " + hit.point);
+            
+            Debug.Log("HUh? Server: " + spreadDirection);
             endPoint = hit.point;
             RpcOnFire(hit, spreadDirection, endPoint, whatWasHit);
         }
@@ -206,18 +210,18 @@ public class Weapon : NetworkBehaviour
     {
         Debug.Log("Collision Point: " + collisionPoint);
         Debug.Log("Hit: " + whatWasHit);
-        Debug.Log("HUh? Client: " + hit.point);
+        Debug.Log("HUh? Client: " + spreadDirection);
         
-        if (hit)
+        if (whatWasHit != "NOTHING")
         {
             Debug.Log("Hit " + collisionPoint);
-            //collisionPoint = endPoint;
         }
         else
         {
-            collisionPoint = (collisionPoint + spreadDirection * fireRange);
+            collisionPoint = spreadDirection;
             Debug.Log("Hit Nothing:");
         }
+        
         var bulletInstance = Instantiate(bulletPrefab, firePoint.position, new Quaternion(0, 0, 0, 0));
         BulletScript trailRender = bulletInstance.GetComponent<BulletScript>();
         GameObject particleEffect = trailRender.effectPrefab;
