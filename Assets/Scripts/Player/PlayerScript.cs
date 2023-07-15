@@ -13,7 +13,7 @@ public class PlayerScript : NetworkBehaviour
         Blue
     }
     [SyncVar]
-    private Team playerTeam;
+    public Team playerTeam;
     
     public enum DeviceType
     {

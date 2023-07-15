@@ -174,6 +174,7 @@ public class Weapon : NetworkBehaviour
                     Transform objectOrigin = hit.collider.transform.parent.parent;
                     if (objectOrigin != null)
                     {
+                        //PLAYER HEALTH STUFF
                         PlayerHealth enemyHealth = objectOrigin.GetComponent<PlayerHealth>();
                         if (enemyHealth != null)
                         {
@@ -186,6 +187,19 @@ public class Weapon : NetworkBehaviour
                                 damageDone = damage;
                             }
                             enemyHealth.TakeDamage(damageDone);
+                        }
+
+                        //DAMAGE BASE STUFF
+                        Base baseHealth = objectOrigin.GetComponent<Base>();
+                        if (baseHealth != null)
+                        {
+                            Debug.Log("<color=orange>did grab base </color>");
+                            if (baseHealth.canHit)
+                            {
+                                damageDone = 20;
+                                baseHealth.TakeDamage(damageDone);
+                                Debug.Log("<color=orange>did Hit base </color>");
+                            }
                         }
                     }
                 }

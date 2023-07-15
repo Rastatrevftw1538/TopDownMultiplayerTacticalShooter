@@ -40,6 +40,8 @@ public class PlayerHealth : NetworkBehaviour
         if (currentHealth <= 0)
         {
             RpcDie();
+
+            PlayerDied();
         }
     }
     private void Update()
@@ -51,9 +53,9 @@ public class PlayerHealth : NetworkBehaviour
 
         if (healthbarExternal != null)
         {
-            Debug.Log("Health: " + (float)currentHealth);
+           // Debug.Log("Health: " + (float)currentHealth);
             healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
-            Debug.Log("Health Changed - Bar: " + healthbarExternal.fillAmount + " Health: " + currentHealth);
+            //Debug.Log("Health Changed - Bar: " + healthbarExternal.fillAmount + " Health: " + currentHealth);
         }
     }
     /*
@@ -90,15 +92,29 @@ public class PlayerHealth : NetworkBehaviour
             }
             
             // Restore health after 3 seconds
-            StartCoroutine(RestoreHealth());
+            //StartCoroutine(RestoreHealth());
         
     }
-    
-    IEnumerator RestoreHealth()
+
+    [Command (requiresAuthority = false)]
+    private void PlayerDied()
     {
-        yield return new WaitForSeconds(5f);
+        PlayerDied evtPlayerDied = new PlayerDied();
+        evtPlayerDied.playerThatDied = this.gameObject;
+
+        EvtSystem.EventDispatcher.Raise<PlayerDied>(evtPlayerDied);
+    }
+    
+    public void RestoreHealth()
+    {
+        //yield return new WaitForSeconds(5f);
         currentHealth = maxHealth;
         GetComponent<Weapon>().enabled = true;
         GetComponent<PlayerScript>().setCanMove(true);
+    }
+
+    public void Respawn(float respawnTime)
+    {
+            Invoke("RestoreHealth", respawnTime);
     }
 }

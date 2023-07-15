@@ -65,3 +65,19 @@ public class FreezePlayerMovement : EvtSystem.Event
     public bool canMove;
     public float moveSpeed;
 }
+
+public class StartTeamRespawn : EvtSystem.Event
+{
+    public float respawnTime;
+    public List<GameObject> teamToRespawn;
+}
+
+public class ChangeBaseState : EvtSystem.Event
+{
+    public bool isBaseVulnerable;
+}
+
+public class PlayerDied : EvtSystem.Event
+{
+    public GameObject playerThatDied;
+}
