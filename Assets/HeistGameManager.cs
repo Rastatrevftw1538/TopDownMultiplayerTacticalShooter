@@ -56,7 +56,20 @@ public class HeistGameManager : NetworkBehaviour
 
     private void Update()
     {
-        
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        if(gameStarted)
+            foreach (GameObject player in players){
+                Debug.Log("Player "+player.name);
+                Debug.Log("Team: "+player.GetComponent<PlayerScript>().PlayerTeam);
+                if(player.GetComponent<PlayerScript>().PlayerTeam == PlayerScript.Team.Red){
+                    if(!redTeam.Contains(player))
+                        redTeam.Add(player);
+                }
+                else if(player.GetComponent<PlayerScript>().PlayerTeam == PlayerScript.Team.Blue){
+                    if(!blueTeam.Contains(player))
+                        blueTeam.Add(player);
+                } 
+            }
     }
     public void OnPlayerConnected(NetworkConnection conn)
     {
@@ -118,17 +131,13 @@ public class HeistGameManager : NetworkBehaviour
     [ClientRpc]
     private void addToTeam(GameObject player, int index)
     {
-        if (isLocalPlayer) {
-            if (index % 2 == 0)
-            {
-                redTeam.Add(player);
-                player.GetComponent<PlayerScript>().PlayerTeam = PlayerScript.Team.Red;
-            }
-            else
-            {
-                blueTeam.Add(player);
-                player.GetComponent<PlayerScript>().PlayerTeam = PlayerScript.Team.Blue;
-            }
+        if (index % 2 == 0)
+        {
+            player.GetComponent<PlayerScript>().PlayerTeam = PlayerScript.Team.Red;
+        }
+        else
+        {
+            player.GetComponent<PlayerScript>().PlayerTeam = PlayerScript.Team.Blue;
         }
 
     }
