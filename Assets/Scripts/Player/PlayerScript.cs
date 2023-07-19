@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
@@ -217,7 +218,28 @@ private void CmdRequestAuthority()
             Debug.Log(networkIdentity.assetId+" taking Authority for "+ this.gameObject.name);
         }
 }
-public override void OnStopClient()
+    private void SetPlayerColor()
+    {
+        // Set the player's outline to Yellow
+        this.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1,1,0,1);
+        PlayerScript[] allPlayers = FindObjectsOfType<PlayerScript>();
+        foreach (PlayerScript player in allPlayers) {
+            if (player != this)
+            {
+                SpriteRenderer playerOutlineRenderer = player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>();
+                if (player.PlayerTeam != this.playerTeam || player.PlayerTeam == Team.None)
+                {
+                    playerOutlineRenderer.color = Color.red;
+                }
+                else
+                {
+                    playerOutlineRenderer.color = Color.blue;
+                }
+            }
+        }
+    }
+
+    public override void OnStopClient()
     {
         // Clear authority when the client stops
         if (isLocalPlayer)
