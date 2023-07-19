@@ -22,7 +22,7 @@ public class StartMenu : MonoBehaviour
         //UnityEditor.Events.UnityEventTools.AddPersistentListener(networkDiscovery.OnServerFound, OnDiscoveredServer);
     }
     private void Update() {
-        Debug.Log("Servers Found = " + discoveredServers.Count);
+        //Debug.Log("Servers Found = " + discoveredServers.Count);
     }
     public void StartGame()
     {

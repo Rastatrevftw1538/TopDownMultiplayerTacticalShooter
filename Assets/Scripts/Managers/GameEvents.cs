@@ -20,7 +20,7 @@ using EvtSystem;
     public int karmaScore;
 
     public UnityAction buttonAction;
-}
+}\
 
 public class ShowResponses : EvtSystem.Event
 {
@@ -45,7 +45,7 @@ public class PlayerInteract : EvtSystem.Event
 {
     public Vector3 interactPosition;
     public Vector3 interactDirection;
-    public float interactDistance;
+    public float   interactDistance;
 }
 
 public class MyEvent : EvtSystem.Event
@@ -64,4 +64,20 @@ public class FreezePlayerMovement : EvtSystem.Event
 {
     public bool canMove;
     public float moveSpeed;
+}
+
+public class StartTeamRespawn : EvtSystem.Event
+{
+    public float respawnTime;
+    public List<GameObject> teamToRespawn;
+}
+
+public class ChangeBaseState : EvtSystem.Event
+{
+    public bool isBaseVulnerable;
+}
+
+public class PlayerDied : EvtSystem.Event
+{
+    public GameObject playerThatDied;
 }

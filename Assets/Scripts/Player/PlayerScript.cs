@@ -13,7 +13,7 @@ public class PlayerScript : NetworkBehaviour
         Blue
     }
     [SyncVar]
-    private Team playerTeam;
+    public Team playerTeam;
     
     public enum DeviceType
     {
@@ -75,8 +75,21 @@ public void Update()
 {
     if (!isLocalPlayer)
     {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject player in players){
+                if(!player.Equals(this))
+                    if (player.GetComponent<PlayerScript>().PlayerTeam != this.playerTeam || player.GetComponent<PlayerScript>().PlayerTeam == Team.None)
+                    {
+                        player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.red;
+                    }
+                    else
+                    {
+                        player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.blue;
+                    }
+            }
         return;
     }
+    this.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1,1,0,1);
     if(deviceType == DeviceType.PC){
         if(!playerCamera){
             playerCamera = GameObject.Find("ClientCamera").GetComponent<Camera>();
@@ -160,7 +173,8 @@ public void Update()
     {
 
         // Set the player's outline to Yellow
-        this.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1,1,0,1);
+        
+        /*
         foreach (NetworkConnectionToClient players in NetworkServer.connections.Values) {
             if (!isLocalPlayer)
             {
@@ -174,6 +188,7 @@ public void Update()
                 }
             }
         }
+        */
         this.GetComponent<Weapon>().spreadCone.enabled = true;
 
         // Request authority from the server

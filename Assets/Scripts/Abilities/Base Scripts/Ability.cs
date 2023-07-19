@@ -7,37 +7,13 @@ public class Ability : ScriptableObject
 {
     public new string name;
 
-    public enum AbilityType
-    {
-        PLAYER,
-        ENVIRONMENT
-    }
-
-    public enum PlayerEffects
-    {
-        DAMAGE,
-        HEALING,
-        MOVEMENT,
-        FOV
-    }
-
-    public enum ActivationMethod
-    {
-        HITSCAN,
-        PROJECTILE,
-        ON_SELF
-    }
-
-    public enum AbilityAppliance
-    {
-        INSTANT,
-        OVER_TIME
-    }
-
-    public AbilityType abilityType;
-    public PlayerEffects playerEffects;
-    public ActivationMethod activationMethod;
-    public AbilityAppliance abilityAppliance;
+    //ADD A PUBLIC GETTER, PRIVATE SETTER FOR A WAIT TIME 
+    //CUSTOM UNITY EDITOR SCRIPTING TO SHOW THE WAIT-TIME IN THE INSPECTOR IF ABILITY APPLIANCE IS SET TO 'OVER-TIME'
+    public float waitTime;
+    public AbilityType _abilityType; 
+    public PlayerEffects _playerEffects;
+    public ActivationMethod _activationMethod;
+    public AbilityAppliance _abilityAppliance;
 
     [Header("Ability Time (If instant ability, leave Active Time = 0")]
     public float activeTime;
