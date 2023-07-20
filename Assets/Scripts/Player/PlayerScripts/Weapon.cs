@@ -196,9 +196,11 @@ public class Weapon : NetworkBehaviour
                         if (baseHealth != null)
                         {
                             Debug.Log("<color=orange>did grab base </color>");
-                            if (baseHealth.canHit)
+                            if (baseHealth.canHit && !baseHealth.CompareTag(this.GetComponent<PlayerScript>().playerTeam.ToString()))
                             {
-                                damageDone = 20;
+                                damageDone = damage*(2/(NetworkServer.connections.Count/2));
+                                print(NetworkServer.connections.Count);
+                                print("<color=yellow> Damage to base: "+damageDone+"</color>");
                                 baseHealth.TakeDamage(damageDone);
                                 Debug.Log("<color=orange>did Hit base </color>");
                             }

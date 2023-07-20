@@ -84,19 +84,19 @@ public class PlayerHealth : NetworkBehaviour
             this.GetComponent<Weapon>().enabled = false;
             isAlive = false;
             // Teleport player back to spawn
-            foreach (Transform spawnPoint in NetworkManager.startPositions) {
-                if (spawnPoint.tag.Equals(this.GetComponent<PlayerScript>().PlayerTeam)) {
-                    transform.position = spawnPoint.position;
-                }
-            }
-            
             // Restore health after 3 seconds
             //StartCoroutine(RestoreHealth());
         
     }
+    [ClientRpc]
     public void Respawn(float respawnTime)
     {
         Debug.Log(this.name+"DIED!");
+        foreach (Transform spawnPoint in NetworkManager.startPositions) {
+                if (spawnPoint.CompareTag(this.GetComponent<PlayerScript>().PlayerTeam.ToString())) {
+                    transform.position = spawnPoint.position;
+                }
+            }
         Invoke("RestoreHealth", respawnTime);
         
     }

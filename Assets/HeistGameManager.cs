@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Mirror;
+using System;
 
 public class HeistGameManager : NetworkBehaviour
 {
@@ -81,17 +82,25 @@ private void FixedUpdate() {
                 if (!playerHealth.checkIfAlive){
                     if(!playersToRespawn.Contains(playerHealth.gameObject))
                         print("SOMEONE DIED!");
+                        playersToRespawn.Add(playerHealth.gameObject);
                         OnPlayerDied(playerHealth);
                     }
             }
-            if(blueTeamDead.Count == blueTeam.Count){
-                blueBase.StartPhase(true);
-                if(redBase.GetHealth() == 0){
+            if(playersToRespawn.Count > 0){
+                if(blueTeamDead.Count == blueTeam.Count && !blueBase.canHit){
+                    blueBase.StartPhase(true);
+                    Invoke("StartTeamRespawnCall", teamRespawnTime);
+                    if(blueBase.GetHealth() == 0){
 
+                    }
                 }
-            }
-            if(redTeamDead.Count == redTeam.Count){
-                redBase.StartPhase(true);
+                if(redTeamDead.Count == redTeam.Count && !redBase.canHit){
+                    redBase.StartPhase(true);
+                    Invoke("StartTeamRespawnCall", teamRespawnTime);
+                    if(redBase.GetHealth() == 0){
+
+                    }
+                }
             }
             if(currentTime == 0){
                 DetermineWinnerForTimeOut();
@@ -122,8 +131,6 @@ private void FixedUpdate() {
                 blueTeamDead.Add(playerHealth.gameObject);
                 Debug.Log(playerHealth.gameObject.name+ " added to Dead List");
     }
-    if(!playersToRespawn.Contains(playerHealth.gameObject))
-        playersToRespawn.Add(playerHealth.gameObject);
     }
     [ClientRpc]
     public void StartGame()
@@ -226,6 +233,26 @@ private void FixedUpdate() {
         {
 
         }
+    }
+    private void StartTeamRespawnCall(){
+        foreach(GameObject deadPlayer in playersToRespawn){
+            PlayerHealth playerHealthScript = deadPlayer.GetComponent<PlayerHealth>();
+            playerHealthScript.Respawn(teamRespawnTime);
+            if(blueTeamDead.Count == blueTeam.Count && !blueBase.canHit){
+                blueBase.StartPhase(false);
+            }
+            if(redTeamDead.Count == redTeam.Count && !redBase.canHit){
+                redBase.StartPhase(false);
+            }
+        }
+        ClearDead();
+    }
+
+    public void ClearDead()
+    {
+        redTeamDead.Clear();
+        blueTeamDead.Clear();
+        playersToRespawn.Clear();
     }
 
     private void StartTeamRespawn(StartTeamRespawn evtData)
