@@ -850,7 +850,7 @@ MonoBehaviour:
   autoStartServerBuild: 0
   autoConnectClientBuild: 0
   sendRate: 30
-  offlineScene: Assets/Scenes/CharacterSelectLobby.unity
+  offlineScene: Assets/Scenes/MainMenu.unity
   onlineScene: Assets/Scenes/LevelTemplate.unity
   transport: {fileID: 1281707324}
   networkAddress: localhost

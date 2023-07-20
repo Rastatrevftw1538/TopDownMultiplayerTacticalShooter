@@ -48,8 +48,8 @@ public class HeistGameManager : NetworkBehaviour
     {
         ui = this.transform.GetChild(0).gameObject;
         baseObjects = Level.transform.Find("BaseSpawnPoints").gameObject;
-        redBase = baseObjects.transform.Find("Base_Red").GetComponent<Base>();
-        blueBase = baseObjects.transform.Find("Base_Blue").GetComponent<Base>();
+        redBase = baseObjects.transform.GetChild(0).GetComponent<Base>();
+        blueBase = baseObjects.transform.GetChild(1).GetComponent<Base>();
 
         currentTime = gameTime;
         //SUBSCRIBE TO EVENT 'ChangeBaseState' CALLED WITHIN 'Base.cs', INVOKE 'GetBaseData'
