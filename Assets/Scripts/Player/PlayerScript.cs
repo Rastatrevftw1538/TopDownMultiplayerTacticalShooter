@@ -47,9 +47,12 @@ public class PlayerScript : NetworkBehaviour
     private bool canMove = true;
 
     private void Start() {
+        if(isServer&&isClient){
+            runSpeed = runSpeed*2;
+            walkSpeed = walkSpeed*2;
+        }
         runSpeedNormal = runSpeed;
         walkSpeedNormal = walkSpeed;
-
         if (isLocalPlayer)
         {
             Debug.Log("local Player" + netId);

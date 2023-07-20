@@ -93,6 +93,10 @@ private void FixedUpdate() {
     }
     public void OnPlayerConnected(NetworkConnection conn)
     {
+        if(gameStarted){
+            print("<color=red> Player: "+conn.identity.name+" joined late</color>");
+            addToTeam(conn.identity.gameObject,NetworkServer.connections.Count-1);
+        }
         /*
         PlayerHealth playerHealth = conn.identity.GetComponent<PlayerHealth>();
         if (!playerHealth.checkIfAlive)

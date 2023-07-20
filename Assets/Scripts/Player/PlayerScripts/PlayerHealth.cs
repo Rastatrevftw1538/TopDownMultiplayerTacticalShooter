@@ -18,6 +18,8 @@ public class PlayerHealth : NetworkBehaviour
     private bool hasSentEvent = false;
     private static bool isRestoringHealth = false;
     private bool isAlive = true;
+
+    private GameObject playerBody;
     public bool checkIfAlive
     {
         get { return isAlive; }
@@ -30,7 +32,7 @@ public class PlayerHealth : NetworkBehaviour
     private void Awake()
     {
         healthbarInternal = GetComponentInChildren<Slider>();
-
+        playerBody = this.transform.GetChild(0).gameObject;
     }
 
     public void TakeDamage(int amount)
@@ -60,40 +62,28 @@ public class PlayerHealth : NetworkBehaviour
             hasSentEvent = true;
         }
     }
-    /*
-    [ClientRpc]
-    void OnChangedHealth(int oldHealth, int health)
-    {
-        if (healthbarInternal != null)
-        {
-            healthbarInternal.value = health;
-        }
-
-        if (healthbarExternal != null)
-        {
-            Debug.Log("Health: "+(float)health);
-            healthbarExternal.fillAmount = (float)health/(float)maxHealth;
-            Debug.Log("Health Changed - Bar: "+healthbarExternal.fillAmount+" Health: "+currentHealth);
-        }
-        //Debug.Log("Health Changed");
-    }
-    */
+    
     [ClientRpc]
     void RpcDie()
     {
         // Stop player movement
         this.GetComponent<PlayerScript>().setCanMove(false);
         this.GetComponent<Weapon>().enabled = false;
+
+        //temp till wee have death sprite and logic
+        playerBody.SetActive(false);
+        this.transform.GetChild(2).gameObject.SetActive(false);
+
         isAlive = false;
         // Teleport player back to spawn
         // Restore health after 3 seconds
         //StartCoroutine(RestoreHealth());
 
         //RAISE THE EVENT SO THE 'HeistGameManager.cs' CAN TRACK THIS MESSAGE
-         PlayerDied playerDied = new PlayerDied();
-         playerDied.playerThatDied = this.gameObject;
+        PlayerDied playerDied = new PlayerDied();
+        playerDied.playerThatDied = this.gameObject;
 
-         EvtSystem.EventDispatcher.Raise<PlayerDied>(playerDied);
+        EvtSystem.EventDispatcher.Raise<PlayerDied>(playerDied);
     }
     [ClientRpc]
     public void Respawn(float respawnTime)
@@ -120,6 +110,11 @@ public class PlayerHealth : NetworkBehaviour
         yield return new WaitForSeconds(time);
         currentHealth = maxHealth;
         isAlive = true;
+
+        //temp till wee have death sprite and logic
+        playerBody.SetActive(true);
+        this.transform.GetChild(2).gameObject.SetActive(true);
+
         GetComponent<Weapon>().enabled = true;
         GetComponent<PlayerScript>().setCanMove(true);
 
