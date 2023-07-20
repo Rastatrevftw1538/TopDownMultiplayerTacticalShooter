@@ -316,7 +316,7 @@ GameObject:
   - component: {fileID: 2250537539574559254}
   m_Layer: 0
   m_Name: Base
-  m_TagString: Untagged
+  m_TagString: Base
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -372,6 +372,7 @@ MonoBehaviour:
   syncInterval: 0
   maxHealth: 1000
   maxDamageInRound: 0
+  team: 0
   healthbarExternal: {fileID: 1569244560438382903}
   canHit: 0
 --- !u!1 &7854344521269898417

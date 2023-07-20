@@ -23,7 +23,7 @@ public class AbilityHolder : MonoBehaviour
         e = Event.current;
         if (e.isKey)
         {
-            Debug.Log("Detected key code: " + e.keyCode);
+            //Debug.Log("Detected key code: " + e.keyCode);
         }
     }
 

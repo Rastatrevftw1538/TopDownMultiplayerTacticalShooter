@@ -5,14 +5,18 @@ using UnityEngine;
 using Mirror;
 using UnityEngine.SceneManagement;
 using Mirror.Discovery;
+using TMPro;
 public class StartMenu : MonoBehaviour
 {
     readonly Dictionary<long, ServerResponse> discoveredServers = new Dictionary<long, ServerResponse>();
     public GameObject networkObject;
     private NetworkManager networkManager;
     private NetworkDiscovery networkDiscovery;
+    private TMP_Text loadingText;
 
     private void Start() {
+        loadingText = GameObject.Find("Searching For Game").GetComponent<TMP_Text>();
+        loadingText.gameObject.SetActive(false);
         networkManager = networkObject.GetComponent<NetworkManager>();
         networkDiscovery = networkObject.GetComponent<NetworkDiscovery>();
         networkDiscovery.OnServerFound.AddListener(OnDiscoveredServer);
@@ -28,24 +32,50 @@ public class StartMenu : MonoBehaviour
     {
         discoveredServers.Clear();
         networkDiscovery.StartDiscovery();
+
+        StartCoroutine(WaitForServerAndStart());
         //networkManager.networkAddress = "localhost"; // set the IP address of the server
-        
-        if (discoveredServers.Count >= 1) {
-            foreach (long serverKey in discoveredServers.Keys) {
-                Debug.Log(serverKey);
-                Debug.Log(discoveredServers[serverKey].uri);
-                    //networkDiscovery.StopDiscovery();
-                    networkManager.StartClient(discoveredServers[serverKey].uri); // start the client and connect to the server
-                    //SceneManager.LoadScene(1);
-                    break;
+        print(discoveredServers.Count);
+    }
+    private IEnumerator WaitForServerAndStart()
+    {
+        float startTime = Time.time;
+        string loadingBar = ".";
+        while (Time.time - startTime < 5f)
+        {
+            loadingText.gameObject.SetActive(true);
+            if(loadingBar.Length>3){
+                loadingBar = ".";
             }
+            else{
+                loadingBar+=loadingBar;
+            }
+            loadingBar+=loadingBar;
+            loadingText.text = "Looking For Game\n"+(loadingBar);
+            if (discoveredServers.Count >= 1)
+            {
+                // Found a server, stop discovery and connect to it
+                networkDiscovery.StopDiscovery();
+                loadingBar="Starting Game";
+                foreach (long serverKey in discoveredServers.Keys)
+                {
+                    Debug.Log(serverKey);
+                    Debug.Log(discoveredServers[serverKey].uri);
+                    networkManager.StartClient(discoveredServers[serverKey].uri);
+                    break;
+                }
+                yield break; // Exit the coroutine early if a server is found
+            }
+            yield return null; // Wait for the next frame
         }
-        else {
-            Debug.Log("launching Server on Client");
-            //networkDiscovery.StopDiscovery();
-            networkManager.StartHost(); // start the client and create server
-            networkDiscovery.AdvertiseServer();
-        }
+
+        // No server found, start a host
+        loadingBar="Starting Game";
+        Debug.Log("No server found, launching Server on Client");
+        networkDiscovery.BroadcastAddress = CustomNetworkManager.singleton.networkAddress;
+        networkDiscovery.StopDiscovery();
+        CustomNetworkManager.singleton.StartHost();
+        networkDiscovery.AdvertiseServer();
     }
     public void OnDiscoveredServer(ServerResponse info)
         {
