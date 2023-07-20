@@ -15,13 +15,13 @@ public class PlayerHealth : NetworkBehaviour
     private Slider healthbarInternal;
     [SerializeField] private Image healthbarExternal;
 
+    private bool hasSentEvent = false;
+    private static bool isRestoringHealth = false;
     private bool isAlive = true;
-
     public bool checkIfAlive
     {
         get { return isAlive; }
     }
-
     public int GetHealth()
     {
         return currentHealth;
@@ -37,11 +37,8 @@ public class PlayerHealth : NetworkBehaviour
     {
         if(currentHealth> 0)
         currentHealth -= amount;
-        else if (currentHealth <= 0)
-        {
-            currentHealth = 0;
-            RpcDie();
-        }
+
+        checkHealth();
     }
     private void Update()
     {
@@ -55,6 +52,12 @@ public class PlayerHealth : NetworkBehaviour
             //Debug.Log("Health: " + (float)currentHealth);
             healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
             //Debug.Log("Health Changed - Bar: " + healthbarExternal.fillAmount + " Health: " + currentHealth);
+        }
+
+        if (!hasSentEvent)
+        {
+            checkHealth();
+            hasSentEvent = true;
         }
     }
     /*
@@ -78,15 +81,19 @@ public class PlayerHealth : NetworkBehaviour
     [ClientRpc]
     void RpcDie()
     {
-        
-            // Stop player movement
-            this.GetComponent<PlayerScript>().setCanMove(false);
-            this.GetComponent<Weapon>().enabled = false;
-            isAlive = false;
-            // Teleport player back to spawn
-            // Restore health after 3 seconds
-            //StartCoroutine(RestoreHealth());
-        
+        // Stop player movement
+        this.GetComponent<PlayerScript>().setCanMove(false);
+        this.GetComponent<Weapon>().enabled = false;
+        isAlive = false;
+        // Teleport player back to spawn
+        // Restore health after 3 seconds
+        //StartCoroutine(RestoreHealth());
+
+        //RAISE THE EVENT SO THE 'HeistGameManager.cs' CAN TRACK THIS MESSAGE
+         PlayerDied playerDied = new PlayerDied();
+         playerDied.playerThatDied = this.gameObject;
+
+         EvtSystem.EventDispatcher.Raise<PlayerDied>(playerDied);
     }
     [ClientRpc]
     public void Respawn(float respawnTime)
@@ -97,16 +104,35 @@ public class PlayerHealth : NetworkBehaviour
                     transform.position = spawnPoint.position;
                 }
             }
-        Invoke("RestoreHealth", respawnTime);
+        //TO ENSURE THE SAME EVENTS DON'T GET RAISED MORE THAN ONCE
+        IEnumerator setBool(float time) {
+            yield return new WaitForSeconds(time);
+            hasSentEvent = false;
+        }
+        StartCoroutine(setBool(respawnTime));
         
+        //ACTUALLY RESTORE HEALTH TO THE PLAYER
+        StartCoroutine(RestoreHealth(respawnTime));
     }
     
-    IEnumerator RestoreHealth()
+    IEnumerator RestoreHealth(float time)
     {
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(time);
         currentHealth = maxHealth;
         isAlive = true;
         GetComponent<Weapon>().enabled = true;
         GetComponent<PlayerScript>().setCanMove(true);
+
+        Debug.Log("<color=yellow>RESPAWNED SUCCESSFULLY</color>");
+        isRestoringHealth = true;
+    }
+
+    private void checkHealth()
+    {
+        if (currentHealth <= 0)
+        {
+            currentHealth = 0;
+            RpcDie();
+        }
     }
 }

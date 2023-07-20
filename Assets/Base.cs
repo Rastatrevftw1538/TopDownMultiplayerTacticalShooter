@@ -9,14 +9,15 @@ public class Base : NetworkBehaviour
     [Header("Base Stats")]
     public int maxHealth = 1000;
     public int maxDamageInRound;
+    [SyncVar] public PlayerScript.Team team;
     [SyncVar] private int currentHealth;
 
     //BASE COMPONENTS
     [SerializeField] private Image healthbarExternal;
 
     [Header("Base Status")]
-    private bool isAlive = true;
     [SyncVar] public bool canHit = false;
+    private bool isAlive = true;
 
     private int _damageTaken = 0;
 
@@ -41,6 +42,21 @@ public class Base : NetworkBehaviour
         maxDamageInRound = maxHealth/2;
     }
 
+    private void Start()
+    {
+        if(this.tag == "Red")
+        {
+            team = PlayerScript.Team.Red;
+        }
+        else
+        {
+            team = PlayerScript.Team.Blue;
+        }
+        //IF THIS RECIEVES A MESSAGE THAT A TEAM HAS BEEN RESPAWNED, END THE VULNERABILITY PHASE
+        EvtSystem.EventDispatcher.AddListener<ChangeBaseState>(StartPhase);
+        EvtSystem.EventDispatcher.AddListener<StartTeamRespawn>(EndPhase);
+    }
+
     public void TakeDamage(int amount)
     {
         if (_damageTaken < maxDamageInRound && currentHealth > 0)
@@ -53,7 +69,7 @@ public class Base : NetworkBehaviour
         else if (_damageTaken >= maxDamageInRound){
             //CHANGE BASE STATE, RESET _damageTaken
             GameObject.Find("GameModeManager").GetComponent<HeistGameManager>().ClearDead();
-            StartPhase(false);
+            IsVulnerable(false);
             print("<color=red> Okay thats enough! >:( </color>");
         }
         else if(currentHealth <= 0){
@@ -74,14 +90,30 @@ public class Base : NetworkBehaviour
         //Debug.Log("<color=red>Base Health: " + currentHealth + "</color>");
     }
 
-    public void StartPhase(bool isVulnerable)
+    public void IsVulnerable(bool isVulnerable)
     {
-        //RAISE 'ChangeBaseState' TO BE RECIEVED BY 'HeistGameManager.cs' SO THEY CAN REACT ACCORDINGLY
+        Debug.LogWarning("<color=purple>IS BASE VULNERABLE?: " + isVulnerable + "</color>");
         this.canHit = isVulnerable;
-        ChangeBaseState changeBaseState = new ChangeBaseState();
-        changeBaseState.isBaseVulnerable = isVulnerable;
 
-        EvtSystem.EventDispatcher.Raise<ChangeBaseState>(changeBaseState);
+        //MAXIMUM DAMAGE THE BASE CAN TAKE IN ONE PHASE
+        _damageTaken = 0;
+    }
+
+    public void StartPhase(ChangeBaseState evtData)
+    {
+        if(evtData.team == this.team)
+            IsVulnerable(evtData.isBaseVulnerable);
+    }
+
+    public void EndPhase(StartTeamRespawn evtData)
+    {
+        Debug.LogWarning("<color=purple>ENDING BASE PHASE</color>");
+        StartCoroutine(EndVulnerability(evtData.respawnTime));
+    }
+    IEnumerator EndVulnerability(float time)
+    {
+        yield return new WaitForSeconds(time);
+        this.canHit = false;
         _damageTaken = 0;
     }
 }

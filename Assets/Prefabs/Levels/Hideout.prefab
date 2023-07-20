@@ -94068,6 +94068,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Base_Blue
       objectReference: {fileID: 0}
+    - target: {fileID: 1569244561486018221, guid: ebe71dfafbbb8ce43a0833451093e1b3, type: 3}
+      propertyPath: m_TagString
+      value: Blue
+      objectReference: {fileID: 0}
     - target: {fileID: 1569244561486018222, guid: ebe71dfafbbb8ce43a0833451093e1b3, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -94133,6 +94137,10 @@ PrefabInstance:
     - target: {fileID: 1569244561486018221, guid: ebe71dfafbbb8ce43a0833451093e1b3, type: 3}
       propertyPath: m_Name
       value: Base_Red
+      objectReference: {fileID: 0}
+    - target: {fileID: 1569244561486018221, guid: ebe71dfafbbb8ce43a0833451093e1b3, type: 3}
+      propertyPath: m_TagString
+      value: Red
       objectReference: {fileID: 0}
     - target: {fileID: 1569244561486018222, guid: ebe71dfafbbb8ce43a0833451093e1b3, type: 3}
       propertyPath: m_RootOrder
