@@ -13,13 +13,14 @@ public class HeistGameManager : NetworkBehaviour
     public int baseHealth = 1000;
     [SyncVar] private Base redBase;
     [SyncVar] private Base blueBase;
+    [SyncVar] private Base currentVulnerableBase;
     //[SerializeField] public GameObject heistBase;
     [SerializeField] private GameObject ui;
     public static HeistGameManager instance;
     [SyncVar] [SerializeField] public List<GameObject> redTeam;
     [SyncVar] [SerializeField] public List<GameObject> blueTeam;
-    [SyncVar] [HideInInspector] public List<GameObject> redTeamDead;
-    [SyncVar] [HideInInspector] public List<GameObject> blueTeamDead;
+    [SyncVar] public List<GameObject> redTeamDead;
+    [SyncVar] public List<GameObject> blueTeamDead;
     [SyncVar] public List<GameObject> playersToRespawn;
     [SyncVar] public float gameTime = 180;
     [SyncVar] private float currentTime;
@@ -56,6 +57,9 @@ public class HeistGameManager : NetworkBehaviour
 
         //SUBSCRIBE TO EVENT 'PlayerDied' CALLED WITHIN 'PlayerHealth.cs', INVOKE 'AddPlayerDied'
         EvtSystem.EventDispatcher.AddListener<PlayerDied>(AddPlayerDied);
+
+        //SUBSCRIBE TO EVENT
+        //EvtSystem.EventDispatcher.AddListener<StartTeamRespawn>(StartTeamRespawn);
     }
 
 private void FixedUpdate() {
@@ -69,6 +73,7 @@ private void FixedUpdate() {
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         if(gameStarted){
+            //ADD PLAYERS TO TEAMS
             foreach (GameObject player in players){
                 if(player.GetComponent<PlayerScript>().PlayerTeam == PlayerScript.Team.Red){
                     if(!redTeam.Contains(player))
@@ -78,30 +83,9 @@ private void FixedUpdate() {
                     if(!blueTeam.Contains(player))
                         blueTeam.Add(player);
                 }
-                PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
-                if (!playerHealth.checkIfAlive){
-                    if(!playersToRespawn.Contains(playerHealth.gameObject))
-                        print("SOMEONE DIED!");
-                        playersToRespawn.Add(playerHealth.gameObject);
-                        OnPlayerDied(playerHealth);
-                    }
             }
-            if(playersToRespawn.Count > 0){
-                if(blueTeamDead.Count == blueTeam.Count && !blueBase.canHit){
-                    blueBase.StartPhase(true);
-                    Invoke("StartTeamRespawnCall", teamRespawnTime);
-                    if(blueBase.GetHealth() == 0){
-
-                    }
-                }
-                if(redTeamDead.Count == redTeam.Count && !redBase.canHit){
-                    redBase.StartPhase(true);
-                    Invoke("StartTeamRespawnCall", teamRespawnTime);
-                    if(redBase.GetHealth() == 0){
-
-                    }
-                }
-            }
+            
+            //DETERMINE WINNER
             if(currentTime == 0){
                 DetermineWinnerForTimeOut();
             }
@@ -118,20 +102,6 @@ private void FixedUpdate() {
         */
     }
     //[Command(requiresAuthority = false)]
-    private void OnPlayerDied(PlayerHealth playerHealth)
-    {
-        Debug.Log("<color=red>GRIM REAPER CHECKING HIS LIST!</color>");
-        if(playerHealth.GetComponent<PlayerScript>().PlayerTeam == PlayerScript.Team.Red){
-            if(!searchDuplicates(playersToRespawn.ToArray(), playerHealth.GetComponent<GameObject>()))
-                redTeamDead.Add(playerHealth.gameObject);
-                Debug.Log(playerHealth.gameObject.name+ " added to Dead List");
-        }
-        else if(playerHealth.GetComponent<PlayerScript>().PlayerTeam == PlayerScript.Team.Blue){
-            if(!searchDuplicates(playersToRespawn.ToArray(), playerHealth.GetComponent<GameObject>()))
-                blueTeamDead.Add(playerHealth.gameObject);
-                Debug.Log(playerHealth.gameObject.name+ " added to Dead List");
-    }
-    }
     [ClientRpc]
     public void StartGame()
     {
@@ -229,23 +199,6 @@ private void FixedUpdate() {
             // START THE RESPAWN TIMER
             EvtSystem.EventDispatcher.AddListener<StartTeamRespawn>(StartTeamRespawn);
         }
-        else //IF THE BASE IS NOT VULNERABLE,
-        {
-
-        }
-    }
-    private void StartTeamRespawnCall(){
-        foreach(GameObject deadPlayer in playersToRespawn){
-            PlayerHealth playerHealthScript = deadPlayer.GetComponent<PlayerHealth>();
-            playerHealthScript.Respawn(teamRespawnTime);
-            if(blueTeamDead.Count == blueTeam.Count && !blueBase.canHit){
-                blueBase.StartPhase(false);
-            }
-            if(redTeamDead.Count == redTeam.Count && !redBase.canHit){
-                redBase.StartPhase(false);
-            }
-        }
-        ClearDead();
     }
 
     public void ClearDead()
@@ -253,59 +206,61 @@ private void FixedUpdate() {
         redTeamDead.Clear();
         blueTeamDead.Clear();
         playersToRespawn.Clear();
+
+        //RAISE NEW EVENT FOR UI TO HEAR
+        ChangeBaseState baseState = new ChangeBaseState();
+        baseState.isBaseVulnerable = false;
+        baseState.thisBase = currentVulnerableBase;
+        baseState.team = currentVulnerableBase.team;
+        EvtSystem.EventDispatcher.Raise<ChangeBaseState>(baseState);
     }
 
     private void StartTeamRespawn(StartTeamRespawn evtData)
     {
-        if (redTeamDead.Count == redTeam.Count) //IF THE AMOUNT OF DEAD PLAYERS EQUALS THE AMOUNT OF TEAM PLAYERS, START THE RESPAWN
+        Debug.Log("<color=yellow>STARTING TEAM RESPAWN</color>");
+        //RESPAWN ALL THE DEAD PLAYERS
+        foreach (GameObject deadPlayer in evtData.teamToRespawn)
         {
-            foreach (GameObject deadPlayer in redTeamDead) //GET ALL GAMEOBJECTS IN THE DEAD TEAM LIST
-            {
-                PlayerHealth playerHealthScript = deadPlayer.GetComponent<PlayerHealth>(); //GET ALL OF THE 'PlayerHealth' SCRIPTS IN THE GAMEOBJECTS INSIDE THE DEAD PLAYERS LIST,
-                playerHealthScript.Respawn(teamRespawnTime); //RESPAWN THEM ALL IN 'teamRespawnTime' seconds.
-            }
-        }
-        else if (blueTeamDead.Count == blueTeam.Count) //IF THE AMOUNT OF DEAD PLAYERS EQUALS THE AMOUNT OF TEAM PLAYERS, START THE RESPAWN
-        {
-            foreach (GameObject deadPlayer in redTeamDead) //GET ALL GAMEOBJECTS IN THE DEAD TEAM LIST
-            {
-                PlayerHealth playerHealthScript = deadPlayer.GetComponent<PlayerHealth>(); //GET ALL OF THE 'PlayerHealth' SCRIPTS IN THE GAMEOBJECTS INSIDE THE DEAD PLAYERS LIST,
-                playerHealthScript.Respawn(teamRespawnTime); //RESPAWN THEM ALL IN 'teamRespawnTime' seconds.
-            }
+            PlayerHealth playerHealthScript = deadPlayer.GetComponent<PlayerHealth>(); //GET ALL OF THE 'PlayerHealth' SCRIPTS IN THE GAMEOBJECTS INSIDE THE DEAD PLAYERS LIST,
+            playerHealthScript.Respawn(teamRespawnTime); //RESPAWN THEM ALL IN 'teamRespawnTime' seconds.
         }
 
         //CLEAR ALL THE DEAD TEAM MEMBERS LIST
-        redTeamDead.Clear();
-        blueTeamDead.Clear();
-        playersToRespawn.Clear();
+        Invoke("ClearDead", teamRespawnTime);
+
+        //CHANGE THE BASE STATE AGAIN
+
     }
 
     private void AddPlayerDied(PlayerDied evtData)
     {
         //GET THE PLAYER THAT DIED, AND ADD THEM TO THE LIST OF DEAD PLAYERS ON THEIR CORRESPONDING TEAM
         PlayerScript playerScript = evtData.playerThatDied.GetComponent<PlayerScript>(); //GETS THE CURRENT PLAYER SCRIPT ATTACHED TO THE PLAYER THAT JUST DIED
-
         if (playerScript.playerTeam == PlayerScript.Team.Red && !searchDuplicates(playersToRespawn.ToArray(), evtData.playerThatDied))
         {
             //ADD THE DEAD PLAYER TO THE LIST OF DEAD TEAM MEMBERS
             redTeamDead.Add(playerScript.gameObject); //IF THIS DOESN'T WORK, MAKE A DIRECT REFERENCE THROUGH THE EVTDATA
+            Debug.LogWarning("<color=red>ADDED PLAYER TO DEAD TEAM </color>");
         }
         else
         {
             blueTeamDead.Add(playerScript.gameObject);
+            Debug.LogWarning("<color=blue>ADDED PLAYER TO DEAD TEAM </color>");
         }
 
-        if (redTeamDead.Count == redTeam.Count || blueTeamDead.Count == blueTeam.Count) //IF EITHER OF THE TEAMS ARE FULLY DEAD
+        if (!searchDuplicates(playersToRespawn.ToArray(), evtData.playerThatDied))
+            playersToRespawn.Add(evtData.playerThatDied);
+
+
+        //IF EITHER OF THE TEAMS ARE FULLY DEAD
+        if (redTeamDead.Count >= redTeam.Count)
         {
-            ChangeBaseState baseState = new ChangeBaseState();
-            baseState.isBaseVulnerable = true;
-            EvtSystem.EventDispatcher.Raise<ChangeBaseState>(baseState);
+            StartBasePhaseEvent(redBase);
         }
-    }
-
-    private void setTeam(List<GameObject> oldValue, List<GameObject> newValue)
-    {
-        oldValue = newValue;
+        else if (blueTeamDead.Count >= blueTeam.Count)
+        {
+            StartBasePhaseEvent(blueBase);
+        }
     }
 
     private bool searchDuplicates(GameObject[] arr, GameObject find)
@@ -315,5 +270,26 @@ private void FixedUpdate() {
                 return true;
 
         return false;
+    }
+
+    private void StartBasePhaseEvent(Base whichBase)
+    {
+        //START THE BASE VULNERABLE PHASE
+        ChangeBaseState baseState = new ChangeBaseState();
+        baseState.isBaseVulnerable = true;
+        baseState.thisBase = whichBase;
+        baseState.team = whichBase.team;
+
+        currentVulnerableBase = whichBase;
+
+        Debug.LogWarning("<color=purple>STARTING BASE PHASE</color>");
+        EvtSystem.EventDispatcher.Raise<ChangeBaseState>(baseState);
+
+        //RAISE A START RESPAWN TEAM PHASE
+        StartTeamRespawn startTeamRespawn = new StartTeamRespawn();
+        startTeamRespawn.teamToRespawn = playersToRespawn;
+        startTeamRespawn.respawnTime = teamRespawnTime;
+        startTeamRespawn.team = whichBase.team;
+        EvtSystem.EventDispatcher.Raise<StartTeamRespawn>(startTeamRespawn);
     }
 }
