@@ -76359,7 +76359,7 @@ GameObject:
   - component: {fileID: 703275413966932425}
   m_Layer: 0
   m_Name: Spawn
-  m_TagString: Untagged
+  m_TagString: Red
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -76456,7 +76456,7 @@ GameObject:
   - component: {fileID: 703275414441727135}
   m_Layer: 0
   m_Name: Spawn (1)
-  m_TagString: Untagged
+  m_TagString: Blue
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -94066,11 +94066,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1569244561486018221, guid: ebe71dfafbbb8ce43a0833451093e1b3, type: 3}
       propertyPath: m_Name
-      value: Base
-      objectReference: {fileID: 0}
-    - target: {fileID: 1569244561486018221, guid: ebe71dfafbbb8ce43a0833451093e1b3, type: 3}
-      propertyPath: m_TagString
-      value: Blue
+      value: Base_Blue
       objectReference: {fileID: 0}
     - target: {fileID: 1569244561486018222, guid: ebe71dfafbbb8ce43a0833451093e1b3, type: 3}
       propertyPath: m_RootOrder
@@ -94136,11 +94132,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1569244561486018221, guid: ebe71dfafbbb8ce43a0833451093e1b3, type: 3}
       propertyPath: m_Name
-      value: Base
-      objectReference: {fileID: 0}
-    - target: {fileID: 1569244561486018221, guid: ebe71dfafbbb8ce43a0833451093e1b3, type: 3}
-      propertyPath: m_TagString
-      value: Red
+      value: Base_Red
       objectReference: {fileID: 0}
     - target: {fileID: 1569244561486018222, guid: ebe71dfafbbb8ce43a0833451093e1b3, type: 3}
       propertyPath: m_RootOrder

@@ -422,7 +422,7 @@ GameObject:
   - component: {fileID: 4786470435900736729}
   m_Layer: 0
   m_Name: HitBox
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -556,7 +556,7 @@ GameObject:
   - component: {fileID: 3448180261060090073}
   m_Layer: 0
   m_Name: Bullseye!
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -694,6 +694,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 1
   syncInterval: 0
+  playerTeam: 0
   deviceType: 0
   joystickMovementUI: {fileID: 584446714611108121}
   joystickRotateUI: {fileID: 6713901557967857310}
