@@ -30,7 +30,7 @@ public class HeistGameManager : NetworkBehaviour
     public int connectedPlayersCount = 0;
     private bool gameStarted = false;
 
-    public float teamRespawnTime;
+    public float teamRespawnTime = 2f;
 
     public bool HasGameStarted() {
         return this.gameStarted;
@@ -122,12 +122,12 @@ private void FixedUpdate() {
     {
         Debug.Log("<color=red>GRIM REAPER CHECKING HIS LIST!</color>");
         if(playerHealth.GetComponent<PlayerScript>().PlayerTeam == PlayerScript.Team.Red){
-            if(!redTeamDead.Contains(playerHealth.gameObject))
+            if(!searchDuplicates(playersToRespawn.ToArray(), playerHealth.GetComponent<GameObject>()))
                 redTeamDead.Add(playerHealth.gameObject);
                 Debug.Log(playerHealth.gameObject.name+ " added to Dead List");
         }
         else if(playerHealth.GetComponent<PlayerScript>().PlayerTeam == PlayerScript.Team.Blue){
-            if(!blueTeamDead.Contains(playerHealth.gameObject))
+            if(!searchDuplicates(playersToRespawn.ToArray(), playerHealth.GetComponent<GameObject>()))
                 blueTeamDead.Add(playerHealth.gameObject);
                 Debug.Log(playerHealth.gameObject.name+ " added to Dead List");
     }
@@ -285,7 +285,7 @@ private void FixedUpdate() {
         //GET THE PLAYER THAT DIED, AND ADD THEM TO THE LIST OF DEAD PLAYERS ON THEIR CORRESPONDING TEAM
         PlayerScript playerScript = evtData.playerThatDied.GetComponent<PlayerScript>(); //GETS THE CURRENT PLAYER SCRIPT ATTACHED TO THE PLAYER THAT JUST DIED
 
-        if (playerScript.playerTeam == PlayerScript.Team.Red)
+        if (playerScript.playerTeam == PlayerScript.Team.Red && !searchDuplicates(playersToRespawn.ToArray(), evtData.playerThatDied))
         {
             //ADD THE DEAD PLAYER TO THE LIST OF DEAD TEAM MEMBERS
             redTeamDead.Add(playerScript.gameObject); //IF THIS DOESN'T WORK, MAKE A DIRECT REFERENCE THROUGH THE EVTDATA
@@ -306,5 +306,14 @@ private void FixedUpdate() {
     private void setTeam(List<GameObject> oldValue, List<GameObject> newValue)
     {
         oldValue = newValue;
+    }
+
+    private bool searchDuplicates(GameObject[] arr, GameObject find)
+    {
+        for (int i = 0; i < arr.Length; i++)
+            if (arr[i] == find)
+                return true;
+
+        return false;
     }
 }

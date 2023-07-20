@@ -31,7 +31,7 @@ public class UiShow : NetworkBehaviour
     if (cameraHolder != null && playerTransform != null)
         {
             Vector3 forwardVector = playerTransform.up;
-            print("<color=purple> player rotation: "+ forwardVector.y+"</color>");
+            //print("<color=purple> player rotation: "+ forwardVector.y+"</color>");
             
             if (forwardVector.y > 0){
                 yOffset = 5;

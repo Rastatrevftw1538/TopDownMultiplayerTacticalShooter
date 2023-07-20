@@ -97,7 +97,7 @@ public class PlayerHealth : NetworkBehaviour
                     transform.position = spawnPoint.position;
                 }
             }
-        Invoke("RestoreHealth", respawnTime);
+        StartCoroutine("RestoreHealth", respawnTime);
         
     }
     
