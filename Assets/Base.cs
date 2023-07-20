@@ -7,12 +7,11 @@ using Mirror;
 public class Base : NetworkBehaviour
 {
     [Header("Base Stats")]
-    public const int maxHealth = 100;
+    public int maxHealth = 1000;
     public const int maxDamageInRound = 50;
-    [SyncVar] public int currentHealth = maxHealth;
+    [SyncVar] private int currentHealth;
 
     //BASE COMPONENTS
-    [SerializeField] private Slider healthbarInternal;
     [SerializeField] private Image healthbarExternal;
 
     [Header("Base Status")]
@@ -30,30 +29,33 @@ public class Base : NetworkBehaviour
     {
         return currentHealth;
     }
+    public void setHealth(int healthValue)
+    {
+        this.currentHealth = healthValue;
+    }
 
     private void Awake()
     {
         //healthbarInternal = GetComponentInChildren<Slider>();
+        maxHealth = GameObject.Find("GameModeManager").GetComponent<HeistGameManager>().baseHealth;
     }
 
     public void TakeDamage(int amount)
     {
+        if (_damageTaken < maxDamageInRound)
+        {
         _damageTaken += amount;
         currentHealth -= amount;
-        if (maxDamageInRound <= _damageTaken)
-        {
+        }
+        else{
             //CHANGE BASE STATE, RESET _damageTaken
             StartPhase(false);
         }
     }
     private void Update()
     {
-        if (healthbarInternal != null)
-        {
-            healthbarInternal.value = currentHealth;
             healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
             //Debug.Log("found healthbar");
-        }
 
         /*if (healthbarExternal != null)
         {
@@ -64,15 +66,7 @@ public class Base : NetworkBehaviour
         //Debug.Log("<color=red>Base Health: " + currentHealth + "</color>");
     }
 
-    [ClientRpc]
-    void RpcRespawnPlayers()
-    {
-
-       // StartCoroutine(RestoreHealth());
-
-    }
-
-    void StartPhase(bool isVulnerable)
+    public void StartPhase(bool isVulnerable)
     {
         //RAISE 'ChangeBaseState' TO BE RECIEVED BY 'HeistGameManager.cs' SO THEY CAN REACT ACCORDINGLY
         this.canHit = isVulnerable;

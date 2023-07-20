@@ -8,20 +8,20 @@ using Mirror;
 public class HeistGameManager : NetworkBehaviour
 {
     [SerializeField] public GameObject Level;
-    private GameObject heistSpawnPoints;
+    private GameObject baseObjects;
+    public int baseHealth = 1000;
+    [SyncVar] private Base redBase;
+    [SyncVar] private Base blueBase;
     //[SerializeField] public GameObject heistBase;
     [SerializeField] private GameObject ui;
     public static HeistGameManager instance;
     [SyncVar] [SerializeField] public List<GameObject> redTeam;
     [SyncVar] [SerializeField] public List<GameObject> blueTeam;
-
-    [SyncVar] private List<GameObject> redTeamDead;
-    [SyncVar] private List<GameObject> blueTeamDead;
-    private List<GameObject> teamToRespawn;
-
-    [SyncVar] public int blueTeamBaseHealth;
-    [SyncVar] public int redTeamBaseHealth;
-    [SyncVar] public int gameTime = 180;
+    [SyncVar] [HideInInspector] public List<GameObject> redTeamDead;
+    [SyncVar] [HideInInspector] public List<GameObject> blueTeamDead;
+    [SyncVar] public List<GameObject> playersToRespawn;
+    [SyncVar] public float gameTime = 180;
+    [SyncVar] private float currentTime;
     public int rounds = 3;
     [SyncVar] private int currentRounds = 1;
 
@@ -45,8 +45,11 @@ public class HeistGameManager : NetworkBehaviour
     private void Start()
     {
         ui = this.transform.GetChild(0).gameObject;
-        heistSpawnPoints = Level.transform.Find("BaseSpawnPoints").gameObject;
+        baseObjects = Level.transform.Find("BaseSpawnPoints").gameObject;
+        redBase = baseObjects.transform.Find("Base_Red").GetComponent<Base>();
+        blueBase = baseObjects.transform.Find("Base_Blue").GetComponent<Base>();
 
+        currentTime = gameTime;
         //SUBSCRIBE TO EVENT 'ChangeBaseState' CALLED WITHIN 'Base.cs', INVOKE 'GetBaseData'
         EvtSystem.EventDispatcher.AddListener<ChangeBaseState>(GetBaseData);
 
@@ -54,13 +57,18 @@ public class HeistGameManager : NetworkBehaviour
         EvtSystem.EventDispatcher.AddListener<PlayerDied>(AddPlayerDied);
     }
 
+private void FixedUpdate() {
+    if(gameStarted)
+    currentTime -= Time.deltaTime;
+        ui.transform.GetChild(2).GetComponent<TMP_Text>().text = ((int)currentTime).ToString();
+        ui.transform.GetChild(0).GetComponent<TMP_Text>().text = "Blue: " + blueBase.GetHealth();
+        ui.transform.GetChild(1).GetComponent<TMP_Text>().text = "Red: " + redBase.GetHealth();
+}
     private void Update()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        if(gameStarted)
+        if(gameStarted){
             foreach (GameObject player in players){
-                Debug.Log("Player "+player.name);
-                Debug.Log("Team: "+player.GetComponent<PlayerScript>().PlayerTeam);
                 if(player.GetComponent<PlayerScript>().PlayerTeam == PlayerScript.Team.Red){
                     if(!redTeam.Contains(player))
                         redTeam.Add(player);
@@ -68,20 +76,54 @@ public class HeistGameManager : NetworkBehaviour
                 else if(player.GetComponent<PlayerScript>().PlayerTeam == PlayerScript.Team.Blue){
                     if(!blueTeam.Contains(player))
                         blueTeam.Add(player);
-                } 
+                }
+                PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
+                if (!playerHealth.checkIfAlive){
+                    if(!playersToRespawn.Contains(playerHealth.gameObject))
+                        print("SOMEONE DIED!");
+                        OnPlayerDied(playerHealth);
+                    }
             }
+            if(blueTeamDead.Count == blueTeam.Count){
+                blueBase.StartPhase(true);
+                if(redBase.GetHealth() == 0){
+
+                }
+            }
+            if(redTeamDead.Count == redTeam.Count){
+                redBase.StartPhase(true);
+            }
+            if(currentTime == 0){
+                DetermineWinnerForTimeOut();
+            }
+        }
     }
     public void OnPlayerConnected(NetworkConnection conn)
     {
+        /*
         PlayerHealth playerHealth = conn.identity.GetComponent<PlayerHealth>();
         if (!playerHealth.checkIfAlive)
         {
             OnPlayerDied(playerHealth);
         }
+        */
     }
+    //[Command(requiresAuthority = false)]
     private void OnPlayerDied(PlayerHealth playerHealth)
     {
-        Debug.Log("Player died: " + playerHealth.gameObject.name);
+        Debug.Log("<color=red>GRIM REAPER CHECKING HIS LIST!</color>");
+        if(playerHealth.GetComponent<PlayerScript>().PlayerTeam == PlayerScript.Team.Red){
+            if(!redTeamDead.Contains(playerHealth.gameObject))
+                redTeamDead.Add(playerHealth.gameObject);
+                Debug.Log(playerHealth.gameObject.name+ " added to Dead List");
+        }
+        else if(playerHealth.GetComponent<PlayerScript>().PlayerTeam == PlayerScript.Team.Blue){
+            if(!blueTeamDead.Contains(playerHealth.gameObject))
+                blueTeamDead.Add(playerHealth.gameObject);
+                Debug.Log(playerHealth.gameObject.name+ " added to Dead List");
+    }
+    if(!playersToRespawn.Contains(playerHealth.gameObject))
+        playersToRespawn.Add(playerHealth.gameObject);
     }
     [ClientRpc]
     public void StartGame()
@@ -94,26 +136,28 @@ public class HeistGameManager : NetworkBehaviour
             }
         }*/
         gameStarted = true;
-        blueTeamBaseHealth = 1000;
-        redTeamBaseHealth = 1000;
+        redBase.setHealth(baseHealth);
+        blueBase.setHealth(baseHealth);
         int playerCount = 1;
         ui.transform.GetChild(2).GetComponent<TMP_Text>().text = gameTime.ToString();
-        ui.transform.GetChild(0).GetComponent<TMP_Text>().text = "Blue: " + blueTeamBaseHealth.ToString();
-        ui.transform.GetChild(1).GetComponent<TMP_Text>().text = "Red: " + redTeamBaseHealth.ToString();
-        Debug.Log("Values Set!");
-        Debug.Log(NetworkServer.connections.Count);
-        while (playerCount < NetworkServer.connections.Count) {
-            foreach (NetworkConnectionToClient conn in NetworkServer.connections.Values) {
-                if (conn.isReady) {
-                    Debug.Log("Player index: " + playerCount + " Player: " + conn.identity.gameObject.name);
-                    addToTeam(conn.identity.gameObject, playerCount - 1);
-                    //NetworkServer.Spawn(bountyLogicObject, conn.identity.connectionToClient);
-                    // NetworkIdentity identity = bountyLogicObject.GetComponent<NetworkIdentity>();
-                    // if (identity != null)
-                    // {
-                    //     conn.identity.AssignClientAuthority(identity.connectionToClient);
-                    // }
-                    playerCount++;
+        ui.transform.GetChild(0).GetComponent<TMP_Text>().text = "Blue: " + blueBase.GetHealth();
+        ui.transform.GetChild(1).GetComponent<TMP_Text>().text = "Red: " + redBase.GetHealth();
+        if(redTeam.Count == 0 & blueTeam.Count == 0){
+            Debug.Log("Values Set!");
+            Debug.Log(NetworkServer.connections.Count);
+            while (playerCount < NetworkServer.connections.Count) {
+                foreach (NetworkConnectionToClient conn in NetworkServer.connections.Values) {
+                    if (conn.isReady) {
+                        Debug.Log("Player index: " + playerCount + " Player: " + conn.identity.gameObject.name);
+                        addToTeam(conn.identity.gameObject, playerCount - 1);
+                        //NetworkServer.Spawn(bountyLogicObject, conn.identity.connectionToClient);
+                        // NetworkIdentity identity = bountyLogicObject.GetComponent<NetworkIdentity>();
+                        // if (identity != null)
+                        // {
+                        //     conn.identity.AssignClientAuthority(identity.connectionToClient);
+                        // }
+                        playerCount++;
+                    }
                 }
             }
         }
@@ -142,32 +186,15 @@ public class HeistGameManager : NetworkBehaviour
 
     }
 
-    private IEnumerator GameLoop()
-    {
-        ui.transform.GetChild(0).GetChild(2).GetComponent<TMP_Text>().text = gameTime.ToString();
-        ui.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = "Blue: " + blueTeamBaseHealth.ToString();
-        ui.transform.GetChild(0).GetChild(1).GetComponent<TMP_Text>().text = "Red: " + redTeamBaseHealth.ToString();
-        // Implement your game logic here
-        // Track the number of defeated enemies and update the bounty
-
-        // For example, you can have a method called DefeatEnemy() that increments the bounty
-        // whenever an enemy is defeated. Call this method whenever an enemy is defeated.
-
-        // Wait for the game to finish (e.g., based on a timer)
-        yield return new WaitForSeconds(gameTime);
-
-        // Check the winning team and handle the end of the game
-    }
-
-    private void DetermineWinner()
+    private void DetermineWinnerForTimeOut()
     {
         // Compare the scores and determine the winning team
-        if (blueTeamBaseHealth > redTeamBaseHealth)
+        if (blueBase.GetHealth() > redBase.GetHealth())
         {
             // Blue team wins
             // Handle the win condition
         }
-        else if (redTeamBaseHealth > blueTeamBaseHealth)
+        else if (redBase.GetHealth() > blueBase.GetHealth())
         {
             // Red team wins
             // Handle the win condition
@@ -180,13 +207,8 @@ public class HeistGameManager : NetworkBehaviour
 
     private void EndGame()
     {
-        // Clean up and reset the game state
-        // For example, reset the scores and bounty
-        blueTeamBaseHealth = 0;
-        redTeamBaseHealth = 0;
-        foreach (NetworkConnectionToClient conn in NetworkServer.connections.Values) {
-            conn.identity.transform.GetChild(3).GetComponent<BountyLogic>().bountyPoints = 1;
-        }
+        blueBase.setHealth(baseHealth);
+        redBase.setHealth(baseHealth);
 
         // Restart the game or perform other actions as needed
         StartGame();
@@ -228,6 +250,7 @@ public class HeistGameManager : NetworkBehaviour
         //CLEAR ALL THE DEAD TEAM MEMBERS LIST
         redTeamDead.Clear();
         blueTeamDead.Clear();
+        playersToRespawn.Clear();
     }
 
     private void AddPlayerDied(PlayerDied evtData)

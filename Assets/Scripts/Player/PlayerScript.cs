@@ -75,21 +75,10 @@ public void Update()
 {
     if (!isLocalPlayer)
     {
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-            foreach (GameObject player in players){
-                if(!player.Equals(this))
-                    if (player.GetComponent<PlayerScript>().PlayerTeam != this.playerTeam || player.GetComponent<PlayerScript>().PlayerTeam == Team.None)
-                    {
-                        player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.red;
-                    }
-                    else
-                    {
-                        player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.blue;
-                    }
-            }
+        setColorsOfPlayers();
         return;
     }
-    this.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1,1,0,1);
+    //this.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1,1,0,1);
     if(deviceType == DeviceType.PC){
         if(!playerCamera){
             playerCamera = GameObject.Find("ClientCamera").GetComponent<Camera>();
@@ -193,6 +182,21 @@ public void Update()
 
         // Request authority from the server
         CmdRequestAuthority();
+    }
+    
+    [Client]
+    private void setColorsOfPlayers(){GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject player in players){
+                if(!player.Equals(this))
+                    if (player.GetComponent<PlayerScript>().PlayerTeam != this.playerTeam || player.GetComponent<PlayerScript>().PlayerTeam == Team.None)
+                    {
+                        player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.red;
+                    }
+                    else if(player.GetComponent<PlayerScript>().PlayerTeam == this.playerTeam)
+                    {
+                        player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.blue;
+                    }
+            }
     }
 [Command]
 private void CmdRequestAuthority()

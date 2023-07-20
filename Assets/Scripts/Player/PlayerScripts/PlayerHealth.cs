@@ -35,10 +35,11 @@ public class PlayerHealth : NetworkBehaviour
 
     public void TakeDamage(int amount)
     {
-
+        if(currentHealth> 0)
         currentHealth -= amount;
-        if (currentHealth <= 0)
+        else if (currentHealth <= 0)
         {
+            currentHealth = 0;
             RpcDie();
         }
     }
@@ -79,9 +80,9 @@ public class PlayerHealth : NetworkBehaviour
     {
         
             // Stop player movement
-            GetComponent<PlayerScript>().setCanMove(false);
-            GetComponent<Weapon>().enabled = false;
-
+            this.GetComponent<PlayerScript>().setCanMove(false);
+            this.GetComponent<Weapon>().enabled = false;
+            isAlive = false;
             // Teleport player back to spawn
             foreach (Transform spawnPoint in NetworkManager.startPositions) {
                 if (spawnPoint.tag.Equals(this.GetComponent<PlayerScript>().PlayerTeam)) {
@@ -90,7 +91,13 @@ public class PlayerHealth : NetworkBehaviour
             }
             
             // Restore health after 3 seconds
-            StartCoroutine(RestoreHealth());
+            //StartCoroutine(RestoreHealth());
+        
+    }
+    public void Respawn(float respawnTime)
+    {
+        Debug.Log(this.name+"DIED!");
+        Invoke("RestoreHealth", respawnTime);
         
     }
     
@@ -98,6 +105,7 @@ public class PlayerHealth : NetworkBehaviour
     {
         yield return new WaitForSeconds(5f);
         currentHealth = maxHealth;
+        isAlive = true;
         GetComponent<Weapon>().enabled = true;
         GetComponent<PlayerScript>().setCanMove(true);
     }
