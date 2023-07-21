@@ -157,6 +157,7 @@ public class Weapon : NetworkBehaviour
         var damageDone = 0;
         for (int i = 0; i < numOfBulletsPerShot; i++)
         {
+            //CinemachineShake.Instance.ShakeCamera(5f, .1f);
             Vector3 spreadDirection = direction;
             print("Direction thing SERVER: "+ spreadDirection);
             if (numOfBulletsPerShot > 1)
@@ -198,16 +199,15 @@ public class Weapon : NetworkBehaviour
                             Debug.Log("<color=orange>did grab base </color>");
                             if (baseHealth.canHit && !baseHealth.CompareTag(this.GetComponent<PlayerScript>().playerTeam.ToString()))
                             {
-                                damageDone = damage*(2/(NetworkServer.connections.Count/2));
+                                damageDone = damage * (2 / (NetworkServer.connections.Count / 2));
                                 print(NetworkServer.connections.Count);
-                                print("<color=yellow> Damage to base: "+damageDone+"</color>");
+                                print("<color=yellow> Damage to base: " + damageDone + "</color>");
                                 baseHealth.TakeDamage(damageDone);
                                 Debug.Log("<color=orange>did Hit base </color>");
                             }
                         }
                     }
                 }
-
             }
             
             else

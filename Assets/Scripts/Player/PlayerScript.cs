@@ -75,11 +75,12 @@ public void Update()
 {
     if (!isLocalPlayer)
     {
-        setColorsOfPlayers();
         return;
     }
-    //this.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1,1,0,1);
-    if(deviceType == DeviceType.PC){
+
+        setColorsOfPlayers();
+        //this.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1,1,0,1);
+        if (deviceType == DeviceType.PC){
         if(!playerCamera){
             playerCamera = GameObject.Find("ClientCamera").GetComponent<Camera>();
             print("Camera Set");
@@ -185,18 +186,30 @@ public void Update()
     }
     
     [Client]
-    private void setColorsOfPlayers(){GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+    private void setColorsOfPlayers(){
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
             foreach (GameObject player in players){
-                if(!player.Equals(this))
-                    if (player.GetComponent<PlayerScript>().PlayerTeam != this.playerTeam || player.GetComponent<PlayerScript>().PlayerTeam == Team.None)
+                if (player != this.gameObject)
+                {
+                    if (player.GetComponent<PlayerScript>().playerTeam == Team.Red || player.GetComponent<PlayerScript>().playerTeam == Team.None)
                     {
+                        //Debug.LogError("SET PLAYER COLOR TO RED");
                         player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.red;
                     }
-                    else if(player.GetComponent<PlayerScript>().PlayerTeam == this.playerTeam)
+                    else if (player.GetComponent<PlayerScript>().playerTeam == Team.Blue)
                     {
+                        //Debug.LogError("SET PLAYER COLOR TO BLUE");
                         player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.blue;
                     }
+                }
+                //IF YOU WANT PLAYERS SELF COLOR TO BE YELLOW, USE THIS, IF NOT THEN JUST COMMENT IT OUT
+                else if (player == this.gameObject)
+                {
+                    //Debug.LogWarning("SET PLAYER COLOR TO YELLOW");
+                    player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.yellow;
+                }
             }
+
     }
 [Command]
 private void CmdRequestAuthority()
