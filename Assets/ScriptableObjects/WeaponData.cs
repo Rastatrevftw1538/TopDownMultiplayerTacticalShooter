@@ -12,6 +12,5 @@ public class WeaponData : ScriptableObject
     public Sprite weaponSprite;
     public int ammo;
     public float reloadTime;
-    public float zoomOutValue;
     public float spreadIncreasePerSecond;
 }

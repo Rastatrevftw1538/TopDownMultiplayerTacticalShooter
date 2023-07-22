@@ -13,7 +13,7 @@ public class PlayerScript : NetworkBehaviour
         Blue
     }
     [SyncVar]
-    private Team playerTeam;
+    public Team playerTeam;
     
     public enum DeviceType
     {
@@ -38,8 +38,6 @@ public class PlayerScript : NetworkBehaviour
     public float walkSpeedNormal;
 
     [Header("Player Components")]
-    [SerializeField]
-    private Rigidbody2D rb;
     public Vector2 movement;
     public Quaternion rotation;
 
@@ -49,9 +47,12 @@ public class PlayerScript : NetworkBehaviour
     private bool canMove = true;
 
     private void Start() {
+        if(isServer&&isClient){
+            runSpeed = runSpeed*2;
+            walkSpeed = walkSpeed*2;
+        }
         runSpeedNormal = runSpeed;
         walkSpeedNormal = walkSpeed;
-
         if (isLocalPlayer)
         {
             Debug.Log("local Player" + netId);
@@ -73,12 +74,14 @@ public class PlayerScript : NetworkBehaviour
     }
 
 [ClientCallback]
-public void FixedUpdate()
+public void Update()
 {
     if (!isLocalPlayer)
     {
+        setColorsOfPlayers();
         return;
     }
+    //this.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1,1,0,1);
     if(deviceType == DeviceType.PC){
         if(!playerCamera){
             playerCamera = GameObject.Find("ClientCamera").GetComponent<Camera>();
@@ -87,7 +90,7 @@ public void FixedUpdate()
         if(Input.GetKey(KeyCode.LeftShift)){
             isRunning = true;
         }
-        if(Input.GetKeyUp(KeyCode.LeftShift)){
+        else if(Input.GetKeyUp(KeyCode.LeftShift)){
             isRunning = false;
         }
         if(Input.GetKey(KeyCode.W)){
@@ -110,7 +113,7 @@ public void FixedUpdate()
         Vector3 mouseWorldPosition = playerCamera.ScreenToWorldPoint(mousePosition);
         Vector3 aimDirection = mouseWorldPosition - transform.position;
         rotation = Quaternion.LookRotation(Vector3.forward, aimDirection);
-        print(rotation);
+        //print(rotation);
     }
     if(deviceType == DeviceType.Mobile){
     
@@ -126,7 +129,7 @@ public void FixedUpdate()
     movement = new Vector2(horizontal, vertical).normalized * (isRunning ? runSpeed : walkSpeed);
     }
         if (canMove){
-        CmdMove(movement);
+        CmdMove(movement * Time.deltaTime);
         CmdRotate(rotation);
     
     }
@@ -138,35 +141,66 @@ public void FixedUpdate()
     private void CmdMove(Vector2 movement)
     {
         RpcMove(movement);
-        transform.Translate(movement * Time.deltaTime);    
+        this.transform.Translate(movement);    
     }
     // FIGURE OUT HOW THE SERVER RECIEVES THIS INFO
     [Command]
     private void CmdRotate(Quaternion rotation)
     {
         RpcRotation(rotation);
-        transform.GetChild(0).transform.rotation = rotation;
+        this.transform.GetChild(0).transform.rotation = rotation;
     }
     [ClientRpc]
     private void RpcMove(Vector2 movement)
     {
-        transform.Translate(movement * Time.deltaTime);
+        if(!isLocalPlayer)
+        this.transform.Translate(movement);
     }
     [ClientRpc]
     private void RpcRotation(Quaternion rotation)
     {
-        transform.GetChild(0).transform.rotation = rotation;
+        this.transform.GetChild(0).transform.rotation = rotation;
     }
 
     public override void OnStartLocalPlayer()
     {
 
         // Set the player's outline to Yellow
-        this.transform.GetChild(0).GetChild(3).GetChild(1).GetComponent<SpriteRenderer>().color = new Color(1,1,0,1);
+        
+        /*
+        foreach (NetworkConnectionToClient players in NetworkServer.connections.Values) {
+            if (!isLocalPlayer)
+            {
+                if (players.identity.GetComponent<PlayerScript>().PlayerTeam != this.playerTeam || players.identity.GetComponent<PlayerScript>().PlayerTeam == Team.None)
+                {
+                    players.identity.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.red;
+                }
+                else
+                {
+                    players.identity.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.blue;
+                }
+            }
+        }
+        */
         this.GetComponent<Weapon>().spreadCone.enabled = true;
 
         // Request authority from the server
         CmdRequestAuthority();
+    }
+    
+    [Client]
+    private void setColorsOfPlayers(){GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject player in players){
+                if(!player.Equals(this))
+                    if (player.GetComponent<PlayerScript>().PlayerTeam != this.playerTeam || player.GetComponent<PlayerScript>().PlayerTeam == Team.None)
+                    {
+                        player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.red;
+                    }
+                    else if(player.GetComponent<PlayerScript>().PlayerTeam == this.playerTeam)
+                    {
+                        player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.blue;
+                    }
+            }
     }
 [Command]
 private void CmdRequestAuthority()

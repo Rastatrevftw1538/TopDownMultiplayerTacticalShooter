@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class MovementAbility : Ability
 {
-    
+    //public float waitTime;
 }

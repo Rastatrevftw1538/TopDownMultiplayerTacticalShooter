@@ -23,8 +23,6 @@ public class Weapon : NetworkBehaviour
     private float fireRange = 100f;
     private int numOfBulletsPerShot;
 
-    private float zoomValue = 100f;
-
     private int damage;
     private float spreadValue;
 
@@ -61,7 +59,6 @@ public class Weapon : NetworkBehaviour
             weaponLooks.sprite = weaponSpecs.weaponSprite;
             magSize = weaponSpecs.ammo;
             reloadTime = weaponSpecs.reloadTime;
-            zoomValue = weaponSpecs.zoomOutValue;
             spreadValue = weaponSpecs.spreadIncreasePerSecond * 1000;
         }
         currentAmmo = magSize;
@@ -115,6 +112,7 @@ public class Weapon : NetworkBehaviour
             float spreadAngle = Mathf.Clamp(UnityEngine.Random.Range(0, spread) - spread / 2f,-45,45);
             Quaternion spreadRotation = Quaternion.Euler(0, 0, spreadAngle);
             direction = spreadRotation * direction;
+            print("Direction thing: "+direction);
             CmdFire(direction);
             if(this.GetComponent<PlayerScript>().isRunning){
                 spread += Time.deltaTime * (spreadValue*2);
@@ -160,6 +158,7 @@ public class Weapon : NetworkBehaviour
         for (int i = 0; i < numOfBulletsPerShot; i++)
         {
             Vector3 spreadDirection = direction;
+            print("Direction thing SERVER: "+ spreadDirection);
             if (numOfBulletsPerShot > 1)
             {
                 float spreadAngle = Mathf.Clamp(i * (spread / numOfBulletsPerShot) + UnityEngine.Random.Range(0, spreadValue) - spreadValue / 2f,-5,5);
@@ -177,24 +176,54 @@ public class Weapon : NetworkBehaviour
                     Transform objectOrigin = hit.collider.transform.parent.parent;
                     if (objectOrigin != null)
                     {
-                        PlayerHealth enemyHealth = objectOrigin.GetComponent<PlayerHealth>();
-                        if(enemyHealth != null)
+                        if(objectOrigin.CompareTag("Player")){
+                            PlayerScript.Team playerTeam = objectOrigin.GetComponent<PlayerScript>().playerTeam;
+                            if(!playerTeam.Equals(this.gameObject.GetComponent<PlayerScript>().playerTeam))
+                            {
+                                //PLAYER HEALTH STUFF
+                                PlayerHealth enemyHealth = objectOrigin.GetComponent<PlayerHealth>();
+                                if (enemyHealth != null)
+                                {
+                                    if (hit.collider.gameObject.name == "Bullseye!")
+                                    {
+                                        damageDone = 2 * damage;
+                                    }
+                                    else
+                                    {
+                                        damageDone = damage;
+                                    }
+                                    enemyHealth.TakeDamage(damageDone);
+                                }
+                            }
+                        }
+                        else if(objectOrigin.CompareTag("Base"))
                         {
-                            if(hit.collider.gameObject.name == "Bullseye!")
+                            //DAMAGE BASE STUFF
+                            Base baseHealth = objectOrigin.GetComponent<Base>();
+                            if (baseHealth != null)
                             {
-                                damageDone = 2 * damage;
+                                Debug.Log("<color=orange>did grab base </color>");
+                                if (baseHealth.canHit && baseHealth.team != this.GetComponent<PlayerScript>().playerTeam)
+                                {
+                                    damageDone = damage*(2/(NetworkServer.connections.Count/2));
+                                    print(NetworkServer.connections.Count);
+                                    print("<color=yellow> Damage to base: "+damageDone+"</color>");
+                                    baseHealth.TakeDamage(damageDone);
+                                    Debug.Log("<color=orange>did Hit base </color>");
+                                }
                             }
-                            else
-                            {
-                                damageDone = damage;
-                            }
-                            enemyHealth.TakeDamage(damageDone);
                         }
                     }
                 }
-                
-            }
 
+            }
+            
+            else
+            {
+                whatWasHit ="NOTHING";
+            }
+            
+            Debug.Log("HUh? Server: " + spreadDirection);
             endPoint = hit.point;
             RpcOnFire(hit, spreadDirection, endPoint, whatWasHit);
         }
@@ -205,17 +234,18 @@ public class Weapon : NetworkBehaviour
     {
         Debug.Log("Collision Point: " + collisionPoint);
         Debug.Log("Hit: " + whatWasHit);
+        Debug.Log("HUh? Client: " + spreadDirection);
         
-        if (hit)
+        if (whatWasHit != "NOTHING")
         {
             Debug.Log("Hit " + collisionPoint);
-            collisionPoint = endPoint;
         }
         else
         {
-            collisionPoint = (collisionPoint + spreadDirection * fireRange);
+            collisionPoint = spreadDirection;
             Debug.Log("Hit Nothing:");
         }
+        
         var bulletInstance = Instantiate(bulletPrefab, firePoint.position, new Quaternion(0, 0, 0, 0));
         BulletScript trailRender = bulletInstance.GetComponent<BulletScript>();
         GameObject particleEffect = trailRender.effectPrefab;
@@ -230,6 +260,6 @@ public class Weapon : NetworkBehaviour
             }
         Instantiate(trailRender.effectPrefab, collisionPoint, new Quaternion(0, 0, 0, 0));
         trailRender.SetTargetPosition(collisionPoint);
-        Debug.Log("Bullet Fired Client " + hit.point+ " direction "+spreadDirection);
+        Debug.Log("Bullet Fired Client " + collisionPoint+ " direction "+spreadDirection);
     }
 }
