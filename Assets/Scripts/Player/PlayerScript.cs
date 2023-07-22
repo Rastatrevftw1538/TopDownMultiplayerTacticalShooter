@@ -47,9 +47,12 @@ public class PlayerScript : NetworkBehaviour
     private bool canMove = true;
 
     private void Start() {
+        if(isServer&&isClient){
+            runSpeed = runSpeed*2;
+            walkSpeed = walkSpeed*2;
+        }
         runSpeedNormal = runSpeed;
         walkSpeedNormal = walkSpeed;
-
         if (isLocalPlayer)
         {
             Debug.Log("local Player" + netId);
@@ -126,7 +129,7 @@ public void Update()
     movement = new Vector2(horizontal, vertical).normalized * (isRunning ? runSpeed : walkSpeed);
     }
         if (canMove){
-        CmdMove(movement);
+        CmdMove(movement * Time.deltaTime);
         CmdRotate(rotation);
     
     }
@@ -138,24 +141,25 @@ public void Update()
     private void CmdMove(Vector2 movement)
     {
         RpcMove(movement);
-        transform.Translate(movement * Time.deltaTime);    
+        this.transform.Translate(movement);    
     }
     // FIGURE OUT HOW THE SERVER RECIEVES THIS INFO
     [Command]
     private void CmdRotate(Quaternion rotation)
     {
         RpcRotation(rotation);
-        transform.GetChild(0).transform.rotation = rotation;
+        this.transform.GetChild(0).transform.rotation = rotation;
     }
     [ClientRpc]
     private void RpcMove(Vector2 movement)
     {
-        transform.Translate(movement * Time.deltaTime);
+        if(!isLocalPlayer)
+        this.transform.Translate(movement);
     }
     [ClientRpc]
     private void RpcRotation(Quaternion rotation)
     {
-        transform.GetChild(0).transform.rotation = rotation;
+        this.transform.GetChild(0).transform.rotation = rotation;
     }
 
     public override void OnStartLocalPlayer()

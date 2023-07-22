@@ -176,33 +176,41 @@ public class Weapon : NetworkBehaviour
                     Transform objectOrigin = hit.collider.transform.parent.parent;
                     if (objectOrigin != null)
                     {
-                        //PLAYER HEALTH STUFF
-                        PlayerHealth enemyHealth = objectOrigin.GetComponent<PlayerHealth>();
-                        if (enemyHealth != null)
-                        {
-                            if (hit.collider.gameObject.name == "Bullseye!")
+                        if(objectOrigin.CompareTag("Player")){
+                            PlayerScript.Team playerTeam = objectOrigin.GetComponent<PlayerScript>().playerTeam;
+                            if(!playerTeam.Equals(this.gameObject.GetComponent<PlayerScript>().playerTeam))
                             {
-                                damageDone = 2 * damage;
+                                //PLAYER HEALTH STUFF
+                                PlayerHealth enemyHealth = objectOrigin.GetComponent<PlayerHealth>();
+                                if (enemyHealth != null)
+                                {
+                                    if (hit.collider.gameObject.name == "Bullseye!")
+                                    {
+                                        damageDone = 2 * damage;
+                                    }
+                                    else
+                                    {
+                                        damageDone = damage;
+                                    }
+                                    enemyHealth.TakeDamage(damageDone);
+                                }
                             }
-                            else
-                            {
-                                damageDone = damage;
-                            }
-                            enemyHealth.TakeDamage(damageDone);
                         }
-
-                        //DAMAGE BASE STUFF
-                        Base baseHealth = objectOrigin.GetComponent<Base>();
-                        if (baseHealth != null)
+                        else if(objectOrigin.CompareTag("Base"))
                         {
-                            Debug.Log("<color=orange>did grab base </color>");
-                            if (baseHealth.canHit && !baseHealth.CompareTag(this.GetComponent<PlayerScript>().playerTeam.ToString()))
+                            //DAMAGE BASE STUFF
+                            Base baseHealth = objectOrigin.GetComponent<Base>();
+                            if (baseHealth != null)
                             {
-                                damageDone = damage*(2/(NetworkServer.connections.Count/2));
-                                print(NetworkServer.connections.Count);
-                                print("<color=yellow> Damage to base: "+damageDone+"</color>");
-                                baseHealth.TakeDamage(damageDone);
-                                Debug.Log("<color=orange>did Hit base </color>");
+                                Debug.Log("<color=orange>did grab base </color>");
+                                if (baseHealth.canHit && baseHealth.team != this.GetComponent<PlayerScript>().playerTeam)
+                                {
+                                    damageDone = damage*(2/(NetworkServer.connections.Count/2));
+                                    print(NetworkServer.connections.Count);
+                                    print("<color=yellow> Damage to base: "+damageDone+"</color>");
+                                    baseHealth.TakeDamage(damageDone);
+                                    Debug.Log("<color=orange>did Hit base </color>");
+                                }
                             }
                         }
                     }

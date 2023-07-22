@@ -70,11 +70,14 @@ public class StartTeamRespawn : EvtSystem.Event
 {
     public float respawnTime;
     public List<GameObject> teamToRespawn;
+    public PlayerScript.Team team;
 }
 
 public class ChangeBaseState : EvtSystem.Event
 {
     public bool isBaseVulnerable;
+    public Base thisBase;
+    public PlayerScript.Team team;
 }
 
 public class PlayerDied : EvtSystem.Event
