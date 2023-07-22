@@ -78,6 +78,7 @@ public void Update()
         return;
     }
 
+        //SET WHEN GAME STARTS, OR WHEN PLAYER JOINS
         setColorsOfPlayers();
         //this.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1,1,0,1);
         if (deviceType == DeviceType.PC){
@@ -209,6 +210,7 @@ public void Update()
                     player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.yellow;
                 }
             }
+            
 
     }
 [Command]

@@ -20,4 +20,6 @@ MonoBehaviour:
   _abilityAppliance: 1
   activeTime: 0.01
   cooldownTime: 2
-  dashVelocity: 35
+  applicationType: 0
+  dashVelocity: 200
+  speedMultiplier: 20

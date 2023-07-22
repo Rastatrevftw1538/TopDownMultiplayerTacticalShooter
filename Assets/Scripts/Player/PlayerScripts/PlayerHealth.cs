@@ -17,6 +17,7 @@ public class PlayerHealth : NetworkBehaviour
 
     private bool hasSentEvent = false;
     private bool isAlive = true;
+    private bool isRespawning = false;
     public bool checkIfAlive
     {
         get { return isAlive; }
@@ -92,37 +93,37 @@ public class PlayerHealth : NetworkBehaviour
          PlayerDied playerDied = new PlayerDied();
          playerDied.playerThatDied = this.gameObject;
 
-         EvtSystem.EventDispatcher.Raise<PlayerDied>(playerDied);
+
+         if(!isRespawning)
+            EvtSystem.EventDispatcher.Raise<PlayerDied>(playerDied);
     }
+    private void RestoreHealth()
+    {
+        currentHealth = maxHealth;
+        isAlive = true;
+        isRespawning = false;
+        GetComponent<Weapon>().enabled = true;
+        GetComponent<PlayerScript>().setCanMove(true);
+
+        //TO ENSURE THE SAME EVENTS DON'T GET RAISED MORE THAN ONCE
+        hasSentEvent = false;
+
+        Debug.LogError("<color=yellow>RESPAWNED SUCCESSFULLY.</color>");
+    }
+
     [ClientRpc]
     public void Respawn(float respawnTime)
     {
-        Debug.Log(this.name+"DIED!");
+        Debug.LogError(this.name+"DIED!");
         foreach (Transform spawnPoint in NetworkManager.startPositions) {
                 if (spawnPoint.CompareTag(this.GetComponent<PlayerScript>().PlayerTeam.ToString())) {
                     transform.position = spawnPoint.position;
                 }
             }
-        //TO ENSURE THE SAME EVENTS DON'T GET RAISED MORE THAN ONCE
-        IEnumerator setBool(float time) {
-            yield return new WaitForSeconds(time);
-            hasSentEvent = false;
-        }
-        StartCoroutine(setBool(respawnTime));
-        
-        //ACTUALLY RESTORE HEALTH TO THE PLAYER
-        StartCoroutine(RestoreHealth(respawnTime));
-    }
-    
-    IEnumerator RestoreHealth(float time)
-    {
-        yield return new WaitForSeconds(time);
-        currentHealth = maxHealth;
-        isAlive = true;
-        GetComponent<Weapon>().enabled = true;
-        GetComponent<PlayerScript>().setCanMove(true);
 
-        Debug.Log("<color=yellow>RESPAWNED SUCCESSFULLY</color>");
+        isRespawning = true;
+        //ACTUALLY RESTORE HEALTH TO THE PLAYER
+        Invoke(nameof(RestoreHealth), respawnTime);
     }
 
     private void checkHealth()

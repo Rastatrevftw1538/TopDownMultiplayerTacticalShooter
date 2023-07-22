@@ -20,6 +20,8 @@ public class Base : NetworkBehaviour
     private bool isAlive = true;
 
     private int _damageTaken = 0;
+    private bool sentBaseDestroyedEvent = false;
+    private ChangeBaseState lastBaseEvent = null;
 
     public bool checkIfAlive
     {
@@ -59,6 +61,17 @@ public class Base : NetworkBehaviour
 
     public void TakeDamage(int amount)
     {
+        //FIRST CHECK IF THE BASE'S HEALTH IS BELOW 0
+        if(currentHealth <= 0 && !sentBaseDestroyedEvent)
+        {
+            //RAISE BASE DESTROYED EVENT, TO BE RECIEVED BY 'HeistGameManager.cs'
+            BaseDestroyed baseDestroyed = new BaseDestroyed();
+            baseDestroyed.thisBase = this;
+            EvtSystem.EventDispatcher.Raise<BaseDestroyed>(baseDestroyed);
+            sentBaseDestroyedEvent = true;
+        }
+
+        //THEN CHECK FOR ALL THE OTHER DAMAGE CONDITIONS
         if (_damageTaken < maxDamageInRound && currentHealth > 0)
         {
             
@@ -68,12 +81,14 @@ public class Base : NetworkBehaviour
         }
         else if (_damageTaken >= maxDamageInRound){
             //CHANGE BASE STATE, RESET _damageTaken
-            GameObject.Find("GameModeManager").GetComponent<HeistGameManager>().ClearDead();
             IsVulnerable(false);
-            print("<color=red> Okay thats enough! >:( </color>");
-        }
-        else if(currentHealth <= 0){
-            currentHealth = 0;
+            Debug.LogError("<color=red> Okay thats enough! >:( </color>");
+            Debug.LogError("<color=red> Base Health: " + currentHealth + "</color>");
+
+            //REPLACE "BASE IS VULNERABLE MESSAGE"
+            ReplaceUI replaceUI = new ReplaceUI();
+            replaceUI.replacementMessage = "MAXIMUM DAMAGE!!";
+            EvtSystem.EventDispatcher.Raise<ReplaceUI>(replaceUI);
         }
     }
     private void Update()
@@ -103,16 +118,19 @@ public class Base : NetworkBehaviour
     {
         if(evtData.team == this.team)
             IsVulnerable(evtData.isBaseVulnerable);
+
+        lastBaseEvent = evtData;
     }
 
     public void EndPhase(StartTeamRespawn evtData)
     {
         Debug.LogWarning("<color=purple>ENDING BASE PHASE</color>");
-        StartCoroutine(EndVulnerability(evtData.respawnTime));
+
+        if(lastBaseEvent.team == this.team)
+            Invoke(nameof(EndVulnerability), evtData.respawnTime);
     }
-    IEnumerator EndVulnerability(float time)
+    private void EndVulnerability()
     {
-        yield return new WaitForSeconds(time);
         this.canHit = false;
         _damageTaken = 0;
     }
