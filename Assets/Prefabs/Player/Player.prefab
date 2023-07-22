@@ -698,12 +698,13 @@ MonoBehaviour:
   deviceType: 0
   joystickMovementUI: {fileID: 584446714611108121}
   joystickRotateUI: {fileID: 6713901557967857310}
-  runSpeed: 2
+  runSpeed: 1.5
   walkSpeed: 0.75
   runSpeedNormal: 0
   walkSpeedNormal: 0
   movement: {x: 0, y: 0}
   rotation: {x: 0, y: 0, z: 0, w: 0}
+  rb: {fileID: 9002932500590422946}
   isRunning: 0
 --- !u!114 &6150396175792131251
 MonoBehaviour:

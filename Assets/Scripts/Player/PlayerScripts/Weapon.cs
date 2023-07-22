@@ -13,7 +13,7 @@ public class Weapon : NetworkBehaviour
     public WeaponData weaponSpecs;
     [SerializeField]
     private Transform firePoint;
-    private Vector2 endPoint;
+    private Vector3 endPoint;
 
     public SpriteRenderer weaponLooks;
     public SpriteRenderer spreadCone;
@@ -217,8 +217,16 @@ public class Weapon : NetworkBehaviour
             
             Debug.Log("HUh? Server: " + spreadDirection);
 
-            //CHANGE
-            endPoint = hit.point;
+            if (endPoint == Vector3.zero)
+            {
+                //oh my god i did it.
+                //Debug.DrawLine(firePoint.position, firePoint.position + (spreadDirection * fireRange), Color.green);
+                endPoint = new Vector3(firePoint.position.x, firePoint.position.y) + (spreadDirection * fireRange);
+            }
+            else
+            {
+                endPoint = hit.point;
+            }
             RpcOnFire(hit, spreadDirection, endPoint, whatWasHit);
         }
     }
@@ -236,7 +244,7 @@ public class Weapon : NetworkBehaviour
         }
         else
         {
-            collisionPoint = spreadDirection;
+            //collisionPoint = spreadDirection;
             Debug.Log("Hit Nothing:");
         }
         
