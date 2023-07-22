@@ -15,13 +15,14 @@ public class PlayerScript : NetworkBehaviour
     [SyncVar]
     public Team playerTeam;
     
-    public enum DeviceType
+    public enum SetDeviceType
     {
+        Auto,
         PC,
         Mobile
     }
     [SerializeField]
-    private DeviceType deviceType;
+    private SetDeviceType deviceType;
 
     [Header("Controller")]
     [SerializeField]
@@ -66,7 +67,7 @@ public class PlayerScript : NetworkBehaviour
         get { return playerTeam; }
         set { playerTeam = value; }
     }
-    public DeviceType PlayerDevice{
+    public SetDeviceType PlayerDevice{
         get { return deviceType; }
     }
     public void setCanMove(bool newCanMove){
@@ -78,44 +79,52 @@ public void Update()
 {
     if (!isLocalPlayer)
     {
-        setColorsOfPlayers();
         return;
     }
-    //this.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1,1,0,1);
-    if(deviceType == DeviceType.PC){
-        if(!playerCamera){
-            playerCamera = GameObject.Find("ClientCamera").GetComponent<Camera>();
-            print("Camera Set");
-        }
-        if(Input.GetKey(KeyCode.LeftShift)){
-            isRunning = true;
-        }
-        else if(Input.GetKeyUp(KeyCode.LeftShift)){
-            isRunning = false;
-        }
-        if(Input.GetKey(KeyCode.W)){
-            movement = new Vector2(0, 1).normalized * (isRunning ? runSpeed : walkSpeed);
-        }
-        else if(Input.GetKey(KeyCode.S)){
-            movement = new Vector2(0, -1).normalized * (isRunning ? runSpeed : walkSpeed);
-        }
-        else if(Input.GetKey(KeyCode.A)){
-            movement = new Vector2(-1, 0).normalized * (isRunning ? runSpeed : walkSpeed);
-        }
-        else if(Input.GetKey(KeyCode.D)){
-            movement = new Vector2(1, 0).normalized * (isRunning ? runSpeed : walkSpeed);
+    if(deviceType == SetDeviceType.Auto){
+        if(SystemInfo.deviceType == DeviceType.Desktop){
+            deviceType = SetDeviceType.PC;
         }
         else{
-            movement = new Vector2(0, 0);
+            deviceType = SetDeviceType.Mobile;
         }
-        Vector3 mousePosition = Input.mousePosition;
-        mousePosition.z = -playerCamera.transform.position.z;
-        Vector3 mouseWorldPosition = playerCamera.ScreenToWorldPoint(mousePosition);
-        Vector3 aimDirection = mouseWorldPosition - transform.position;
-        rotation = Quaternion.LookRotation(Vector3.forward, aimDirection);
-        //print(rotation);
     }
-    if(deviceType == DeviceType.Mobile){
+        setColorsOfPlayers();
+        //this.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1,1,0,1);
+        if (deviceType == SetDeviceType.PC){
+            if(!playerCamera){
+                playerCamera = GameObject.Find("ClientCamera").GetComponent<Camera>();
+                print("Camera Set");
+            }
+            if(Input.GetKey(KeyCode.LeftShift)){
+                isRunning = true;
+            }
+            else if(Input.GetKeyUp(KeyCode.LeftShift)){
+                isRunning = false;
+            }
+            if(Input.GetKey(KeyCode.W)){
+                movement = new Vector2(0, 1).normalized * (isRunning ? runSpeed : walkSpeed);
+            }
+            else if(Input.GetKey(KeyCode.S)){
+                movement = new Vector2(0, -1).normalized * (isRunning ? runSpeed : walkSpeed);
+            }
+            else if(Input.GetKey(KeyCode.A)){
+                movement = new Vector2(-1, 0).normalized * (isRunning ? runSpeed : walkSpeed);
+            }
+            else if(Input.GetKey(KeyCode.D)){
+                movement = new Vector2(1, 0).normalized * (isRunning ? runSpeed : walkSpeed);
+            }
+            else{
+                movement = new Vector2(0, 0);
+            }
+            Vector3 mousePosition = Input.mousePosition;
+            mousePosition.z = -playerCamera.transform.position.z;
+            Vector3 mouseWorldPosition = playerCamera.ScreenToWorldPoint(mousePosition);
+            Vector3 aimDirection = mouseWorldPosition - transform.position;
+            rotation = Quaternion.LookRotation(Vector3.forward, aimDirection);
+            //print(rotation);
+        }
+    if(deviceType == SetDeviceType.Mobile){
     
     JoystickControllerMovement joystickController = joystickMovementUI.GetComponent<JoystickControllerMovement>();
 
@@ -189,18 +198,30 @@ public void Update()
     }
     
     [Client]
-    private void setColorsOfPlayers(){GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+    private void setColorsOfPlayers(){
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
             foreach (GameObject player in players){
-                if(!player.Equals(this))
-                    if (player.GetComponent<PlayerScript>().PlayerTeam != this.playerTeam || player.GetComponent<PlayerScript>().PlayerTeam == Team.None)
+                if (player != this.gameObject)
+                {
+                    if (player.GetComponent<PlayerScript>().playerTeam == Team.Red || player.GetComponent<PlayerScript>().playerTeam == Team.None)
                     {
+                        //Debug.LogError("SET PLAYER COLOR TO RED");
                         player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.red;
                     }
-                    else if(player.GetComponent<PlayerScript>().PlayerTeam == this.playerTeam)
+                    else if (player.GetComponent<PlayerScript>().playerTeam == Team.Blue)
                     {
+                        //Debug.LogError("SET PLAYER COLOR TO BLUE");
                         player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.blue;
                     }
+                }
+                //IF YOU WANT PLAYERS SELF COLOR TO BE YELLOW, USE THIS, IF NOT THEN JUST COMMENT IT OUT
+                else if (player == this.gameObject)
+                {
+                    //Debug.LogWarning("SET PLAYER COLOR TO YELLOW");
+                    player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.yellow;
+                }
             }
+
     }
 [Command]
 private void CmdRequestAuthority()
