@@ -16,7 +16,6 @@ public class PlayerHealth : NetworkBehaviour
     [SerializeField] private Image healthbarExternal;
 
     private bool hasSentEvent = false;
-    private static bool isRestoringHealth = false;
     private bool isAlive = true;
     public bool checkIfAlive
     {
@@ -124,7 +123,6 @@ public class PlayerHealth : NetworkBehaviour
         GetComponent<PlayerScript>().setCanMove(true);
 
         Debug.Log("<color=yellow>RESPAWNED SUCCESSFULLY</color>");
-        isRestoringHealth = true;
     }
 
     private void checkHealth()
