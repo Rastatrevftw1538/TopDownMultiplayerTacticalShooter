@@ -14,14 +14,15 @@ public class PlayerScript : NetworkBehaviour
     }
     [SyncVar]
     public Team playerTeam;
-    
-    public enum DeviceType
+
+    public enum SetDeviceType
     {
+        Auto,
         PC,
         Mobile
     }
     [SerializeField]
-    private DeviceType deviceType;
+    private SetDeviceType deviceType;
 
     [Header("Controller")]
     [SerializeField]
@@ -69,7 +70,8 @@ public class PlayerScript : NetworkBehaviour
         get { return playerTeam; }
         set { playerTeam = value; }
     }
-    public DeviceType PlayerDevice{
+    public SetDeviceType PlayerDevice
+    {
         get { return deviceType; }
     }
     public void setCanMove(bool newCanMove){
@@ -87,7 +89,7 @@ public class PlayerScript : NetworkBehaviour
         setColorsOfPlayers();
 
         #region PC MOVEMENT
-        if (deviceType == DeviceType.PC){
+        if (deviceType == SetDeviceType.PC){
         if(!playerCamera){
             playerCamera = GameObject.Find("ClientCamera").GetComponent<Camera>();
             print("Camera Set");
@@ -116,7 +118,7 @@ public class PlayerScript : NetworkBehaviour
         #endregion
 
         #region MOBILE MOVEMENT
-        if (deviceType == DeviceType.Mobile){
+        if (deviceType == SetDeviceType.Mobile){
     
             JoystickControllerMovement joystickController = joystickMovementUI.GetComponent<JoystickControllerMovement>();
 

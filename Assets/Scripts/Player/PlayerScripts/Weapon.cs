@@ -159,10 +159,10 @@ public class Weapon : NetworkBehaviour
         {
             //CinemachineShake.Instance.ShakeCamera(5f, .1f);
             Vector3 spreadDirection = direction;
-            print("Direction thing SERVER: "+ spreadDirection);
+            print("Direction thing SERVER: " + spreadDirection);
             if (numOfBulletsPerShot > 1)
             {
-                float spreadAngle = Mathf.Clamp(i * (spread / numOfBulletsPerShot) + UnityEngine.Random.Range(0, spreadValue) - spreadValue / 2f,-5,5);
+                float spreadAngle = Mathf.Clamp(i * (spread / numOfBulletsPerShot) + UnityEngine.Random.Range(0, spreadValue) - spreadValue / 2f, -5, 5);
                 Quaternion spreadRotation = Quaternion.Euler(0, 0, spreadAngle);
                 spreadDirection = spreadRotation * direction;
             }
@@ -209,19 +209,20 @@ public class Weapon : NetworkBehaviour
                     }
                 }
             }
-            
+
             else
             {
-                whatWasHit ="NOTHING";
+                whatWasHit = "NOTHING";
+                endPoint = Vector3.zero;
             }
-            
+
             Debug.Log("HUh? Server: " + spreadDirection);
 
             if (endPoint == Vector3.zero)
             {
-                //oh my god i did it.
-                //Debug.DrawLine(firePoint.position, firePoint.position + (spreadDirection * fireRange), Color.green);
-                endPoint = new Vector3(firePoint.position.x, firePoint.position.y) + (spreadDirection * fireRange);
+                //BOOOOOOOOOOOOOOOOOOM
+                Debug.DrawLine(firePoint.position, firePoint.position + (spreadDirection * fireRange), Color.red);
+                endPoint = new Vector3(firePoint.position.x, firePoint.position.y, firePoint.position.z) + (spreadDirection * fireRange);
             }
             else
             {
