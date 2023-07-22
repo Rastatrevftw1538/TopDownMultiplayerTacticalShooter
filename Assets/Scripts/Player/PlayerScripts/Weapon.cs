@@ -99,10 +99,10 @@ public class Weapon : NetworkBehaviour
         float coneScale = 1f + (spread * coneSpreadFactor);
         spreadCone.transform.localScale = new Vector3(Mathf.Clamp(coneScale,0,35), spreadCone.transform.localScale.y, 1f);
         spreadCone.color = new Color(1,0,0,Mathf.Clamp((Mathf.Clamp(spread,0f,100f)-0)/(100-0),0.25f,0.75f));
-        if(this.transform.GetComponent<PlayerScript>().PlayerDevice == PlayerScript.DeviceType.Mobile){
+        if(this.transform.GetComponent<PlayerScript>().PlayerDevice == PlayerScript.SetDeviceType.Mobile){
             shootingGun = shootingJoystick.isShooting ;
         }
-        else if(this.transform.GetComponent<PlayerScript>().PlayerDevice == PlayerScript.DeviceType.PC){
+        else if(this.transform.GetComponent<PlayerScript>().PlayerDevice == PlayerScript.SetDeviceType.PC){
             shootingGun = Input.GetMouseButton(0);
         }
         if (shootingGun && Time.time >= nextFireTime && !outOfAmmo)
