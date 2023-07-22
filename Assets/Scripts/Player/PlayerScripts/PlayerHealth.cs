@@ -116,6 +116,7 @@ public class PlayerHealth : NetworkBehaviour
     {
         Debug.LogError(this.name+"DIED!");
         foreach (Transform spawnPoint in NetworkManager.startPositions) {
+                Debug.LogError("got respawn point");
                 if (spawnPoint.CompareTag(this.GetComponent<PlayerScript>().PlayerTeam.ToString())) {
                     transform.position = spawnPoint.position;
                 }
