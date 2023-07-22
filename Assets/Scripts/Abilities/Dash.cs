@@ -6,8 +6,16 @@ using Mirror;
 [CreateAssetMenu(menuName = "Player Abilities/Movement/Dash")]
 public class Dash : MovementAbility
 {
+    public enum ApplicationType
+    {
+        SET_SPEED,
+        SPEED_MULTIPLIER
+    }
+    [Header("Movement Application Type")]
+    public ApplicationType applicationType;
     [Header("Ability Stats")]
     public float dashVelocity;
+    public float speedMultiplier;
 
     public override void Activate(GameObject parent){
         startDash(parent);
@@ -22,8 +30,18 @@ public class Dash : MovementAbility
     {
 
         PlayerScript player = parent.GetComponent<PlayerScript>(); //REFERENCE TO THE PLAYER SCRIPT ACTIVE IN THE SCENE
-        player.runSpeed = dashVelocity;
-        player.walkSpeed = dashVelocity;
+
+        //DETERMINE WHICH APPLICATION TYPE TO USE
+        if(applicationType == ApplicationType.SET_SPEED) //SET SPEED
+        {
+            player.runSpeed  = dashVelocity;
+            player.walkSpeed = dashVelocity;
+        }
+        else //SPEED MULITPLIER
+        {
+            player.runSpeed  *= speedMultiplier;
+            player.walkSpeed *= speedMultiplier;
+        }
 
         DoPretty(parent);
         

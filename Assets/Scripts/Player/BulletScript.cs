@@ -28,6 +28,8 @@ public class BulletScript : MonoBehaviour
     }
     public void SetColor(Color color)
     {
-        effectPrefab.GetComponent<ParticleSystem>().startColor = color;
+        ParticleSystem particleSystem = effectPrefab.GetComponent<ParticleSystem>();
+        var main = particleSystem.main;
+        main.startColor = color;
     }
 }

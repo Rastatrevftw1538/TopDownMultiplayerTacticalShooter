@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 817598890}
   - component: {fileID: 817598892}
   - component: {fileID: 817598891}
+  - component: {fileID: 1504205377479839306}
   m_Layer: 0
   m_Name: Win/Lose Text
   m_TagString: Untagged
@@ -99,9 +100,9 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_fontStyle: 1
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -129,12 +130,30 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -193.07248, y: 0, z: -193.07251, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1504205377479839306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 817598889}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71041b3bb581a4540b6bfca6e7b7d0bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  announcement: 
+  messageColor: {r: 0, g: 0, b: 0, a: 0}
+  message: {fileID: 0}
+  teamColor:
+  - {r: 1, g: 0, b: 0, a: 1}
+  - {r: 0, g: 0, b: 1, a: 1}
 --- !u!1 &1160145801
 GameObject:
   m_ObjectHideFlags: 0
@@ -284,6 +303,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   announcement: 0
+  messageColor: {r: 0, g: 0, b: 0, a: 0}
+  message: {fileID: 0}
+  teamColor:
+  - {r: 1, g: 0, b: 0, a: 1}
+  - {r: 0, g: 0, b: 1, a: 1}
 --- !u!1 &1321703463
 GameObject:
   m_ObjectHideFlags: 0
@@ -433,6 +457,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   announcement: BASE IS VULNERABLE! ATTACK NOW!
+  messageColor: {r: 0, g: 0, b: 0, a: 0}
+  message: {fileID: 0}
+  teamColor:
+  - {r: 1, g: 0, b: 0, a: 1}
+  - {r: 0, g: 0, b: 1, a: 1}
 --- !u!1 &623490234450751697
 GameObject:
   m_ObjectHideFlags: 0
@@ -629,6 +658,7 @@ MonoBehaviour:
   playersToRespawn: []
   gameTime: 180
   rounds: 3
+  timeBeforeRestartingGame: 10
   connectedPlayersCount: 0
   teamRespawnTime: 8
 --- !u!114 &1949206844942319753

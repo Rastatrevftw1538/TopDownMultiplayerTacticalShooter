@@ -9,13 +9,14 @@ public class CustomNetworkManager : NetworkManager
 {
     [HideInInspector]
     public HeistGameManager gameManager;
-    
+
     public override void OnStartServer()
     {
         base.OnStartServer();
         Debug.Log("Server Started");
-        Invoke("SearchForGameManager",0.5f);
-        
+        Invoke(nameof(SearchForGameManager),0.5f);
+
+        EvtSystem.EventDispatcher.AddListener<EndGame>(EndHost);
     }
     private void Start() {
         // Get the local IP address of the device
@@ -99,7 +100,7 @@ public class CustomNetworkManager : NetworkManager
         base.OnClientDisconnect();
         SceneManager.LoadScene(0);
     }
-    private void Update() {
+    public override void Update() {
         bool allReady = false;
         foreach(NetworkConnectionToClient conn in NetworkServer.connections.Values){
             if(conn.isReady){
@@ -126,7 +127,11 @@ public class CustomNetworkManager : NetworkManager
             conn.Disconnect();
             return;
         }
-        
+    }
+    
+    private void EndHost(EndGame evtData)
+    {
+        //StopHost();
     }
 }
 

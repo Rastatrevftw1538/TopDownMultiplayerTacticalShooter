@@ -15,9 +15,11 @@ MonoBehaviour:
   name: Whitebox Dash
   waitTime: 2
   _abilityType: 0
-  _playerEffects: 0
-  _activationMethod: 0
-  _abilityAppliance: 1
+  _playerEffects: 2
+  _activationMethod: 2
+  _abilityAppliance: 0
   activeTime: 0.01
   cooldownTime: 2
-  dashVelocity: 35
+  applicationType: 0
+  dashVelocity: 50
+  speedMultiplier: 20

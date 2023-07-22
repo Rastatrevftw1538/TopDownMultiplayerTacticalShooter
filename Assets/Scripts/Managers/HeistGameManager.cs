@@ -1,10 +1,11 @@
+using System;
 using System.ComponentModel;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 using Mirror;
-using System;
 
 public class HeistGameManager : NetworkBehaviour
 {
@@ -26,6 +27,7 @@ public class HeistGameManager : NetworkBehaviour
     [SyncVar] private float currentTime;
     public int rounds = 3;
     [SyncVar] private int currentRounds = 1;
+    public float timeBeforeRestartingGame = 10f;
 
     [HideInInspector]
     public int connectedPlayersCount = 0;
@@ -86,7 +88,7 @@ private void FixedUpdate() {
             }
             
             //DETERMINE WINNER
-            if(currentTime == 0){
+            if(currentTime <= 0){
                 DetermineWinnerForTimeOut();
             }
         }
@@ -169,30 +171,40 @@ private void FixedUpdate() {
 
     private void DetermineWinnerForTimeOut()
     {
+        BaseDestroyed losingTeam = new BaseDestroyed();
         // Compare the scores and determine the winning team
         if (blueBase.GetHealth() > redBase.GetHealth())
         {
-            // Blue team wins
-            // Handle the win condition
+            losingTeam.thisBase = redBase;
         }
         else if (redBase.GetHealth() > blueBase.GetHealth())
         {
-            // Red team wins
-            // Handle the win condition
+            losingTeam.thisBase = blueBase;
         }
         else
         {
-            // It's a tie, handle the tie condition
+            TiedGame tiedGame = new TiedGame();
+            EvtSystem.EventDispatcher.Raise<TiedGame>(tiedGame);
         }
+
+        EvtSystem.EventDispatcher.Raise<BaseDestroyed>(losingTeam);
     }
 
+    [ClientRpc]
     private void EndGame()
     {
-        blueBase.setHealth(baseHealth);
-        redBase.setHealth(baseHealth);
+        //SET FUNCTIONALITY IN THE 'EndHost' FUNCTION IN 'CustomNetworkManager.cs'
+        EndGame endGame = new EndGame();
+        EvtSystem.EventDispatcher.Raise<EndGame>(endGame);
 
-        // Restart the game or perform other actions as needed
-        StartGame();
+
+
+        Debug.LogError("Ended the game.");
+    }
+
+    private void EndGameThruEvent(BaseDestroyed evtData)
+    {
+        Invoke(nameof(EndGame), timeBeforeRestartingGame);
     }
 
     //BASE STUFF
@@ -200,7 +212,7 @@ private void FixedUpdate() {
     {
         if (evtData.isBaseVulnerable) //IF THE BASE IS VULNERABLE,
         {
-            // START THE RESPAWN TIMER
+            //ADD A LISTENER FOR THE DEATH OF AN ENTIRE TEAM
             EvtSystem.EventDispatcher.AddListener<StartTeamRespawn>(StartTeamRespawn);
         }
     }
@@ -230,29 +242,26 @@ private void FixedUpdate() {
         }
 
         //CLEAR ALL THE DEAD TEAM MEMBERS LIST
-        Invoke("ClearDead", teamRespawnTime);
-
-        //CHANGE THE BASE STATE AGAIN
-
+        Invoke(nameof(ClearDead), teamRespawnTime);
     }
 
     private void AddPlayerDied(PlayerDied evtData)
     {
         //GET THE PLAYER THAT DIED, AND ADD THEM TO THE LIST OF DEAD PLAYERS ON THEIR CORRESPONDING TEAM
         PlayerScript playerScript = evtData.playerThatDied.GetComponent<PlayerScript>(); //GETS THE CURRENT PLAYER SCRIPT ATTACHED TO THE PLAYER THAT JUST DIED
-        if (playerScript.playerTeam == PlayerScript.Team.Red && !searchDuplicates(playersToRespawn.ToArray(), evtData.playerThatDied))
+        if (playerScript.playerTeam == PlayerScript.Team.Red && !redTeamDead.Contains(evtData.playerThatDied))
         {
             //ADD THE DEAD PLAYER TO THE LIST OF DEAD TEAM MEMBERS
             redTeamDead.Add(playerScript.gameObject); //IF THIS DOESN'T WORK, MAKE A DIRECT REFERENCE THROUGH THE EVTDATA
             Debug.LogWarning("<color=red>ADDED PLAYER TO DEAD TEAM </color>");
         }
-        else
+        else if(playerScript.playerTeam == PlayerScript.Team.Blue && !blueTeamDead.Contains(evtData.playerThatDied))
         {
             blueTeamDead.Add(playerScript.gameObject);
             Debug.LogWarning("<color=blue>ADDED PLAYER TO DEAD TEAM </color>");
         }
 
-        if (!searchDuplicates(playersToRespawn.ToArray(), evtData.playerThatDied))
+        if (!playersToRespawn.Contains(evtData.playerThatDied))
             playersToRespawn.Add(evtData.playerThatDied);
 
 
@@ -295,5 +304,15 @@ private void FixedUpdate() {
         startTeamRespawn.respawnTime = teamRespawnTime;
         startTeamRespawn.team = whichBase.team;
         EvtSystem.EventDispatcher.Raise<StartTeamRespawn>(startTeamRespawn);
+
+        //ADD A LISTENER FOR THE DESTRUCTION OF THE BASE
+        EvtSystem.EventDispatcher.AddListener<BaseDestroyed>(EndGameThruEvent);
+    }
+
+    private void StopGameFunctionality()
+    {
+        //HANDLE WHAT YOU WANT TO BE INTERACTABLE AFTER THE GAME ENDS
+        redBase.canHit  = false;
+        blueBase.canHit = false;
     }
 }

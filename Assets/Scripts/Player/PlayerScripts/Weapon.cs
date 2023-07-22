@@ -13,7 +13,7 @@ public class Weapon : NetworkBehaviour
     public WeaponData weaponSpecs;
     [SerializeField]
     private Transform firePoint;
-    private Vector2 endPoint;
+    private Vector3 endPoint;
 
     public SpriteRenderer weaponLooks;
     public SpriteRenderer spreadCone;
@@ -159,10 +159,10 @@ public class Weapon : NetworkBehaviour
         {
             //CinemachineShake.Instance.ShakeCamera(5f, .1f);
             Vector3 spreadDirection = direction;
-            print("Direction thing SERVER: "+ spreadDirection);
+            print("Direction thing SERVER: " + spreadDirection);
             if (numOfBulletsPerShot > 1)
             {
-                float spreadAngle = Mathf.Clamp(i * (spread / numOfBulletsPerShot) + UnityEngine.Random.Range(0, spreadValue) - spreadValue / 2f,-5,5);
+                float spreadAngle = Mathf.Clamp(i * (spread / numOfBulletsPerShot) + UnityEngine.Random.Range(0, spreadValue) - spreadValue / 2f, -5, 5);
                 Quaternion spreadRotation = Quaternion.Euler(0, 0, spreadAngle);
                 spreadDirection = spreadRotation * direction;
             }
@@ -209,14 +209,25 @@ public class Weapon : NetworkBehaviour
                     }
                 }
             }
-            
+
             else
             {
-                whatWasHit ="NOTHING";
+                whatWasHit = "NOTHING";
+                endPoint = Vector3.zero;
             }
-            
+
             Debug.Log("HUh? Server: " + spreadDirection);
-            endPoint = hit.point;
+
+            if (endPoint == Vector3.zero)
+            {
+                //BOOOOOOOOOOOOOOOOOOM
+                Debug.DrawLine(firePoint.position, firePoint.position + (spreadDirection * fireRange), Color.red);
+                endPoint = new Vector3(firePoint.position.x, firePoint.position.y, firePoint.position.z) + (spreadDirection * fireRange);
+            }
+            else
+            {
+                endPoint = hit.point;
+            }
             RpcOnFire(hit, spreadDirection, endPoint, whatWasHit);
         }
     }
@@ -234,21 +245,23 @@ public class Weapon : NetworkBehaviour
         }
         else
         {
-            collisionPoint = spreadDirection;
+            //collisionPoint = spreadDirection;
             Debug.Log("Hit Nothing:");
         }
         
         var bulletInstance = Instantiate(bulletPrefab, firePoint.position, new Quaternion(0, 0, 0, 0));
         BulletScript trailRender = bulletInstance.GetComponent<BulletScript>();
         GameObject particleEffect = trailRender.effectPrefab;
+        ParticleSystem particleSystem = particleEffect.GetComponent<ParticleSystem>();
+        var main = particleSystem.main;
             if(whatWasHit == "Base"){
-                particleEffect.GetComponent<ParticleSystem>().startColor = Color.cyan;
+                main.startColor = Color.cyan;
             }
             else if(whatWasHit == "Player"){
-                particleEffect.GetComponent<ParticleSystem>().startColor = Color.red;
+                main.startColor = Color.red;
             }
             else if(whatWasHit == "Wall"){
-                particleEffect.GetComponent<ParticleSystem>().startColor = Color.gray;
+                main.startColor = Color.gray;
             }
         Instantiate(trailRender.effectPrefab, collisionPoint, new Quaternion(0, 0, 0, 0));
         trailRender.SetTargetPosition(collisionPoint);
