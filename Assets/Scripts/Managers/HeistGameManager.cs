@@ -50,8 +50,8 @@ public class HeistGameManager : NetworkBehaviour
     {
         ui = this.transform.GetChild(0).gameObject;
         baseObjects = Level.transform.Find("BaseSpawnPoints").gameObject;
-        redBase = baseObjects.transform.Find("Base_Red").GetComponent<Base>();
-        blueBase = baseObjects.transform.Find("Base_Blue").GetComponent<Base>();
+        redBase = baseObjects.transform.GetChild(0).GetComponent<Base>();
+        blueBase = baseObjects.transform.GetChild(1).GetComponent<Base>();
 
         currentTime = gameTime;
         //SUBSCRIBE TO EVENT 'ChangeBaseState' CALLED WITHIN 'Base.cs', INVOKE 'GetBaseData'
@@ -95,6 +95,10 @@ private void FixedUpdate() {
     }
     public void OnPlayerConnected(NetworkConnection conn)
     {
+        if(gameStarted){
+            print("<color=red> Player: "+conn.identity.name+" joined late</color>");
+            addToTeam(conn.identity.gameObject,NetworkServer.connections.Count-1);
+        }
         /*
         PlayerHealth playerHealth = conn.identity.GetComponent<PlayerHealth>();
         if (!playerHealth.checkIfAlive)

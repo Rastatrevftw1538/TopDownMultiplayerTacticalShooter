@@ -46,6 +46,7 @@ public class Base : NetworkBehaviour
 
     private void Start()
     {
+        /*
         if(this.tag == "Red")
         {
             team = PlayerScript.Team.Red;
@@ -54,6 +55,7 @@ public class Base : NetworkBehaviour
         {
             team = PlayerScript.Team.Blue;
         }
+        */
         //IF THIS RECIEVES A MESSAGE THAT A TEAM HAS BEEN RESPAWNED, END THE VULNERABILITY PHASE
         EvtSystem.EventDispatcher.AddListener<ChangeBaseState>(StartPhase);
         EvtSystem.EventDispatcher.AddListener<StartTeamRespawn>(EndPhase);
