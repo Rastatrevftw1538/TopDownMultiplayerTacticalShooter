@@ -695,7 +695,7 @@ MonoBehaviour:
   syncMode: 1
   syncInterval: 0
   playerTeam: 0
-  deviceType: 1
+  deviceType: 2
   joystickMovementUI: {fileID: 584446714611108121}
   joystickRotateUI: {fileID: 6713901557967857310}
   runSpeed: 1.5
