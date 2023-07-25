@@ -18,7 +18,7 @@ public class UiShow : NetworkBehaviour
         cameraHolder = Instantiate(cameraHolderPrefab,this.transform.parent);
         cameraHolder.SetActive(true);
         internalUI.SetActive(true);
-        if(this.transform.GetComponent<PlayerScript>().PlayerDevice == PlayerScript.DeviceType.Mobile){
+        if(this.transform.GetComponent<PlayerScript>().PlayerDevice == PlayerScript.SetDeviceType.Mobile){
             internalUI.transform.Find("ControllerHolder").gameObject.SetActive(true);
         }
         else{
