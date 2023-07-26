@@ -1,0 +1,80 @@
+{
+    "data": [
+        {
+            "description": {
+                "name": "Test 1",
+                "type": 2
+            },
+            "id": "b6dab065-12fe-42ca-89e1-c5c2670abd20"
+        },
+        {
+            "description": {
+                "name": "Test 2",
+                "type": 2
+            },
+            "id": "5c40c859-2167-4a3c-9598-c98b0632e757"
+        },
+        {
+            "description": {
+                "name": "Test 3",
+                "type": 2
+            },
+            "id": "913ca699-aeac-44a1-99c8-9af6d247965e"
+        }
+    ],
+    "tables": [
+        {
+            "name": "Test",
+            "id": "0759998b-b669-4197-8bbb-6c76229ab89e",
+            "attributes": [
+                {
+                    "name": "C 1",
+                    "type": 2
+                },
+                {
+                    "name": "C 2",
+                    "type": 2
+                },
+                {
+                    "name": "C 3",
+                    "type": 2
+                },
+                {
+                    "name": "C 4",
+                    "type": 2
+                }
+            ],
+            "capped": false,
+            "capacity": 0
+        }
+    ],
+    "timeTables": [
+        {
+            "name": "Time Table",
+            "id": "2a3ae86d-b40c-406a-929b-cd753e5f964d",
+            "attributes": [
+                {
+                    "name": "TC 1",
+                    "type": 2
+                },
+                {
+                    "name": "TC 2",
+                    "type": 2
+                },
+                {
+                    "name": "TC 3",
+                    "type": 2
+                },
+                {
+                    "name": "TC 4",
+                    "type": 2
+                }
+            ],
+            "capped": false,
+            "capacity": 0,
+            "timing": 2,
+            "unscaled": true,
+            "timeFormat": 1
+        }
+    ]
+}
