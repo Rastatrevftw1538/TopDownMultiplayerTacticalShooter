@@ -45,50 +45,31 @@ public class StartMenu : MonoBehaviour
     }
     private IEnumerator WaitForServerAndStart()
     {
-        int startRange = 1; // Starting range for the IP address (xxx)
-        int endRange = 254; // Ending range for the IP address (xxx)
-        int portStart = 7777; // Starting port range
-        int portEnd = 7799; // Ending port range
-
+        float startTime = Time.time;
         string loadingBar = ".";
-        loadingText.gameObject.SetActive(true);
-
-        // Get the subnet of the device
-        string subnet = GetSubnet();
-
-        for (int endPoint = startRange; endPoint <= endRange; endPoint++)
+        while (Time.time - startTime < 5f)
         {
-            for (int port = portStart; port <= portEnd; port++)
-            {
-                string ipAddress = subnet + endPoint;
-                string uriString = "kcp://" + ipAddress + ":" + port;
-                loadingText.text = "Looking For Game\n" + loadingBar;
-
-                // Try to convert the URI string to a URI object
-                Uri uri = null;
-                if (Uri.TryCreate(uriString, UriKind.Absolute, out uri))
-                {
-                    // Try to connect to the server at the current IP address and port using KCP transport
-                    NetworkManager.singleton.StartClient(uri);
-
-                    // Wait for a short time to give the client a chance to connect
-                    yield return new WaitForSeconds(1f);
-
-                    // Check if the client successfully connected
-                    if (NetworkClient.isConnected)
-                    {
-                        // Connected to the server, stop discovery
-                        networkDiscovery.StopDiscovery();
-                        loadingText.text = "Connected to Server";
-                        yield break; // Exit the coroutine
-                    }
-                    else
-                    {
-                        // Connection attempt failed, disconnect and try the next port
-                        networkManager.StopClient();
-                    }
-                }
+        loadingText.gameObject.SetActive(true);
+            if(loadingBar.Length>3){
+                loadingBar = ".";
             }
+            else{
+                loadingBar+=loadingBar;
+            }
+            loadingBar+=loadingBar;
+            loadingText.text = "Looking For Game\n"+(loadingBar);
+            if (discoveredServers.Count >= 1)
+            {
+                // Found a server, stop discovery and connect to it
+                networkDiscovery.StopDiscovery();
+                loadingBar="Starting Game";
+                long serverKey = discoveredServers.Keys.First<long>();
+                Debug.Log(serverKey);
+                Debug.Log(discoveredServers[serverKey].uri);
+                networkManager.StartClient(discoveredServers[serverKey].uri);
+                yield break;
+            }
+            yield return null; // Wait for the next frame
         }
 
         // No server found, start a host
