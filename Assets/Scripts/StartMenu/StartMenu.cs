@@ -35,7 +35,7 @@ public class StartMenu : MonoBehaviour
 
         StartCoroutine(WaitForServerAndStart());
         //networkManager.networkAddress = "localhost"; // set the IP address of the server
-        print(discoveredServers.Count);
+        Debug.Log("<color=purple>Discovered Servers: " + (discoveredServers.Count) + "</color>");
     }
     private IEnumerator WaitForServerAndStart()
     {

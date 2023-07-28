@@ -11,6 +11,7 @@ public class Dash : MovementAbility
         SET_SPEED,
         SPEED_MULTIPLIER
     }
+
     [Header("Movement Application Type")]
     public ApplicationType applicationType;
     [Header("Ability Stats")]

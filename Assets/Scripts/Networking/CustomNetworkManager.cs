@@ -100,7 +100,7 @@ public class CustomNetworkManager : NetworkManager
         base.OnClientDisconnect();
         SceneManager.LoadScene(0);
     }
-    public override void Update() {
+    private void Update() {
         bool allReady = false;
         foreach(NetworkConnectionToClient conn in NetworkServer.connections.Values){
             if(conn.isReady){
