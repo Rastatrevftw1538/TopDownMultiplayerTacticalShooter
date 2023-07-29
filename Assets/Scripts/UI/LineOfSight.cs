@@ -8,6 +8,8 @@ public class LineOfSight : MonoBehaviour
 	[Range(0, 360)]
 	public float viewAngle;
 
+	public float debugAngle;
+
 	public LayerMask targetMask;
 	public LayerMask obstacleMask;
 
@@ -23,6 +25,8 @@ public class LineOfSight : MonoBehaviour
 	public MeshFilter viewMeshFilter;
 	Mesh viewMesh;
 
+	private Camera playerCamera;
+
 	void Start()
 	{
 		viewMesh = new Mesh();
@@ -30,6 +34,7 @@ public class LineOfSight : MonoBehaviour
 		viewMeshFilter.mesh = viewMesh;
 
 		StartCoroutine("FindTargetsWithDelay", .2f);
+		playerCamera = GameObject.Find("ClientCamera").GetComponent<Camera>();
 	}
 
 
@@ -45,6 +50,7 @@ public class LineOfSight : MonoBehaviour
 	void LateUpdate()
 	{
 		DrawFieldOfView();
+		//Debug.LogWarning("The euler angle is: " + transform.eulerAngles.z);
 	}
 
 	void FindVisibleTargets()
@@ -59,10 +65,20 @@ public class LineOfSight : MonoBehaviour
 			if (Vector3.Angle(transform.up, dirToTarget) < viewAngle / 2)
 			{
 				float dstToTarget = Vector3.Distance(transform.position, target.position);
+				int oldMask = playerCamera.cullingMask;
 				if (!Physics2D.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
 				{
 					Debug.LogError("Seen Target");
 					visibleTargets.Add(target);
+					string targetLayer = target.gameObject.layer.ToString();
+					Debug.LogError(target.gameObject.layer.ToString());
+
+
+					playerCamera.cullingMask |= 1 << LayerMask.NameToLayer("Base");
+				}
+                else
+                {
+					playerCamera.cullingMask &= ~(1 << LayerMask.NameToLayer("Base"));
 				}
 			}
 		}
@@ -76,7 +92,16 @@ public class LineOfSight : MonoBehaviour
 		ViewCastInfo oldViewCast = new ViewCastInfo();
 		for (int i = 0; i <= stepCount; i++)
 		{
-			float angle = transform.eulerAngles.z - viewAngle / 2 + stepAngleSize * i;
+			float convertDegrees(float angle)
+            {
+				float diff = 360 - angle;
+				return (diff + viewAngle) - 90f;
+            }
+			//Debug.LogError("The actual angle is: " + invertDegrees(transform.eulerAngles.z));
+
+
+			float angle = (convertDegrees(transform.eulerAngles.z)) - viewAngle / 2 + stepAngleSize * i;
+			//Debug.LogError("The angle being used is: " + angle);
 			ViewCastInfo newViewCast = ViewCast(angle);
 
 			if (i > 0)

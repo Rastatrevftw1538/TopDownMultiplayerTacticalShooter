@@ -49,7 +49,6 @@ public class Weapon : NetworkBehaviour
     private RaycastHit2D tempHitLocation;
     private bool shootingGun;
 
-    //private Vector3 tempSpreadDirection;
     private void Awake() {
         if(weaponSpecs != null){
             damage = weaponSpecs.damagePerBullet;

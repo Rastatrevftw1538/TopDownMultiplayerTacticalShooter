@@ -1497,18 +1497,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4d3cf9b8f583ec4391b3ef1166537dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewRadius: 10
+  viewRadius: 20
   viewAngle: 90
+  debugAngle: 0
   targetMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 384
   obstacleMask:
     serializedVersion: 2
     m_Bits: 512
   visibleTargets: []
-  meshResolution: 1
-  edgeResolveIterations: 0
-  edgeDstThreshold: 0
+  meshResolution: 3
+  edgeResolveIterations: 4
+  edgeDstThreshold: 0.5
   maskCutawayDst: 0.1
   viewMeshFilter: {fileID: 4939266105461857431}
 --- !u!1 &4643259710611252097
@@ -2011,7 +2012,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 8b6b7de3525cf9249a6509b344abf77a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

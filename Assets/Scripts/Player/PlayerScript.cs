@@ -94,6 +94,7 @@ public class PlayerScript : NetworkBehaviour
         if(!playerCamera){
             playerCamera = GameObject.Find("ClientCamera").GetComponent<Camera>();
             print("Camera Set");
+            //playerCamera.cullingMask += LayerMask.GetMask("Objects");
         }
         if(Input.GetKey(KeyCode.LeftShift)){
             isRunning = true;
