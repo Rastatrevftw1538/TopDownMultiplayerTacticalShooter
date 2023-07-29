@@ -42,6 +42,7 @@ public class PlayerScript : NetworkBehaviour
     public Vector2 movement;
     public Quaternion rotation;
     public Rigidbody2D rb;
+    private Vector3 tempAimDir;
 
     [Header("Player Status")]
     public bool isRunning;
@@ -108,10 +109,11 @@ public class PlayerScript : NetworkBehaviour
             };
             movement = new Vector2(movement.x, movement.y).normalized * (isRunning ? runSpeed : walkSpeed) * 0.25f;
 
-            Vector3 mousePosition = Input.mousePosition;
+        Vector3 mousePosition = Input.mousePosition;
         mousePosition.z = -playerCamera.transform.position.z;
         Vector3 mouseWorldPosition = playerCamera.ScreenToWorldPoint(mousePosition);
         Vector3 aimDirection = mouseWorldPosition - transform.position;
+        tempAimDir = aimDirection;
         rotation = Quaternion.LookRotation(Vector3.forward, aimDirection);
         //print(rotation);
         }

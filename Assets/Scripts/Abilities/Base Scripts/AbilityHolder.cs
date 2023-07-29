@@ -56,16 +56,25 @@ public class AbilityHolder : MonoBehaviour
                         indx = 1;
                     }*/ 
 
-                    //void startAbility()
-                    //{
-                    //    abilities[indx].Activate(this.gameObject); //FOR NOW, JUST ACTIVATE THE FIRST ABILITY
-                    //}
+                    void startAbility()
+                    {
+                        abilities[indx].Activate(this.gameObject); //ACTIVATE THE ABILITY OF INDEX
 
-                    abilities[indx].Activate(this.gameObject); //FOR NOW, JUST ACTIVATE THE FIRST ABILITY
-                    state = AbilityState.active; //SET THE ABILITY TO READY
-                    activeTime = abilities[indx].activeTime; //SET THE ACTIVE TIME TO THE ABILITY'S ACTIVE TIME AND START THE 
+                        state = AbilityState.active; //SET THE ABILITY TO READY
+                        activeTime = abilities[indx].activeTime; //SET THE ACTIVE TIME TO THE ABILITY'S ACTIVE TIME AND START THE TIMER
+                    }
+
+                    //IF THE ABILITY HAS A DELAY, INVOKE THE ABILITY WITH THE DELAY TIMER
+                    if (abilities[indx].hasDelay)
+                    {
+                        Invoke(nameof(startAbility), abilities[indx].delayTime);
+                    }
+                    else
+                    {
+                        startAbility();
+                    }
                     
-                    Debug.Log("activated");
+                    Debug.LogWarning("<color=orange>Ability: " + abilities[indx].abilityName + " has been activated. </color>");
                 }
             break;
             
@@ -86,12 +95,12 @@ public class AbilityHolder : MonoBehaviour
                 if(cooldownTime > 0){ //WHILE THE ABILITY IS ON COOLDOWN
                     cooldownTime -= Time.deltaTime; //SUBTRACT TIME FROM THE COOLDOWN TIMER UNTIL THE ABILITY IS READY AGAIN
 
-                    Debug.Log("on cooldown");
+                    Debug.LogWarning("<color=orange>Ability: " + abilities[indx].abilityName + " is on cooldown. </color>");
                 }
                 else{
                     state = AbilityState.ready; //AND THEN SET THE ABILITY TO READY
 
-                    Debug.Log("ability ready to use");
+                    Debug.LogWarning("<color=orange>Ability: " + abilities[indx].abilityName + " is now ready to use. </color>");
                 }
             break;  
 

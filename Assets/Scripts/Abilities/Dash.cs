@@ -64,4 +64,16 @@ public class Dash : MovementAbility
         tr.emitting = false;
     }
     #endregion
+
+    #region HIT-SCAN ABILITY TYPE
+    private void hitScanDash(GameObject parent, GameObject target)
+    {
+        PlayerScript player = parent.GetComponent<PlayerScript>(); //REFERENCE TO THE PLAYER SCRIPT ACTIVE IN THE SCENE
+        Weapon weaponScript = parent.GetComponent<Weapon>(); //REFERENCE TO THE PLAYER'S WEAPON SCRIPT ACTIVE IN THE SCENE
+
+        Vector2 direction = weaponScript.firePoint.transform.up;
+        weaponScript.CmdFireAbility(direction, this);
+        
+    }
+    #endregion
 }

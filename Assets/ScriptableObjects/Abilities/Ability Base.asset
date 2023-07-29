@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Ability Base
   m_EditorClassIdentifier: 
   abilityName: 
-  abilityType: 1
-  playerEffects: 0
+  abilityType: 3
+  playerEffects: 2
   activationMethod: 0
   abilityAppliance: 0
   activeTime: 1

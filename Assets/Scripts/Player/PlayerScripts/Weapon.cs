@@ -12,7 +12,7 @@ public class Weapon : NetworkBehaviour
     [SerializeField]
     public WeaponData weaponSpecs;
     [SerializeField]
-    private Transform firePoint;
+    public Transform firePoint;
     private Vector3 endPoint;
 
     public SpriteRenderer weaponLooks;
@@ -152,7 +152,7 @@ public class Weapon : NetworkBehaviour
     }
 
     [Command]
-    void CmdFire(Vector2 direction)
+    public void CmdFire(Vector2 direction)
     {
         var damageDone = 0;
         for (int i = 0; i < numOfBulletsPerShot; i++)
@@ -266,5 +266,79 @@ public class Weapon : NetworkBehaviour
         Instantiate(trailRender.effectPrefab, collisionPoint, new Quaternion(0, 0, 0, 0));
         trailRender.SetTargetPosition(collisionPoint);
         Debug.Log("Bullet Fired Client " + collisionPoint+ " direction "+spreadDirection);
+    }
+
+    [Command]
+    public void CmdFireAbility(Vector2 direction, Ability ability)
+    {
+        var damageDone = 0;
+
+        //CinemachineShake.Instance.ShakeCamera(5f, .1f);
+        Vector3 spreadDirection = direction;
+        print("Direction thing SERVER: " + spreadDirection);
+
+        var hit = Physics2D.Raycast(firePoint.position, spreadDirection, fireRange, targetLayers);
+        String whatWasHit = "";
+        if (hit.collider != null)
+        {
+            whatWasHit = hit.collider.tag;
+            if (hit.collider.name.Equals("HitBox") || hit.collider.name.Equals("Bullseye!"))
+            {
+                Transform objectOrigin = hit.collider.transform.parent.parent;
+                if (objectOrigin != null)
+                {
+                    //PLAYER HEALTH STUFF
+                    PlayerHealth enemyHealth = objectOrigin.GetComponent<PlayerHealth>();
+                    if (enemyHealth != null)
+                    {
+                        if (hit.collider.gameObject.name == "Bullseye!")
+                        {
+                            damageDone = 2 * damage;
+                        }
+                        else
+                        {
+                            damageDone = damage;
+                        }
+                        enemyHealth.TakeDamage(damageDone);
+                    }
+
+                    //DAMAGE BASE STUFF
+                    Base baseHealth = objectOrigin.GetComponent<Base>();
+                    if (baseHealth != null)
+                    {
+                        Debug.Log("<color=orange>did grab base </color>");
+                        if (baseHealth.canHit && !baseHealth.CompareTag(this.GetComponent<PlayerScript>().playerTeam.ToString()))
+                        {
+                            damageDone = damage * (2 / (NetworkServer.connections.Count / 2));
+                            print(NetworkServer.connections.Count);
+                            print("<color=yellow> Damage to base: " + damageDone + "</color>");
+                            baseHealth.TakeDamage(damageDone);
+                            Debug.Log("<color=orange>did Hit base </color>");
+                        }
+                    }
+                }
+            }
+        }
+
+        else
+        {
+            whatWasHit = "NOTHING";
+            endPoint = Vector3.zero;
+        }
+
+        Debug.Log("HUh? Server: " + spreadDirection);
+
+        if (endPoint == Vector3.zero)
+        {
+            //BOOOOOOOOOOOOOOOOOOM
+            Debug.DrawLine(firePoint.position, firePoint.position + (spreadDirection * fireRange), Color.red);
+            endPoint = new Vector3(firePoint.position.x, firePoint.position.y, firePoint.position.z) + (spreadDirection * fireRange);
+        }
+        else
+        {
+            endPoint = hit.point;
+        }
+        RpcOnFire(hit, spreadDirection, endPoint, whatWasHit);
+        
     }
 }
