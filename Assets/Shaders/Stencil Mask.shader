@@ -9,7 +9,7 @@ Shader "Custom/NewSurfaceShader"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" "Queue"="Objects-100"}
+        Tags { "RenderType"="Opaque"} // "Queue"="Objects"
         ColorMask 0
         ZWrite off
         LOD 200

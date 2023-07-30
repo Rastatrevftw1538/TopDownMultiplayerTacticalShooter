@@ -22,8 +22,8 @@ public class Ability : ScriptableObject
     [SerializeField] public float activeTime;
     [SerializeField] public float cooldownTime;
     [SerializeField] public float delayTime;
-    [SerializeField] public bool isInstantAbility;
-    [SerializeField] public bool hasDelay;
+    [SerializeField] public bool  isInstantAbility;
+    [SerializeField] public bool  hasDelay;
     #endregion
 
     #region WHICH ABILITY 

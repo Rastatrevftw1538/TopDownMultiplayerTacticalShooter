@@ -71,15 +71,16 @@ public class LineOfSight : MonoBehaviour
 					Debug.LogError("Seen Target");
 					visibleTargets.Add(target);
 					string targetLayer = target.gameObject.layer.ToString();
-					Debug.LogError(target.gameObject.layer.ToString());
+					//Debug.LogError(target.gameObject.layer.ToString());
 
 
 					playerCamera.cullingMask |= 1 << LayerMask.NameToLayer("Base");
 				}
-                else
-                {
-					playerCamera.cullingMask &= ~(1 << LayerMask.NameToLayer("Base"));
-				}
+                //else
+                //{
+					//Debug.LogError("not seen");
+					//playerCamera.cullingMask &= ~(1 << LayerMask.NameToLayer("Base"));
+				//}
 			}
 		}
 	}
@@ -95,7 +96,7 @@ public class LineOfSight : MonoBehaviour
 			float convertDegrees(float angle)
             {
 				float diff = 360 - angle;
-				return (diff + viewAngle) - 90f;
+				return diff;
             }
 			//Debug.LogError("The actual angle is: " + invertDegrees(transform.eulerAngles.z));
 
@@ -149,6 +150,37 @@ public class LineOfSight : MonoBehaviour
 		viewMesh.vertices  = vertices;
 		viewMesh.triangles = triangles;
 		viewMesh.RecalculateNormals();
+	}
+
+	void HideNonSeenTargets()
+    {
+		Collider2D[] targetsInViewRadius = Physics2D.OverlapCircleAll(transform.position, viewRadius, targetMask);
+
+		for (int i = 0; i < targetsInViewRadius.Length; i++)
+		{
+			Transform target = targetsInViewRadius[i].transform;
+			Vector3 dirToTarget = (target.position - transform.position).normalized;
+			if (Vector3.Angle(transform.up, dirToTarget) < viewAngle / 2)
+			{
+				float dstToTarget = Vector3.Distance(transform.position, target.position);
+				int oldMask = playerCamera.cullingMask;
+				if (!Physics2D.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
+				{
+					Debug.LogError("Seen Target");
+					visibleTargets.Add(target);
+					string targetLayer = target.gameObject.layer.ToString();
+					//Debug.LogError(target.gameObject.layer.ToString());
+
+
+					playerCamera.cullingMask |= 1 << LayerMask.NameToLayer("Base");
+				}
+				//else
+				//{
+				//Debug.LogError("not seen");
+				//playerCamera.cullingMask &= ~(1 << LayerMask.NameToLayer("Base"));
+				//}
+			}
+		}
 	}
 
 

@@ -35,7 +35,6 @@ public class AbilityGUI : Editor
 
     private void OnEnable()
     {
-
         #region Serialized Properties
         //ABILITY NAME
         abilityName = serializedObject.FindProperty("abilityName");
@@ -59,7 +58,6 @@ public class AbilityGUI : Editor
         whichAbility = serializedObject.FindProperty("whichAbility");
 
         #endregion
-
     }
 
 
