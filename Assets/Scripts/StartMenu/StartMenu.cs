@@ -1,13 +1,19 @@
+using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using UnityEngine.SceneManagement;
+using Unity.Services.Core;
+using Unity.Services.Authentication;
+using Unity.Services.Relay;
+using Unity.Services.Relay.Models;
 using Mirror.Discovery;
 using TMPro;
 using System;
 using kcp2k;
+
 
 public class StartMenu : MonoBehaviour
 {
@@ -22,7 +28,7 @@ public class StartMenu : MonoBehaviour
     private void Start() {
         loadingText = GameObject.Find("Searching For Game").GetComponent<TMP_Text>();
         loadingText.gameObject.SetActive(false);
-        networkManager = networkObject.GetComponent<NetworkManager>();
+        networkManager = networkObject.GetComponent<CustomNetworkManager>();
         networkDiscovery = networkObject.GetComponent<NetworkDiscovery>();
         networkDiscovery.OnServerFound.AddListener(OnDiscoveredServer);
         networkDiscovery.StartDiscovery();
@@ -64,9 +70,23 @@ public class StartMenu : MonoBehaviour
                 networkDiscovery.StopDiscovery();
                 loadingBar="Starting Game";
                 long serverKey = discoveredServers.Keys.First<long>();
+                string joinCode = discoveredServers[serverKey].joinCode;
                 Debug.Log(serverKey);
-                Debug.Log(discoveredServers[serverKey].uri);
-                networkManager.StartClient(discoveredServers[serverKey].uri);
+                Debug.Log("<color=green> Join Code: "+joinCode+"</color>");
+                if(joinCode!=""){
+                    try{
+                    // Join the Relay host
+                    await RelayService.Instance.JoinAsync(new JoinRequest { JoinCode = joinCode });
+                    Debug.Log("Joined the Relay host successfully!");
+                    Debug.Log(discoveredServers[serverKey].uri);
+                    networkManager.StartClient(discoveredServers[serverKey].uri);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError("Error joining the Relay host: " + e.Message);
+                    }
+                }
+                
                 yield break;
             }
             yield return null; // Wait for the next frame

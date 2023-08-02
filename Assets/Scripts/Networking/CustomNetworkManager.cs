@@ -1,45 +1,62 @@
+using System;
 using System.Net;
-using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Mirror;
 using System.Net.Sockets;
+using Unity.Services.Core;
+using Unity.Services.Authentication;
+using Unity.Services.Relay;
+using Unity.Services.Relay.Models;
+
 
 public class CustomNetworkManager : NetworkManager
 {
     [HideInInspector]
-    public HeistGameManager gameManager;
+    public HeistGameManager gameManager;// Reference to the StartMenu UI script
+    public StartMenu startMenu;
 
+    // Relay related variables
+    private Guid hostAllocationId;
+    public string joinCode;
+
+    private bool isLoggedIn = false;
+
+    // Relay allocation region (optional, you can set this based on player's choice)
+    private string allocationRegion = "us"; // For example, "us", "eu", etc.
+    
     public override void OnStartServer()
     {
         base.OnStartServer();
         Debug.Log("Server Started");
+        CreateRelayAllocation();
         Invoke(nameof(SearchForGameManager),0.5f);
-
         EvtSystem.EventDispatcher.AddListener<EndGame>(EndHost);
     }
     private void Start() {
         // Get the local IP address of the device
         string localIPAddress = GetLocalIPAddress();
+        //AuthenticationService.Instance.SignInAnonymously();
 
         // Set the network address of the NetworkManager to the local IP address
         networkAddress = localIPAddress;
     }
     public string GetLocalIPAddress()
     {
-            string localHost = Dns.GetHostName();
+                string localHost = Dns.GetHostName();
             IPHostEntry hostEntry = Dns.GetHostEntry(localHost);
 
-            foreach (IPAddress ipAddress in hostEntry.AddressList)
+        foreach (IPAddress ipAddress in hostEntry.AddressList)
+        {
+            if (ipAddress.AddressFamily == AddressFamily.InterNetwork)
             {
-                if (ipAddress.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    return ipAddress.ToString();
-                }
+                return ipAddress.ToString();
             }
-            // If no suitable IP address is found, return a default value (localhost)
-            return "127.0.0.1";
+        }
+        // If no suitable IP address is found, return a default value (localhost)
+        return "127.0.0.1";
     }
     private void SearchForGameManager() {
         Scene gameScene = SceneManager.GetSceneByName("LevelTemplate");
@@ -52,6 +69,54 @@ public class CustomNetworkManager : NetworkManager
                 }
         }
     }
+
+    public async void UnityLogin()
+		{
+			try
+			{
+				await UnityServices.InitializeAsync();
+				await AuthenticationService.Instance.SignInAnonymouslyAsync();
+                Debug.Log("Logged into Unity, player ID: " + AuthenticationService.Instance.PlayerId);
+                isLoggedIn = true;
+            }
+			catch (Exception e)
+			{
+                isLoggedIn = false;
+                Debug.Log(e);
+			}
+		}
+    private async void CreateRelayAllocation()
+    {
+        Debug.Log("Creating Relay Allocation...");
+
+        // Determine the region to use (user-selected or hardcoded)
+        //string region = allocationRegion;
+
+        // Important: Once the allocation is created, you have ten seconds to bind
+        Allocation allocation = await RelayService.Instance.CreateAllocationAsync(2);
+        hostAllocationId = allocation.AllocationId;
+        Debug.Log($"Host Allocation ID: {hostAllocationId}");
+        Invoke(nameof(CheckRelayAllocation),0.5f);
+
+    }
+
+    private async void CheckRelayAllocation()
+    {
+        Debug.Log("Checking Relay Allocation...");
+
+        try
+        {
+            // Get the join code for the relay allocation
+            joinCode = await RelayService.Instance.GetJoinCodeAsync(hostAllocationId);
+            Debug.Log("Join Code: " + joinCode);
+
+        }
+        catch (RelayServiceException ex)
+        {
+            Debug.LogError(ex.Message + "\n" + ex.StackTrace);
+        }
+    }
+
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
         base.OnServerAddPlayer(conn);
@@ -86,7 +151,7 @@ public class CustomNetworkManager : NetworkManager
         base.OnClientDisconnect();
         SceneManager.LoadScene(0);
     }
-    public override void Update() {
+    private void Update() {
         bool allReady = false;
         foreach(NetworkConnectionToClient conn in NetworkServer.connections.Values){
             if(conn.isReady){
@@ -120,4 +185,5 @@ public class CustomNetworkManager : NetworkManager
         //StopHost();
     }
 }
+
 

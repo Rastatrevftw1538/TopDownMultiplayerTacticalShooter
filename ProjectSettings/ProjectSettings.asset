@@ -847,11 +847,11 @@ PlayerSettings:
     m_VersionName: 
   apiCompatibilityLevel: 6
   activeInputHandler: 0
-  cloudProjectId: 
+  cloudProjectId: 5469d4b2-5d27-4894-8c22-cfe5eac055c7
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
-  organizationId: 
+  projectName: TopDownMultiplayerTacticalShooter
+  organizationId: rastatrevftw
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   playerDataPath: 
