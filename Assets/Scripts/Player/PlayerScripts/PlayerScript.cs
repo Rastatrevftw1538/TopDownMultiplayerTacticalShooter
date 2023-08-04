@@ -322,41 +322,49 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         _currentEffectTime = 0f;
         _nextTickTime = 0f;
 
-        if(_effectParticles != null)
-        {
-            Destroy(_effectParticles);
-        }
+        //if(_effectParticles != null)
+        //{
+        //   Destroy(_effectParticles);
+        //}
     }
 
     [Command]
     private void CmdHandleEffect()
     {
-        HandleEffect();
+        if(_statusEffectData != null)
+            HandleEffect();
     }
 
     [ClientRpc]
     public void HandleEffect()
     {
-        //CODE DIFFERENT CASES FOR WHAT THE ABILITY IS
-        _currentEffectTime += Time.deltaTime;
-        if (_statusEffectData == null) return;
-
-        if (_currentEffectTime >= _statusEffectData.activeTime) { RemoveEffect(); }
-
-        //IF THE STATUS EFFECT DATA IS OF TYPE 'DOTStatusEffect'
-        //if (_statusEffectData.GetType() == typeof(DOTStatusEffect))
+        //if (_statusEffectData != null)
         //{
+        //CODE DIFFERENT CASES FOR WHAT THE ABILITY IS
+        if (_statusEffectData != null)
+        {
+            if (_currentEffectTime >= _statusEffectData.activeTime) { RemoveEffect(); }
+            _currentEffectTime += Time.deltaTime;
+            //IF THE STATUS EFFECT DATA IS OF TYPE 'DOTStatusEffect'
+            //if (_statusEffectData.GetType() == typeof(DOTStatusEffect))
+            //{
 
-            if (_statusEffectData.valueOverTime != 0 && _currentEffectTime > _nextTickTime)
-            {
-                PlayerHealth playerHealth = GetComponent<PlayerHealth>();
-                _nextTickTime += _statusEffectData.tickSpeed;
+                if (_statusEffectData != null)
+                {
+                    if (_statusEffectData.valueOverTime != 0 && _currentEffectTime > _nextTickTime)
+                    {
+                        PlayerHealth playerHealth = GetComponent<PlayerHealth>();
+                        _nextTickTime += _statusEffectData.tickSpeed;
 
-                //CHECK IF YOU WERE TRYING TO HEAL, OR TO DAMAGE
-                int posOrNeg = _statusEffectData.isDOT ? -1 : 1; 
+                        //CHECK IF YOU WERE TRYING TO HEAL, OR TO DAMAGE
+                        int posOrNeg = _statusEffectData.isDOT ? -1 : 1;
 
-                playerHealth.TakeDamage((int)_statusEffectData.valueOverTime * posOrNeg);
-            }
+                        playerHealth.TakeDamage((int)_statusEffectData.valueOverTime * posOrNeg);
+                    }
+                //}
+                }
+        }
+        //}
         //}
         //else if(_statusEffectData.GetType() == typeof(MovementStatusEffect))
         //{
