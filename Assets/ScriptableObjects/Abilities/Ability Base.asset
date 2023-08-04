@@ -13,13 +13,17 @@ MonoBehaviour:
   m_Name: Ability Base
   m_EditorClassIdentifier: 
   abilityName: 
-  abilityType: 3
-  playerEffects: 2
-  activationMethod: 0
+  statusEffectData: {fileID: 11400000, guid: 7ff338128b3ed104982b7dbd6886445d, type: 2}
+  abilityType: 0
+  playerEffects: 1
+  activationMethod: 3
   abilityAppliance: 0
-  activeTime: 1
-  cooldownTime: 4
-  delayTime: 0
+  activeTime: 3
+  cooldownTime: 2
+  delayTime: 1
   isInstantAbility: 0
   hasDelay: 0
-  whichAbility: {fileID: 0}
+  whichAbility: {fileID: 11400000, guid: 8204286674f8c3948923303bb88ebae0, type: 2}
+  radius: 4
+  projectileSpeed: 0
+  bulletColor: {r: 0, g: 0, b: 0, a: 0}

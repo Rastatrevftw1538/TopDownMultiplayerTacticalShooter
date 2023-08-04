@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
-public class PlayerScript : NetworkBehaviour
+public class PlayerScript : NetworkBehaviour, IEffectable
 {
     private Camera playerCamera;
+    private StatusEffectData _statusEffectData;
     public enum Team
     {
         None,
@@ -42,7 +43,6 @@ public class PlayerScript : NetworkBehaviour
     public Vector2 movement;
     public Quaternion rotation;
     public Rigidbody2D rb;
-    private Vector3 tempAimDir;
 
     [Header("Player Status")]
     public bool isRunning;
@@ -64,6 +64,8 @@ public class PlayerScript : NetworkBehaviour
         {
             Debug.LogWarning("got rb");
         }
+
+        EvtSystem.EventDispatcher.AddListener<PlayerDied>(ClearStatusEffects);
     }
 
     public Team PlayerTeam
@@ -90,18 +92,22 @@ public class PlayerScript : NetworkBehaviour
         setColorsOfPlayers();
 
         #region PC MOVEMENT
-        if (deviceType == SetDeviceType.PC){
-        if(!playerCamera){
-            playerCamera = GameObject.Find("ClientCamera").GetComponent<Camera>();
-            print("Camera Set");
-            //playerCamera.cullingMask += LayerMask.GetMask("Objects");
-        }
-        if(Input.GetKey(KeyCode.LeftShift)){
-            isRunning = true;
-        }
-        else if(Input.GetKeyUp(KeyCode.LeftShift)){
-            isRunning = false;
-        }
+        if (deviceType == SetDeviceType.PC)
+        {
+            if (!playerCamera)
+            {
+                playerCamera = GameObject.Find("ClientCamera").GetComponent<Camera>();
+                print("Camera Set");
+                //playerCamera.cullingMask += LayerMask.GetMask("Objects");
+            }
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                isRunning = true;
+            }
+            else if (Input.GetKeyUp(KeyCode.LeftShift))
+            {
+                isRunning = false;
+            }
 
             movement = new Vector2
             {
@@ -110,19 +116,19 @@ public class PlayerScript : NetworkBehaviour
             };
             movement = new Vector2(movement.x, movement.y).normalized * (isRunning ? runSpeed : walkSpeed) * 0.25f;
 
-        Vector3 mousePosition = Input.mousePosition;
-        mousePosition.z = -playerCamera.transform.position.z;
-        Vector3 mouseWorldPosition = playerCamera.ScreenToWorldPoint(mousePosition);
-        Vector3 aimDirection = mouseWorldPosition - transform.position;
-        tempAimDir = aimDirection;
-        rotation = Quaternion.LookRotation(Vector3.forward, aimDirection);
-        //print(rotation);
+            Vector3 mousePosition = Input.mousePosition;
+            mousePosition.z = -playerCamera.transform.position.z;
+            Vector3 mouseWorldPosition = playerCamera.ScreenToWorldPoint(mousePosition);
+            Vector3 aimDirection = mouseWorldPosition - transform.position;
+            rotation = Quaternion.LookRotation(Vector3.forward, aimDirection);
+            //print(rotation);
         }
         #endregion
 
         #region MOBILE MOVEMENT
-        if (deviceType == SetDeviceType.Mobile){
-    
+        if (deviceType == SetDeviceType.Mobile)
+        {
+
             JoystickControllerMovement joystickController = joystickMovementUI.GetComponent<JoystickControllerMovement>();
 
             float horizontal = joystickController.GetHorizontalInput();
@@ -137,9 +143,19 @@ public class PlayerScript : NetworkBehaviour
         #endregion
 
         #region GENERAL MOVEMENT LOGIC (APPLIES TO ALL DEVICES)
-        if (canMove){
+        if (canMove)
+        {
             CmdMove(movement);
             CmdRotate(rotation);
+        }
+        #endregion
+
+        #region ABILITY EFFECT CHECK
+        if(_statusEffectData != null)
+        {
+            Debug.LogError("not null");
+            CmdHandleEffect();
+            Debug.LogError("Applying effect");
         }
         #endregion
     }
@@ -157,11 +173,13 @@ public class PlayerScript : NetworkBehaviour
         RpcRotation(rotation);
         transform.GetChild(0).transform.rotation = rotation;
     }
+
     [ClientRpc]
     private void RpcMove(Vector2 movement)
     {
         transform.Translate(movement * Time.fixedDeltaTime);
     }
+
     [ClientRpc]
     private void RpcRotation(Quaternion rotation)
     {
@@ -221,8 +239,9 @@ public class PlayerScript : NetworkBehaviour
             
 
     }
-[Command]
-private void CmdRequestAuthority()
+
+    [Command]
+    private void CmdRequestAuthority()
 {
     if (!isLocalPlayer)
         {
@@ -244,7 +263,8 @@ private void CmdRequestAuthority()
             Debug.Log(networkIdentity.assetId+" taking Authority for "+ this.gameObject.name);
         }
 }
-public override void OnStopClient()
+
+    public override void OnStopClient()
     {
         // Clear authority when the client stops
         if (isLocalPlayer)
@@ -263,4 +283,96 @@ public override void OnStopClient()
             networkIdentity.RemoveClientAuthority();
         }
     }
+
+    #region 'IEffectable' INTERFACE FUNCTIONS
+    private ParticleSystem _effectParticles;
+
+    [Command]
+    public void CmdApplyEffect(StatusEffectData data)
+    {
+        ApplyEffect(data);
+    }
+
+    [ClientRpc]
+    public void ApplyEffect(StatusEffectData data)
+    {
+        RemoveEffect(); // REMOVE THIS LINE IF YOU WANT TO BE ABLE TO STACK STATUS EFFECTS, AND LOOP THROUGH ABILITIY STATUS EFFECTS USING 'HandleEffect'
+        _statusEffectData = data;
+
+        //_effectParticles = Instantiate(_statusEffectData.EffectParticles, transform);
+
+        //HandleEffect();
+        Debug.LogError("Applied effect");
+    }
+
+
+
+    private float _currentEffectTime = 0f;
+    private float _nextTickTime = 0f;
+    [Command]
+    public void CmdRemoveEffect()
+    {
+        RemoveEffect();
+    }
+
+
+    public void RemoveEffect()
+    {
+        _statusEffectData = null;
+        _currentEffectTime = 0f;
+        _nextTickTime = 0f;
+
+        if(_effectParticles != null)
+        {
+            Destroy(_effectParticles);
+        }
+    }
+
+    [Command]
+    private void CmdHandleEffect()
+    {
+        HandleEffect();
+    }
+
+    [ClientRpc]
+    public void HandleEffect()
+    {
+        //CODE DIFFERENT CASES FOR WHAT THE ABILITY IS
+        _currentEffectTime += Time.deltaTime;
+        if (_statusEffectData == null) return;
+
+        if (_currentEffectTime >= _statusEffectData.activeTime) { RemoveEffect(); }
+
+        //IF THE STATUS EFFECT DATA IS OF TYPE 'DOTStatusEffect'
+        //if (_statusEffectData.GetType() == typeof(DOTStatusEffect))
+        //{
+
+            if (_statusEffectData.valueOverTime != 0 && _currentEffectTime > _nextTickTime)
+            {
+                PlayerHealth playerHealth = GetComponent<PlayerHealth>();
+                _nextTickTime += _statusEffectData.tickSpeed;
+
+                //CHECK IF YOU WERE TRYING TO HEAL, OR TO DAMAGE
+                int posOrNeg = _statusEffectData.isDOT ? -1 : 1; 
+
+                playerHealth.TakeDamage((int)_statusEffectData.valueOverTime * posOrNeg);
+            }
+        //}
+        //else if(_statusEffectData.GetType() == typeof(MovementStatusEffect))
+        //{
+
+       // }
+        ///else
+        //{
+        //    Debug.LogError("did not match type");
+        //}
+    }
+
+    private void ClearStatusEffects(PlayerDied evtData)
+    {
+        if(evtData.playerThatDied == this.gameObject)
+            RemoveEffect(); 
+        Debug.LogError("Removed all ongoing status effects on Player of TEAM: " + playerTeam);
+    }
+    #endregion
 }

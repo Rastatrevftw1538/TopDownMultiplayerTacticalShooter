@@ -18,18 +18,22 @@ public class Dash : MovementAbility
     public float dashVelocity;
     public float speedMultiplier;
 
+    private CircleCollider2D aura;
+
     public override void Activate(GameObject parent){
-        startDash(parent);
+        //StartDash(parent);
+        PlayerScript player = parent.GetComponent<PlayerScript>();
+        SpawnAura(player, true);
     }
 
     public override void BeginCooldown(GameObject parent){
-        endDash(parent);
+        PlayerScript player = parent.GetComponent<PlayerScript>();
+        SpawnAura(player, false);
     }
 
     #region PLAYER-ABILITIES
-    public void startDash(GameObject parent)
+    public void StartDash(GameObject parent)
     {
-
         PlayerScript player = parent.GetComponent<PlayerScript>(); //REFERENCE TO THE PLAYER SCRIPT ACTIVE IN THE SCENE
 
         //DETERMINE WHICH APPLICATION TYPE TO USE
@@ -47,14 +51,14 @@ public class Dash : MovementAbility
         DoPretty(parent);
         
     }
-    [ClientRpc]
+    //[ClientRpc]
     void DoPretty(GameObject player)
     {
         TrailRenderer tr = player.GetComponent<TrailRenderer>();
         tr.emitting = true;
     }
 
-    public void endDash(GameObject parent)
+    public void EndDash(GameObject parent)
     {
         PlayerScript player = parent.GetComponent<PlayerScript>(); //REFERENCE TO THE PLAYER SCRIPT ACTIVE IN THE SCENE
         player.runSpeed = player.runSpeedNormal;
@@ -65,15 +69,50 @@ public class Dash : MovementAbility
     }
     #endregion
 
-    #region HIT-SCAN ABILITY TYPE
-    private void hitScanDash(GameObject parent, GameObject target)
+    #region PLAYER EFFECTS
+    private void EnemyDash(GameObject parent)
     {
         PlayerScript player = parent.GetComponent<PlayerScript>(); //REFERENCE TO THE PLAYER SCRIPT ACTIVE IN THE SCENE
-        Weapon weaponScript = parent.GetComponent<Weapon>(); //REFERENCE TO THE PLAYER'S WEAPON SCRIPT ACTIVE IN THE SCENE
-
-        Vector2 direction = weaponScript.firePoint.transform.up;
-        weaponScript.CmdFireAbility(direction, this);
-        
     }
+    #endregion
+
+    #region ACTIVATION METHODS
+    private void SpawnAura(PlayerScript player, bool toSpawn)
+    {
+        if (toSpawn)
+        {
+            Debug.LogError("Calls Aura");
+            aura = player.gameObject.AddComponent<CircleCollider2D>();
+            aura.radius = 5f;
+            aura.isTrigger = true;
+        }
+        else
+        {
+            Debug.LogError("Destroy Aura");
+            GameObject.Destroy(aura);
+        }
+        //IF YOU WANT THE CIRCLE TO GET BIGGER OVER TIME, USE INVOKE REPEATING
+    }
+
+    /*private bool GetCorrectTag(PlayerEffects effect)
+    {
+        bool hasCorrectTag;
+        switch (effect)
+        {
+            case PlayerEffects.ENEMY: //IF ENEMY IS THE TARGET
+                hasCorrectTag = player.playerTeam != currentCollider.playerTeam;
+                if (player.playerTeam == PlayerScript.Team.Red)
+                {
+                    correctTag = "Red";
+                }
+                break;
+            case PlayerEffects.TEAM: //IF TEAM IS THE TARGET
+                hasCorrectTag = player.playerTeam == currentCollider.playerTeam;
+                break;
+            default:
+                hasCorrectTag = player == currentCollider;
+                break;
+        }
+    }*/
     #endregion
 }

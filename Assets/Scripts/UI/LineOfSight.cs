@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
 public class LineOfSight : MonoBehaviour
 {
@@ -53,6 +54,7 @@ public class LineOfSight : MonoBehaviour
 		//Debug.LogWarning("The euler angle is: " + transform.eulerAngles.z);
 	}
 
+	[Client]
 	void FindVisibleTargets()
 	{
 		visibleTargets.Clear();
@@ -68,7 +70,7 @@ public class LineOfSight : MonoBehaviour
 				int oldMask = playerCamera.cullingMask;
 				if (!Physics2D.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
 				{
-					Debug.LogError("Seen Target");
+					//Debug.LogError("Seen Target");
 					visibleTargets.Add(target);
 					string targetLayer = target.gameObject.layer.ToString();
 					//Debug.LogError(target.gameObject.layer.ToString());
@@ -85,6 +87,7 @@ public class LineOfSight : MonoBehaviour
 		}
 	}
 
+	[Client]
 	void DrawFieldOfView()
 	{
 		int stepCount = Mathf.RoundToInt(viewAngle * meshResolution);
@@ -183,7 +186,7 @@ public class LineOfSight : MonoBehaviour
 		}
 	}
 
-
+	[Client]
 	EdgeInfo FindEdge(ViewCastInfo minViewCast, ViewCastInfo maxViewCast)
 	{
 		float minAngle = minViewCast.angle;
@@ -212,7 +215,7 @@ public class LineOfSight : MonoBehaviour
 		return new EdgeInfo(minPoint, maxPoint);
 	}
 
-
+	[Client]
 	ViewCastInfo ViewCast(float globalAngle)
 	{
 		Vector3 dir = DirFromAngle(globalAngle, true);
@@ -227,7 +230,7 @@ public class LineOfSight : MonoBehaviour
 			return new ViewCastInfo(false, transform.position + dir * viewRadius, viewRadius, globalAngle);
 		}
 	}
-
+	[Client]
 	public Vector3 DirFromAngle(float angleInDegrees, bool angleIsGlobal)
 	{
 		if (!angleIsGlobal)

@@ -35,8 +35,12 @@ public class PlayerHealth : NetworkBehaviour
 
     public void TakeDamage(int amount)
     {
-        if(currentHealth> 0)
-        currentHealth -= amount;
+        //CHECK IF THE DAMAGE PASSED IN WAS NEGATIVE, IF IT WAS, THIS FUNCTION WILL ADD HEALTH INSTEAD
+        amount = 
+            amount > 0 ? amount : amount * -1;
+
+        if(currentHealth > 0)
+            currentHealth -= amount;
 
         checkHealth();
     }

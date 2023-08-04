@@ -267,8 +267,7 @@ public class Weapon : NetworkBehaviour
         Debug.Log("Bullet Fired Client " + collisionPoint+ " direction "+spreadDirection);
     }
 
-    [Command]
-    public void CmdFireAbility(Vector2 direction, Ability ability)
+   /*public void CmdFireAbility(Vector2 direction, Ability ability)
     {
         var damageDone = 0;
 
@@ -339,5 +338,5 @@ public class Weapon : NetworkBehaviour
         }
         RpcOnFire(hit, spreadDirection, endPoint, whatWasHit);
         
-    }
+    }*/
 }

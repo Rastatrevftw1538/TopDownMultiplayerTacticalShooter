@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: WhiteboxDash
   m_EditorClassIdentifier: 
   abilityName: Whitebox Dash
-  abilityType: 2
-  playerEffects: 3
-  activationMethod: 3
-  abilityAppliance: 1
-  activeTime: 0.1
-  cooldownTime: 1
+  abilityType: 0
+  playerEffects: 0
+  activationMethod: 0
+  abilityAppliance: 0
+  activeTime: 0
+  cooldownTime: 0
   delayTime: 0
   isInstantAbility: 0
   hasDelay: 0

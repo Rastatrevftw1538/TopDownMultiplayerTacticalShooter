@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(Ability))]
+[CustomEditor(typeof(Ability), false)]
 public class AbilityGUI : Editor
 {
 
@@ -28,6 +28,14 @@ public class AbilityGUI : Editor
 
     //WHICH ABILITY
     SerializedProperty whichAbility;
+
+    //ACTIVATION METHOD
+    SerializedProperty radius;
+    SerializedProperty projectileSpeed;
+    SerializedProperty bulletColor;
+
+    //STATUS EFFECTS
+    SerializedProperty statusEffectData;
 
     //DISPLAY BOOLEANS
     bool displayAbilityEnums, displayAbilityTime;
@@ -54,9 +62,16 @@ public class AbilityGUI : Editor
         isInstantAbility = serializedObject.FindProperty("isInstantAbility");
         hasDelay = serializedObject.FindProperty("hasDelay");
 
+        //ACTIVATION METHOD
+        radius = serializedObject.FindProperty("radius");
+        projectileSpeed = serializedObject.FindProperty("projectileSpeed");
+        bulletColor = serializedObject.FindProperty("bulletColor");
+
+        //STATUS EFFECTS
+        statusEffectData = serializedObject.FindProperty("statusEffectData");
+
         //WHICH ABILITY TO USE
         whichAbility = serializedObject.FindProperty("whichAbility");
-
         #endregion
     }
 
@@ -95,16 +110,16 @@ public class AbilityGUI : Editor
                 //SWITCH CASE TO FIND OUT WHICH OBJECT TYPE TO FIELD IN THE INSPECTOR
                 switch (abilityType.enumValueIndex)
                 {
-                    case (int)AbilityType.DAMAGE: //DAMAGE ABILITY
+                    case (int)AbilityClass.DAMAGE: //DAMAGE ABILITY
                         EditorGUILayout.ObjectField(whichAbility, typeof(DamageAbility));
                         break;
-                    case (int)AbilityType.HEALING: //HEALING ABILITY
+                    case (int)AbilityClass.HEALING: //HEALING ABILITY
                         EditorGUILayout.ObjectField(whichAbility, typeof(HealingAbility));
                         break;
-                    case (int)AbilityType.MOVEMENT: //MOVEMENT ABILITY
+                    case (int)AbilityClass.MOVEMENT://MOVEMENT ABILITY
                         EditorGUILayout.ObjectField(whichAbility, typeof(MovementAbility));
                         break;
-                    case (int)AbilityType.FOV: //FOV ABILITY
+                    case (int)AbilityClass.FOV: //FOV ABILITY
                         EditorGUILayout.ObjectField(whichAbility, typeof(FOVAbility));
                         break;
                     default: //ANY ABILITY
@@ -130,7 +145,7 @@ public class AbilityGUI : Editor
 
                         break;
                     case (int)PlayerEffects.ENEMY: //AFFECTS ENEMIES (TEAMMATES, ENEMIES, etc.)
-                        
+                         
                         break;
                     case (int)PlayerEffects.TEAM: //AFFECTS TEAMMATES (TEAMMATES, ENEMIES, etc.)
 
@@ -155,16 +170,25 @@ public class AbilityGUI : Editor
                 switch (activationMethod.enumValueIndex)
                 {
                     case (int)ActivationMethod.HITSCAN: //THE ABILITY WILL BE SHOT OUT OF A RAYCAST, MUCH LIKE A BULLET
-
+                        //EditorGUILayout.PropertyField(bulletColor);
                         break;
                     case (int)ActivationMethod.PROJECTILE: //THE ABILITY WILL BE SHOT OUT OF A MOVING PROJECTILE
-
+                        //EditorGUILayout.PropertyField(projectileSpeed);
                         break;
                     case (int)ActivationMethod.ON_SELF: //THE ABILITY WILL BE CASTED ON THE PLAYER ITSELF
 
                         break;
                     case (int)ActivationMethod.AURA: //THE ABILITY WILL SPAWN A 2D CIRCLE COLLIDER AND ANYTHING WITHIN THE COLLIDER WILL BE AFFECTED
-
+                        //EditorGUILayout.PropertyField(radius);
+                        if(abilityType.enumValueIndex == (int)AbilityClass.DAMAGE || abilityType.enumValueIndex == (int)AbilityClass.HEALING)
+                        {
+                            //IF THE CHOSEN INDEX IS DAMAGE,
+                            EditorGUILayout.ObjectField(statusEffectData, typeof(DOTStatusEffect));
+                        }
+                        else if(abilityType.enumValueIndex == (int)AbilityClass.MOVEMENT)
+                        {
+                            EditorGUILayout.ObjectField(statusEffectData, typeof(MovementStatusEffect));
+                        }
                         break;
                     default: //THE ABILITY WILL BE CASTED ON THE PLAYER ITSELF
 
