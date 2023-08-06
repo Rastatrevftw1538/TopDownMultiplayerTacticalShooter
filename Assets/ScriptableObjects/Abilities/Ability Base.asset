@@ -12,10 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f955669090062d84192b13e9cbbe1aac, type: 3}
   m_Name: Ability Base
   m_EditorClassIdentifier: 
-  name: Test
+  abilityName: 
+  statusEffectData: {fileID: 11400000, guid: 7ff338128b3ed104982b7dbd6886445d, type: 2}
   abilityType: 0
-  playerEffects: 2
-  activationMethod: 2
+  playerEffects: 1
+  activationMethod: 3
   abilityAppliance: 0
-  activeTime: 1
-  cooldownTime: 4
+  activeTime: 3
+  cooldownTime: 2
+  delayTime: 1
+  isInstantAbility: 0
+  hasDelay: 0
+  whichAbility: {fileID: 11400000, guid: 8204286674f8c3948923303bb88ebae0, type: 2}
+  radius: 4
+  projectileSpeed: 0
+  bulletColor: {r: 0, g: 0, b: 0, a: 0}

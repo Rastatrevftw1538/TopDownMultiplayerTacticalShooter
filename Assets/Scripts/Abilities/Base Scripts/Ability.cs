@@ -1,28 +1,76 @@
 using System.Collections;
+using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Player Abilities/GAME DESIGN/Ability Base")]
+[CreateAssetMenu(menuName = "Player Abilities/Game Design/Ability Base")]
+[System.Serializable]
 public class Ability : ScriptableObject
 {
-    public new string name;
+    public string abilityName;
+    [SerializeField] public StatusEffectData statusEffectData;
 
-    //ADD A PUBLIC GETTER, PRIVATE SETTER FOR A WAIT TIME 
-    //CUSTOM UNITY EDITOR SCRIPTING TO SHOW THE WAIT-TIME IN THE INSPECTOR IF ABILITY APPLIANCE IS SET TO 'OVER-TIME'
-    public float waitTime;
-    public AbilityType _abilityType; 
-    public PlayerEffects _playerEffects;
-    public ActivationMethod _activationMethod;
-    public AbilityAppliance _abilityAppliance;
+    #region ENUMS
+    [SerializeField] public AbilityClass abilityType;
+    [SerializeField] public PlayerEffects playerEffects;
+    [SerializeField] public ActivationMethod activationMethod;
+    [SerializeField] public AbilityAppliance abilityAppliance;
+    #endregion
 
-    [Header("Ability Time (If instant ability, leave Active Time = 0")]
-    public float activeTime;
-    public float cooldownTime;
+    #region ABILITY TIME
+    //[Header("Ability Time (If instant ability, leave Active Time = 0")]
+    [SerializeField] public float activeTime;
+    [SerializeField] public float cooldownTime;
+    [SerializeField] public float delayTime;
+    [SerializeField] public bool  isInstantAbility;
+    [SerializeField] public bool  hasDelay;
+    #endregion
 
-    //public List<AbilityType> abilityType = new List<AbilityType>();
+    #region WHICH ABILITY 
+    [SerializeField] public Ability whichAbility;
+    #endregion
+
+    #region ACTIVATION METHOD SPECIFICATIONS
+    [SerializeField] public float radius;
+    [SerializeField] public float projectileSpeed;
+    [SerializeField] public Color bulletColor;
+    #endregion
 
     //REFERENCE TO THE PARENT GAMEOBJECT, IN MOST CASES THIS WILL BE THE PLAYER
     public virtual void Activate(GameObject parent) { }
 
     public virtual void BeginCooldown(GameObject parent){ }
+
+    #region Get Functions
+    /*
+    // VARIABLES
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public float getActiveTime() { return activeTime; }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public float getCooldownTime() { return _cooldownTime; }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public float getDelayTime() { return _delayTime; }
+
+    //ABILITY TIMES
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool isInstantAbility() { return _isInstantAbility; }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool hasDelay() { return _hasDelay; }
+
+    //ABILITY ENUMS
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public AbilityType AbilityType() { return _abilityType; }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public PlayerEffects PlayerEffects() { return _playerEffects; }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ActivationMethod ActivationMethod() { return _activationMethod; }
+
+    public AbilityAppliance AbilityAppliance() { return _abilityAppliance; }*/
+    #endregion
 }

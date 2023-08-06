@@ -16,10 +16,8 @@ public class PlayerHealth : NetworkBehaviour
     [SerializeField] private Image healthbarExternal;
 
     private bool hasSentEvent = false;
-    private static bool isRestoringHealth = false;
     private bool isAlive = true;
-
-    private GameObject playerBody;
+    private bool isRespawning = false;
     public bool checkIfAlive
     {
         get { return isAlive; }
@@ -32,13 +30,17 @@ public class PlayerHealth : NetworkBehaviour
     private void Awake()
     {
         healthbarInternal = GetComponentInChildren<Slider>();
-        playerBody = this.transform.GetChild(0).gameObject;
+
     }
 
     public void TakeDamage(int amount)
     {
-        if(currentHealth> 0)
-        currentHealth -= amount;
+        //CHECK IF THE DAMAGE PASSED IN WAS NEGATIVE, IF IT WAS, THIS FUNCTION WILL ADD HEALTH INSTEAD
+        amount = 
+            amount > 0 ? amount : amount * -1;
+
+        if(currentHealth > 0)
+            currentHealth -= amount;
 
         checkHealth();
     }
@@ -62,64 +64,71 @@ public class PlayerHealth : NetworkBehaviour
             hasSentEvent = true;
         }
     }
-    
+    /*
+    [ClientRpc]
+    void OnChangedHealth(int oldHealth, int health)
+    {
+        if (healthbarInternal != null)
+        {
+            healthbarInternal.value = health;
+        }
+
+        if (healthbarExternal != null)
+        {
+            Debug.Log("Health: "+(float)health);
+            healthbarExternal.fillAmount = (float)health/(float)maxHealth;
+            Debug.Log("Health Changed - Bar: "+healthbarExternal.fillAmount+" Health: "+currentHealth);
+        }
+        //Debug.Log("Health Changed");
+    }
+    */
     [ClientRpc]
     void RpcDie()
     {
         // Stop player movement
         this.GetComponent<PlayerScript>().setCanMove(false);
         this.GetComponent<Weapon>().enabled = false;
-
-        //temp till wee have death sprite and logic
-        playerBody.SetActive(false);
-        this.transform.GetChild(2).gameObject.SetActive(false);
-
         isAlive = false;
         // Teleport player back to spawn
         // Restore health after 3 seconds
         //StartCoroutine(RestoreHealth());
 
         //RAISE THE EVENT SO THE 'HeistGameManager.cs' CAN TRACK THIS MESSAGE
-        PlayerDied playerDied = new PlayerDied();
-        playerDied.playerThatDied = this.gameObject;
+         PlayerDied playerDied = new PlayerDied();
+         playerDied.playerThatDied = this.gameObject;
 
-        EvtSystem.EventDispatcher.Raise<PlayerDied>(playerDied);
+
+         if(!isRespawning)
+            EvtSystem.EventDispatcher.Raise<PlayerDied>(playerDied);
     }
+    private void RestoreHealth()
+    {
+        currentHealth = maxHealth;
+        isAlive = true;
+        isRespawning = false;
+        GetComponent<Weapon>().enabled = true;
+        GetComponent<PlayerScript>().setCanMove(true);
+
+        //TO ENSURE THE SAME EVENTS DON'T GET RAISED MORE THAN ONCE
+        hasSentEvent = false;
+
+        Debug.LogError("<color=yellow>RESPAWNED SUCCESSFULLY.</color>");
+    }
+
     [ClientRpc]
     public void Respawn(float respawnTime)
     {
-        Debug.Log(this.name+"DIED!");
+        Debug.LogError(this.name+"DIED!");
         foreach (Transform spawnPoint in NetworkManager.startPositions) {
+                Debug.LogError("got respawn point");
                 if (spawnPoint.CompareTag(this.GetComponent<PlayerScript>().PlayerTeam.ToString())) {
                     transform.position = spawnPoint.position;
                 }
             }
-        //TO ENSURE THE SAME EVENTS DON'T GET RAISED MORE THAN ONCE
-        IEnumerator setBool(float time) {
-            yield return new WaitForSeconds(time);
-            hasSentEvent = false;
-        }
-        StartCoroutine(setBool(respawnTime));
-        
+
+        isRespawning = true;
         //ACTUALLY RESTORE HEALTH TO THE PLAYER
-        StartCoroutine(RestoreHealth(respawnTime));
-    }
-    
-    IEnumerator RestoreHealth(float time)
-    {
-        yield return new WaitForSeconds(time);
-        currentHealth = maxHealth;
-        isAlive = true;
-
-        //temp till wee have death sprite and logic
-        playerBody.SetActive(true);
-        this.transform.GetChild(2).gameObject.SetActive(true);
-
-        GetComponent<Weapon>().enabled = true;
-        GetComponent<PlayerScript>().setCanMove(true);
-
-        Debug.Log("<color=yellow>RESPAWNED SUCCESSFULLY</color>");
-        isRestoringHealth = true;
+        Invoke(nameof(RestoreHealth), respawnTime);
     }
 
     private void checkHealth()

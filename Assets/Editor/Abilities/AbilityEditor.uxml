@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:IMGUIContainer name="Ability" style="height: 453px;">
+        <ui:Label name="NameLabel" binding-path="Ability.abilityClass" text="Ability Type" class="custom-label" style="-unity-font-style: bold; color: rgb(255, 255, 255); border-bottom-width: 1px; border-bottom-color: rgb(255, 255, 255);" />
+        <ui:Label text="Ability Name" display-tooltip-when-elided="true" binding-path="Ability.abilityName" name="Ability" style="-unity-font-style: bold; font-size: 15px; color: rgb(56, 255, 0); padding-top: 15px;" />
+        <ui:GroupBox name="Options" style="height: 106px; padding-top: 10px; padding-bottom: 10px; border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; border-top-left-radius: 3px; border-bottom-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255); padding-right: 5px; padding-left: 5px; flex-grow: 1; justify-content: center; width: 340px;" />
+    </ui:IMGUIContainer>
+</ui:UXML>
