@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
+[RequireComponent(typeof(PlayerHealth))]
 public class PlayerScript : NetworkBehaviour, IEffectable
 {
     private Camera playerCamera;
@@ -345,41 +346,51 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         {
             if (_currentEffectTime >= _statusEffectData.activeTime) { RemoveEffect(); }
             _currentEffectTime += Time.deltaTime;
-            //IF THE STATUS EFFECT DATA IS OF TYPE 'DOTStatusEffect'
-            //if (_statusEffectData.GetType() == typeof(DOTStatusEffect))
-            //{
 
-                if (_statusEffectData != null)
+            if (_statusEffectData != null)
+            {
+                if (_statusEffectData.valueOverTime != 0 && _currentEffectTime > _nextTickTime)
                 {
-                    if (_statusEffectData.valueOverTime != 0 && _currentEffectTime > _nextTickTime)
-                    {
-                        PlayerHealth playerHealth = GetComponent<PlayerHealth>();
-                        _nextTickTime += _statusEffectData.tickSpeed;
+                    _nextTickTime += _statusEffectData.tickSpeed;
 
-                        //CHECK IF YOU WERE TRYING TO HEAL, OR TO DAMAGE
-                        int posOrNeg = _statusEffectData.isDOT ? -1 : 1;
 
-                        playerHealth.TakeDamage((int)_statusEffectData.valueOverTime * posOrNeg);
-                    }
-                //}
+                    //CHECK FOR DIFFERENT TYPES HERE
+                    PlayerHealth playerHealth = GetComponent<PlayerHealth>();
+                    ApplyDOT(playerHealth);
                 }
+            }
         }
-        //}
-        //}
-        //else if(_statusEffectData.GetType() == typeof(MovementStatusEffect))
-        //{
+    }
 
-       // }
-        ///else
-        //{
-        //    Debug.LogError("did not match type");
-        //}
+    public void ApplyDOT(PlayerHealth playerHealthScript)
+    {
+        //CHECK IF YOU WERE TRYING TO HEAL, OR TO DAMAGE
+        int posOrNeg = _statusEffectData.isDOT ? -1 : 1;
+
+        playerHealthScript.TakeDamage((int)_statusEffectData.valueOverTime * posOrNeg, 3f);
+    }
+
+    public void ApplyMoveSE()
+    {
+        //CHECK IF YOU WERE TRYING TO SLOW, OR SPEED UP
+        int posOrNeg = _statusEffectData.isDOT ? -1 : 1;
+
+        if (_statusEffectData.isSlow) {
+            runSpeed  = runSpeed  - (Mathf.Pow(_statusEffectData.movementPenalty, -2));
+            walkSpeed = walkSpeed - (Mathf.Pow(_statusEffectData.movementPenalty, -2));
+        }
+        else
+        {
+
+        }
     }
 
     private void ClearStatusEffects(PlayerDied evtData)
     {
         if(evtData.playerThatDied == this.gameObject)
             RemoveEffect(); 
+
+
         Debug.LogError("Removed all ongoing status effects on Player of TEAM: " + playerTeam);
     }
     #endregion
