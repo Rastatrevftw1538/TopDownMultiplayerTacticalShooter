@@ -11,6 +11,8 @@ public class StatusEffectData : ScriptableObject
     public float  tickSpeed;
     public float  activeTime;
     public bool   isDOT;
+    public bool   isSlow;
+    public float  damageBuff;
 
     //public ParticleSystem EffectParticles;
 }

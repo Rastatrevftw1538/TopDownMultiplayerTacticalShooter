@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5ae4477f7c709fe48a5047d1c8951c34, type: 3}
-  m_Name: dot harm
+  m_Name: DOT Harm
   m_EditorClassIdentifier: 
   Name: dot harm
   valueOverTime: 4
   movementPenalty: 0
   tickSpeed: 1
-  activeTime: 40
+  activeTime: 7
   isDOT: 1

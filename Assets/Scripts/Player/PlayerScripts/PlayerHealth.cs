@@ -30,7 +30,6 @@ public class PlayerHealth : NetworkBehaviour
     private void Awake()
     {
         healthbarInternal = GetComponentInChildren<Slider>();
-
     }
 
     public void TakeDamage(int amount)
@@ -44,6 +43,19 @@ public class PlayerHealth : NetworkBehaviour
 
         checkHealth();
     }
+
+    public void TakeDamage(int amount, float time)
+    {
+        //CHECK IF THE DAMAGE PASSED IN WAS NEGATIVE, IF IT WAS, THIS FUNCTION WILL ADD HEALTH INSTEAD
+        amount =
+            amount > 0 ? amount : amount * -1;
+
+        if (currentHealth > 0)
+            currentHealth = (int)Mathf.Lerp(currentHealth, currentHealth - amount, time);
+
+        checkHealth();
+    }
+
     private void Update()
     {
         if (healthbarInternal != null)

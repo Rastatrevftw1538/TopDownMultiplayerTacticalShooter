@@ -170,12 +170,13 @@ public class AbilityHolder : NetworkBehaviour
 
         // if (effectable != null)
         //{
-        if (other.gameObject.GetComponent<PlayerScript>() == null)
+        if (other.gameObject.GetComponent<IEffectable>() == null)
             return;
 
-        Debug.LogError(other.gameObject.name);
-        PlayerScript target = other.gameObject.GetComponent<PlayerScript>();
-        target.ApplyEffect(abilities[indx].statusEffectData);
+        IEffectable target = other.gameObject.GetComponent<IEffectable>();
+
+        if (CheckCorrectTag(abilities[indx].playerEffects, other))
+            target.ApplyEffect(abilities[indx].statusEffectData);
 
         //Debug.LogError("Applied from PLAYER TEAM: " + playerScript.PlayerTeam);
         //}
@@ -183,36 +184,40 @@ public class AbilityHolder : NetworkBehaviour
 
     private bool CheckCorrectTag(PlayerEffects playerEffects, Collider2D other)
     {
-        //bool hasCorrect = false;
+        PlayerScript target = other.gameObject.GetComponent<PlayerScript>();
 
-            PlayerScript target = other.GetComponent<PlayerScript>();
-            /*switch (playerEffects)
+        switch (playerEffects)
+        {
+            case PlayerEffects.ENEMY: //IF ENEMY IS THE TARGET
+            if (playerScript.playerTeam != target.playerTeam)
             {
-                case PlayerEffects.ENEMY: //IF ENEMY IS THE TARGET
-                if (playerScript.playerTeam != target.playerTeam)
-                {
-                    Debug.LogError("Used ENEMY");
-                    return true;
-                }
-                break;
+                Debug.LogError("Used ENEMY");
+                return true;
+            }
+            break;
 
-                case PlayerEffects.TEAM: //IF TEAM IS THE TARGET
-                if (playerScript.playerTeam == target.playerTeam)
-                {
-                    Debug.LogError("Used TEAM");
-                    return true;
-                }
-                break;
+            case PlayerEffects.TEAM: //IF TEAM IS THE TARGET
+            if (playerScript.playerTeam == target.playerTeam)
+            {
+                Debug.LogError("Used TEAM");
+                return true;
+            }
+            break;
 
+            case PlayerEffects.PLAYER:
+            if (playerScript.Equals(other.GetComponent<PlayerScript>()))
+            {
+                return true;
+            }
+            break;
 
-                default:
-                   // hasCorrect = this.gameObject.GetComponent<Collider2D>() == other;
-                    Debug.LogError("Used SELF?");
-                return false;
-                break;
-            }*/
+            default:
+                // hasCorrect = this.gameObject.GetComponent<Collider2D>() == other;
+                Debug.LogError("Used SELF?");
+            return false;
+        }
 
-        if(playerEffects == PlayerEffects.ENEMY)
+        /*if(playerEffects == PlayerEffects.ENEMY)
         {
             if (playerScript.playerTeam != target.playerTeam)
             {
@@ -231,7 +236,7 @@ public class AbilityHolder : NetworkBehaviour
             }
             else
                 return false;
-        }
+        }*/
 
         Debug.LogError("got to the end??");
         return false;
