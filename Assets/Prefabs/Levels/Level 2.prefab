@@ -68712,7 +68712,7 @@ GameObject:
   - component: {fileID: 703275413966932425}
   m_Layer: 0
   m_Name: Spawn
-  m_TagString: Untagged
+  m_TagString: Red
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -68809,7 +68809,7 @@ GameObject:
   - component: {fileID: 703275414441727135}
   m_Layer: 0
   m_Name: Spawn (1)
-  m_TagString: Untagged
+  m_TagString: Blue
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

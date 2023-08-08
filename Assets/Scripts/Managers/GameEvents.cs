@@ -38,9 +38,14 @@ public class PlayAudio : EvtSystem.Event
 
 public class DisableUI : EvtSystem.Event
 {
-
+    public GameObject priorityUI;
 }
 
+public class ReplaceUI : EvtSystem.Event
+{
+    public string replacementMessage;
+    public Color  replacementColor;
+}
 public class PlayerInteract : EvtSystem.Event
 {
     public Vector3 interactPosition;
@@ -48,21 +53,16 @@ public class PlayerInteract : EvtSystem.Event
     public float   interactDistance;
 }
 
-public class MyEvent : EvtSystem.Event
-{
-    public int i;
-}
-
 public class CursorMovement : EvtSystem.Event
 {
-    public bool canMove;
+    public bool  canMove;
     public float lookSpeed;
     public CursorLockMode lockMode;
 }
 
 public class FreezePlayerMovement : EvtSystem.Event
 {
-    public bool canMove;
+    public bool  canMove;
     public float moveSpeed;
 }
 
@@ -83,4 +83,19 @@ public class ChangeBaseState : EvtSystem.Event
 public class PlayerDied : EvtSystem.Event
 {
     public GameObject playerThatDied;
+}
+
+public class BaseDestroyed : EvtSystem.Event
+{
+    public Base thisBase;
+}
+
+public class EndGame : EvtSystem.Event
+{
+
+}
+
+public class TiedGame : EvtSystem.Event
+{
+
 }

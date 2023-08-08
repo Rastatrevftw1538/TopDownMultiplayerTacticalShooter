@@ -1,25 +1,34 @@
 using System.Collections;
+using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Player Abilities/GAME DESIGN/Ability Base")]
+[System.Serializable]
 public class Ability : ScriptableObject
 {
-    public new string name;
+    public string abilityName;
 
-    //ADD A PUBLIC GETTER, PRIVATE SETTER FOR A WAIT TIME 
-    //CUSTOM UNITY EDITOR SCRIPTING TO SHOW THE WAIT-TIME IN THE INSPECTOR IF ABILITY APPLIANCE IS SET TO 'OVER-TIME'
-    public float waitTime;
-    public AbilityType _abilityType; 
-    public PlayerEffects _playerEffects;
-    public ActivationMethod _activationMethod;
-    public AbilityAppliance _abilityAppliance;
+    #region ENUMS
+    [SerializeField] public AbilityType abilityType;
+    [SerializeField] public PlayerEffects playerEffects;
+    [SerializeField] public ActivationMethod activationMethod;
+    [SerializeField] public AbilityAppliance abilityAppliance;
+    #endregion
 
-    [Header("Ability Time (If instant ability, leave Active Time = 0")]
-    public float activeTime;
-    public float cooldownTime;
+    #region ABILITY TIME
+    //[Header("Ability Time (If instant ability, leave Active Time = 0")]
+    [SerializeField] public float activeTime;
+    [SerializeField] public float cooldownTime;
+    [SerializeField] public float delayTime;
+    [SerializeField] public bool isInstantAbility;
+    [SerializeField] public bool hasDelay;
+    #endregion
 
-    //public List<AbilityType> abilityType = new List<AbilityType>();
+    #region WHICH ABILITY 
+    [SerializeField] public Ability whichAbility;
+    #endregion
 
     //REFERENCE TO THE PARENT GAMEOBJECT, IN MOST CASES THIS WILL BE THE PLAYER
     public virtual void Activate(GameObject parent) { }

@@ -14,14 +14,15 @@ public class PlayerScript : NetworkBehaviour
     }
     [SyncVar]
     public Team playerTeam;
-    
-    public enum DeviceType
+
+    public enum SetDeviceType
     {
+        Auto,
         PC,
         Mobile
     }
     [SerializeField]
-    private DeviceType deviceType;
+    private SetDeviceType deviceType;
 
     [Header("Controller")]
     [SerializeField]
@@ -40,6 +41,7 @@ public class PlayerScript : NetworkBehaviour
     [Header("Player Components")]
     public Vector2 movement;
     public Quaternion rotation;
+    public Rigidbody2D rb;
 
     [Header("Player Status")]
     public bool isRunning;
@@ -47,18 +49,20 @@ public class PlayerScript : NetworkBehaviour
     private bool canMove = true;
 
     private void Start() {
-        if(isServer&&isClient){
-            runSpeed = runSpeed*2;
-            walkSpeed = walkSpeed*2;
-        }
         runSpeedNormal = runSpeed;
         walkSpeedNormal = walkSpeed;
+
         if (isLocalPlayer)
         {
             Debug.Log("local Player" + netId);
             return;
         }
 
+        //rb = this.gameObject.GetComponent<Rigidbody2D>();
+        if(rb != null)
+        {
+            Debug.LogWarning("got rb");
+        }
     }
 
     public Team PlayerTeam
@@ -66,23 +70,26 @@ public class PlayerScript : NetworkBehaviour
         get { return playerTeam; }
         set { playerTeam = value; }
     }
-    public DeviceType PlayerDevice{
+    public SetDeviceType PlayerDevice
+    {
         get { return deviceType; }
     }
     public void setCanMove(bool newCanMove){
     this.canMove = newCanMove;
     }
 
-[ClientCallback]
-public void Update()
-{
-    if (!isLocalPlayer)
+    [ClientCallback]
+    public void Update()
     {
+        if (!isLocalPlayer)
+        {
+            return;
+        }
+        //CHANGE TO SET WHEN GAME STARTS, OR WHEN PLAYER JOINS
         setColorsOfPlayers();
-        return;
-    }
-    //this.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1,1,0,1);
-    if(deviceType == DeviceType.PC){
+
+        #region PC MOVEMENT
+        if (deviceType == SetDeviceType.PC){
         if(!playerCamera){
             playerCamera = GameObject.Find("ClientCamera").GetComponent<Camera>();
             print("Camera Set");
@@ -93,73 +100,69 @@ public void Update()
         else if(Input.GetKeyUp(KeyCode.LeftShift)){
             isRunning = false;
         }
-        if(Input.GetKey(KeyCode.W)){
-            movement = new Vector2(0, 1).normalized * (isRunning ? runSpeed : walkSpeed);
-        }
-        else if(Input.GetKey(KeyCode.S)){
-            movement = new Vector2(0, -1).normalized * (isRunning ? runSpeed : walkSpeed);
-        }
-        else if(Input.GetKey(KeyCode.A)){
-            movement = new Vector2(-1, 0).normalized * (isRunning ? runSpeed : walkSpeed);
-        }
-        else if(Input.GetKey(KeyCode.D)){
-            movement = new Vector2(1, 0).normalized * (isRunning ? runSpeed : walkSpeed);
-        }
-        else{
-            movement = new Vector2(0, 0);
-        }
-        Vector3 mousePosition = Input.mousePosition;
+
+            movement = new Vector2
+            {
+                x = Input.GetAxisRaw("Horizontal"),
+                y = Input.GetAxisRaw("Vertical")
+            };
+            movement = new Vector2(movement.x, movement.y).normalized * (isRunning ? runSpeed : walkSpeed) * 0.25f;
+
+            Vector3 mousePosition = Input.mousePosition;
         mousePosition.z = -playerCamera.transform.position.z;
         Vector3 mouseWorldPosition = playerCamera.ScreenToWorldPoint(mousePosition);
         Vector3 aimDirection = mouseWorldPosition - transform.position;
         rotation = Quaternion.LookRotation(Vector3.forward, aimDirection);
         //print(rotation);
-    }
-    if(deviceType == DeviceType.Mobile){
+        }
+        #endregion
+
+        #region MOBILE MOVEMENT
+        if (deviceType == SetDeviceType.Mobile){
     
-    JoystickControllerMovement joystickController = joystickMovementUI.GetComponent<JoystickControllerMovement>();
+            JoystickControllerMovement joystickController = joystickMovementUI.GetComponent<JoystickControllerMovement>();
 
-    float horizontal = joystickController.GetHorizontalInput();
-    float vertical = joystickController.GetVerticalInput();
+            float horizontal = joystickController.GetHorizontalInput();
+            float vertical = joystickController.GetVerticalInput();
 
-    JoystickControllerRotationAndShooting rotationJoystick = joystickRotateUI.GetComponent<JoystickControllerRotationAndShooting>();
-    rotation = rotationJoystick.GetRotationInput();
-    isShooting = rotationJoystick.isShooting;
-    isRunning = joystickController.isRunning;
-    movement = new Vector2(horizontal, vertical).normalized * (isRunning ? runSpeed : walkSpeed);
-    }
+            JoystickControllerRotationAndShooting rotationJoystick = joystickRotateUI.GetComponent<JoystickControllerRotationAndShooting>();
+            rotation = rotationJoystick.GetRotationInput();
+            isShooting = rotationJoystick.isShooting;
+            isRunning = joystickController.isRunning;
+            movement = new Vector2(horizontal, vertical).normalized * (isRunning ? runSpeed : walkSpeed);
+        }
+        #endregion
+
+        #region GENERAL MOVEMENT LOGIC (APPLIES TO ALL DEVICES)
         if (canMove){
-        CmdMove(movement * Time.deltaTime);
-        CmdRotate(rotation);
-    
+            CmdMove(movement);
+            CmdRotate(rotation);
+        }
+        #endregion
     }
-}
-    #region ryan messing stuff up
-    #endregion
 
     [Command]
     private void CmdMove(Vector2 movement)
     {
         RpcMove(movement);
-        this.transform.Translate(movement);    
+        transform.Translate(movement * Time.fixedDeltaTime);    
     }
     // FIGURE OUT HOW THE SERVER RECIEVES THIS INFO
     [Command]
     private void CmdRotate(Quaternion rotation)
     {
         RpcRotation(rotation);
-        this.transform.GetChild(0).transform.rotation = rotation;
+        transform.GetChild(0).transform.rotation = rotation;
     }
     [ClientRpc]
     private void RpcMove(Vector2 movement)
     {
-        if(!isLocalPlayer)
-        this.transform.Translate(movement);
+        transform.Translate(movement * Time.fixedDeltaTime);
     }
     [ClientRpc]
     private void RpcRotation(Quaternion rotation)
     {
-        this.transform.GetChild(0).transform.rotation = rotation;
+        transform.GetChild(0).transform.rotation = rotation;
     }
 
     public override void OnStartLocalPlayer()
@@ -189,18 +192,31 @@ public void Update()
     }
     
     [Client]
-    private void setColorsOfPlayers(){GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+    private void setColorsOfPlayers(){
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
             foreach (GameObject player in players){
-                if(!player.Equals(this))
-                    if (player.GetComponent<PlayerScript>().PlayerTeam != this.playerTeam || player.GetComponent<PlayerScript>().PlayerTeam == Team.None)
+                if (player != this.gameObject)
+                {
+                    if (player.GetComponent<PlayerScript>().playerTeam == Team.Red || player.GetComponent<PlayerScript>().playerTeam == Team.None)
                     {
+                        //Debug.LogError("SET PLAYER COLOR TO RED");
                         player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.red;
                     }
-                    else if(player.GetComponent<PlayerScript>().PlayerTeam == this.playerTeam)
+                    else if (player.GetComponent<PlayerScript>().playerTeam == Team.Blue)
                     {
+                        //Debug.LogError("SET PLAYER COLOR TO BLUE");
                         player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.blue;
                     }
+                }
+                //IF YOU WANT PLAYERS SELF COLOR TO BE YELLOW, USE THIS, IF NOT THEN JUST COMMENT IT OUT
+                else if (player == this.gameObject)
+                {
+                    //Debug.LogWarning("SET PLAYER COLOR TO YELLOW");
+                    player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.yellow;
+                }
             }
+            
+
     }
 [Command]
 private void CmdRequestAuthority()

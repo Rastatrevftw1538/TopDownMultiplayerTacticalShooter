@@ -22,8 +22,8 @@ public class Blink : MovementAbility
 
     public override void BeginCooldown(GameObject parent)
     {
-        PlayerScript player = parent.GetComponent<PlayerScript>(); //REFERENCE TO THE PLAYER SCRIPT ACTIVE IN THE SCENE
-        
+       //PlayerScript player = parent.GetComponent<PlayerScript>(); //REFERENCE TO THE PLAYER SCRIPT ACTIVE IN THE SCENE
+
     }
 
     Vector2 MoveCharacter(Vector2 playerposition, Vector2 playerforward)
