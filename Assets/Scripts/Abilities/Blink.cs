@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 
-[CreateAssetMenu(menuName = "Player Abilities/Movement/Pseudo Blink")]
+[CreateAssetMenu(menuName = "Player Abilities/Movement/Blink")]
 public class Blink : MovementAbility
 {
     [Header("Ability Stats")]
@@ -16,7 +16,8 @@ public class Blink : MovementAbility
     {
         PlayerScript player = parent.GetComponent<PlayerScript>(); //REFERENCE TO THE PLAYER SCRIPT ACTIVE IN THE SCENE
 
-        player.transform.position = MoveCharacter(player.transform.position, player.transform.GetChild(0).gameObject.transform.up);
+        Vector2 movePlayer = MoveCharacter(player.transform.position, player.transform.GetChild(0).gameObject.transform.up);
+        player.transform.Translate(movePlayer);
     }
 
     public override void BeginCooldown(GameObject parent)
