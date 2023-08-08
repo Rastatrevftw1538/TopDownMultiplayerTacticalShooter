@@ -4,47 +4,38 @@ using UnityEngine;
 using TMPro;
 using Mirror;
 
-public class BaseCountDownUI : MonoBehaviour
+public class BaseCountDownUI : UI
 {
     //COMPONENTS
-    private TMP_Text message;
-    private Color[] teamColor = { Color.red, Color.blue };
 
     //VARIABLES
     private bool hasReceivedMessage = false;
     private float _seconds = 0f;
     private float _miliseconds = 0f;
 
-    [Header("UI Message")]
-    public float announcement;
-
     void Start()
     {
         this.gameObject.SetActive(false);
         message = this.GetComponent<TMP_Text>();
         EvtSystem.EventDispatcher.AddListener<StartTeamRespawn>(UpdateUI);
+        EvtSystem.EventDispatcher.AddListener<DisableUI>(DisableUI);
     }
 
     // Update is called once per frame
     void Update()
     {
-        _seconds -= Time.deltaTime;
-        //_miliseconds -= Time.deltaTime * 100;
-
-        if (hasReceivedMessage && _seconds >= 0)
-            message.text = string.Format("{00}", _seconds);
-        else
-            this.gameObject.SetActive(false);
+        formatCountdown();
     }
 
-    void UpdateUI(StartTeamRespawn evtData)
+    public override void UpdateUI(StartTeamRespawn evtData)
     {
         this.gameObject.SetActive(true);
+        hasReceivedMessage = true;
 
         if (evtData.team == PlayerScript.Team.Red)
-            message.color = teamColor[0];
+            message.color = teamColors[0];
         else if (evtData.team == PlayerScript.Team.Blue)
-            message.color = teamColor[1];
+            message.color = teamColors[1];
         else
             message.color = Color.yellow; //DEBUG COLOR
 
@@ -53,6 +44,21 @@ public class BaseCountDownUI : MonoBehaviour
 
         message.text = "";
         _seconds = evtData.respawnTime;
-        hasReceivedMessage = true;
+        _miliseconds = evtData.respawnTime * 100;
+    }
+
+    private void formatCountdown()
+    {
+        _seconds -= Time.deltaTime;
+        _miliseconds -= Time.deltaTime * 100;
+
+        if (hasReceivedMessage && _seconds >= 0)
+        {
+            message.text = "Players respawn in: " + string.Format("{0}", _seconds.ToString().Substring(0,4));
+            if (_miliseconds <= 0)
+                _miliseconds = _seconds * 100;
+        }
+        else
+            this.gameObject.SetActive(false); //IF THE COUNTDOWN IS OVER, DE-ACTIVATE THE GAME OBJECT
     }
 }

@@ -12,12 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58bbb6a9ab0af07489bc7e26a61c0ecc, type: 3}
   m_Name: WhiteboxDash
   m_EditorClassIdentifier: 
-  name: Whitebox Dash
-  waitTime: 2
-  _abilityType: 0
-  _playerEffects: 0
-  _activationMethod: 0
-  _abilityAppliance: 1
-  activeTime: 0.01
-  cooldownTime: 2
-  dashVelocity: 35
+  abilityName: Whitebox Dash
+  abilityType: 1
+  playerEffects: 3
+  activationMethod: 3
+  abilityAppliance: 1
+  activeTime: 0
+  cooldownTime: 1
+  delayTime: 0
+  isInstantAbility: 0
+  hasDelay: 0
+  whichAbility: {fileID: 0}
+  applicationType: 0
+  dashVelocity: 50
+  speedMultiplier: 20
