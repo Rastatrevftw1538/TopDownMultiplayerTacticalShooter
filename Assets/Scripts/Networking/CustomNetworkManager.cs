@@ -33,15 +33,12 @@ public class CustomNetworkManager : NetworkManager
         Debug.Log("Server Started");
         CreateRelayAllocation();
         Invoke(nameof(SearchForGameManager),0.5f);
+        Invoke(nameof(SetLocalIP),0.5f);
+        networkAddress = GetLocalIPAddress();
         EvtSystem.EventDispatcher.AddListener<EndGame>(EndHost);
     }
     private void Start() {
-        // Get the local IP address of the device
-        string localIPAddress = GetLocalIPAddress();
-        //AuthenticationService.Instance.SignInAnonymously();
-
-        // Set the network address of the NetworkManager to the local IP address
-        networkAddress = localIPAddress;
+        SetLocalIP();
     }
     public string GetLocalIPAddress()
     {
@@ -57,6 +54,9 @@ public class CustomNetworkManager : NetworkManager
         }
         // If no suitable IP address is found, return a default value (localhost)
         return "127.0.0.1";
+    }
+    private void SetLocalIP(){
+        networkAddress = GetLocalIPAddress();
     }
     private void SearchForGameManager() {
         Scene gameScene = SceneManager.GetSceneByName("LevelTemplate");
