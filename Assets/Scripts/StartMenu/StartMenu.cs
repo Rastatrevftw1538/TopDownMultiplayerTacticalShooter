@@ -25,6 +25,8 @@ public class StartMenu : MonoBehaviour
     private void Start() {
         loadingText = GameObject.Find("Searching For Game").GetComponent<TMP_Text>();
         loadingText.gameObject.SetActive(false);
+        if(networkObject==null)
+        networkObject = GameObject.Find("NetworkManager").gameObject;
         ipInput = GameObject.Find("IPInput").GetComponent<TMP_InputField>();
         networkManager = networkObject.GetComponent<CustomNetworkManager>();
         networkDiscovery = networkObject.GetComponent<NetworkDiscovery>();
@@ -36,6 +38,12 @@ public class StartMenu : MonoBehaviour
     }
     private void Update() {
         debugText.text = uri;
+        if(networkObject==null)
+        networkObject = GameObject.Find("NetworkManager");
+        networkManager = networkObject.GetComponent<CustomNetworkManager>();
+        networkDiscovery = networkObject.GetComponent<NetworkDiscovery>();
+        networkDiscovery.OnServerFound.AddListener(OnDiscoveredServer);
+        networkDiscovery.StartDiscovery();
         //Debug.Log("Servers Found = " + discoveredServers.Count);
     }
     public void StartGame()

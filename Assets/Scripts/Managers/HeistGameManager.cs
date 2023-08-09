@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 using TMPro;
 using Mirror;
 using Mirror.Discovery;
@@ -327,5 +328,36 @@ private void FixedUpdate() {
         //HANDLE WHAT YOU WANT TO BE INTERACTABLE AFTER THE GAME ENDS
         redBase.canHit  = false;
         blueBase.canHit = false;
+    }
+
+    public void OnServerDisconnect(NetworkConnectionToClient conn){
+        int teamIndex = 0;
+        if(conn.identity.gameObject.GetComponent<PlayerScript>().playerTeam == PlayerScript.Team.Blue)
+            if (blueTeam.Contains(conn.identity.gameObject))
+            {
+                teamIndex = blueTeam.IndexOf(conn.identity.gameObject);
+                
+                redTeam.Remove(conn.identity.gameObject);
+            }
+        else if (conn.identity.gameObject.GetComponent<PlayerScript>().playerTeam == PlayerScript.Team.Red)
+        if (blueTeam.Contains(conn.identity.gameObject))
+            {
+                teamIndex = redTeam.IndexOf(conn.identity.gameObject);
+                
+                redTeam.Remove(conn.identity.gameObject);
+            }
+        Debug.Log($"<color = red>Player on team {teamIndex} disconnected.</color>");
+    }
+    public void DisconnectFromGame(){
+        if (NetworkServer.active && NetworkClient.isConnected)
+        {
+        networkManager.StopHost();
+        networkManager.gameObject.GetComponent<CustomNetworkDiscovery>().StopDiscovery();
+        }
+        else if (NetworkClient.isConnected)
+        {
+            networkManager.StopClient();
+            networkManager.gameObject.GetComponent<CustomNetworkDiscovery>().StopDiscovery();
+        }
     }
 }
