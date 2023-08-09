@@ -6,9 +6,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using Mirror;
+using Mirror.Discovery;
 
 public class HeistGameManager : NetworkBehaviour
 {
+    private CustomNetworkDiscovery networkDiscovery;
     [SerializeField] public GameObject Level;
     private GameObject baseObjects;
     public int baseHealth = 1000;
@@ -40,8 +42,10 @@ public class HeistGameManager : NetworkBehaviour
     }
     private void Awake()
     {
-        if (instance == null)
+        if (instance == null){
             instance = this;
+            networkDiscovery = CustomNetworkManager.singleton.GetComponent<CustomNetworkDiscovery>();
+        }
         else if (instance != this)
             Destroy(gameObject);
     }
@@ -65,11 +69,20 @@ public class HeistGameManager : NetworkBehaviour
     }
 
 private void FixedUpdate() {
-    if(gameStarted)
+    if(gameStarted){
     currentTime -= Time.deltaTime;
         ui.transform.GetChild(2).GetComponent<TMP_Text>().text = ((int)currentTime).ToString();
         ui.transform.GetChild(0).GetComponent<TMP_Text>().text = "Blue: " + blueBase.GetHealth();
         ui.transform.GetChild(1).GetComponent<TMP_Text>().text = "Red: " + redBase.GetHealth();
+        ui.transform.GetChild(6).GetComponent<TMP_Text>().text = "";
+        }
+    else{
+        ui.transform.GetChild(2).GetComponent<TMP_Text>().text = "";
+        ui.transform.GetChild(0).GetComponent<TMP_Text>().text = "";
+        ui.transform.GetChild(1).GetComponent<TMP_Text>().text = "";
+        if (networkDiscovery != null)
+            ui.transform.GetChild(6).GetComponent<TMP_Text>().text = "The IP Address is: "+networkDiscovery.BroadcastAddress;
+    }
 }
     private void Update()
     {

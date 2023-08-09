@@ -148,10 +148,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71041b3bb581a4540b6bfca6e7b7d0bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   announcement: 
   messageColor: {r: 0, g: 0, b: 0, a: 0}
   message: {fileID: 0}
-  teamColor:
+  teamColors:
   - {r: 1, g: 0, b: 0, a: 1}
   - {r: 0, g: 0, b: 1, a: 1}
 --- !u!1 &1160145801
@@ -302,10 +305,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 547b29e33ca54414ea5f7a0e297ae41e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   announcement: 0
   messageColor: {r: 0, g: 0, b: 0, a: 0}
   message: {fileID: 0}
-  teamColor:
+  teamColors:
   - {r: 1, g: 0, b: 0, a: 1}
   - {r: 0, g: 0, b: 1, a: 1}
 --- !u!1 &1321703463
@@ -456,10 +462,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51d45c152c4c6c24c97a4b930cb270f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   announcement: BASE IS VULNERABLE! ATTACK NOW!
   messageColor: {r: 0, g: 0, b: 0, a: 0}
   message: {fileID: 0}
-  teamColor:
+  teamColors:
   - {r: 1, g: 0, b: 0, a: 1}
   - {r: 0, g: 0, b: 1, a: 1}
 --- !u!1 &623490234450751697
@@ -925,10 +934,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3

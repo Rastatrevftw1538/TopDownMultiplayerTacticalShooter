@@ -5,10 +5,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using UnityEngine.SceneManagement;
-using Unity.Services.Core;
-using Unity.Services.Authentication;
-using Unity.Services.Relay;
-using Unity.Services.Relay.Models;
 using Mirror.Discovery;
 using TMPro;
 using System;
@@ -24,10 +20,12 @@ public class StartMenu : MonoBehaviour
     private TMP_Text loadingText;
     public TMP_Text debugText;
     private string uri;
+    private TMP_InputField ipInput;
 
     private void Start() {
         loadingText = GameObject.Find("Searching For Game").GetComponent<TMP_Text>();
         loadingText.gameObject.SetActive(false);
+        ipInput = GameObject.Find("IPInput").GetComponent<TMP_InputField>();
         networkManager = networkObject.GetComponent<CustomNetworkManager>();
         networkDiscovery = networkObject.GetComponent<NetworkDiscovery>();
         networkDiscovery.OnServerFound.AddListener(OnDiscoveredServer);
@@ -73,21 +71,27 @@ public class StartMenu : MonoBehaviour
                 string joinCode = discoveredServers[serverKey].joinCode;
                 Debug.Log(serverKey);
                 Debug.Log("<color=green> Join Code: "+joinCode+"</color>");
-                if(joinCode!=""){
+                /*if(joinCode!=""){
                     try{
                     // Join the Relay host
                     await RelayService.Instance.JoinAsync(new JoinRequest { JoinCode = joinCode });
-                    Debug.Log("Joined the Relay host successfully!");
+                    */
+                   // Debug.Log("Joined the Relay host successfully!");
                     Debug.Log(discoveredServers[serverKey].uri);
                     networkManager.StartClient(discoveredServers[serverKey].uri);
-                    }
+                    /*}
                     catch (Exception e)
                     {
                         Debug.LogError("Error joining the Relay host: " + e.Message);
-                    }
-                }
+                    }*/
                 
                 yield break;
+            }
+            else if (ipInput.text != ""){
+                int port = 7777;
+                Uri uri = new Uri($"kcp://{ipInput}:{port}");
+                print(uri);
+                networkManager.StartClient(uri);
             }
             yield return null; // Wait for the next frame
         }
