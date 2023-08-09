@@ -89,8 +89,9 @@ public class StartMenu : MonoBehaviour
             }
             else if (ipInput.text != ""){
                 int port = 7777;
-                Uri uri = new Uri($"kcp://{ipInput}:{port}");
+                Uri uri = new Uri("kcp://"+ ipInput.text +":"+port);
                 print(uri);
+                networkManager.networkAddress = uri.Host;
                 networkManager.StartClient(uri);
             }
             yield return null; // Wait for the next frame
