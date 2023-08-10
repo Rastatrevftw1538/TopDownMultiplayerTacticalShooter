@@ -111,7 +111,7 @@ public class PlayerHealth : NetworkBehaviour
         Debug.LogError("<color=yellow>RESPAWNED SUCCESSFULLY.</color>");
     }
 
-    [ClientRpc]
+    //[ClientRpc]
     public void Respawn(float respawnTime)
     {
         Debug.LogError(this.name+"DIED!");
