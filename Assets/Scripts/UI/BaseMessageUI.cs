@@ -10,9 +10,9 @@ public class BaseMessageUI : UI
     {
         message = this.GetComponent<TMP_Text>();
         this.gameObject.SetActive(false);
-        EvtSystem.EventDispatcher.AddListener<ChangeBaseState>(UpdateUI);
-        EvtSystem.EventDispatcher.AddListener<DisableUI>(DisableUI);
-        EvtSystem.EventDispatcher.AddListener<ReplaceUI>(ReplaceUI);
+        //EvtSystem.EventDispatcher.AddListener<ChangeBaseState>(UpdateUI);
+        //EvtSystem.EventDispatcher.AddListener<DisableUI>(DisableUI);
+        //EvtSystem.EventDispatcher.AddListener<ReplaceUI>(ReplaceUI);
     }
 
     public override void UpdateUI(ChangeBaseState evtData)

@@ -124,13 +124,13 @@ public class PlayerHealth : NetworkBehaviour
         //TO ENSURE THE SAME EVENTS DON'T GET RAISED MORE THAN ONCE
         hasSentEvent = false;
 
-        Debug.LogError("<color=yellow>RESPAWNED SUCCESSFULLY.</color>");
+       // Debug.LogError("<color=yellow>RESPAWNED SUCCESSFULLY.</color>");
     }
 
     [ClientRpc]
     public void Respawn(float respawnTime)
     {
-        Debug.LogError(this.name+"DIED!");
+        //Debug.LogError(this.name+"DIED!");
         foreach (Transform spawnPoint in NetworkManager.startPositions) {
                 Debug.LogError("got respawn point");
                 if (spawnPoint.CompareTag(this.GetComponent<PlayerScript>().PlayerTeam.ToString())) {

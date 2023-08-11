@@ -21,14 +21,15 @@ public class Dash : MovementAbility
     private CircleCollider2D aura;
 
     public override void Activate(GameObject parent){
-        //StartDash(parent);
+        StartDash(parent);
         PlayerScript player = parent.GetComponent<PlayerScript>();
-        SpawnAura(player, true);
+        //SpawnAura(player, true);
     }
 
     public override void BeginCooldown(GameObject parent){
         PlayerScript player = parent.GetComponent<PlayerScript>();
-        SpawnAura(player, false);
+        //SpawnAura(player, false);
+        EndDash(parent);
     }
 
     #region PLAYER-ABILITIES

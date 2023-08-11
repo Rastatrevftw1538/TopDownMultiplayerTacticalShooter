@@ -24,6 +24,7 @@ public class Weapon : NetworkBehaviour
     private int numOfBulletsPerShot;
 
     private int damage;
+    public int damageMultiplier;
     private float spreadValue;
 
     public int mags = 3;
@@ -49,6 +50,8 @@ public class Weapon : NetworkBehaviour
     private RaycastHit2D tempHitLocation;
     private bool shootingGun;
 
+    private StatusEffectData _statusEffectData = null;
+
     private void Awake() {
         if(weaponSpecs != null){
             damage = weaponSpecs.damagePerBullet;
@@ -62,6 +65,7 @@ public class Weapon : NetworkBehaviour
         }
         currentAmmo = magSize;
         totalMags = mags;
+        damageMultiplier = 1;
     }
     public int getDamage(){
         return this.damage;
@@ -182,11 +186,11 @@ public class Weapon : NetworkBehaviour
                         {
                             if (hit.collider.gameObject.name == "Bullseye!")
                             {
-                                damageDone = 2 * damage;
+                                damageDone = 2 * (damage * damageMultiplier);
                             }
                             else
                             {
-                                damageDone = damage;
+                                damageDone = (damage * damageMultiplier);
                             }
                             enemyHealth.TakeDamage(damageDone);
                         }
@@ -198,11 +202,39 @@ public class Weapon : NetworkBehaviour
                             Debug.Log("<color=orange>did grab base </color>");
                             if (baseHealth.canHit && !baseHealth.CompareTag(this.GetComponent<PlayerScript>().playerTeam.ToString()))
                             {
-                                damageDone = damage * (2 / (NetworkServer.connections.Count / 2));
+                                damageDone = (damage * damageMultiplier) * (2 / (NetworkServer.connections.Count / 2));
                                 print(NetworkServer.connections.Count);
                                 print("<color=yellow> Damage to base: " + damageDone + "</color>");
                                 baseHealth.TakeDamage(damageDone);
                                 Debug.Log("<color=orange>did Hit base </color>");
+                            }
+                        }
+
+                        BaseEffects baseHealthEffects = objectOrigin.GetComponent<BaseEffects>();
+                        if (baseHealthEffects != null) { 
+                        
+                            Debug.Log("<color=orange>Grabbed base: " + baseHealthEffects.gameObject.name + "</color>");
+                            if (baseHealthEffects.canHit && baseHealthEffects.currentHealth >= 0)
+                            {
+                                damageDone = (damage * damageMultiplier);// * (2 / (NetworkServer.connections.Count / 2));
+                                print(NetworkServer.connections.Count);
+                                Debug.LogWarning("<color=yellow> Damage to base: " + damageDone + "</color>");
+                                Debug.LogWarning("<color=yellow> Base health: " + baseHealthEffects.currentHealth + "</color>");
+                                baseHealthEffects.TakeDamage(damageDone);
+
+                                if (baseHealthEffects.GetHealth() <= 0)
+                                {
+                                    ApplyStatusEffects applyStatusEffects = new ApplyStatusEffects();
+                                    applyStatusEffects.team = GetComponent<PlayerScript>().playerTeam;
+                                    applyStatusEffects.statusEffect = baseHealthEffects.statusEffect;
+                                    EvtSystem.EventDispatcher.Raise<ApplyStatusEffects>(applyStatusEffects);
+                                    Debug.LogError("Base " + baseHealthEffects.gameObject.name +  "is dead");
+                                    Debug.LogError("Base " + baseHealthEffects.gameObject.name + "had the status effect:" + baseHealthEffects.statusEffect);
+                                }
+                            }
+                            else
+                            {
+                                Debug.LogError("Base cannot be hit");
                             }
                         }
                     }
@@ -264,79 +296,6 @@ public class Weapon : NetworkBehaviour
             }
         Instantiate(trailRender.effectPrefab, collisionPoint, new Quaternion(0, 0, 0, 0));
         trailRender.SetTargetPosition(collisionPoint);
-        Debug.Log("Bullet Fired Client " + collisionPoint+ " direction "+spreadDirection);
+        Debug.Log("Bullet Fired Client " + collisionPoint + " direction " + spreadDirection);
     }
-
-   /*public void CmdFireAbility(Vector2 direction, Ability ability)
-    {
-        var damageDone = 0;
-
-        //CinemachineShake.Instance.ShakeCamera(5f, .1f);
-        Vector3 spreadDirection = direction;
-        print("Direction thing SERVER: " + spreadDirection);
-
-        var hit = Physics2D.Raycast(firePoint.position, spreadDirection, fireRange, targetLayers);
-        String whatWasHit = "";
-        if (hit.collider != null)
-        {
-            whatWasHit = hit.collider.tag;
-            if (hit.collider.name.Equals("HitBox") || hit.collider.name.Equals("Bullseye!"))
-            {
-                Transform objectOrigin = hit.collider.transform.parent.parent;
-                if (objectOrigin != null)
-                {
-                    //PLAYER HEALTH STUFF
-                    PlayerHealth enemyHealth = objectOrigin.GetComponent<PlayerHealth>();
-                    if (enemyHealth != null)
-                    {
-                        if (hit.collider.gameObject.name == "Bullseye!")
-                        {
-                            damageDone = 2 * damage;
-                        }
-                        else
-                        {
-                            damageDone = damage;
-                        }
-                        enemyHealth.TakeDamage(damageDone);
-                    }
-
-                    //DAMAGE BASE STUFF
-                    Base baseHealth = objectOrigin.GetComponent<Base>();
-                    if (baseHealth != null)
-                    {
-                        Debug.Log("<color=orange>did grab base </color>");
-                        if (baseHealth.canHit && !baseHealth.CompareTag(this.GetComponent<PlayerScript>().playerTeam.ToString()))
-                        {
-                            damageDone = damage * (2 / (NetworkServer.connections.Count / 2));
-                            print(NetworkServer.connections.Count);
-                            print("<color=yellow> Damage to base: " + damageDone + "</color>");
-                            baseHealth.TakeDamage(damageDone);
-                            Debug.Log("<color=orange>did Hit base </color>");
-                        }
-                    }
-                }
-            }
-        }
-
-        else
-        {
-            whatWasHit = "NOTHING";
-            endPoint = Vector3.zero;
-        }
-
-        Debug.Log("HUh? Server: " + spreadDirection);
-
-        if (endPoint == Vector3.zero)
-        {
-            //BOOOOOOOOOOOOOOOOOOM
-            Debug.DrawLine(firePoint.position, firePoint.position + (spreadDirection * fireRange), Color.red);
-            endPoint = new Vector3(firePoint.position.x, firePoint.position.y, firePoint.position.z) + (spreadDirection * fireRange);
-        }
-        else
-        {
-            endPoint = hit.point;
-        }
-        RpcOnFire(hit, spreadDirection, endPoint, whatWasHit);
-        
-    }*/
 }

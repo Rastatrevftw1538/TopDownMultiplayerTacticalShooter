@@ -8,7 +8,8 @@ using Mirror;
 public class CustomNetworkManager : NetworkManager
 {
     [HideInInspector]
-    public HeistGameManager gameManager;
+    //public HeistGameManager gameManager;
+    public ChaseGameManager gameManager;
 
     public override void OnStartServer()
     {
@@ -56,14 +57,23 @@ public class CustomNetworkManager : NetworkManager
         return "127.0.0.1";
     }
     private void SearchForGameManager() {
-        Scene gameScene = SceneManager.GetSceneByName("LevelTemplate");
+        //Scene gameScene = SceneManager.GetSceneByName("LevelTemplate");
+        Scene gameScene = SceneManager.GetSceneByName("VaultChase");
         if (gameScene.IsValid() && gameScene.isLoaded)
         {
             Debug.Log("Searching for It!");
+
+            /*
             gameManager = GameObject.FindObjectOfType<HeistGameManager>();
                 if(gameManager!=null){
                     Debug.Log("Found It!");
-                }
+                }*/
+
+            gameManager = GameObject.FindObjectOfType<ChaseGameManager>();
+            if (gameManager != null)
+            {
+                Debug.Log("Found It!");
+            }
         }
     }
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)

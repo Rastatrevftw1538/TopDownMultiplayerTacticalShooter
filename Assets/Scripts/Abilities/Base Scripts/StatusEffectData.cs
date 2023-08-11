@@ -6,13 +6,14 @@ using UnityEngine;
 public class StatusEffectData : ScriptableObject
 {
     public string Name;
+    public StatusEffectTypes statusEffectType;
     public float  valueOverTime;
     public float  movementPenalty;
     public float  tickSpeed;
     public float  activeTime;
     public bool   isDOT;
     public bool   isSlow;
-    public float  damageBuff;
+    public int  damageBuff;
 
     //public ParticleSystem EffectParticles;
 }

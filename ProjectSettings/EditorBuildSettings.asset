@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/GameScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/VaultChase.unity
+    guid: 9dae90c1c1affee41969fb888743affe
   m_configObjects: {}
