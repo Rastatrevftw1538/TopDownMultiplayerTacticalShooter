@@ -56,7 +56,7 @@ public class Blink : MovementAbility
         }
     }
 
-    Vector2 MoveCharacter(Vector2 playerposition, Vector2 playerforward)
+    /*Vector2 MoveCharacter(Vector2 playerposition, Vector2 playerforward)
     {
         //PlayerScript player = character.GetComponent<PlayerScript>();
         destination = CalculateDistance(playerposition, playerforward);
@@ -85,5 +85,5 @@ public class Blink : MovementAbility
             Debug.DrawRay(playerposition, (playerfoward.normalized * blinkDistance) * BlinkMultiplier, Color.green, 2);
             return ((playerposition + playerfoward.normalized * blinkDistance) * BlinkMultiplier);
         }
-    }
+    }*/
 }
