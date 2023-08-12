@@ -21,8 +21,8 @@ public class Dash : MovementAbility
     private CircleCollider2D aura;
 
     public override void Activate(GameObject parent){
-        StartDash(parent);
         PlayerScript player = parent.GetComponent<PlayerScript>();
+        StartDash(parent);
         //SpawnAura(player, true);
     }
 

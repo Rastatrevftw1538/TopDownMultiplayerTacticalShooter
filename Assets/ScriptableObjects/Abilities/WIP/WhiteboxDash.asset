@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: WhiteboxDash
   m_EditorClassIdentifier: 
   abilityName: Whitebox Dash
+  statusEffectData: {fileID: 0}
   abilityType: 0
   playerEffects: 0
   activationMethod: 0
@@ -22,7 +23,10 @@ MonoBehaviour:
   delayTime: 0
   isInstantAbility: 0
   hasDelay: 0
-  whichAbility: {fileID: 0}
+  whichAbility: {fileID: 11400000}
+  radius: 0
+  projectileSpeed: 0
+  bulletColor: {r: 0, g: 0, b: 0, a: 0}
   applicationType: 1
   dashVelocity: 10
   speedMultiplier: 10

@@ -8,9 +8,9 @@ using static PlayerScript;
 
 public class PlayerHealth : NetworkBehaviour
 {
-    public const int maxHealth = 100;
+    public const float maxHealth = 100;
 
-    [SyncVar]public int currentHealth = maxHealth;
+    [SyncVar]public float currentHealth = maxHealth;
 
     private Slider healthbarInternal;
     [SerializeField] private Image healthbarExternal;
@@ -22,7 +22,7 @@ public class PlayerHealth : NetworkBehaviour
     {
         get { return isAlive; }
     }
-    public int GetHealth()
+    public float GetHealth()
     {
         return currentHealth;
     }
@@ -32,7 +32,7 @@ public class PlayerHealth : NetworkBehaviour
         healthbarInternal = GetComponentInChildren<Slider>();
     }
 
-    public void TakeDamage(int amount)
+    public void TakeDamage(float amount)
     {
         //CHECK IF THE DAMAGE PASSED IN WAS NEGATIVE, IF IT WAS, THIS FUNCTION WILL ADD HEALTH INSTEAD
         amount = 
@@ -54,7 +54,7 @@ public class PlayerHealth : NetworkBehaviour
         if (healthbarExternal != null)
         {
             //Debug.Log("Health: " + (float)currentHealth);
-            healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
+            healthbarExternal.fillAmount = currentHealth / maxHealth;
             //Debug.Log("Health Changed - Bar: " + healthbarExternal.fillAmount + " Health: " + currentHealth);
         }
 

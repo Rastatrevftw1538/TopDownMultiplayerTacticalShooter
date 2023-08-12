@@ -1187,7 +1187,7 @@ MonoBehaviour:
   autoConnectClientBuild: 0
   sendRate: 30
   offlineScene: Assets/Scenes/MainMenu.unity
-  onlineScene: Assets/Scenes/VaultChase.unity
+  onlineScene: Assets/Scenes/LevelTemplate.unity
   transport: {fileID: 1281707326}
   networkAddress: localhost
   maxConnections: 6

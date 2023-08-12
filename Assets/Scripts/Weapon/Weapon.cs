@@ -20,20 +20,20 @@ public class Weapon : NetworkBehaviour
     private float coneSpreadFactor = 0.1f;
     public LayerMask targetLayers;
     public GameObject bulletPrefab;
-    private float fireRange = 100f;
-    private int numOfBulletsPerShot;
+    [HideInInspector] public float fireRange = 100f;
+    [HideInInspector] public int numOfBulletsPerShot;
 
-    private int damage;
-    public int damageMultiplier;
+    private float damage;
+    public float damageMultiplier;
     private float spreadValue;
 
     public int mags = 3;
-    private int magSize;
+    [HideInInspector] public int magSize;
 
     private int currentAmmo;
 
     private int totalMags;
-    private float fireRate = 0.2f; // added fire rate variable
+    [HideInInspector] public float fireRate = 0.2f; // added fire rate variable
 
     [SerializeField]
     private JoystickControllerRotationAndShooting shootingJoystick;
@@ -41,7 +41,7 @@ public class Weapon : NetworkBehaviour
     private float nextFireTime = 0f;
 
     private bool outOfAmmo = false;
-    private float reloadTime = 2f; // added reload time variable
+    [HideInInspector] public float reloadTime = 2f; // added reload time variable
 
     private bool isReloading = false; // flag to check if reloading is in progress
 
@@ -51,6 +51,7 @@ public class Weapon : NetworkBehaviour
     private bool shootingGun;
 
     private StatusEffectData _statusEffectData = null;
+    [HideInInspector]public int bonusPointsPerShot;
 
 
     PlayerScript player;
@@ -70,8 +71,11 @@ public class Weapon : NetworkBehaviour
         currentAmmo = magSize;
         totalMags = mags;
         damageMultiplier = 1;
+        bonusPointsPerShot = 0;
+
+        EvtSystem.EventDispatcher.AddListener<ApplyStatusEffects>(ApplyStatusEffects);
     }
-    public int getDamage(){
+    public float getDamage(){
         return this.damage;
     }
     public bool isOutOfAmmo(){
@@ -161,7 +165,7 @@ public class Weapon : NetworkBehaviour
     [Command]
     public void CmdFire(Vector2 direction)
     {
-        var damageDone = 0;
+        float damageDone = 0;
         for (int i = 0; i < numOfBulletsPerShot; i++)
         {
             //CinemachineShake.Instance.ShakeCamera(5f, .1f);
@@ -241,6 +245,7 @@ public class Weapon : NetworkBehaviour
 
                                         WhoBrokeBase playerWhoBrokeBase = new WhoBrokeBase();
                                         playerWhoBrokeBase.playerTeam = player.playerTeam;
+                                        playerWhoBrokeBase.whatBase = baseHealthEffects.gameObject;
                                         EvtSystem.EventDispatcher.Raise<WhoBrokeBase>(playerWhoBrokeBase);
 
                                         /*ApplyStatusEffects applyStatusEffects = new ApplyStatusEffects();
@@ -265,9 +270,9 @@ public class Weapon : NetworkBehaviour
                         if (ChaseGameManager.instance != null)
                         {
                             if (player.playerTeam == PlayerScript.Team.Blue)
-                                ChaseGameManager.instance.bluePoints += damageDone;
+                                ChaseGameManager.instance.bluePoints += damageDone + bonusPointsPerShot;
                             else
-                                ChaseGameManager.instance.redPoints  += damageDone;
+                                ChaseGameManager.instance.redPoints  += damageDone + bonusPointsPerShot;
                         }
                     }
                 }
@@ -332,5 +337,25 @@ public class Weapon : NetworkBehaviour
         Instantiate(trailRender.effectPrefab, collisionPoint, new Quaternion(0, 0, 0, 0));
         trailRender.SetTargetPosition(collisionPoint);
         Debug.Log("Bullet Fired Client " + collisionPoint + " direction " + spreadDirection);
+    }
+
+    public void SetDefaultValues()
+    {
+        damage = weaponSpecs.damagePerBullet;
+        fireRange = weaponSpecs.fireRange;
+        numOfBulletsPerShot = weaponSpecs.numOfBulletsPerShot;
+        fireRate = weaponSpecs.fireRate;
+        weaponLooks.sprite = weaponSpecs.weaponSprite;
+        magSize = weaponSpecs.ammo;
+        reloadTime = weaponSpecs.reloadTime;
+        spreadValue = weaponSpecs.spreadIncreasePerSecond * 1000;
+
+        totalMags = mags;
+        damageMultiplier = 1;
+    }
+
+    private void ApplyStatusEffects(ApplyStatusEffects evtData)
+    {
+        
     }
 }

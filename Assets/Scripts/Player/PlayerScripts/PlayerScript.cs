@@ -344,6 +344,11 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         //{
         //   Destroy(_effectParticles);
         //}
+
+        if (weapon != null)
+            weapon.SetDefaultValues();
+
+        hasApplied = false;
     }
 
     //CALLS IT MULTIPLE TIMES
@@ -409,7 +414,48 @@ public class PlayerScript : NetworkBehaviour, IEffectable
                         if(weapon == null)
                             weapon = GetComponent<Weapon>();
 
-                        ApplyDamageBuff(weapon);
+
+                        //SUPER HARD CODED FOR NOWWW, IT'S OKAY
+                        Debug.LogError("THE NAME OF THE EFFECT IS: " + _statusEffectData.Name);
+
+                        if (!hasApplied)
+                        {
+                            switch (_statusEffectData.Name)
+                            {
+                                case "Damage Buff":
+                                    ApplyDamageBuff(weapon);
+                                    Debug.LogError("dmg");
+                                    break;
+                                case "Bonus Points":
+                                    BonusPointsBuff(weapon);
+                                    Debug.LogError("bonus");
+                                    break;
+                                case "Bullet Count":
+                                    BulletCountBuff(weapon);
+                                    Debug.LogError("BC");
+                                    break;
+                                case "Fire Range":
+                                    FireRangeBuff(weapon);
+                                    Debug.LogError("FRange");
+                                    break;
+                                case "Fire Rate":
+                                    FireRateBuff(weapon);
+                                    Debug.LogError("Frate");
+                                    break;
+                                case "Num of Shots":
+                                    NumOfShotsBuff(weapon);
+                                    Debug.LogError("numOf");
+                                    break;
+                                case "Reload":
+                                    ReloadBuff(weapon);
+                                    Debug.LogError("reload");
+                                    break;
+                                default:
+                                    ApplyDamageBuff(weapon);
+                                    Debug.LogError("DEFAULT");
+                                    break;
+                            }
+                        }
                     }
                     else if(_statusEffectData.statusEffectType == StatusEffectTypes.MOVEMENT)
                     {
@@ -432,9 +478,41 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         playerHealthScript.TakeDamage((int)_statusEffectData.valueOverTime * posOrNeg);
     }
 
+    bool hasApplied;
     public void ApplyDamageBuff(Weapon weaponScript)
     {
+        hasApplied = true;
         weaponScript.damageMultiplier = _statusEffectData.damageBuff;
+    }
+    public void ReloadBuff(Weapon weaponScript)
+    {
+        hasApplied = true;
+        weaponScript.reloadTime *= (1 - _statusEffectData.reloadTime);
+    }
+    public void FireRateBuff(Weapon weaponScript)
+    {
+        hasApplied = true;
+        weaponScript.fireRate /= _statusEffectData.fireRate;
+    }
+    public void FireRangeBuff(Weapon weaponScript)
+    {
+        hasApplied = true;
+        weaponScript.fireRange *= _statusEffectData.fireRange;
+    }
+    public void BulletCountBuff(Weapon weaponScript)
+    {
+        hasApplied = true;
+        weaponScript.magSize += _statusEffectData.magSize;
+    }
+    public void NumOfShotsBuff(Weapon weaponScript)
+    {
+        hasApplied = true;
+        weaponScript.numOfBulletsPerShot += _statusEffectData.numOfBulletsPerShot;
+    }
+    public void BonusPointsBuff(Weapon weaponScript)
+    {
+        hasApplied = true;
+        weaponScript.bonusPointsPerShot = _statusEffectData.bonusPointsPerShot;
     }
 
     public void ApplyMoveSE()

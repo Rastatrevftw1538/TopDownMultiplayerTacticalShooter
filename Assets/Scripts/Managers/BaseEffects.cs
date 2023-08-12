@@ -8,10 +8,8 @@ using Mirror;
 public class BaseEffects : NetworkBehaviour
 {
     [Header("Base Stats")]
-    public int maxHealth = 1000;
-    public int maxDamageInRound;
-    [SyncVar] public PlayerScript.Team team;
-    [SyncVar, SerializeField] private int currentHealth;
+    public float maxHealth = 1000;
+    [SyncVar, SerializeField] private float currentHealth;
     public StatusEffectData statusEffect;
     public float respawnTime = 2f;
 
@@ -22,7 +20,7 @@ public class BaseEffects : NetworkBehaviour
     public bool canHit = true;
     private bool isAlive = true;
 
-    private int _damageTaken = 0;
+    private float _damageTaken = 0;
     private bool sentBaseDestroyedEvent = false;
     private ChangeBaseState lastBaseEvent = null;
 
@@ -31,7 +29,7 @@ public class BaseEffects : NetworkBehaviour
         get { return isAlive; }
     }
 
-    public int GetHealth()
+    public float GetHealth()
     {
         return currentHealth;
     }
@@ -50,10 +48,9 @@ public class BaseEffects : NetworkBehaviour
         EvtSystem.EventDispatcher.AddListener<WhoBrokeBase>(ApplyStatusEffect);
 
         maxHealth = ChaseGameManager.instance.baseHealth;
-        maxDamageInRound = maxHealth / 2;
     }
 
-    public void TakeDamage(int amount)
+    public void TakeDamage(float amount)
     {
         //FIRST CHECK IF THE BASE'S HEALTH IS BELOW 0
         if (currentHealth > 0)
@@ -74,7 +71,7 @@ public class BaseEffects : NetworkBehaviour
     private PlayerScript.Team teamThatBrokeBaseLast;
     public void ApplyStatusEffect(WhoBrokeBase evtData)
     {
-        if (statusEffect != null)
+        if (statusEffect != null && evtData.whatBase == this.gameObject)
         {
             teamThatBrokeBaseLast = evtData.playerTeam;
 
@@ -83,6 +80,8 @@ public class BaseEffects : NetworkBehaviour
             applyStatusEffects.statusEffect = statusEffect;
 
             EvtSystem.EventDispatcher.Raise<ApplyStatusEffects>(applyStatusEffects);
+
+            Debug.LogError("Rose event from gameobject: " + gameObject.name);
         }
     }
 

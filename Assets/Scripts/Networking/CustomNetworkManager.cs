@@ -60,8 +60,8 @@ public class CustomNetworkManager : NetworkManager
         networkAddress = GetLocalIPAddress();
     }
     private void SearchForGameManager() {
-        //Scene gameScene = SceneManager.GetSceneByName("LevelTemplate");
-        Scene gameScene = SceneManager.GetSceneByName("VaultChase");
+        Scene gameScene = SceneManager.GetSceneByName("LevelTemplate");
+        //Scene gameScene = SceneManager.GetSceneByName("VaultChase");
         if (gameScene.IsValid() && gameScene.isLoaded)
         {
             Debug.Log("Searching for It!");

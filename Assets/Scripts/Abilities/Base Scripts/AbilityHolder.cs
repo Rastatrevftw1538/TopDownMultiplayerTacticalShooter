@@ -94,7 +94,7 @@ public class AbilityHolder : NetworkBehaviour
                     activeTime -= Time.deltaTime; //SUBTRACT TIME UNTIL IT HITS 0
                 }
                 else{
-                    abilities[indx].whichAbility.BeginCooldown(this.gameObject);
+                    abilities[indx].whichAbility.BeginCooldown(playerScript.gameObject);
                     state = AbilityState.cooldown; //AND THEN PUT THE ABILITY ON COOLDOWN
                     cooldownTime = abilities[indx].cooldownTime; //SET THE COOLDOWN TIME TO THE ABILITY'S COOLDOWN TIME AND THEN START THE COOLDOWN TIMER
                 }
@@ -131,7 +131,7 @@ public class AbilityHolder : NetworkBehaviour
     #region Remote Call Functions
     void startAbility()
     {
-        abilities[indx].whichAbility.Activate(this.gameObject); //ACTIVATE THE ABILITY OF INDEX
+        abilities[indx].whichAbility.Activate(playerScript.gameObject); //ACTIVATE THE ABILITY OF INDEX
 
         state = AbilityState.active; //SET THE ABILITY TO READY
         activeTime = abilities[indx].activeTime; //SET THE ACTIVE TIME TO THE ABILITY'S ACTIVE TIME AND START THE TIMER

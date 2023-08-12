@@ -113,6 +113,7 @@ public class ApplyStatusEffects : EvtSystem.Event
 public class WhoBrokeBase : EvtSystem.Event
 {
     public PlayerScript.Team playerTeam;
+    public GameObject whatBase;
 }
 
 public class DisplayUI : EvtSystem.Event

@@ -459,7 +459,7 @@ MonoBehaviour:
   syncInterval: 0
   statusEffectData: {fileID: 0}
   abilities:
-  - {fileID: 11400000, guid: 981e8893798a5c74ab03138ff1f8219c, type: 2}
+  - {fileID: 11400000, guid: 0df9e37970c605c4ca5baf4ac204c12f, type: 2}
   - {fileID: 11400000, guid: c7845721c18392842a71cf8ec7d0fcef, type: 2}
   debugKeys: 6500000067000000
 --- !u!1 &1888670782340055357
@@ -782,9 +782,15 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 2147483647
   bulletPrefab: {fileID: 209056261796185724, guid: e88e32b0ab60951458b5460b47a868f1, type: 3}
+  fireRange: 100
+  numOfBulletsPerShot: 0
   damageMultiplier: 0
   mags: 99
+  magSize: 0
+  fireRate: 0.2
   shootingJoystick: {fileID: 3820486686981098696}
+  reloadTime: 2
+  bonusPointsPerShot: 0
 --- !u!114 &8255556374250650021
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1561,7 +1567,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   visibleTargets: []
-  meshResolution: 3
+  meshResolution: 1
   edgeResolveIterations: 4
   edgeDstThreshold: 0.5
   maskCutawayDst: 0.1

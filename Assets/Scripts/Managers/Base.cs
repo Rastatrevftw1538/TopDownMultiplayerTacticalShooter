@@ -7,10 +7,10 @@ using Mirror;
 public class Base : NetworkBehaviour
 {
     [Header("Base Stats")]
-    public int maxHealth = 1000;
-    public int maxDamageInRound;
+    public float maxHealth = 1000;
+    public float maxDamageInRound;
     [SyncVar] public PlayerScript.Team team;
-    [SyncVar] private int currentHealth;
+    [SyncVar] private float currentHealth;
 
     //BASE COMPONENTS
     [SerializeField] private Image healthbarExternal;
@@ -19,7 +19,7 @@ public class Base : NetworkBehaviour
     [SyncVar] public bool canHit = false;
     private bool isAlive = true;
 
-    private int _damageTaken = 0;
+    private float _damageTaken = 0;
     private bool sentBaseDestroyedEvent = false;
     private ChangeBaseState lastBaseEvent = null;
 
@@ -28,7 +28,7 @@ public class Base : NetworkBehaviour
         get { return isAlive; }
     }
 
-    public int GetHealth()
+    public float GetHealth()
     {
         return currentHealth;
     }
@@ -61,7 +61,7 @@ public class Base : NetworkBehaviour
         EvtSystem.EventDispatcher.AddListener<StartTeamRespawn>(EndPhase);
     }
 
-    public void TakeDamage(int amount)
+    public void TakeDamage(float amount)
     {
         //FIRST CHECK IF THE BASE'S HEALTH IS BELOW 0
         if(currentHealth <= 0 && !sentBaseDestroyedEvent)
