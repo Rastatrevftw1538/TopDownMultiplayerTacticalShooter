@@ -326,6 +326,9 @@ public class Weapon : NetworkBehaviour
             else if(whatWasHit == "Wall"){
                 main.startColor = Color.gray;
             }
+            else{
+                main.startColor = Color.clear;
+            }
         Instantiate(trailRender.effectPrefab, collisionPoint, new Quaternion(0, 0, 0, 0));
         trailRender.SetTargetPosition(collisionPoint);
         Debug.Log("Bullet Fired Client " + collisionPoint + " direction " + spreadDirection);

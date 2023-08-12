@@ -1,91 +1,131 @@
+using System;
 using System.Net;
-using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Mirror;
+using System.Net.Sockets;
+using Unity.Services.Core;
+using Unity.Services.Authentication;
+using Unity.Services.Relay;
+using Unity.Services.Relay.Models;
+
 
 public class CustomNetworkManager : NetworkManager
 {
     [HideInInspector]
-    //public HeistGameManager gameManager;
-    public ChaseGameManager gameManager;
+    public HeistGameManager gameManager;// Reference to the StartMenu UI script
+    public StartMenu startMenu;
 
+    // Relay related variables
+    private Guid hostAllocationId;
+    public string joinCode;
+
+    private bool isLoggedIn = false;
+
+    // Relay allocation region (optional, you can set this based on player's choice)
+    private string allocationRegion = "us"; // For example, "us", "eu", etc.
+    
     public override void OnStartServer()
     {
         base.OnStartServer();
         Debug.Log("Server Started");
+        CreateRelayAllocation();
         Invoke(nameof(SearchForGameManager),0.5f);
-
+        Invoke(nameof(SetLocalIP),0.5f);
+        networkAddress = GetLocalIPAddress();
         EvtSystem.EventDispatcher.AddListener<EndGame>(EndHost);
     }
     private void Start() {
-        // Get the local IP address of the device
-        string localIPAddress = GetLocalIPAddress();
-
-        // Set the network address of the NetworkManager to the local IP address
-        networkAddress = localIPAddress;
+        SetLocalIP();
     }
     public string GetLocalIPAddress()
     {
-        // Get all network interfaces of the device
-        System.Net.NetworkInformation.NetworkInterface[] networkInterfaces =
-            System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces();
+                string localHost = Dns.GetHostName();
+            IPHostEntry hostEntry = Dns.GetHostEntry(localHost);
 
-        // Find the first network interface with an IPv4 address
-        foreach (System.Net.NetworkInformation.NetworkInterface networkInterface in networkInterfaces)
+        foreach (IPAddress ipAddress in hostEntry.AddressList)
         {
-            // Consider only operational and non-loopback interfaces
-            if (networkInterface.OperationalStatus == System.Net.NetworkInformation.OperationalStatus.Up &&
-                networkInterface.NetworkInterfaceType != System.Net.NetworkInformation.NetworkInterfaceType.Loopback)
+            if (ipAddress.AddressFamily == AddressFamily.InterNetwork)
             {
-                // Get the IP properties of the network interface
-                System.Net.NetworkInformation.IPInterfaceProperties ipProperties = networkInterface.GetIPProperties();
-
-                // Find the first IPv4 address assigned to the network interface
-                foreach (System.Net.NetworkInformation.UnicastIPAddressInformation unicastAddress in ipProperties.UnicastAddresses)
-                {
-                    if (unicastAddress.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                    {
-                        return unicastAddress.Address.ToString();
-                    }
-                }
+                return ipAddress.ToString();
             }
         }
-
         // If no suitable IP address is found, return a default value (localhost)
         return "127.0.0.1";
     }
+    private void SetLocalIP(){
+        networkAddress = GetLocalIPAddress();
+    }
     private void SearchForGameManager() {
-        //Scene gameScene = SceneManager.GetSceneByName("LevelTemplate");
-        Scene gameScene = SceneManager.GetSceneByName("VaultChase");
+        Scene gameScene = SceneManager.GetSceneByName("LevelTemplate");
         if (gameScene.IsValid() && gameScene.isLoaded)
         {
             Debug.Log("Searching for It!");
-
-            /*
             gameManager = GameObject.FindObjectOfType<HeistGameManager>();
                 if(gameManager!=null){
                     Debug.Log("Found It!");
-                }*/
-
-            gameManager = GameObject.FindObjectOfType<ChaseGameManager>();
-            if (gameManager != null)
-            {
-                Debug.Log("Found Game Manager!");
-            }
+                }
         }
     }
+
+    public async void UnityLogin()
+		{
+			try
+			{
+				await UnityServices.InitializeAsync();
+				await AuthenticationService.Instance.SignInAnonymouslyAsync();
+                Debug.Log("Logged into Unity, player ID: " + AuthenticationService.Instance.PlayerId);
+                isLoggedIn = true;
+            }
+			catch (Exception e)
+			{
+                isLoggedIn = false;
+                Debug.Log(e);
+			}
+		}
+    private async void CreateRelayAllocation()
+    {
+        Debug.Log("Creating Relay Allocation...");
+
+        // Determine the region to use (user-selected or hardcoded)
+        //string region = allocationRegion;
+
+        // Important: Once the allocation is created, you have ten seconds to bind
+        Allocation allocation = await RelayService.Instance.CreateAllocationAsync(2);
+        hostAllocationId = allocation.AllocationId;
+        Debug.Log($"Host Allocation ID: {hostAllocationId}");
+        Invoke(nameof(CheckRelayAllocation),0.5f);
+
+    }
+
+    private async void CheckRelayAllocation()
+    {
+        Debug.Log("Checking Relay Allocation...");
+
+        try
+        {
+            // Get the join code for the relay allocation
+            joinCode = await RelayService.Instance.GetJoinCodeAsync(hostAllocationId);
+            Debug.Log("Join Code: " + joinCode);
+
+        }
+        catch (RelayServiceException ex)
+        {
+            Debug.LogError(ex.Message + "\n" + ex.StackTrace);
+        }
+    }
+
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
         base.OnServerAddPlayer(conn);
 
         // Player has connected to the server
         Debug.Log("Player connected: " + conn.identity);
-
+        
         // Notify the game manager that a player has connected
-        //HeistGameManager.instance.OnPlayerConnected(conn);
-        ChaseGameManager.instance.OnPlayerConnected(conn);
+        HeistGameManager.instance.OnPlayerConnected(conn);
     }
     
     public override void OnStartClient()
@@ -145,4 +185,5 @@ public class CustomNetworkManager : NetworkManager
         //StopHost();
     }
 }
+
 
