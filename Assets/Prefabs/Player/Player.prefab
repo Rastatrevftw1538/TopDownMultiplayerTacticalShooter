@@ -461,7 +461,7 @@ MonoBehaviour:
   abilities:
   - {fileID: 11400000, guid: 981e8893798a5c74ab03138ff1f8219c, type: 2}
   - {fileID: 11400000, guid: c7845721c18392842a71cf8ec7d0fcef, type: 2}
-  debugKeys: 65000000
+  debugKeys: 6500000067000000
 --- !u!1 &1888670782340055357
 GameObject:
   m_ObjectHideFlags: 0

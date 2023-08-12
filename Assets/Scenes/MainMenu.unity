@@ -1187,7 +1187,7 @@ MonoBehaviour:
   autoConnectClientBuild: 0
   sendRate: 30
   offlineScene: Assets/Scenes/MainMenu.unity
-  onlineScene: Assets/Scenes/LevelTemplate.unity
+  onlineScene: Assets/Scenes/VaultChase.unity
   transport: {fileID: 1281707326}
   networkAddress: localhost
   maxConnections: 6
@@ -1200,6 +1200,7 @@ MonoBehaviour:
   - {fileID: 1351942601874193225, guid: 4da59042fc1b0b54685f5c2395e79b71, type: 3}
   - {fileID: 5706064857750014841, guid: 1b6d18f608de54c9787fbfd66144957d, type: 3}
   - {fileID: 1569244561486018221, guid: ebe71dfafbbb8ce43a0833451093e1b3, type: 3}
+  - {fileID: 4930267731783877846, guid: 8dc14e7cda19f2347b300d573880a793, type: 3}
   snapshotSettings:
     bufferTimeMultiplier: 2
     catchupNegativeThreshold: -1

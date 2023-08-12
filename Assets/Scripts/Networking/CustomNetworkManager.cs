@@ -15,8 +15,9 @@ using Unity.Services.Relay.Models;
 public class CustomNetworkManager : NetworkManager
 {
     [HideInInspector]
-    public HeistGameManager gameManager;// Reference to the StartMenu UI script
-    public StartMenu startMenu;
+    //public HeistGameManager gameManager;// Reference to the StartMenu UI script
+    public ChaseGameManager gameManager;
+    public StartMenu startMenu; // Reference to the StartMenu UI script
 
     // Relay related variables
     private Guid hostAllocationId;
@@ -59,12 +60,14 @@ public class CustomNetworkManager : NetworkManager
         networkAddress = GetLocalIPAddress();
     }
     private void SearchForGameManager() {
-        Scene gameScene = SceneManager.GetSceneByName("LevelTemplate");
+        //Scene gameScene = SceneManager.GetSceneByName("LevelTemplate");
+        Scene gameScene = SceneManager.GetSceneByName("VaultChase");
         if (gameScene.IsValid() && gameScene.isLoaded)
         {
             Debug.Log("Searching for It!");
-            gameManager = GameObject.FindObjectOfType<HeistGameManager>();
-                if(gameManager!=null){
+            //gameManager = GameObject.FindObjectOfType<HeistGameManager>();
+            gameManager = GameObject.FindObjectOfType<ChaseGameManager>();
+            if (gameManager!=null){
                     Debug.Log("Found It!");
                 }
         }
@@ -123,9 +126,10 @@ public class CustomNetworkManager : NetworkManager
 
         // Player has connected to the server
         Debug.Log("Player connected: " + conn.identity);
-        
+
         // Notify the game manager that a player has connected
-        HeistGameManager.instance.OnPlayerConnected(conn);
+        //HeistGameManager.instance.OnPlayerConnected(conn);
+        ChaseGameManager.instance.OnPlayerConnected(conn);
     }
     
     public override void OnStartClient()
