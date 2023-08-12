@@ -50,11 +50,15 @@ public class PlayerScript : NetworkBehaviour, IEffectable
     private bool isShooting;
     private bool canMove = true;
 
+    private void Awake()
+    {
+        EvtSystem.EventDispatcher.AddListener<PlayerDied>(ClearStatusEffects);
+        EvtSystem.EventDispatcher.AddListener<ApplyStatusEffects>(CmdHandleEffectThruEvent);
+    }
+
     private void Start() {
         runSpeedNormal = runSpeed;
         walkSpeedNormal = walkSpeed;
-        EvtSystem.EventDispatcher.AddListener<PlayerDied>(ClearStatusEffects);
-        EvtSystem.EventDispatcher.AddListener<ApplyStatusEffects>(CmdHandleEffectThruEvent);
 
         if (isLocalPlayer)
         {
@@ -151,14 +155,15 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         }
         #endregion
 
-        #region ABILITY EFFECT CHECK
         if(_statusEffectData != null)
         {
-            //Debug.LogError("not null");
             CmdHandleEffect();
-            //Debug.LogError("Applying effect");
         }
-        #endregion
+    }
+
+    public void FixedUpdate()
+    {
+        
     }
 
     [Command]
@@ -294,6 +299,7 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         ApplyEffect(data);
     }
 
+    //POTENTIALLY WHY WE HAVE TO DO SO MANY NULL CHECKS
     [ClientRpc]
     public void ApplyEffect(StatusEffectData data)
     {
@@ -329,6 +335,7 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         //}
     }
 
+    //CALLS IT MULTIPLE TIMES
     [Command]
     private void CmdHandleEffect()
     {
@@ -336,27 +343,33 @@ public class PlayerScript : NetworkBehaviour, IEffectable
             HandleEffect();
     }
 
-    //[Command]
+    //CALLS IT ONCE
+    [Command]
     private void CmdHandleEffectThruEvent(ApplyStatusEffects evtData)
     {
-        _statusEffectData = evtData.statusEffect;
+        //EvtSystem.EventDispatcher.RemoveListener<ApplyStatusEffects>(deleteListener);
+
+        if(evtData.team == playerTeam)
+            _statusEffectData = evtData.statusEffect;
+
         //Debug.LogError("CMD handling effect thru event");
-        if (_statusEffectData != null && evtData.team == playerTeam)
-        {
-            HandleEffect();
-        }
-        else
-        {
-            Debug.LogError("stops here");
-        }
+        //if (_statusEffectData != null && evtData.team == playerTeam)
+        //{
+        //    HandleEffect();
+        //}
     }
 
+    private void deleteListener(ApplyStatusEffects evtData)
+    {
+
+    }
 
     PlayerHealth playerHealth;
     Weapon weapon;
     [ClientRpc]
     public void HandleEffect()
     {
+        _currentEffectTime += Time.deltaTime;
         //CODE DIFFERENT CASES FOR WHAT THE STATUS EFFECT IS; STATUS EFFECTS CAN BE APPLIED THROUGH ABILITIES OR THROUGH THE DESTRUCTION OF BASES
         if (_statusEffectData != null)
         {
@@ -366,8 +379,6 @@ public class PlayerScript : NetworkBehaviour, IEffectable
                 Debug.LogError("status effect expired"); 
                 ClearStatusEffects(); 
             }
-
-            _currentEffectTime += Time.deltaTime;
 
             if (_statusEffectData != null)
             {
@@ -380,21 +391,30 @@ public class PlayerScript : NetworkBehaviour, IEffectable
                     if (_statusEffectData.statusEffectType == StatusEffectTypes.DOT)
                     {
                         Debug.LogError("DOT Effect");
-                        playerHealth = GetComponent<PlayerHealth>();
+
+                        if (playerHealth == null)
+                            playerHealth = GetComponent<PlayerHealth>();
+
                         ApplyDOT(playerHealth);
                     }
                     else if(_statusEffectData.statusEffectType == StatusEffectTypes.STRENGTH_BUFF)
                     {
                         Debug.LogError("Weapon Buff");
-                        weapon = GetComponent<Weapon>();
+
+                        if(weapon == null)
+                            weapon = GetComponent<Weapon>();
+
                         ApplyDamageBuff(weapon);
                     }
                     else if(_statusEffectData.statusEffectType == StatusEffectTypes.MOVEMENT)
                     {
                         Debug.LogError("Movement Buff");
-                    }else
+                    }
+                    else
                         Debug.LogError("nothing?");
                 }
+
+                EvtSystem.EventDispatcher.AddListener<ApplyStatusEffects>(CmdHandleEffectThruEvent);
             }
         }
     }
@@ -404,7 +424,7 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         //CHECK IF YOU WERE TRYING TO HEAL, OR TO DAMAGE
         int posOrNeg = _statusEffectData.isDOT ? -1 : 1;
         //Debug.LogError("Applying DOT To player" + gameObject.name);
-        playerHealthScript.TakeDamage((int)_statusEffectData.valueOverTime * posOrNeg, 3f);
+        playerHealthScript.TakeDamage((int)_statusEffectData.valueOverTime * posOrNeg);
     }
 
     public void ApplyDamageBuff(Weapon weaponScript)

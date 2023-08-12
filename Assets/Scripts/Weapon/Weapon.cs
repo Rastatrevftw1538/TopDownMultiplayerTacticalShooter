@@ -52,8 +52,12 @@ public class Weapon : NetworkBehaviour
 
     private StatusEffectData _statusEffectData = null;
 
+
+    PlayerScript player;
     private void Awake() {
-        if(weaponSpecs != null){
+        player = this.transform.GetComponent<PlayerScript>();
+
+        if (weaponSpecs != null){
             damage = weaponSpecs.damagePerBullet;
             fireRange = weaponSpecs.fireRange;
             numOfBulletsPerShot = weaponSpecs.numOfBulletsPerShot;
@@ -102,10 +106,10 @@ public class Weapon : NetworkBehaviour
         float coneScale = 1f + (spread * coneSpreadFactor);
         spreadCone.transform.localScale = new Vector3(Mathf.Clamp(coneScale,0,35), spreadCone.transform.localScale.y, 1f);
         spreadCone.color = new Color(1,0,0,Mathf.Clamp((Mathf.Clamp(spread,0f,100f)-0)/(100-0),0.25f,0.75f));
-        if(this.transform.GetComponent<PlayerScript>().PlayerDevice == PlayerScript.SetDeviceType.Mobile){
+        if(player.PlayerDevice == PlayerScript.SetDeviceType.Mobile){
             shootingGun = shootingJoystick.isShooting ;
         }
-        else if(this.transform.GetComponent<PlayerScript>().PlayerDevice == PlayerScript.SetDeviceType.PC){
+        else if(player.PlayerDevice == PlayerScript.SetDeviceType.PC){
             shootingGun = Input.GetMouseButton(0);
         }
         if (shootingGun && Time.time >= nextFireTime && !outOfAmmo)
@@ -117,7 +121,7 @@ public class Weapon : NetworkBehaviour
             direction = spreadRotation * direction;
             print("Direction thing: "+direction);
             CmdFire(direction);
-            if(this.GetComponent<PlayerScript>().isRunning){
+            if(player.isRunning){
                 spread += Time.deltaTime * (spreadValue*2);
             }
             else{
@@ -180,9 +184,10 @@ public class Weapon : NetworkBehaviour
                     Transform objectOrigin = hit.collider.transform.parent.parent;
                     if (objectOrigin != null)
                     {
+                        bool foundWhatHit = false;
                         //PLAYER HEALTH STUFF
                         PlayerHealth enemyHealth = objectOrigin.GetComponent<PlayerHealth>();
-                        if (enemyHealth != null)
+                        if (enemyHealth != null && !foundWhatHit)
                         {
                             if (hit.collider.gameObject.name == "Bullseye!")
                             {
@@ -193,48 +198,66 @@ public class Weapon : NetworkBehaviour
                                 damageDone = (damage * damageMultiplier);
                             }
                             enemyHealth.TakeDamage(damageDone);
+
+                            foundWhatHit = true;
                         }
 
                         //DAMAGE BASE STUFF
-                        Base baseHealth = objectOrigin.GetComponent<Base>();
-                        if (baseHealth != null)
+                        if (!foundWhatHit)
                         {
-                            Debug.Log("<color=orange>did grab base </color>");
-                            if (baseHealth.canHit && !baseHealth.CompareTag(this.GetComponent<PlayerScript>().playerTeam.ToString()))
+                            Base baseHealth = objectOrigin.GetComponent<Base>();
+                            if (baseHealth != null && !foundWhatHit)
                             {
-                                damageDone = (damage * damageMultiplier) * (2 / (NetworkServer.connections.Count / 2));
-                                print(NetworkServer.connections.Count);
-                                print("<color=yellow> Damage to base: " + damageDone + "</color>");
-                                baseHealth.TakeDamage(damageDone);
-                                Debug.Log("<color=orange>did Hit base </color>");
+                                Debug.Log("<color=orange>did grab base </color>");
+                                if (baseHealth.canHit && !baseHealth.CompareTag(this.GetComponent<PlayerScript>().playerTeam.ToString()))
+                                {
+                                    damageDone = (damage * damageMultiplier) * (2 / (NetworkServer.connections.Count / 2));
+                                    print(NetworkServer.connections.Count);
+                                    print("<color=yellow> Damage to base: " + damageDone + "</color>");
+                                    baseHealth.TakeDamage(damageDone);
+                                    Debug.Log("<color=orange>did Hit base </color>");
+                                }
+
+                                foundWhatHit = true;
                             }
                         }
 
-                        BaseEffects baseHealthEffects = objectOrigin.GetComponent<BaseEffects>();
-                        if (baseHealthEffects != null) { 
-                        
-                            Debug.Log("<color=orange>Grabbed base: " + baseHealthEffects.gameObject.name + "</color>");
-                            if (baseHealthEffects.canHit && baseHealthEffects.currentHealth >= 0)
+                        if (!foundWhatHit)
+                        {
+                            BaseEffects baseHealthEffects = objectOrigin.GetComponent<BaseEffects>();
+                            if (baseHealthEffects != null)
                             {
-                                damageDone = (damage * damageMultiplier);// * (2 / (NetworkServer.connections.Count / 2));
-                                print(NetworkServer.connections.Count);
+
+                                Debug.Log("<color=orange>Grabbed base: " + baseHealthEffects.gameObject.name + "</color>");
+                                if (baseHealthEffects.canHit && baseHealthEffects.currentHealth >= 0)
+                                {
+                                    damageDone = (damage * damageMultiplier);// * (2 / (NetworkServer.connections.Count / 2));
+                                    print(NetworkServer.connections.Count);
+                                    baseHealthEffects.TakeDamage(damageDone);
+
+                                    if (baseHealthEffects.GetHealth() <= 0)
+                                    {
+                                        baseHealthEffects.TakeDamage(damageDone);
+
+                                        WhoBrokeBase player = new WhoBrokeBase();
+                                        player.playerTeam = GetComponent<PlayerScript>().playerTeam;
+                                        EvtSystem.EventDispatcher.Raise<WhoBrokeBase>(player);
+
+                                        /*ApplyStatusEffects applyStatusEffects = new ApplyStatusEffects();
+                                        applyStatusEffects.team = GetComponent<PlayerScript>().playerTeam;
+                                        applyStatusEffects.statusEffect = baseHealthEffects.statusEffect;
+
+                                        EvtSystem.EventDispatcher.Raise<ApplyStatusEffects>(applyStatusEffects);*/
+                                    }
+                                }
+                                else
+                                {
+                                    Debug.LogError("Base cannot be hit");
+                                }
+
+                                foundWhatHit = true;
                                 Debug.LogWarning("<color=yellow> Damage to base: " + damageDone + "</color>");
                                 Debug.LogWarning("<color=yellow> Base health: " + baseHealthEffects.currentHealth + "</color>");
-                                baseHealthEffects.TakeDamage(damageDone);
-
-                                if (baseHealthEffects.GetHealth() <= 0)
-                                {
-                                    ApplyStatusEffects applyStatusEffects = new ApplyStatusEffects();
-                                    applyStatusEffects.team = GetComponent<PlayerScript>().playerTeam;
-                                    applyStatusEffects.statusEffect = baseHealthEffects.statusEffect;
-                                    EvtSystem.EventDispatcher.Raise<ApplyStatusEffects>(applyStatusEffects);
-                                    Debug.LogError("Base " + baseHealthEffects.gameObject.name +  "is dead");
-                                    Debug.LogError("Base " + baseHealthEffects.gameObject.name + "had the status effect:" + baseHealthEffects.statusEffect);
-                                }
-                            }
-                            else
-                            {
-                                Debug.LogError("Base cannot be hit");
                             }
                         }
                     }

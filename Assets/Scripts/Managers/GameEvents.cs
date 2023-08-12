@@ -109,3 +109,8 @@ public class ApplyStatusEffects : EvtSystem.Event
     public GameObject player;
     public StatusEffectData statusEffect;
 }
+
+public class WhoBrokeBase : EvtSystem.Event
+{
+    public PlayerScript.Team playerTeam;
+}

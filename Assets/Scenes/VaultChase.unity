@@ -47897,7 +47897,7 @@ MonoBehaviour:
   maxDamageInRound: 0
   team: 0
   currentHealth: 0
-  statusEffect: {fileID: 11400000, guid: 9e25264fe7c67ce458c238444c91379f, type: 2}
+  statusEffect: {fileID: 11400000, guid: 7ff338128b3ed104982b7dbd6886445d, type: 2}
   respawnTime: 2
   healthbarExternal: {fileID: 1505195146}
   canHit: 1

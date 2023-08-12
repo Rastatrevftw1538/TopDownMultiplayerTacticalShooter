@@ -43,25 +43,16 @@ public class BaseEffects : NetworkBehaviour
     private void Awake()
     {
         //healthbarInternal = GetComponentInChildren<Slider>();
+
         maxHealth = GameObject.Find("GameModeManager").GetComponent<ChaseGameManager>().baseHealth;
         maxDamageInRound = maxHealth / 2;
     }
 
     private void Start()
     {
-        /*
-        if(this.tag == "Red")
-        {
-            team = PlayerScript.Team.Red;
-        }
-        else
-        {
-            team = PlayerScript.Team.Blue;
-        }
-        */
-        //IF THIS RECIEVES A MESSAGE THAT A TEAM HAS BEEN RESPAWNED, END THE VULNERABILITY PHASE
         //EvtSystem.EventDispatcher.AddListener<ChangeBaseState>(StartPhase);
         //EvtSystem.EventDispatcher.AddListener<ApplyStatusEffects>(ApplyStatusEffect);
+        EvtSystem.EventDispatcher.AddListener<WhoBrokeBase>(ApplyStatusEffect);
         currentHealth = 100;
     }
 
@@ -104,8 +95,8 @@ public class BaseEffects : NetworkBehaviour
         }*/
         //Debug.Log("<color=red>Base Health: " + currentHealth + "</color>");
 
-        if (currentHealth <= 0)
-            RpcDie();
+        //if (currentHealth <= 0)
+        //    RpcDie();
     }
 
     /*public void IsVulnerable(bool isVulnerable)
@@ -125,9 +116,17 @@ public class BaseEffects : NetworkBehaviour
         lastBaseEvent = evtData;
     }*/
 
-    public void ApplyStatusEffect(ApplyStatusEffects evtData)
+    public void ApplyStatusEffect(WhoBrokeBase evtData)
     {
-        //Debug.LogWarning("<color=purple>ENDING BASE PHASE</color>");
+        if (statusEffect != null)
+        {
+            ApplyStatusEffects applyStatusEffects = new ApplyStatusEffects();
+            applyStatusEffects.team = evtData.playerTeam;
+            applyStatusEffects.statusEffect = statusEffect;
+            //Debug.LogError("name of instance: " + applyStatusEffects.statusEffect.name);
+
+            EvtSystem.EventDispatcher.Raise<ApplyStatusEffects>(applyStatusEffects);
+        }
     }
 
     private void EndVulnerability()
@@ -149,13 +148,13 @@ public class BaseEffects : NetworkBehaviour
         //TO ENSURE THE SAME EVENTS DON'T GET RAISED MORE THAN ONCE
         //hasSentEvent = false;
 
-        Debug.LogError("<color=yellow>BASE: " + this.name + " RESPAWNED SUCCESSFULLY.</color>");
+        //Debug.LogError("<color=yellow>BASE: " + this.name + " RESPAWNED SUCCESSFULLY.</color>");
     }
 
     [ClientRpc]
     public void Respawn(float respawnTime)
     {
-        Debug.LogError(this.name + "DIED!");
+        //Debug.LogError(this.name + "DIED!");
         isRespawning = true;
         canHit = false;
         //ACTUALLY RESTORE HEALTH TO THE PLAYER
@@ -168,11 +167,11 @@ public class BaseEffects : NetworkBehaviour
         isAlive = false;
 
         //RAISE BASE DESTROYED EVENT, TO BE RECIEVED BY 'ChaseGameManager.cs'
-        ChangeBaseState baseDestroyed = new ChangeBaseState();
-        baseDestroyed.thisBaseEffects = this;
-        EvtSystem.EventDispatcher.Raise<ChangeBaseState>(baseDestroyed);
+        //ChangeBaseState baseDestroyed = new ChangeBaseState();
+        //baseDestroyed.thisBaseEffects = this;
+        //EvtSystem.EventDispatcher.Raise<ChangeBaseState>(baseDestroyed);
         //sentBaseDestroyedEvent = true;
-        Debug.LogError("RPC DIED BASEFFECTS");
+        //Debug.LogError("RPC DIED BASEFFECTS");
         //STATUS EFFECT EVENTS ARE HANDLED THRU 'Weapon.cs'
         Respawn(respawnTime);
     }
