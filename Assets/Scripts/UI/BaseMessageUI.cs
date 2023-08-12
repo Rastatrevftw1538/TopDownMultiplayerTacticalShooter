@@ -9,7 +9,12 @@ public class BaseMessageUI : UI
     void Start()
     {
         message = this.GetComponent<TMP_Text>();
-        this.gameObject.SetActive(false);
+
+        if (this.gameObject != null)
+        {
+            this.gameObject.SetActive(false);
+        }
+
         EvtSystem.EventDispatcher.AddListener<DisplayUI>(UpdateUI);
         EvtSystem.EventDispatcher.AddListener<DisableUI>(DisableUI);
         EvtSystem.EventDispatcher.AddListener<ReplaceUI>(ReplaceUI);
@@ -19,15 +24,19 @@ public class BaseMessageUI : UI
 
     public override void UpdateUI(DisplayUI evtData)
     {
-        this.gameObject.SetActive(true);
-        activeTime = defActiveTime;
-        hasRecievedMessage = true;
 
-        message.color = evtData.colorOfText;
-        message.text  = evtData.textToDisplay;
+        if (this.gameObject != null)
+        {
+            this.gameObject.SetActive(true);
+            activeTime = defActiveTime;
+            hasRecievedMessage = true;
 
-        message.fontWeight = FontWeight.Bold;
+            message.color = evtData.colorOfText;
+            message.text = evtData.textToDisplay;
 
-        Invoke(nameof(DisableUI), activeTime);
+            message.fontWeight = FontWeight.Bold;
+
+            Invoke(nameof(DisableUI), activeTime);
+        }
     }
 }
