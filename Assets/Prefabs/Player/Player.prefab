@@ -751,8 +751,8 @@ MonoBehaviour:
   deviceType: 1
   joystickMovementUI: {fileID: 584446714611108121}
   joystickRotateUI: {fileID: 6713901557967857310}
-  runSpeed: 1.5
-  walkSpeed: 0.75
+  runSpeed: 3
+  walkSpeed: 2
   runSpeedNormal: 0
   walkSpeedNormal: 0
   movement: {x: 0, y: 0}
@@ -1567,7 +1567,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   visibleTargets: []
-  meshResolution: 1
+  meshResolution: 0.2
   edgeResolveIterations: 4
   edgeDstThreshold: 0.5
   maskCutawayDst: 0.1

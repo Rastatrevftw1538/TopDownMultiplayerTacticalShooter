@@ -473,7 +473,7 @@ MonoBehaviour:
   syncInterval: 0
   announcement: 
   messageColor: {r: 0, g: 0, b: 0, a: 0}
-  activeTime: 5
+  activeTime: 10
   defActiveTime: 0
   hasRecievedMessage: 0
   message: {fileID: 0}
