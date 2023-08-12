@@ -459,6 +459,7 @@ MonoBehaviour:
   syncInterval: 0
   statusEffectData: {fileID: 0}
   abilities:
+  - {fileID: 11400000, guid: 981e8893798a5c74ab03138ff1f8219c, type: 2}
   - {fileID: 11400000, guid: c7845721c18392842a71cf8ec7d0fcef, type: 2}
   debugKeys: 65000000
 --- !u!1 &1888670782340055357
@@ -702,7 +703,6 @@ GameObject:
   - component: {fileID: 1743068645055459421}
   - component: {fileID: 7487439993578561020}
   - component: {fileID: 4915017394269462623}
-  - component: {fileID: 4882871532308550894}
   - component: {fileID: -354695964791044671}
   - component: {fileID: 9002932500590422946}
   - component: {fileID: 3224930029993705064}
@@ -782,6 +782,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 2147483647
   bulletPrefab: {fileID: 209056261796185724, guid: e88e32b0ab60951458b5460b47a868f1, type: 3}
+  damageMultiplier: 0
   mags: 99
   shootingJoystick: {fileID: 3820486686981098696}
 --- !u!114 &8255556374250650021
@@ -897,26 +898,6 @@ MonoBehaviour:
   compressRotation: 0
   positionPrecision: 0.01
   scalePrecision: 0.01
---- !u!114 &4882871532308550894
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2692482570812366574}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f45222fea39c89043a83b9a93a990e9b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  statusEffectData: {fileID: 0}
-  abilities:
-  - {fileID: 11400000, guid: c7845721c18392842a71cf8ec7d0fcef, type: 2}
-  - {fileID: 0}
-  debugKeys: 6500000067000000
 --- !u!96 &-354695964791044671
 TrailRenderer:
   serializedVersion: 2

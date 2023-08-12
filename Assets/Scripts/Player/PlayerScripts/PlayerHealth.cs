@@ -93,10 +93,9 @@ public class PlayerHealth : NetworkBehaviour
         // Restore health after 3 seconds
         //StartCoroutine(RestoreHealth());
 
-        //RAISE THE EVENT SO THE 'HeistGameManager.cs' CAN TRACK THIS MESSAGE
+        //RAISE THE EVENT SO THE GAMEMODE MANAGER CAN TRACK THIS MESSAGE
          PlayerDied playerDied = new PlayerDied();
          playerDied.playerThatDied = this.gameObject;
-
 
          if(!isRespawning)
             EvtSystem.EventDispatcher.Raise<PlayerDied>(playerDied);

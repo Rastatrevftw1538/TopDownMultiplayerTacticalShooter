@@ -14,8 +14,8 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         Red,
         Blue
     }
-    [SyncVar]
-    public Team playerTeam;
+
+    [SyncVar] public Team playerTeam;
 
     public enum SetDeviceType
     {
@@ -53,7 +53,7 @@ public class PlayerScript : NetworkBehaviour, IEffectable
     private void Awake()
     {
         EvtSystem.EventDispatcher.AddListener<PlayerDied>(ClearStatusEffects);
-        EvtSystem.EventDispatcher.AddListener<ApplyStatusEffects>(CmdHandleEffectThruEvent);
+        EvtSystem.EventDispatcher.AddListener<ApplyStatusEffects>(SetStatusEffectData);
     }
 
     private void Start() {
@@ -345,18 +345,12 @@ public class PlayerScript : NetworkBehaviour, IEffectable
 
     //CALLS IT ONCE
     [Command]
-    private void CmdHandleEffectThruEvent(ApplyStatusEffects evtData)
+    private void SetStatusEffectData(ApplyStatusEffects evtData)
     {
         //EvtSystem.EventDispatcher.RemoveListener<ApplyStatusEffects>(deleteListener);
 
         if(evtData.team == playerTeam)
             _statusEffectData = evtData.statusEffect;
-
-        //Debug.LogError("CMD handling effect thru event");
-        //if (_statusEffectData != null && evtData.team == playerTeam)
-        //{
-        //    HandleEffect();
-        //}
     }
 
     private void deleteListener(ApplyStatusEffects evtData)
@@ -414,7 +408,7 @@ public class PlayerScript : NetworkBehaviour, IEffectable
                         Debug.LogError("nothing?");
                 }
 
-                EvtSystem.EventDispatcher.AddListener<ApplyStatusEffects>(CmdHandleEffectThruEvent);
+                //EvtSystem.EventDispatcher.AddListener<ApplyStatusEffects>(SetStatusEffectData);
             }
         }
     }

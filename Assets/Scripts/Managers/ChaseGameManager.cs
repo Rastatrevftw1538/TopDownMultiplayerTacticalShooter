@@ -12,10 +12,7 @@ public class ChaseGameManager : NetworkBehaviour
     [SerializeField] public GameObject Level;
     private GameObject baseObjects;
     public int baseHealth = 1000;
-    [SyncVar] private BaseEffects currentVulnerableBase;
-    //private List<BaseEffects> allBases = new List<BaseEffects>();
     private BaseEffects[] allBases;
-    //[SerializeField] public GameObject heistBase;
     [SerializeField] private GameObject ui;
     public static ChaseGameManager instance;
     [SyncVar] [SerializeField] public List<GameObject> redTeam;
@@ -46,36 +43,32 @@ public class ChaseGameManager : NetworkBehaviour
             Destroy(gameObject);
     }
 
-    string UI_Time;
-    string BlueScore;
-    string RedScore;
+    public float bluePoints;
+    public float redPoints;
+
+    TMP_Text BlueScoreUI;
+    TMP_Text RedScoreUI;
+    TMP_Text GameTimeUI;
 
     private void Start()
     {
         ui = this.transform.GetChild(0).gameObject;
         //baseObjects = Level.transform.Find("BaseSpawnPoints").gameObject;
 
-        /*foreach (BaseEffects bases in FindObjectsOfType<BaseEffects>())
-        {
-            allBases.Add(bases);
-            //Debug.LogError(bases.name);
-        }*/
         allBases = FindObjectsOfType<BaseEffects>();
 
         currentTime = gameTime;
-        //SUBSCRIBE TO EVENT 'ChangeBaseState' CALLED WITHIN 'Base.cs', INVOKE 'GetBaseData'
-        EvtSystem.EventDispatcher.AddListener<ChangeBaseState>(GetBaseData);
 
         //SUBSCRIBE TO EVENT 'PlayerDied' CALLED WITHIN 'PlayerHealth.cs', INVOKE 'AddPlayerDied'
         EvtSystem.EventDispatcher.AddListener<PlayerDied>(AddPlayerDied);
 
-        //SUBSCRIBE TO EVENT
-        //EvtSystem.EventDispatcher.AddListener<StartTeamRespawn>(StartTeamRespawn);
-
         //CACHING THE COMPONENTS
-        UI_Time   = ui.transform.GetChild(2).GetComponent<TMP_Text>().text;
-        BlueScore = ui.transform.GetChild(2).GetComponent<TMP_Text>().text;
-        RedScore  = ui.transform.GetChild(2).GetComponent<TMP_Text>().text;
+        BlueScoreUI = ui.transform.GetChild(0).GetComponent<TMP_Text>();
+        RedScoreUI  = ui.transform.GetChild(1).GetComponent<TMP_Text>();
+        GameTimeUI  = ui.transform.GetChild(2).GetComponent<TMP_Text>();
+
+        bluePoints = 0f;
+        redPoints  = 0f;
     }
 
     private void FixedUpdate() {
@@ -83,9 +76,9 @@ public class ChaseGameManager : NetworkBehaviour
         {
             currentTime -= Time.deltaTime;
 
-            UI_Time  = currentTime.ToString();
-            //BlueScore = "Blue: " + blueBase.GetHealth();
-            //RedScore  = "Red:  " + redBase.GetHealth();
+            GameTimeUI.text  = currentTime.ToString();
+            BlueScoreUI.text = "Blue: " + bluePoints;
+            RedScoreUI.text  = "Red:  " + redPoints;
         }
     }
 
@@ -98,62 +91,56 @@ public class ChaseGameManager : NetworkBehaviour
         if (!hasCheckedPlayers && gameStarted)
         {
             players = GameObject.FindGameObjectsWithTag("Player");
+
+            //ADD PLAYERS TO TEAMS
+            foreach (GameObject player in players)
+            {
+                if (player.GetComponent<PlayerScript>() != null)
+                    currentPlayer = player.GetComponent<PlayerScript>();
+
+                if (currentPlayer != null)
+                {
+                    if (currentPlayer.PlayerTeam == PlayerScript.Team.Red)
+                    {
+                        if (!redTeam.Contains(player))
+                            redTeam.Add(player);
+                    }
+                    else if (currentPlayer.PlayerTeam == PlayerScript.Team.Blue)
+                    {
+                        if (!blueTeam.Contains(player))
+                            blueTeam.Add(player);
+                    }
+                }
+            }
+
             hasCheckedPlayers = true;
         }
 
-        if(gameStarted){
-            //ADD PLAYERS TO TEAMS
-            foreach (GameObject player in players){
-                currentPlayer = GetComponent<PlayerScript>();
-                if (currentPlayer.PlayerTeam == PlayerScript.Team.Red){
-                    if(!redTeam.Contains(player))
-                        redTeam.Add(player);
-                }
-                else if(currentPlayer.PlayerTeam == PlayerScript.Team.Blue){
-                    if(!blueTeam.Contains(player))
-                        blueTeam.Add(player);
-                }
-            }
-            
-            //DETERMINE WINNER
-            if(currentTime <= 0){
-                DetermineWinnerForTimeOut();
-            }
+        //DETERMINE WINNER
+        if(currentTime <= 0){
+            DetermineWinnerForTimeOut();
         }
+        
     }
+
     public void OnPlayerConnected(NetworkConnection conn)
     {
         if(gameStarted){
             print("<color=red> Player: "+conn.identity.name+" joined late</color>");
             addToTeam(conn.identity.gameObject,NetworkServer.connections.Count-1);
             players = GameObject.FindGameObjectsWithTag("Player");
+
+            hasCheckedPlayers = false;
         }
-        /*
-        PlayerHealth playerHealth = conn.identity.GetComponent<PlayerHealth>();
-        if (!playerHealth.checkIfAlive)
-        {
-            OnPlayerDied(playerHealth);
-        }
-        */
     }
+
     //[Command(requiresAuthority = false)]
     [ClientRpc]
     public void StartGame()
     {
         // Initialize scores
-        /*
-        foreach (GameObject baseLocal in heistSpawnPoints.GetComponentsInChildren<GameObject>()){
-            if (!baseLocal.name.Equals("BaseSpawnPoints")) {
-                Debug.Log("Base Team Affiliation: " + baseLocal.tag);
-            }
-        }*/
         gameStarted = true;
-        //redBase.setHealth(baseHealth);
-        //blueBase.setHealth(baseHealth);
         int playerCount = 1;
-        UI_Time   = gameTime.ToString();
-        //BlueScore = "Blue: " + blueBase.GetHealth();
-        //RedScore  = "Red:  " + redBase.GetHealth();
 
         if(redTeam.Count == 0 & blueTeam.Count == 0){
             Debug.Log("Values Set!");
@@ -236,13 +223,6 @@ public class ChaseGameManager : NetworkBehaviour
         redTeamDead.Clear();
         blueTeamDead.Clear();
         playersToRespawn.Clear();
-
-        //RAISE NEW EVENT FOR UI TO HEAR
-        ChangeBaseState baseState = new ChangeBaseState();
-        baseState.isBaseVulnerable = false;
-        baseState.thisBaseEffects = currentVulnerableBase;
-        //baseState.team = currentVulnerableBase.team;
-        EvtSystem.EventDispatcher.Raise<ChangeBaseState>(baseState);
     }
 
     private void AddPlayerDied(PlayerDied evtData)
@@ -274,20 +254,6 @@ public class ChaseGameManager : NetworkBehaviour
         {
             StartBasePhaseEvent(blueBase);
         }*/
-    }
-
-    private void StartBasePhaseEvent(BaseEffects whichBase)
-    {
-        //START THE BASE VULNERABLE PHASE
-        ChangeBaseState baseState  = new ChangeBaseState();
-        baseState.isBaseVulnerable = true;
-        baseState.thisBaseEffects  = whichBase;
-        //baseState.team = whichBase.team;
-
-        currentVulnerableBase = whichBase;
-
-        Debug.LogWarning("<color=purple>STARTING BASE PHASE</color>");
-        EvtSystem.EventDispatcher.Raise<ChangeBaseState>(baseState);
     }
 
     private void StopGameFunctionality()

@@ -11,7 +11,7 @@ public class BaseEffects : NetworkBehaviour
     public int maxHealth = 1000;
     public int maxDamageInRound;
     [SyncVar] public PlayerScript.Team team;
-    [SerializeField] public int currentHealth;
+    [SyncVar, SerializeField] private int currentHealth;
     public StatusEffectData statusEffect;
     public float respawnTime = 2f;
 
@@ -43,87 +43,44 @@ public class BaseEffects : NetworkBehaviour
     private void Awake()
     {
         //healthbarInternal = GetComponentInChildren<Slider>();
-
-        maxHealth = GameObject.Find("GameModeManager").GetComponent<ChaseGameManager>().baseHealth;
-        maxDamageInRound = maxHealth / 2;
     }
 
     private void Start()
     {
-        //EvtSystem.EventDispatcher.AddListener<ChangeBaseState>(StartPhase);
-        //EvtSystem.EventDispatcher.AddListener<ApplyStatusEffects>(ApplyStatusEffect);
         EvtSystem.EventDispatcher.AddListener<WhoBrokeBase>(ApplyStatusEffect);
-        currentHealth = 100;
+
+        maxHealth = ChaseGameManager.instance.baseHealth;
+        maxDamageInRound = maxHealth / 2;
     }
 
     public void TakeDamage(int amount)
     {
         //FIRST CHECK IF THE BASE'S HEALTH IS BELOW 0
-        if (currentHealth <= 0)
-        {
-            RpcDie();
-        }
+        if (currentHealth > 0)
+            currentHealth -= amount;
+
+        CheckHealth();
 
         //THEN CHECK FOR ALL THE OTHER DAMAGE CONDITIONS
         _damageTaken += amount;
-        currentHealth -= amount;
-        print("<color=red> OO Ouch I have taken: " + _damageTaken + " ouch! </color>");
- 
-        /*else if (_damageTaken >= maxDamageInRound)
-        {
-            //CHANGE BASE STATE, RESET _damageTaken
-            IsVulnerable(false);
-            Debug.LogError("<color=red> Okay thats enough! >:( </color>");
-            Debug.LogError("<color=red> Base Health: " + currentHealth + "</color>");
 
-            //REPLACE "BASE IS VULNERABLE MESSAGE"
-            ReplaceUI replaceUI = new ReplaceUI();
-            replaceUI.replacementMessage = "MAXIMUM DAMAGE!!";
-            EvtSystem.EventDispatcher.Raise<ReplaceUI>(replaceUI);
-        }*/
+        print("<color=red> OO Ouch I have taken: " + _damageTaken + " ouch! </color>");
     }
     private void Update()
     {
         healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
-        //Debug.Log("found healthbar");
-
-        /*if (healthbarExternal != null)
-        {
-            Debug.Log("Health: " + (float)currentHealth);
-            healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
-            Debug.Log("Health Changed - Bar: " + healthbarExternal.fillAmount + " Health: " + currentHealth);
-        }*/
-        //Debug.Log("<color=red>Base Health: " + currentHealth + "</color>");
-
-        //if (currentHealth <= 0)
-        //    RpcDie();
     }
 
-    /*public void IsVulnerable(bool isVulnerable)
-    {
-        Debug.LogWarning("<color=purple>IS BASE VULNERABLE?: " + isVulnerable + "</color>");
-        this.canHit = isVulnerable;
-
-        //MAXIMUM DAMAGE THE BASE CAN TAKE IN ONE PHASE
-        _damageTaken = 0;
-    }
-
-    public void StartPhase(ChangeBaseState evtData)
-    {
-        //if (evtData.team == this.team)
-        IsVulnerable(evtData.isBaseVulnerable);
-
-        lastBaseEvent = evtData;
-    }*/
-
+    private PlayerScript.Team teamThatBrokeBaseLast;
     public void ApplyStatusEffect(WhoBrokeBase evtData)
     {
         if (statusEffect != null)
         {
+            teamThatBrokeBaseLast = evtData.playerTeam;
+
             ApplyStatusEffects applyStatusEffects = new ApplyStatusEffects();
             applyStatusEffects.team = evtData.playerTeam;
             applyStatusEffects.statusEffect = statusEffect;
-            //Debug.LogError("name of instance: " + applyStatusEffects.statusEffect.name);
 
             EvtSystem.EventDispatcher.Raise<ApplyStatusEffects>(applyStatusEffects);
         }
@@ -137,7 +94,6 @@ public class BaseEffects : NetworkBehaviour
 
 
     private bool isRespawning;
-    //private bool hasSentEvent;
     private void RestoreHealth()
     {
         currentHealth = maxHealth;
@@ -145,19 +101,26 @@ public class BaseEffects : NetworkBehaviour
         isRespawning = false;
         canHit = true;
 
-        //TO ENSURE THE SAME EVENTS DON'T GET RAISED MORE THAN ONCE
-        //hasSentEvent = false;
-
         //Debug.LogError("<color=yellow>BASE: " + this.name + " RESPAWNED SUCCESSFULLY.</color>");
     }
 
     [ClientRpc]
     public void Respawn(float respawnTime)
     {
-        //Debug.LogError(this.name + "DIED!");
+        Debug.LogError(this.name + " has been destroyed!");
+
+        DisplayUI displayUI     = new DisplayUI();
+        displayUI.colorOfText   = Color.yellow;
+        displayUI.textToDisplay = 
+            "A base has been destroyed! " + statusEffect.Name + " has been applied to the " + teamThatBrokeBaseLast + " team.";
+
+        EvtSystem.EventDispatcher.Raise<DisplayUI>(displayUI);
+
+
         isRespawning = true;
         canHit = false;
-        //ACTUALLY RESTORE HEALTH TO THE PLAYER
+
+        //ACTUALLY RESTORE HEALTH TO THE BASE
         Invoke(nameof(RestoreHealth), respawnTime);
     }
 
@@ -165,15 +128,16 @@ public class BaseEffects : NetworkBehaviour
     void RpcDie()
     {
         isAlive = false;
-
-        //RAISE BASE DESTROYED EVENT, TO BE RECIEVED BY 'ChaseGameManager.cs'
-        //ChangeBaseState baseDestroyed = new ChangeBaseState();
-        //baseDestroyed.thisBaseEffects = this;
-        //EvtSystem.EventDispatcher.Raise<ChangeBaseState>(baseDestroyed);
-        //sentBaseDestroyedEvent = true;
-        //Debug.LogError("RPC DIED BASEFFECTS");
-        //STATUS EFFECT EVENTS ARE HANDLED THRU 'Weapon.cs'
         Respawn(respawnTime);
+    }
+
+    private void CheckHealth()
+    {
+        if (currentHealth <= 0)
+        {
+            currentHealth = 0;
+            RpcDie();
+        }
     }
 }
 

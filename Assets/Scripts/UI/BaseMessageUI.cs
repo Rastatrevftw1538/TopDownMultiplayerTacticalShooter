@@ -10,35 +10,24 @@ public class BaseMessageUI : UI
     {
         message = this.GetComponent<TMP_Text>();
         this.gameObject.SetActive(false);
-        //EvtSystem.EventDispatcher.AddListener<ChangeBaseState>(UpdateUI);
-        //EvtSystem.EventDispatcher.AddListener<DisableUI>(DisableUI);
-        //EvtSystem.EventDispatcher.AddListener<ReplaceUI>(ReplaceUI);
+        EvtSystem.EventDispatcher.AddListener<DisplayUI>(UpdateUI);
+        EvtSystem.EventDispatcher.AddListener<DisableUI>(DisableUI);
+        EvtSystem.EventDispatcher.AddListener<ReplaceUI>(ReplaceUI);
+
+        defActiveTime = activeTime;
     }
 
-    public override void UpdateUI(ChangeBaseState evtData)
+    public override void UpdateUI(DisplayUI evtData)
     {
-        //IF THE EVENT WE JUST RECEIVED TOLD US THAT THE BASE IS VULNERABLE, DISPLAY THE MESSAGE. IF NOT, DON'T
-        if (evtData.isBaseVulnerable == false)
-            this.gameObject.SetActive(false); //IF IT'S RECIEVED THAT THE BASE IS NO LONGER VULNERABLE, DE-ACTIVATE THE GAME OBJECT
-        else
-        {
-            this.gameObject.SetActive(true);
+        this.gameObject.SetActive(true);
+        activeTime = defActiveTime;
+        hasRecievedMessage = true;
 
-            if (evtData.team == PlayerScript.Team.Red)
-                message.color = teamColors[0];
-            else if (evtData.team == PlayerScript.Team.Blue)
-                message.color = teamColors[1];
-            else
-                message.color = Color.yellow; //DEBUG COLOR
+        message.color = evtData.colorOfText;
+        message.text  = evtData.textToDisplay;
 
-            //MESSAGE COMPONENTS
-            message.fontWeight = FontWeight.Bold;
-            message.text = announcement;
-        }
-    }
+        message.fontWeight = FontWeight.Bold;
 
-    private void ReplaceUI(ReplaceUI evtData)
-    {
-        message.text = evtData.replacementMessage;
+        Invoke(nameof(DisableUI), activeTime);
     }
 }

@@ -114,3 +114,10 @@ public class WhoBrokeBase : EvtSystem.Event
 {
     public PlayerScript.Team playerTeam;
 }
+
+public class DisplayUI : EvtSystem.Event
+{
+    public string textToDisplay;
+    public string statusEffectName;
+    public Color  colorOfText;
+}

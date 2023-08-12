@@ -209,7 +209,7 @@ public class Weapon : NetworkBehaviour
                             if (baseHealth != null && !foundWhatHit)
                             {
                                 Debug.Log("<color=orange>did grab base </color>");
-                                if (baseHealth.canHit && !baseHealth.CompareTag(this.GetComponent<PlayerScript>().playerTeam.ToString()))
+                                if (baseHealth.canHit && !baseHealth.CompareTag(player.playerTeam.ToString()))
                                 {
                                     damageDone = (damage * damageMultiplier) * (2 / (NetworkServer.connections.Count / 2));
                                     print(NetworkServer.connections.Count);
@@ -229,7 +229,7 @@ public class Weapon : NetworkBehaviour
                             {
 
                                 Debug.Log("<color=orange>Grabbed base: " + baseHealthEffects.gameObject.name + "</color>");
-                                if (baseHealthEffects.canHit && baseHealthEffects.currentHealth >= 0)
+                                if (baseHealthEffects.canHit && baseHealthEffects.GetHealth() >= 0)
                                 {
                                     damageDone = (damage * damageMultiplier);// * (2 / (NetworkServer.connections.Count / 2));
                                     print(NetworkServer.connections.Count);
@@ -239,9 +239,9 @@ public class Weapon : NetworkBehaviour
                                     {
                                         baseHealthEffects.TakeDamage(damageDone);
 
-                                        WhoBrokeBase player = new WhoBrokeBase();
-                                        player.playerTeam = GetComponent<PlayerScript>().playerTeam;
-                                        EvtSystem.EventDispatcher.Raise<WhoBrokeBase>(player);
+                                        WhoBrokeBase playerWhoBrokeBase = new WhoBrokeBase();
+                                        playerWhoBrokeBase.playerTeam = player.playerTeam;
+                                        EvtSystem.EventDispatcher.Raise<WhoBrokeBase>(playerWhoBrokeBase);
 
                                         /*ApplyStatusEffects applyStatusEffects = new ApplyStatusEffects();
                                         applyStatusEffects.team = GetComponent<PlayerScript>().playerTeam;
@@ -257,8 +257,17 @@ public class Weapon : NetworkBehaviour
 
                                 foundWhatHit = true;
                                 Debug.LogWarning("<color=yellow> Damage to base: " + damageDone + "</color>");
-                                Debug.LogWarning("<color=yellow> Base health: " + baseHealthEffects.currentHealth + "</color>");
+                                Debug.LogWarning("<color=yellow> Base health: " + baseHealthEffects.GetHealth() + "</color>");
                             }
+                        }
+
+                        //APPLY POINTS
+                        if (ChaseGameManager.instance != null)
+                        {
+                            if (player.playerTeam == PlayerScript.Team.Blue)
+                                ChaseGameManager.instance.bluePoints += damageDone;
+                            else
+                                ChaseGameManager.instance.redPoints  += damageDone;
                         }
                     }
                 }

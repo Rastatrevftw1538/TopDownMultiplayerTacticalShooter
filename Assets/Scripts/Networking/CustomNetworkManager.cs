@@ -72,7 +72,7 @@ public class CustomNetworkManager : NetworkManager
             gameManager = GameObject.FindObjectOfType<ChaseGameManager>();
             if (gameManager != null)
             {
-                Debug.Log("Found It!");
+                Debug.Log("Found Game Manager!");
             }
         }
     }
@@ -82,9 +82,10 @@ public class CustomNetworkManager : NetworkManager
 
         // Player has connected to the server
         Debug.Log("Player connected: " + conn.identity);
-        
+
         // Notify the game manager that a player has connected
-        HeistGameManager.instance.OnPlayerConnected(conn);
+        //HeistGameManager.instance.OnPlayerConnected(conn);
+        ChaseGameManager.instance.OnPlayerConnected(conn);
     }
     
     public override void OnStartClient()
