@@ -19,5 +19,4 @@ MonoBehaviour:
   weaponSprite: {fileID: 21300000, guid: 1bb69cd91685d9248a58b144052746f3, type: 3}
   ammo: 30
   reloadTime: 2
-  zoomOutValue: 100
   spreadIncreasePerSecond: 0.3
