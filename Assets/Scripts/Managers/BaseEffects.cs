@@ -139,9 +139,3 @@ public class BaseEffects : NetworkBehaviour
         }
     }
 }
-
-[CustomEditor(typeof(BaseEffects))]
-public class BaseEffectsEditor : Editor
-{
-
-}
