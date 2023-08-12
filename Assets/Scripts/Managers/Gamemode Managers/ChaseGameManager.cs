@@ -53,6 +53,7 @@ public class ChaseGameManager : NetworkBehaviour
     TMP_Text BlueScoreUI;
     TMP_Text RedScoreUI;
     TMP_Text GameTimeUI;
+    TMP_Text IPAddressUI;
 
     private void Start()
     {
@@ -68,6 +69,7 @@ public class ChaseGameManager : NetworkBehaviour
         BlueScoreUI = ui.transform.GetChild(0).GetComponent<TMP_Text>();
         RedScoreUI  = ui.transform.GetChild(1).GetComponent<TMP_Text>();
         GameTimeUI  = ui.transform.GetChild(2).GetComponent<TMP_Text>();
+        IPAddressUI = ui.transform.GetChild(6).GetComponent<TMP_Text>();
 
         bluePoints = 0f;
         redPoints  = 0f;
@@ -81,6 +83,8 @@ public class ChaseGameManager : NetworkBehaviour
             GameTimeUI.text  = currentTime.ToString();
             BlueScoreUI.text = "Blue: " + bluePoints;
             RedScoreUI.text  = "Red:  " + redPoints;
+
+            IPAddressUI.text = "f";
         }
     }
 
