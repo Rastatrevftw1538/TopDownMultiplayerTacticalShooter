@@ -1213,7 +1213,7 @@ MonoBehaviour:
     deliveryTimeEmaDuration: 2
   timeInterpolationGui: 0
   gameManager: {fileID: 0}
-  startMenu: {fileID: 0}
+  startMenu: {fileID: 653121738}
   joinCode: 
 --- !u!114 &1281707325
 MonoBehaviour:
