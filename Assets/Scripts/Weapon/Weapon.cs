@@ -191,17 +191,22 @@ public class Weapon : NetworkBehaviour
                         bool foundWhatHit = false;
                         //PLAYER HEALTH STUFF
                         PlayerHealth enemyHealth = objectOrigin.GetComponent<PlayerHealth>();
-                        if (enemyHealth != null && !foundWhatHit)
+                        PlayerScript playerScript = objectOrigin.GetComponent<PlayerScript>();
+
+                        if (enemyHealth != null && !foundWhatHit && playerScript != null)
                         {
-                            if (hit.collider.gameObject.name == "Bullseye!")
+                            if (playerScript.playerTeam != player.playerTeam)
                             {
-                                damageDone = 2 * (damage * damageMultiplier);
+                                if (hit.collider.gameObject.name == "Bullseye!")
+                                {
+                                    damageDone = 2 * (damage * damageMultiplier);
+                                }
+                                else
+                                {
+                                    damageDone = (damage * damageMultiplier);
+                                }
+                                enemyHealth.TakeDamage(damageDone);
                             }
-                            else
-                            {
-                                damageDone = (damage * damageMultiplier);
-                            }
-                            enemyHealth.TakeDamage(damageDone);
 
                             foundWhatHit = true;
                         }
