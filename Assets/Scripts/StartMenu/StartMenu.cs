@@ -135,7 +135,7 @@ public class StartMenu : MonoBehaviour
                     if (unicastAddress.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
                     {
                         string ipAddress = unicastAddress.Address.ToString();
-                        string[] parts = ipAddress.Split('.');
+                        string[] parts   = ipAddress.Split('.');
                         // Return the subnet (first three parts of the IP address)
                         return parts[0] + "." + parts[1] + "." + parts[2] + ".";
                     }

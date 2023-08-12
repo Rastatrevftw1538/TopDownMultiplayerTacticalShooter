@@ -9,6 +9,7 @@ using Mirror;
 
 public class ChaseGameManager : NetworkBehaviour
 {
+    private CustomNetworkManager networkManager;
     [SerializeField] public GameObject Level;
     private GameObject baseObjects;
     public int baseHealth = 1000;
@@ -38,7 +39,10 @@ public class ChaseGameManager : NetworkBehaviour
     private void Awake()
     {
         if (instance == null)
+        {
             instance = this;
+            networkManager = GameObject.Find("NetworkManager").GetComponent<CustomNetworkManager>();
+        }
         else if (instance != this)
             Destroy(gameObject);
     }
@@ -53,8 +57,6 @@ public class ChaseGameManager : NetworkBehaviour
     private void Start()
     {
         ui = this.transform.GetChild(0).gameObject;
-        //baseObjects = Level.transform.Find("BaseSpawnPoints").gameObject;
-
         allBases = FindObjectsOfType<BaseEffects>();
 
         currentTime = gameTime;
@@ -260,5 +262,38 @@ public class ChaseGameManager : NetworkBehaviour
     {
         //HANDLE WHAT YOU WANT TO BE INTERACTABLE AFTER THE GAME ENDS
         
+    }
+
+    public void OnServerDisconnect(NetworkConnectionToClient conn)
+    {
+        int teamIndex = 0;
+        if (conn.identity.gameObject.GetComponent<PlayerScript>().playerTeam == PlayerScript.Team.Blue)
+            if (blueTeam.Contains(conn.identity.gameObject))
+            {
+                teamIndex = blueTeam.IndexOf(conn.identity.gameObject);
+
+                redTeam.Remove(conn.identity.gameObject);
+            }
+            else if (conn.identity.gameObject.GetComponent<PlayerScript>().playerTeam == PlayerScript.Team.Red)
+                if (blueTeam.Contains(conn.identity.gameObject))
+                {
+                    teamIndex = redTeam.IndexOf(conn.identity.gameObject);
+
+                    redTeam.Remove(conn.identity.gameObject);
+                }
+        Debug.Log($"<color = red>Player on team {teamIndex} disconnected.</color>");
+    }
+    public void DisconnectFromGame()
+    {
+        if (NetworkServer.active && NetworkClient.isConnected)
+        {
+            networkManager.StopHost();
+            networkManager.gameObject.GetComponent<CustomNetworkDiscovery>().StopDiscovery();
+        }
+        else if (NetworkClient.isConnected)
+        {
+            networkManager.StopClient();
+            networkManager.gameObject.GetComponent<CustomNetworkDiscovery>().StopDiscovery();
+        }
     }
 }

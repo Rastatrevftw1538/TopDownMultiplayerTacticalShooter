@@ -97,6 +97,7 @@ public class CustomNetworkManager : NetworkManager
 
         // Important: Once the allocation is created, you have ten seconds to bind
         Allocation allocation = await RelayService.Instance.CreateAllocationAsync(2);
+
         hostAllocationId = allocation.AllocationId;
         Debug.Log($"Host Allocation ID: {hostAllocationId}");
         Invoke(nameof(CheckRelayAllocation),0.5f);

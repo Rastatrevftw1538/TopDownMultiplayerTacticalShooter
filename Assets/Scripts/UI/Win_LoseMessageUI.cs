@@ -15,7 +15,6 @@ public class Win_LoseMessageUI : UI
         //EvtSystem.EventDispatcher.AddListener<TiedGame>(TiedGameUI);
     }
 
-    [ClientRpc]
     public override void UpdateUI(BaseDestroyed evtData)
     {
         this.gameObject.SetActive(true);
