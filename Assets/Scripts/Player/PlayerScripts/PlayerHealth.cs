@@ -97,8 +97,9 @@ public class PlayerHealth : NetworkBehaviour
          PlayerDied playerDied = new PlayerDied();
          playerDied.playerThatDied = this.gameObject;
 
-         if(!isRespawning)
-            EvtSystem.EventDispatcher.Raise<PlayerDied>(playerDied);
+        if (!isRespawning)
+            //EvtSystem.EventDispatcher.Raise<PlayerDied>(playerDied);
+            Respawn(ChaseGameManager.instance.teamRespawnTime);
     }
     private void RestoreHealth()
     {

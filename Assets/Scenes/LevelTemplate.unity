@@ -27251,6 +27251,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1014886601894064849, guid: 69ed9ae4f20ff433386d3cb91b856a7a, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1374296301603911426, guid: 69ed9ae4f20ff433386d3cb91b856a7a, type: 3}
       propertyPath: m_Name
       value: Tendy
@@ -27258,6 +27262,10 @@ PrefabInstance:
     - target: {fileID: 1374296301603911426, guid: 69ed9ae4f20ff433386d3cb91b856a7a, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2393635897554354002, guid: 69ed9ae4f20ff433386d3cb91b856a7a, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3865732102784988962, guid: 69ed9ae4f20ff433386d3cb91b856a7a, type: 3}
       propertyPath: sceneId
@@ -27282,6 +27290,14 @@ PrefabInstance:
     - target: {fileID: 5843204006166588931, guid: 69ed9ae4f20ff433386d3cb91b856a7a, type: 3}
       propertyPath: sceneId
       value: 3040941198
+      objectReference: {fileID: 0}
+    - target: {fileID: 6018515224299535368, guid: 69ed9ae4f20ff433386d3cb91b856a7a, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6343093681198148146, guid: 69ed9ae4f20ff433386d3cb91b856a7a, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 7495882890298944862, guid: 69ed9ae4f20ff433386d3cb91b856a7a, type: 3}
       propertyPath: m_RootOrder
@@ -27330,6 +27346,10 @@ PrefabInstance:
     - target: {fileID: 7617971951336879480, guid: 69ed9ae4f20ff433386d3cb91b856a7a, type: 3}
       propertyPath: sceneId
       value: 2316597012
+      objectReference: {fileID: 0}
+    - target: {fileID: 9132908032673114114, guid: 69ed9ae4f20ff433386d3cb91b856a7a, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 890936025496535262, guid: 69ed9ae4f20ff433386d3cb91b856a7a, type: 3}

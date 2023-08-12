@@ -71,6 +71,7 @@ public class ChaseGameManager : NetworkBehaviour
         GameTimeUI  = ui.transform.GetChild(2).GetComponent<TMP_Text>();
         IPAddressUI = ui.transform.GetChild(6).GetComponent<TMP_Text>();
 
+        IPAddressUI.text = "The IP Address is: " + networkManager.GetLocalIPAddress();
         bluePoints = 0f;
         redPoints  = 0f;
     }
@@ -83,8 +84,6 @@ public class ChaseGameManager : NetworkBehaviour
             GameTimeUI.text  = currentTime.ToString();
             BlueScoreUI.text = "Blue: " + bluePoints;
             RedScoreUI.text  = "Red:  " + redPoints;
-
-            IPAddressUI.text = "f";
         }
     }
 
@@ -106,6 +105,7 @@ public class ChaseGameManager : NetworkBehaviour
 
                 if (currentPlayer != null)
                 {
+                    //currentPlayer.gameObject.transform.position.z = -3;
                     if (currentPlayer.PlayerTeam == PlayerScript.Team.Red)
                     {
                         if (!redTeam.Contains(player))
