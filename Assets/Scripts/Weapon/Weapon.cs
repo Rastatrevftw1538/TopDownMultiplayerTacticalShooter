@@ -52,11 +52,13 @@ public class Weapon : NetworkBehaviour
 
     private StatusEffectData _statusEffectData = null;
     [HideInInspector]public int bonusPointsPerShot;
+   // AudioSource playerAudioSource;
 
 
     PlayerScript player;
     private void Awake() {
         player = this.transform.GetComponent<PlayerScript>();
+        //playerAudioSource = GetComponent<AudioSource>();
 
         if (weaponSpecs != null){
             damage = weaponSpecs.damagePerBullet;
@@ -346,6 +348,7 @@ public class Weapon : NetworkBehaviour
                 main.startColor = Color.clear;
             }
         Instantiate(trailRender.effectPrefab, collisionPoint, new Quaternion(0, 0, 0, 0));
+        //playerAudioSource.PlayOneShot(weaponSpecs.bulletSound);
         trailRender.SetTargetPosition(collisionPoint);
         Debug.Log("Bullet Fired Client " + collisionPoint + " direction " + spreadDirection);
     }

@@ -181,7 +181,7 @@ public class PlayerScript : NetworkBehaviour, IEffectable
 
     public void FixedUpdate()
     {
-        
+
     }
 
     [Command]
@@ -201,7 +201,8 @@ public class PlayerScript : NetworkBehaviour, IEffectable
     [ClientRpc]
     private void RpcMove(Vector2 movement)
     {
-        transform.Translate(movement * Time.fixedDeltaTime);
+        //transform.Translate(movement * Time.fixedDeltaTime);
+        //transform.Translate(movement * Time.deltaTime);
     }
 
     [ClientRpc]
