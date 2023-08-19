@@ -120,6 +120,7 @@ namespace Mirror.Discovery
         void Connect(ServerResponse info)
         {
             networkDiscovery.StopDiscovery();
+            print(info.uri);
             NetworkManager.singleton.StartClient(info.uri);
         }
 
