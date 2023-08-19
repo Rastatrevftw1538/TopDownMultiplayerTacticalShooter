@@ -86,6 +86,8 @@ public class PlayerScript : NetworkBehaviour, IEffectable
     this.canMove = newCanMove;
     }
 
+
+    public bool hasSetColors;
     [ClientCallback]
     public void Update()
     {
@@ -93,8 +95,13 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         {
             return;
         }
-        //CHANGE TO SET WHEN GAME STARTS, OR WHEN PLAYER JOINS
-        setColorsOfPlayers();
+
+        if (hasSetColors)
+        {
+            setColorOfSelf();
+        }
+
+        //setColorsOfPlayers(ChaseGameManager.instance.players);
 
         if (deviceType == SetDeviceType.Auto) {
             if (Application.platform == RuntimePlatform.Android)
@@ -228,34 +235,6 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         // Request authority from the server
         CmdRequestAuthority();
     }
-    
-    [Client]
-    private void setColorsOfPlayers(){
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-            foreach (GameObject player in players){
-                if (player != this.gameObject)
-                {
-                    if (player.GetComponent<PlayerScript>().playerTeam == Team.Red || player.GetComponent<PlayerScript>().playerTeam == Team.None)
-                    {
-                        //Debug.LogError("SET PLAYER COLOR TO RED");
-                        player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.red;
-                    }
-                    else if (player.GetComponent<PlayerScript>().playerTeam == Team.Blue)
-                    {
-                        //Debug.LogError("SET PLAYER COLOR TO BLUE");
-                        player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.blue;
-                    }
-                }
-                //IF YOU WANT PLAYERS SELF COLOR TO BE YELLOW, USE THIS, IF NOT THEN JUST COMMENT IT OUT
-                else if (player == this.gameObject)
-                {
-                    //Debug.LogWarning("SET PLAYER COLOR TO YELLOW");
-                    player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.yellow;
-                }
-            }
-            
-
-    }
 
     [Command]
     private void CmdRequestAuthority()
@@ -299,6 +278,45 @@ public class PlayerScript : NetworkBehaviour, IEffectable
             NetworkIdentity networkIdentity = this.gameObject.GetComponent<NetworkIdentity>();
             networkIdentity.RemoveClientAuthority();
         }
+    }
+
+    [Client]
+    public void setColorOfSelf()
+    {
+        this.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.yellow;
+        hasSetColors = false;
+    }
+
+    [Client]
+    public void setColorsOfPlayers(GameObject[] players)
+    {
+        foreach (GameObject player in players)
+        {
+            if (player != this.gameObject)
+            {
+                if (player.GetComponent<PlayerScript>().playerTeam == PlayerScript.Team.Red)
+                {
+                    //Debug.LogError("SET PLAYER COLOR TO RED");
+                    player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.red;
+                }
+                else if (player.GetComponent<PlayerScript>().playerTeam == PlayerScript.Team.Blue)
+                {
+                    //Debug.LogError("SET PLAYER COLOR TO BLUE");
+                    player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.blue;
+                }
+                else
+                {
+                    player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.magenta;
+                }
+            }
+            //IF YOU WANT PLAYERS SELF COLOR TO BE YELLOW, USE THIS, IF NOT THEN JUST COMMENT IT OUT
+            else if (player == this.gameObject)
+            {
+                //Debug.LogWarning("SET PLAYER COLOR TO YELLOW");
+                player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.yellow;
+            }
+        }
+
     }
 
     #region 'IEffectable' INTERFACE FUNCTIONS

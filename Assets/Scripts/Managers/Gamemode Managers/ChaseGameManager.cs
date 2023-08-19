@@ -88,7 +88,7 @@ public class ChaseGameManager : NetworkBehaviour
     }
 
 
-    GameObject[] players;
+    public GameObject[] players;
     PlayerScript currentPlayer;
     bool hasCheckedPlayers = false;
     private void Update()
@@ -96,7 +96,7 @@ public class ChaseGameManager : NetworkBehaviour
         if (!hasCheckedPlayers && gameStarted)
         {
             players = GameObject.FindGameObjectsWithTag("Player");
-
+            Debug.LogError("Set Teams and set Colors");
             //ADD PLAYERS TO TEAMS
             foreach (GameObject player in players)
             {
@@ -115,10 +115,12 @@ public class ChaseGameManager : NetworkBehaviour
                     {
                         if (!blueTeam.Contains(player))
                             blueTeam.Add(player);
+
+
                     }
                 }
             }
-
+            setColorsOfPlayers(players);
             hasCheckedPlayers = true;
         }
 
@@ -265,6 +267,42 @@ public class ChaseGameManager : NetworkBehaviour
     private void StopGameFunctionality()
     {
         //HANDLE WHAT YOU WANT TO BE INTERACTABLE AFTER THE GAME ENDS
+        
+    }
+
+    [Command]
+    private void setColorsOfPlayers()
+    {
+        setColorsOfPlayers(players);
+    }
+
+    [ClientRpc]
+    public void setColorsOfPlayers(GameObject[] players)
+    {
+        PlayerScript currentPlayer;
+        SpriteRenderer currentPlayerSprite;
+        foreach (GameObject player in players)
+        {
+            currentPlayer = player.GetComponent<PlayerScript>();
+            currentPlayerSprite = player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>();
+            if (currentPlayer.playerTeam == PlayerScript.Team.Red)
+            {
+                Debug.LogError("SET PLAYER COLOR TO RED");
+                currentPlayerSprite.color = Color.red;
+            }
+            else if (currentPlayer.playerTeam == PlayerScript.Team.Blue)
+            {
+                Debug.LogError("SET PLAYER COLOR TO BLUE");
+                currentPlayerSprite.color = Color.blue;
+            }
+            else
+            {
+                //DEBUG COLOR
+                currentPlayerSprite.color = Color.magenta;
+            }
+
+            currentPlayer.hasSetColors = true;
+        }
         
     }
 

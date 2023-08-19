@@ -108,7 +108,7 @@ public class Weapon : NetworkBehaviour
             return;
         
         float coneScale = 1f + (spread * coneSpreadFactor);
-        spreadCone.transform.localScale = new Vector3(Mathf.Clamp(coneScale,0,35), spreadCone.transform.localScale.y, 1f);
+        spreadCone.transform.localScale = new Vector3(Mathf.Clamp(coneScale,0,35), spreadCone.transform.localScale.y, 1f); //HERE
         spreadCone.color = new Color(1,0,0,Mathf.Clamp((Mathf.Clamp(spread,0f,100f)-0)/(100-0),0.25f,0.75f));
         if(player.PlayerDevice == PlayerScript.SetDeviceType.Mobile){
             shootingGun = shootingJoystick.isShooting ;
@@ -120,7 +120,7 @@ public class Weapon : NetworkBehaviour
         {
             nextFireTime = Time.time + fireRate;
             Vector2 direction = firePoint.transform.up;
-            float spreadAngle = Mathf.Clamp(UnityEngine.Random.Range(0, spread) - spread / 2f,-45,45);
+            float spreadAngle = Mathf.Clamp(UnityEngine.Random.Range(0, spread) - spread / 2f,-45,45); //HERE
             Quaternion spreadRotation = Quaternion.Euler(0, 0, spreadAngle);
             direction = spreadRotation * direction;
             print("Direction thing: "+direction);
@@ -164,6 +164,12 @@ public class Weapon : NetworkBehaviour
 
     [Command]
     public void CmdFire(Vector2 direction)
+    {
+        RpcFire(direction);
+    }
+
+    [ClientRpc]
+    public void RpcFire(Vector2 direction)
     {
         float damageDone = 0;
         for (int i = 0; i < numOfBulletsPerShot; i++)
@@ -277,7 +283,7 @@ public class Weapon : NetworkBehaviour
                             if (player.playerTeam == PlayerScript.Team.Blue)
                                 ChaseGameManager.instance.bluePoints += damageDone + bonusPointsPerShot;
                             else
-                                ChaseGameManager.instance.redPoints  += damageDone + bonusPointsPerShot;
+                                ChaseGameManager.instance.redPoints += damageDone + bonusPointsPerShot;
                         }
                     }
                 }

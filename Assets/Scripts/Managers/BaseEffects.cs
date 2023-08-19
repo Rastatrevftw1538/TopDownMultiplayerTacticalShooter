@@ -48,6 +48,7 @@ public class BaseEffects : NetworkBehaviour
         EvtSystem.EventDispatcher.AddListener<WhoBrokeBase>(ApplyStatusEffect);
 
         maxHealth = ChaseGameManager.instance.baseHealth;
+        currentHealth = ChaseGameManager.instance.baseHealth;
     }
 
     public void TakeDamage(float amount)
