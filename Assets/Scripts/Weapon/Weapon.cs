@@ -108,11 +108,12 @@ public class Weapon : NetworkBehaviour
 
         if (isReloading)
             return;
-        
+
         float coneScale = 1f + (spread * coneSpreadFactor);
-        spreadCone.transform.localScale = new Vector3(Mathf.Clamp(coneScale,0,35), spreadCone.transform.localScale.y, 1f); //HERE
-        spreadCone.color = new Color(1,0,0,Mathf.Clamp((Mathf.Clamp(spread,0f,100f)-0)/(100-0),0.25f,0.75f));
-        if(player.PlayerDevice == PlayerScript.SetDeviceType.Mobile){
+        spreadCone.transform.localScale = new Vector3(Mathf.Clamp(coneScale, 0, 35), spreadCone.transform.localScale.y, 1f); //HERE
+        spreadCone.color = new Color(1, 0, 0, Mathf.Clamp((Mathf.Clamp(spread, 0f, 100f) - 0) / (100 - 0), 0.25f, 0.75f));
+
+        if (player.PlayerDevice == PlayerScript.SetDeviceType.Mobile){
             shootingGun = shootingJoystick.isShooting ;
         }
         else if(player.PlayerDevice == PlayerScript.SetDeviceType.PC){
@@ -120,6 +121,7 @@ public class Weapon : NetworkBehaviour
         }
         if (shootingGun && Time.time >= nextFireTime && !outOfAmmo)
         {
+
             nextFireTime = Time.time + fireRate;
             Vector2 direction = firePoint.transform.up;
             float spreadAngle = Mathf.Clamp(UnityEngine.Random.Range(0, spread) - spread / 2f,-45,45); //HERE
