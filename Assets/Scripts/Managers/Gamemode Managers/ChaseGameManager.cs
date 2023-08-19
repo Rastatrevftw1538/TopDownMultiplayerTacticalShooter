@@ -47,8 +47,8 @@ public class ChaseGameManager : NetworkBehaviour
             Destroy(gameObject);
     }
 
-    public float bluePoints;
-    public float redPoints;
+    [SyncVar] public float bluePoints;
+    [SyncVar] public float redPoints;
 
     TMP_Text BlueScoreUI;
     TMP_Text RedScoreUI;
