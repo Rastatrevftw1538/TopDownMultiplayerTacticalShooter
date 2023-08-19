@@ -752,8 +752,8 @@ MonoBehaviour:
   deviceType: 1
   joystickMovementUI: {fileID: 584446714611108121}
   joystickRotateUI: {fileID: 6713901557967857310}
-  runSpeed: 3
-  walkSpeed: 2
+  runSpeed: 20
+  walkSpeed: 10
   runSpeedNormal: 0
   walkSpeedNormal: 0
   movement: {x: 0, y: 0}
