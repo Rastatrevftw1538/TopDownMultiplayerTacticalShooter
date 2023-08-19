@@ -96,6 +96,7 @@ public class CustomNetworkManager : NetworkManager
         //string region = allocationRegion;
 
         // Important: Once the allocation is created, you have ten seconds to bind
+        //await UnityServices.InitializeAsync();
         Allocation allocation = await RelayService.Instance.CreateAllocationAsync(2);
 
         hostAllocationId = allocation.AllocationId;
