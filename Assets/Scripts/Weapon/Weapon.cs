@@ -344,9 +344,6 @@ public class Weapon : NetworkBehaviour
             else if(whatWasHit == "Wall"){
                 main.startColor = Color.gray;
             }
-            else{
-                main.startColor = Color.clear;
-            }
         Instantiate(trailRender.effectPrefab, collisionPoint, new Quaternion(0, 0, 0, 0));
         //playerAudioSource.PlayOneShot(weaponSpecs.bulletSound);
         trailRender.SetTargetPosition(collisionPoint);
