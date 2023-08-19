@@ -187,8 +187,9 @@ public class PlayerScript : NetworkBehaviour, IEffectable
     [Command]
     private void CmdMove(Vector2 movement)
     {
-        RpcMove(movement);
-        transform.Translate(movement * Time.fixedDeltaTime);    
+        Vector3 newMovement = movement * Time.fixedDeltaTime;
+        transform.Translate(newMovement);
+        RpcMove(newMovement); 
     }
     // FIGURE OUT HOW THE SERVER RECIEVES THIS INFO
     [Command]
@@ -201,7 +202,7 @@ public class PlayerScript : NetworkBehaviour, IEffectable
     [ClientRpc]
     private void RpcMove(Vector2 movement)
     {
-        transform.Translate(movement * Time.fixedDeltaTime);
+        transform.Translate(movement);
         //transform.Translate(movement * Time.deltaTime);
     }
 

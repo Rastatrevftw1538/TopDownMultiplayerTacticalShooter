@@ -211,7 +211,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  maxHealth: 1000
+  maxHealth: 250
   currentHealth: 0
   statusEffect: {fileID: 11400000, guid: 7076271d33ce9544f91390d1c9b6db63, type: 2}
   respawnTime: 2
@@ -248,7 +248,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  maxHealth: 1000
+  maxHealth: 250
   currentHealth: 0
   statusEffect: {fileID: 11400000, guid: 6ad7574e662f9934fa13472cf533b216, type: 2}
   respawnTime: 2
@@ -269,7 +269,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  maxHealth: 1000
+  maxHealth: 250
   currentHealth: 0
   statusEffect: {fileID: 11400000, guid: b9c361ecd71e74d498b7acfd6c0aaf09, type: 2}
   respawnTime: 2
@@ -441,7 +441,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  maxHealth: 1000
+  maxHealth: 250
   currentHealth: 0
   statusEffect: {fileID: 11400000, guid: f0d118e749e7c4a46a26318a030cc0da, type: 2}
   respawnTime: 2
@@ -27700,7 +27700,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  maxHealth: 1000
+  maxHealth: 250
   currentHealth: 0
   statusEffect: {fileID: 11400000, guid: 3cdf28e3673e05941b1f63f6e4942d14, type: 2}
   respawnTime: 2
@@ -27721,7 +27721,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  maxHealth: 1000
+  maxHealth: 250
   currentHealth: 0
   statusEffect: {fileID: 11400000, guid: 2908520060481884889d4b3b96c89d4d, type: 2}
   respawnTime: 2
@@ -27742,7 +27742,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  maxHealth: 1000
+  maxHealth: 250
   currentHealth: 0
   statusEffect: {fileID: 11400000, guid: 9e25264fe7c67ce458c238444c91379f, type: 2}
   respawnTime: 2
