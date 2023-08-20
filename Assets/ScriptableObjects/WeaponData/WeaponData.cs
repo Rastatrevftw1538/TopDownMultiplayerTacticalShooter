@@ -5,7 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewWeaponData", menuName = "Weapon Data")]
 public class WeaponData : ScriptableObject
 {
-    //public AudioClip bulletSound;
     public int damagePerBullet;
     public float fireRate;
     public float fireRange;
