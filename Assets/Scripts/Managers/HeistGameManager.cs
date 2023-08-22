@@ -4,11 +4,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 using TMPro;
 using Mirror;
+using Mirror.Discovery;
 
 public class HeistGameManager : NetworkBehaviour
 {
+    private CustomNetworkManager networkManager;
     [SerializeField] public GameObject Level;
     private GameObject baseObjects;
     public int baseHealth = 1000;
@@ -40,8 +43,10 @@ public class HeistGameManager : NetworkBehaviour
     }
     private void Awake()
     {
-        if (instance == null)
+        if (instance == null){
             instance = this;
+            networkManager = GameObject.Find("NetworkManager").GetComponent<CustomNetworkManager>();
+        }
         else if (instance != this)
             Destroy(gameObject);
     }
@@ -65,11 +70,20 @@ public class HeistGameManager : NetworkBehaviour
     }
 
 private void FixedUpdate() {
-    if(gameStarted)
+    if(gameStarted){
     currentTime -= Time.deltaTime;
         ui.transform.GetChild(2).GetComponent<TMP_Text>().text = ((int)currentTime).ToString();
         ui.transform.GetChild(0).GetComponent<TMP_Text>().text = "Blue: " + blueBase.GetHealth();
         ui.transform.GetChild(1).GetComponent<TMP_Text>().text = "Red: " + redBase.GetHealth();
+        ui.transform.GetChild(6).GetComponent<TMP_Text>().text = "";
+        }
+    else{
+        ui.transform.GetChild(2).GetComponent<TMP_Text>().text = "";
+        ui.transform.GetChild(0).GetComponent<TMP_Text>().text = "";
+        ui.transform.GetChild(1).GetComponent<TMP_Text>().text = "";
+        if (networkManager != null)
+            ui.transform.GetChild(6).GetComponent<TMP_Text>().text = "The IP Address is: "+networkManager.GetLocalIPAddress();
+    }
 }
     private void Update()
     {
@@ -314,5 +328,36 @@ private void FixedUpdate() {
         //HANDLE WHAT YOU WANT TO BE INTERACTABLE AFTER THE GAME ENDS
         redBase.canHit  = false;
         blueBase.canHit = false;
+    }
+
+    public void OnServerDisconnect(NetworkConnectionToClient conn){
+        int teamIndex = 0;
+        if(conn.identity.gameObject.GetComponent<PlayerScript>().playerTeam == PlayerScript.Team.Blue)
+            if (blueTeam.Contains(conn.identity.gameObject))
+            {
+                teamIndex = blueTeam.IndexOf(conn.identity.gameObject);
+                
+                redTeam.Remove(conn.identity.gameObject);
+            }
+        else if (conn.identity.gameObject.GetComponent<PlayerScript>().playerTeam == PlayerScript.Team.Red)
+        if (blueTeam.Contains(conn.identity.gameObject))
+            {
+                teamIndex = redTeam.IndexOf(conn.identity.gameObject);
+                
+                redTeam.Remove(conn.identity.gameObject);
+            }
+        Debug.Log($"<color = red>Player on team {teamIndex} disconnected.</color>");
+    }
+    public void DisconnectFromGame(){
+        if (NetworkServer.active && NetworkClient.isConnected)
+        {
+        networkManager.StopHost();
+        networkManager.gameObject.GetComponent<CustomNetworkDiscovery>().StopDiscovery();
+        }
+        else if (NetworkClient.isConnected)
+        {
+            networkManager.StopClient();
+            networkManager.gameObject.GetComponent<CustomNetworkDiscovery>().StopDiscovery();
+        }
     }
 }

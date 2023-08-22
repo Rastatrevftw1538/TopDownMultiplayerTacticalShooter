@@ -88,6 +88,17 @@ public class PlayerScript : NetworkBehaviour
         //CHANGE TO SET WHEN GAME STARTS, OR WHEN PLAYER JOINS
         setColorsOfPlayers();
 
+        if (deviceType == SetDeviceType.Auto) {
+            if (Application.platform == RuntimePlatform.Android)
+            {
+                deviceType = SetDeviceType.Mobile;
+            }
+            else if (Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.WindowsPlayer)
+            {
+                deviceType = SetDeviceType.PC;
+            }
+        }
+
         #region PC MOVEMENT
         if (deviceType == SetDeviceType.PC){
         if(!playerCamera){

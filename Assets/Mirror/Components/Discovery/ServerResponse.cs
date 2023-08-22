@@ -15,5 +15,8 @@ namespace Mirror.Discovery
         // Prevent duplicate server appearance when a connection can be made via LAN on multiple NICs
         public long serverId;
 
+        // TREVOR: Allows for instant joining without typing in the join code for Relay when server is found via Mirror.
+        public string joinCode;
+
     }
 }
