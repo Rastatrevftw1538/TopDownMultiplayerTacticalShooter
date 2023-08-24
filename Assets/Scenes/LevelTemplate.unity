@@ -411,7 +411,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   Level: {fileID: 1493985599}
-  baseHealth: 1000
+  baseHealth: 250
   ui: {fileID: 929032431}
   redTeam: []
   blueTeam: []
