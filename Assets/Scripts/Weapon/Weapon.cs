@@ -101,7 +101,7 @@ public class Weapon : NetworkBehaviour
         return this.spread;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (!isOwned)
             return;
