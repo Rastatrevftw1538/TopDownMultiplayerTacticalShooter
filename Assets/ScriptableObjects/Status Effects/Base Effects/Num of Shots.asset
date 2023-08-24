@@ -25,5 +25,5 @@ MonoBehaviour:
   reloadTime: 0
   damageBuff: 0
   magSize: 0
-  numOfBulletsPerShot: 1
+  numOfBulletsPerShot: 2
   bonusPointsPerShot: 0

@@ -526,7 +526,7 @@ public class PlayerScript : NetworkBehaviour, IEffectable
     public void NumOfShotsBuff(Weapon weaponScript)
     {
         hasApplied = true;
-        weaponScript.numOfBulletsPerShot += _statusEffectData.numOfBulletsPerShot;
+        weaponScript.numOfBulletsPerShot = _statusEffectData.numOfBulletsPerShot;
     }
     public void BonusPointsBuff(Weapon weaponScript)
     {

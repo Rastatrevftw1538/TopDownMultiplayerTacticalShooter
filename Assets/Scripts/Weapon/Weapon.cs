@@ -121,7 +121,6 @@ public class Weapon : NetworkBehaviour
         }
         if (shootingGun && Time.time >= nextFireTime && !outOfAmmo)
         {
-
             nextFireTime = Time.time + fireRate;
             Vector2 direction = firePoint.transform.up;
             float spreadAngle = Mathf.Clamp(UnityEngine.Random.Range(0, spread) - spread / 2f,-45,45); //HERE
@@ -135,7 +134,7 @@ public class Weapon : NetworkBehaviour
             else{
                 spread += Time.deltaTime * spreadValue;
             }
-            currentAmmo -= 1;
+            currentAmmo -= numOfBulletsPerShot;
         }
 
         if(currentAmmo <= 0){
