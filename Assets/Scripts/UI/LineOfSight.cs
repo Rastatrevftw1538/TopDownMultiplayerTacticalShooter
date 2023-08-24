@@ -50,8 +50,11 @@ public class LineOfSight : NetworkBehaviour
 
 	void LateUpdate()
 	{
-		if(isLocalPlayer)
+		if (isLocalPlayer)
+		{
+
 			DrawFieldOfView();
+		}
 		//Debug.LogWarning("The euler angle is: " + transform.eulerAngles.z);
 	}
 

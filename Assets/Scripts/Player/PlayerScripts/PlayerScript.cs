@@ -103,7 +103,16 @@ public class PlayerScript : NetworkBehaviour, IEffectable
 
         //setColorsOfPlayers(ChaseGameManager.instance.players);
 
-        if (deviceType == SetDeviceType.Auto) {
+        if(_statusEffectData != null)
+        {
+            CmdHandleEffect();
+        }
+    }
+
+    public void FixedUpdate()
+    {
+        if (deviceType == SetDeviceType.Auto)
+        {
             if (Application.platform == RuntimePlatform.Android)
             {
                 deviceType = SetDeviceType.Mobile;
@@ -172,16 +181,6 @@ public class PlayerScript : NetworkBehaviour, IEffectable
             CmdRotate(rotation);
         }
         #endregion
-
-        if(_statusEffectData != null)
-        {
-            CmdHandleEffect();
-        }
-    }
-
-    public void FixedUpdate()
-    {
-
     }
 
     [Command]
