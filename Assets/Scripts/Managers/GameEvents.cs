@@ -122,3 +122,15 @@ public class DisplayUI : EvtSystem.Event
     public string statusEffectName;
     public Color  colorOfText;
 }
+
+public class ShootSound : EvtSystem.Event
+{
+    public Vector3 position;
+    public string GunName;
+}
+
+public class ReloadSound : EvtSystem.Event
+{
+    public Vector3 position;
+    public string GunName;
+}

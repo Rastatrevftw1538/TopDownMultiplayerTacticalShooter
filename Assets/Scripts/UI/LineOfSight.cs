@@ -108,7 +108,6 @@ public class LineOfSight : NetworkBehaviour
             }
 			//Debug.LogError("The actual angle is: " + invertDegrees(transform.eulerAngles.z));
 
-
 			float angle = (convertDegrees(transform.eulerAngles.z)) - viewAngle / 2 + stepAngleSize * i;
 			//Debug.LogError("The angle being used is: " + angle);
 			ViewCastInfo newViewCast = ViewCast(angle);

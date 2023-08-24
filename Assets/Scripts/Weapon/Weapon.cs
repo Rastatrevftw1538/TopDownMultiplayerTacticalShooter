@@ -22,6 +22,7 @@ public class Weapon : NetworkBehaviour
     public GameObject bulletPrefab;
     [HideInInspector] public float fireRange = 100f;
     [HideInInspector] public int numOfBulletsPerShot;
+    private string gunName;
 
     private float damage;
     public float damageMultiplier;
@@ -52,7 +53,7 @@ public class Weapon : NetworkBehaviour
 
     private StatusEffectData _statusEffectData = null;
     [HideInInspector]public int bonusPointsPerShot;
-   // AudioSource playerAudioSource;
+    //AudioSource playerAudioSource;
 
 
     PlayerScript player;
@@ -69,6 +70,7 @@ public class Weapon : NetworkBehaviour
             magSize = weaponSpecs.ammo;
             reloadTime = weaponSpecs.reloadTime;
             spreadValue = weaponSpecs.spreadIncreasePerSecond * 1000;
+            gunName = weaponSpecs.name;
         }
         currentAmmo = magSize;
         totalMags = mags;
@@ -99,6 +101,12 @@ public class Weapon : NetworkBehaviour
     }
     public float getSpread(){
         return this.spread;
+    }
+
+    public void Update()
+    {
+        if (weaponSpecs.name != gunName)
+            SetDefaultValues();
     }
 
     private void FixedUpdate()
@@ -134,7 +142,8 @@ public class Weapon : NetworkBehaviour
             else{
                 spread += Time.deltaTime * spreadValue;
             }
-            currentAmmo -= numOfBulletsPerShot;
+            //currentAmmo -= numOfBulletsPerShot;
+            currentAmmo -= 1;
         }
 
         if(currentAmmo <= 0){
@@ -157,6 +166,12 @@ public class Weapon : NetworkBehaviour
         isReloading = true;
         spread = 0;
         spreadCone.color = new Color(1,1,1,0);
+
+        ReloadSound shootSound = new ReloadSound();
+        shootSound.GunName = weaponSpecs.name;
+        shootSound.position = this.transform.position;
+        EvtSystem.EventDispatcher.Raise<ReloadSound>(shootSound);
+
         yield return new WaitForSeconds(reloadTime);
         currentAmmo = magSize;
         if(totalMags !>= 99){
@@ -349,9 +364,18 @@ public class Weapon : NetworkBehaviour
                 main.startColor = Color.clear;
             }
         Instantiate(trailRender.effectPrefab, collisionPoint, new Quaternion(0, 0, 0, 0));
-        //playerAudioSource.PlayOneShot(weaponSpecs.bulletSound);
         trailRender.SetTargetPosition(collisionPoint);
         Debug.Log("Bullet Fired Client " + collisionPoint + " direction " + spreadDirection);
+
+        ShootSound shootSound = new ShootSound();
+        shootSound.GunName  = weaponSpecs.name;
+        shootSound.position = this.transform.position;
+        EvtSystem.EventDispatcher.Raise<ShootSound>(shootSound);
+    }
+
+    private void PlaySound()
+    {
+        //playerAudioSource.PlayOneShot(weaponSpecs.bulletSound);
     }
 
     public void SetDefaultValues()
@@ -364,6 +388,11 @@ public class Weapon : NetworkBehaviour
         magSize = weaponSpecs.ammo;
         reloadTime = weaponSpecs.reloadTime;
         spreadValue = weaponSpecs.spreadIncreasePerSecond * 1000;
+        gunName = weaponSpecs.name;
+
+        currentAmmo = magSize;
+        damageMultiplier = 1;
+        bonusPointsPerShot = 0;
 
         totalMags = mags;
         damageMultiplier = 1;

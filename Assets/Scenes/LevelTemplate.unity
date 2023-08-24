@@ -27251,6 +27251,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1831023467}
   - component: {fileID: 1831023466}
+  - component: {fileID: 1831023468}
   m_Layer: 0
   m_Name: Audio Manager
   m_TagString: Untagged
@@ -27369,6 +27370,28 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1831023468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1831023465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7dc286c078357794d90958bf56b631a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ARSound: {fileID: 8300000, guid: 2ffee7791d11c6b4487ec78c111675fe, type: 3}
+  PistolSound: {fileID: 8300000, guid: 614314cdbb362cf40b959223856d8552, type: 3}
+  SMGSound: {fileID: 8300000, guid: fd8a326c0d063854aa1fa6c3028c32f3, type: 3}
+  ShotgunSound: {fileID: 8300000, guid: b732b470efe19884b9d37380421a5903, type: 3}
+  SniperSound: {fileID: 8300000, guid: 614966bfbb7f1b84586dcf0ab288698e, type: 3}
+  ARSoundReload: {fileID: 8300000, guid: 030e79b5ca2fc6549b2429080bb33b8f, type: 3}
+  PistolSoundReload: {fileID: 8300000, guid: 406c929b7299afb469c82778f8d15d5b, type: 3}
+  SMGSoundReload: {fileID: 8300000, guid: aa77b9d1d652dda47bde850a8ee58b39, type: 3}
+  ShotGunSoundReload: {fileID: 8300000, guid: 4bb4d6e3e0ef940458ef8d0ebe720837, type: 3}
+  SniperSoundReload: {fileID: 8300000, guid: 08f05bf3e78feef489ed7944a0b5f91f, type: 3}
 --- !u!1001 &2055694159
 PrefabInstance:
   m_ObjectHideFlags: 0
