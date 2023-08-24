@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class LineOfSight : MonoBehaviour
+public class LineOfSight : NetworkBehaviour
 {
 	public float viewRadius;
 	[Range(0, 360)]
@@ -50,9 +50,11 @@ public class LineOfSight : MonoBehaviour
 
 	void LateUpdate()
 	{
-		DrawFieldOfView();
+		if(isLocalPlayer)
+			DrawFieldOfView();
 		//Debug.LogWarning("The euler angle is: " + transform.eulerAngles.z);
 	}
+
 
 	[Client]
 	void FindVisibleTargets()
