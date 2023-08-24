@@ -466,7 +466,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  maxHealth: 250
+  maxHealth: 50
   currentHealth: 0
   statusEffect: {fileID: 11400000, guid: 9e25264fe7c67ce458c238444c91379f, type: 2}
   respawnTime: 2
