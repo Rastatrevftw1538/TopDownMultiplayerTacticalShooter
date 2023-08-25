@@ -460,8 +460,7 @@ MonoBehaviour:
   statusEffectData: {fileID: 0}
   abilities:
   - {fileID: 11400000, guid: 0df9e37970c605c4ca5baf4ac204c12f, type: 2}
-  - {fileID: 11400000, guid: c7845721c18392842a71cf8ec7d0fcef, type: 2}
-  debugKeys: 6500000067000000
+  debugKeys: 65000000
 --- !u!1 &1888670782340055357
 GameObject:
   m_ObjectHideFlags: 0
@@ -1659,14 +1658,14 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   viewRadius: 20
-  viewAngle: 200
+  viewAngle: 90
   debugAngle: 0
   targetMask:
     serializedVersion: 2
-    m_Bits: 384
+    m_Bits: 128
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   visibleTargets: []
   meshResolution: 0.5
   edgeResolveIterations: 3

@@ -50,6 +50,8 @@ public class PlayerScript : NetworkBehaviour, IEffectable
     private bool isShooting;
     private bool canMove = true;
 
+    [SyncVar] private string playerId;
+
     private void Awake()
     {
         EvtSystem.EventDispatcher.AddListener<PlayerDied>(ClearStatusEffects);
@@ -62,7 +64,8 @@ public class PlayerScript : NetworkBehaviour, IEffectable
 
         if (isLocalPlayer)
         {
-            Debug.Log("local Player" + netId);
+            Debug.Log("local Player: " + netId);
+            //cmdSetPlayerId();
             return;
         }
 
@@ -288,6 +291,20 @@ public class PlayerScript : NetworkBehaviour, IEffectable
     }
 
     [Client]
+    public void setLayerForEnemies(GameObject[] players)
+    {
+        if (!isLocalPlayer)
+        {
+            foreach(GameObject player in players)
+            {
+                if(player != this.gameObject)
+                    player.layer = LayerMask.NameToLayer("Enemy");
+            }
+        }
+            
+    }
+
+    [Client]
     public void setColorsOfPlayers(GameObject[] players)
     {
         foreach (GameObject player in players)
@@ -323,6 +340,20 @@ public class PlayerScript : NetworkBehaviour, IEffectable
     private ParticleSystem _effectParticles;
 
     [Command]
+    public void cmdSetPlayerId()
+    {
+        setPlayerId();
+    }
+
+    [ClientRpc]
+    public void setPlayerId()
+    {
+        for (int i = 0; i < 4; i++)
+            playerId += Random.Range(0, 9).ToString();
+        Debug.LogError("player id: " + playerId);
+    }
+
+    [Command]
     public void CmdApplyEffect(StatusEffectData data)
     {
         ApplyEffect(data);
@@ -351,7 +382,7 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         RemoveEffect();
     }
 
-
+    [ClientRpc]
     public void RemoveEffect()
     {
         _statusEffectData = null;
@@ -373,6 +404,7 @@ public class PlayerScript : NetworkBehaviour, IEffectable
     [Command]
     private void CmdHandleEffect()
     {
+        Debug.LogError("Calls effect handling");
         if(_statusEffectData != null)
             HandleEffect();
     }
@@ -382,8 +414,14 @@ public class PlayerScript : NetworkBehaviour, IEffectable
     private void SetStatusEffectData(ApplyStatusEffects evtData)
     {
         //EvtSystem.EventDispatcher.RemoveListener<ApplyStatusEffects>(deleteListener);
+        Debug.LogError("Object recieved from event: " + evtData.player);
+        RpcSetStatusEffectData(evtData);
+    }
 
-        if(evtData.team == playerTeam)
+    [ClientRpc]
+    private void RpcSetStatusEffectData(ApplyStatusEffects evtData)
+    {
+        if (evtData.team == playerTeam)
             _statusEffectData = evtData.statusEffect;
     }
 
@@ -488,6 +526,7 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         }
     }
 
+    [ClientRpc]
     public void ApplyDOT(PlayerHealth playerHealthScript)
     {
         //CHECK IF YOU WERE TRYING TO HEAL, OR TO DAMAGE
@@ -497,36 +536,43 @@ public class PlayerScript : NetworkBehaviour, IEffectable
     }
 
     bool hasApplied;
+    [ClientRpc]
     public void ApplyDamageBuff(Weapon weaponScript)
     {
         hasApplied = true;
         weaponScript.damageMultiplier = _statusEffectData.damageBuff;
     }
+    [ClientRpc]
     public void ReloadBuff(Weapon weaponScript)
     {
         hasApplied = true;
         weaponScript.reloadTime *= (1 - _statusEffectData.reloadTime);
     }
+    [ClientRpc]
     public void FireRateBuff(Weapon weaponScript)
     {
         hasApplied = true;
         weaponScript.fireRate /= _statusEffectData.fireRate;
     }
+    [ClientRpc]
     public void FireRangeBuff(Weapon weaponScript)
     {
         hasApplied = true;
         weaponScript.fireRange *= _statusEffectData.fireRange;
     }
+    [ClientRpc]
     public void BulletCountBuff(Weapon weaponScript)
     {
         hasApplied = true;
         weaponScript.magSize += _statusEffectData.magSize;
     }
+    [ClientRpc]
     public void NumOfShotsBuff(Weapon weaponScript)
     {
         hasApplied = true;
         weaponScript.numOfBulletsPerShot = _statusEffectData.numOfBulletsPerShot;
     }
+    [ClientRpc]
     public void BonusPointsBuff(Weapon weaponScript)
     {
         hasApplied = true;
@@ -548,6 +594,7 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         }
     }
 
+
     private void ClearStatusEffects(PlayerDied evtData)
     {
         if(evtData.playerThatDied == this.gameObject)
@@ -559,6 +606,7 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         Debug.LogError("Removed all ongoing status effects on Player: " + gameObject.name);
     }
 
+    [ClientRpc]
     private void ClearStatusEffects()
     {
         RemoveEffect();

@@ -82,7 +82,7 @@ public class BaseEffects : NetworkBehaviour
 
             EvtSystem.EventDispatcher.Raise<ApplyStatusEffects>(applyStatusEffects);
 
-            Debug.LogError("Rose event from gameobject: " + gameObject.name);
+            Debug.LogError("Rose event from gameobject: " + gameObject.name + " for team " + applyStatusEffects.team);
         }
     }
 
@@ -104,7 +104,6 @@ public class BaseEffects : NetworkBehaviour
         //Debug.LogError("<color=yellow>BASE: " + this.name + " RESPAWNED SUCCESSFULLY.</color>");
     }
 
-    [ClientRpc]
     public void Respawn(float respawnTime)
     {
         Debug.LogError(this.name + " has been destroyed!");

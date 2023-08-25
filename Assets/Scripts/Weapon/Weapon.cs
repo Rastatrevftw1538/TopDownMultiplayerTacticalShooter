@@ -329,7 +329,7 @@ public class Weapon : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
+    //[ClientRpc]
     void RpcOnFire(RaycastHit2D hit, Vector3 spreadDirection, Vector3 collisionPoint, String whatWasHit)
     {
         Debug.Log("Collision Point: " + collisionPoint);

@@ -34,23 +34,19 @@ public class LineOfSight : NetworkBehaviour
 		viewMesh.name = "View Mesh";
 		viewMeshFilter.mesh = viewMesh;
 
-		StartCoroutine("FindTargetsWithDelay", .2f);
+		//StartCoroutine("FindTargetsWithDelay", .2f);
 		playerCamera = GameObject.Find("ClientCamera").GetComponent<Camera>();
 	}
 
-	private void Update() {
-		if(viewRadius >= 0)
-		viewRadius = -viewRadius;
-	}
 
-	IEnumerator FindTargetsWithDelay(float delay)
+	/*IEnumerator FindTargetsWithDelay(float delay)
 	{
 		while (true)
 		{
 			yield return new WaitForSeconds(delay);
 			FindVisibleTargets();
 		}
-	}
+	}*/
 
 	void LateUpdate()
 	{
@@ -83,15 +79,16 @@ public class LineOfSight : NetworkBehaviour
 					visibleTargets.Add(target);
 					string targetLayer = target.gameObject.layer.ToString();
 					//Debug.LogError(target.gameObject.layer.ToString());
+					Debug.DrawLine(transform.position, target.transform.position, Color.red);
 
-
-					playerCamera.cullingMask |= 1 << LayerMask.NameToLayer("Base");
+					//playerCamera.cullingMask |= 1 << LayerMask.NameToLayer("Enemy");
 				}
-                //else
-                //{
+                else
+                {
 					//Debug.LogError("not seen");
-					//playerCamera.cullingMask &= ~(1 << LayerMask.NameToLayer("Base"));
-				//}
+
+					//playerCamera.cullingMask &= ~(1 << LayerMask.NameToLayer("Enemy"));
+				}
 			}
 		}
 	}
@@ -100,37 +97,44 @@ public class LineOfSight : NetworkBehaviour
 	void DrawFieldOfView()
 	{
 		int stepCount = Mathf.RoundToInt(viewAngle * meshResolution);
-    float stepAngleSize = viewAngle / stepCount;
-    List<Vector3> viewPoints = new List<Vector3>();
-    ViewCastInfo oldViewCast = new ViewCastInfo();
-    for (int i = 0; i <= stepCount; i++)
-    {
-        float angle = (360 - transform.eulerAngles.z) - viewAngle / 2 + stepAngleSize * i;
-        ViewCastInfo newViewCast = ViewCast(angle);
-
-        if (i > 0)
-        {
-            bool edgeDstThresholdExceeded = Mathf.Abs(oldViewCast.dst - newViewCast.dst) > edgeDstThreshold;
-            if (oldViewCast.hit && newViewCast.hit && edgeDstThresholdExceeded)
+		float stepAngleSize = viewAngle / stepCount;
+		List<Vector3> viewPoints = new List<Vector3>();
+		ViewCastInfo oldViewCast = new ViewCastInfo();
+		for (int i = 0; i <= stepCount; i++)
+		{
+			float convertDegrees(float angle)
             {
-                // Handle wrapping around obstacles
-                Vector3 dirToOldHit = (oldViewCast.point - transform.position).normalized;
-                Vector3 dirToNewHit = (newViewCast.point - transform.position).normalized;
-
-                float angleBetweenHits = Vector3.Angle(dirToOldHit, dirToNewHit);
-                if (angleBetweenHits < stepAngleSize)
-                {
-                    // Add a point that's on the other side of the obstacle
-                    float t = Mathf.InverseLerp(oldViewCast.dst, newViewCast.dst, edgeDstThreshold);
-                    Vector3 newPoint = Vector3.Lerp(oldViewCast.point, newViewCast.point, t);
-                    viewPoints.Add(newPoint);
-                }
+				float diff = 360 - angle;
+				return diff;
             }
-        }
+			//Debug.LogError("The actual angle is: " + invertDegrees(transform.eulerAngles.z));
 
-        viewPoints.Add(newViewCast.point);
-        oldViewCast = newViewCast;
-    }
+			float angle = (convertDegrees(transform.eulerAngles.z)) - viewAngle / 2 + stepAngleSize * i;
+			//Debug.LogError("The angle being used is: " + angle);
+			ViewCastInfo newViewCast = ViewCast(angle);
+
+			if (i > 0)
+			{
+				bool edgeDstThresholdExceeded = Mathf.Abs(oldViewCast.dst - newViewCast.dst) > edgeDstThreshold;
+				if (oldViewCast.hit != newViewCast.hit || (oldViewCast.hit && newViewCast.hit && edgeDstThresholdExceeded))
+				{
+					EdgeInfo edge = FindEdge(oldViewCast, newViewCast);
+					if (edge.pointA != Vector3.zero)
+					{
+						viewPoints.Add(edge.pointA);
+					}
+					if (edge.pointB != Vector3.zero)
+					{
+						viewPoints.Add(edge.pointB);
+					}
+				}
+
+			}
+
+
+			viewPoints.Add(newViewCast.point);
+			oldViewCast = newViewCast;
+		}
 
 		int vertexCount = viewPoints.Count + 1;
 		Vector3[] vertices = new Vector3[vertexCount];
@@ -173,16 +177,16 @@ public class LineOfSight : NetworkBehaviour
 					Debug.LogError("Seen Target");
 					visibleTargets.Add(target);
 					string targetLayer = target.gameObject.layer.ToString();
-					//Debug.LogError(target.gameObject.layer.ToString());
+					Debug.LogError(target.gameObject.layer.ToString());
 
 
-					playerCamera.cullingMask |= 1 << LayerMask.NameToLayer("Base");
+					playerCamera.cullingMask |= 1 << LayerMask.NameToLayer("Enemy");
 				}
-				//else
-				//{
-				//Debug.LogError("not seen");
-				//playerCamera.cullingMask &= ~(1 << LayerMask.NameToLayer("Base"));
-				//}
+				else
+				{
+					Debug.LogError("not seen");
+					playerCamera.cullingMask &= ~(1 << LayerMask.NameToLayer("Enemy"));
+				}
 			}
 		}
 	}

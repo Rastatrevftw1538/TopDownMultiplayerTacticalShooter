@@ -7,7 +7,7 @@ public class AudioManagers : MonoBehaviour
 {
     [Header("Bullet Sounds")]
     public AudioClip ARSound;
-    public AudioClip ARSound2;
+    //public AudioClip ARSound2;
     public AudioClip PistolSound;
     public AudioClip SMGSound;
     public AudioClip ShotgunSound;

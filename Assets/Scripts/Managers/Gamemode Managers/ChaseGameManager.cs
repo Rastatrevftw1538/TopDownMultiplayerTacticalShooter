@@ -186,6 +186,7 @@ public class ChaseGameManager : NetworkBehaviour
         if (index % 2 == 0)
         {
             player.GetComponent<PlayerScript>().PlayerTeam = PlayerScript.Team.Red;
+            player.transform.position = new Vector3(player.transform.position.x, player.transform.position.y, -3.5f);
         }
         else
         {
@@ -302,6 +303,8 @@ public class ChaseGameManager : NetworkBehaviour
             }
 
             currentPlayer.hasSetColors = true;
+            //currentPlayer.cmdSetPlayerId();
+            //currentPlayer.setLayerForEnemies(players);
         }
         
     }
