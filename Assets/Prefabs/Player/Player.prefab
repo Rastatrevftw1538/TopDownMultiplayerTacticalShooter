@@ -1659,14 +1659,14 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   viewRadius: 20
-  viewAngle: 270
+  viewAngle: 200
   debugAngle: 0
   targetMask:
     serializedVersion: 2
     m_Bits: 384
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 0
   visibleTargets: []
   meshResolution: 0.5
   edgeResolveIterations: 3
