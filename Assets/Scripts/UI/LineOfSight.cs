@@ -38,6 +38,10 @@ public class LineOfSight : NetworkBehaviour
 		playerCamera = GameObject.Find("ClientCamera").GetComponent<Camera>();
 	}
 
+	private void Update() {
+		if(viewRadius >= 0)
+		viewRadius = -viewRadius;
+	}
 
 	IEnumerator FindTargetsWithDelay(float delay)
 	{
