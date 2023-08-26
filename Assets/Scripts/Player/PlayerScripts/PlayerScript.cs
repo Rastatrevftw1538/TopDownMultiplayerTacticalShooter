@@ -311,12 +311,12 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         {
             if (player != this.gameObject)
             {
-                if (player.GetComponent<PlayerScript>().playerTeam == PlayerScript.Team.Red)
+                if (player.GetComponent<PlayerScript>().playerTeam != this.gameObject.GetComponent<PlayerScript>().playerTeam)
                 {
                     //Debug.LogError("SET PLAYER COLOR TO RED");
                     player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.red;
                 }
-                else if (player.GetComponent<PlayerScript>().playerTeam == PlayerScript.Team.Blue)
+                else if (player.GetComponent<PlayerScript>().playerTeam == this.gameObject.GetComponent<PlayerScript>().playerTeam)
                 {
                     //Debug.LogError("SET PLAYER COLOR TO BLUE");
                     player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.blue;

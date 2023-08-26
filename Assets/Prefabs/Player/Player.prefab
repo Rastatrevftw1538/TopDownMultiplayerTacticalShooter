@@ -1649,7 +1649,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4254051603601381221}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a4d3cf9b8f583ec4391b3ef1166537dc, type: 3}
   m_Name: 
@@ -1662,7 +1662,7 @@ MonoBehaviour:
   debugAngle: 0
   targetMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 384
   obstacleMask:
     serializedVersion: 2
     m_Bits: 512
@@ -2128,7 +2128,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5928465797623013947
 Transform:
   m_ObjectHideFlags: 0
