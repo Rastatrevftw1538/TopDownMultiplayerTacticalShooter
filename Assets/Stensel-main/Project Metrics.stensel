@@ -1,0 +1,13 @@
+{
+    "data": [
+        {
+            "description": {
+                "name": "metricsVar",
+                "type": 1
+            },
+            "id": "63f1819c-19c8-4755-8501-ea237acf2955"
+        }
+    ],
+    "tables": [],
+    "timeTables": []
+}

@@ -55,4 +55,35 @@ public class Blink : MovementAbility
             return ((playerposition + playerfoward.normalized * blinkDistance) * BlinkMultiplier);
         }
     }
+
+    /*Vector2 MoveCharacter(Vector2 playerposition, Vector2 playerforward)
+    {
+        //PlayerScript player = character.GetComponent<PlayerScript>();
+        destination = CalculateDistance(playerposition, playerforward);
+        var dist = Vector2.Distance(playerposition, destination);
+        if (dist > 0.5f)
+        {
+            return destination;
+        }
+        else
+        {
+            return Vector2.zero;
+        }
+        
+    }
+
+    Vector2 CalculateDistance(Vector2 playerposition, Vector2 playerfoward)
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(playerposition, playerfoward, out hit, blinkDistance))
+        {
+            Debug.DrawLine(playerposition, hit.point, Color.yellow, 2);
+            return (hit.point * BlinkMultiplier);
+        }
+        else
+        {
+            Debug.DrawRay(playerposition, (playerfoward.normalized * blinkDistance) * BlinkMultiplier, Color.green, 2);
+            return ((playerposition + playerfoward.normalized * blinkDistance) * BlinkMultiplier);
+        }
+    }*/
 }

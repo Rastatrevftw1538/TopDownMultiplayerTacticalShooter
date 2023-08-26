@@ -8,9 +8,9 @@ using static PlayerScript;
 
 public class PlayerHealth : NetworkBehaviour
 {
-    public const int maxHealth = 100;
+    public const float maxHealth = 100;
 
-    [SyncVar]public int currentHealth = maxHealth;
+    [SyncVar]public float currentHealth = maxHealth;
 
     private Slider healthbarInternal;
     [SerializeField] private Image healthbarExternal;
@@ -22,7 +22,7 @@ public class PlayerHealth : NetworkBehaviour
     {
         get { return isAlive; }
     }
-    public int GetHealth()
+    public float GetHealth()
     {
         return currentHealth;
     }
@@ -30,16 +30,20 @@ public class PlayerHealth : NetworkBehaviour
     private void Awake()
     {
         healthbarInternal = GetComponentInChildren<Slider>();
-
     }
 
-    public void TakeDamage(int amount)
+    public void TakeDamage(float amount)
     {
-        if(currentHealth> 0)
-        currentHealth -= amount;
+        //CHECK IF THE DAMAGE PASSED IN WAS NEGATIVE, IF IT WAS, THIS FUNCTION WILL ADD HEALTH INSTEAD
+        amount = 
+            amount > 0 ? amount : amount * -1;
+
+        if(currentHealth > 0)
+            currentHealth -= amount;
 
         checkHealth();
     }
+
     private void Update()
     {
         if (healthbarInternal != null)
@@ -50,7 +54,7 @@ public class PlayerHealth : NetworkBehaviour
         if (healthbarExternal != null)
         {
             //Debug.Log("Health: " + (float)currentHealth);
-            healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
+            healthbarExternal.fillAmount = currentHealth / maxHealth;
             //Debug.Log("Health Changed - Bar: " + healthbarExternal.fillAmount + " Health: " + currentHealth);
         }
 
@@ -89,13 +93,13 @@ public class PlayerHealth : NetworkBehaviour
         // Restore health after 3 seconds
         //StartCoroutine(RestoreHealth());
 
-        //RAISE THE EVENT SO THE 'HeistGameManager.cs' CAN TRACK THIS MESSAGE
+        //RAISE THE EVENT SO THE GAMEMODE MANAGER CAN TRACK THIS MESSAGE
          PlayerDied playerDied = new PlayerDied();
          playerDied.playerThatDied = this.gameObject;
 
-
-         if(!isRespawning)
-            EvtSystem.EventDispatcher.Raise<PlayerDied>(playerDied);
+        if (!isRespawning)
+            //EvtSystem.EventDispatcher.Raise<PlayerDied>(playerDied);
+            Respawn(ChaseGameManager.instance.teamRespawnTime);
     }
     private void RestoreHealth()
     {
@@ -108,13 +112,13 @@ public class PlayerHealth : NetworkBehaviour
         //TO ENSURE THE SAME EVENTS DON'T GET RAISED MORE THAN ONCE
         hasSentEvent = false;
 
-        Debug.LogError("<color=yellow>RESPAWNED SUCCESSFULLY.</color>");
+       // Debug.LogError("<color=yellow>RESPAWNED SUCCESSFULLY.</color>");
     }
 
     //[ClientRpc]
     public void Respawn(float respawnTime)
     {
-        Debug.LogError(this.name+"DIED!");
+        //Debug.LogError(this.name+"DIED!");
         foreach (Transform spawnPoint in NetworkManager.startPositions) {
                 Debug.LogError("got respawn point");
                 if (spawnPoint.CompareTag(this.GetComponent<PlayerScript>().PlayerTeam.ToString())) {
