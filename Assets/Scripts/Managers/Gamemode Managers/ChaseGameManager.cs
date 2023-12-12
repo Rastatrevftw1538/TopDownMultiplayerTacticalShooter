@@ -161,12 +161,14 @@ public class ChaseGameManager : NetworkBehaviour
                     if (conn.isReady) {
                         Debug.Log("Player index: " + playerCount + " Player: " + conn.identity.gameObject.name);
                         addToTeam(conn.identity.gameObject, playerCount - 1);
+
                         //NetworkServer.Spawn(bountyLogicObject, conn.identity.connectionToClient);
                         // NetworkIdentity identity = bountyLogicObject.GetComponent<NetworkIdentity>();
                         // if (identity != null)
                         // {
                         //     conn.identity.AssignClientAuthority(identity.connectionToClient);
                         // }
+
                         playerCount++;
                     }
                 }
@@ -225,6 +227,8 @@ public class ChaseGameManager : NetworkBehaviour
         }
 
         EvtSystem.EventDispatcher.Raise<DisplayUI>(displayWinner);
+
+        endedGame = true;
     }
 
     [ClientRpc]
