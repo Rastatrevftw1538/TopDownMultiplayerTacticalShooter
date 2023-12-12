@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -229,7 +230,6 @@ public class AbilityGUI : Editor
         EditorGUILayout.Space(5f);
         #endregion
 
-
         //APPLIES CHANGES FROM 'SerializedProperty' TO ACTUAL 'Ability' CLASS DATA
         serializedObject.ApplyModifiedProperties();
     }
@@ -244,12 +244,15 @@ public class AbilityGUI : Editor
             setEditorGUILayout(data);
         }
         EditorGUILayout.EndFoldoutHeaderGroup();
-    }
-    private void setEditorGUILayout(List<SerializedProperty> data)
-    {
-        foreach (SerializedProperty var in data)
+
+
+
+        void setEditorGUILayout(List<SerializedProperty> data)
         {
-            EditorGUILayout.PropertyField(var);
+            foreach (SerializedProperty var in data)
+            {
+                EditorGUILayout.PropertyField(var);
+            }
         }
     }
     #endregion

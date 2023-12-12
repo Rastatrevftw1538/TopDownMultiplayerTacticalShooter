@@ -189,7 +189,7 @@ public class PlayerScript : NetworkBehaviour, IEffectable
     {
         Vector3 newMovement = movement * Time.fixedDeltaTime;
         transform.Translate(newMovement);
-        RpcMove(newMovement); 
+        //RpcMove(newMovement); 
     }
     // FIGURE OUT HOW THE SERVER RECIEVES THIS INFO
     [Command]
@@ -202,7 +202,7 @@ public class PlayerScript : NetworkBehaviour, IEffectable
     [ClientRpc]
     private void RpcMove(Vector2 movement)
     {
-        transform.Translate(movement);
+        //transform.Translate(movement);
         //transform.Translate(movement * Time.deltaTime);
     }
 
@@ -420,7 +420,7 @@ public class PlayerScript : NetworkBehaviour, IEffectable
 
                     if (_statusEffectData.statusEffectType == StatusEffectTypes.DOT)
                     {
-                        Debug.LogError("DOT Effect");
+                        Debug.Log("Applying DOT Effect to player " + gameObject.name);
 
                         if (playerHealth == null)
                             playerHealth = GetComponent<PlayerHealth>();

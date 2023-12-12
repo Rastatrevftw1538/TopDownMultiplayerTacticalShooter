@@ -95,7 +95,10 @@ public class BaseDestroyed : EvtSystem.Event
 
 public class EndGame : EvtSystem.Event
 {
+    public float bluePoints;
+    public float redPoints;
 
+    public bool BlueWin() { return bluePoints > redPoints; }
 }
 
 public class TiedGame : EvtSystem.Event

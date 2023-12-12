@@ -110,7 +110,7 @@ public class Weapon : NetworkBehaviour
             return;
 
         float coneScale = 1f + (spread * coneSpreadFactor);
-        spreadCone.transform.localScale = new Vector3(Mathf.Clamp(coneScale, 0, 35), spreadCone.transform.localScale.y, 1f); //HERE
+        spreadCone.transform.localScale = new Vector3(Mathf.Clamp(coneScale, 0, 35), spreadCone.transform.localScale.y, 1f);
         spreadCone.color = new Color(1, 0, 0, Mathf.Clamp((Mathf.Clamp(spread, 0f, 100f) - 0) / (100 - 0), 0.25f, 0.75f));
 
         if (player.PlayerDevice == PlayerScript.SetDeviceType.Mobile){
@@ -121,14 +121,19 @@ public class Weapon : NetworkBehaviour
         }
         if (shootingGun && Time.time >= nextFireTime && !outOfAmmo)
         {
-
+            //TIME BETWEEN SHOTS
             nextFireTime = Time.time + fireRate;
+
+            //WEAPON SPREAD
             Vector2 direction = firePoint.transform.up;
-            float spreadAngle = Mathf.Clamp(UnityEngine.Random.Range(0, spread) - spread / 2f,-45,45); //HERE
+            float spreadAngle = Mathf.Clamp(UnityEngine.Random.Range(0, spread) - spread / 2f,-45,45);
             Quaternion spreadRotation = Quaternion.Euler(0, 0, spreadAngle);
             direction = spreadRotation * direction;
-            print("Direction thing: "+direction);
+
+            print("Direction: " + direction);
+
             CmdFire(direction);
+
             if(player.isRunning){
                 spread += Time.deltaTime * (spreadValue*2);
             }
@@ -202,6 +207,7 @@ public class Weapon : NetworkBehaviour
                         //PLAYER HEALTH STUFF
                         PlayerHealth enemyHealth = objectOrigin.GetComponent<PlayerHealth>();
                         PlayerScript playerScript = objectOrigin.GetComponent<PlayerScript>();
+                        float numPoints = 0;
 
                         if (enemyHealth != null && !foundWhatHit && playerScript != null)
                         {
@@ -217,6 +223,11 @@ public class Weapon : NetworkBehaviour
                                 }
                                 enemyHealth.TakeDamage(damageDone);
                             }
+
+                            if (enemyHealth.checkIfAlive)
+                                numPoints = damageDone + bonusPointsPerShot;
+                            else
+                                numPoints = 0f;
 
                             foundWhatHit = true;
                         }
@@ -262,12 +273,6 @@ public class Weapon : NetworkBehaviour
                                         playerWhoBrokeBase.playerTeam = player.playerTeam;
                                         playerWhoBrokeBase.whatBase = baseHealthEffects.gameObject;
                                         EvtSystem.EventDispatcher.Raise<WhoBrokeBase>(playerWhoBrokeBase);
-
-                                        /*ApplyStatusEffects applyStatusEffects = new ApplyStatusEffects();
-                                        applyStatusEffects.team = GetComponent<PlayerScript>().playerTeam;
-                                        applyStatusEffects.statusEffect = baseHealthEffects.statusEffect;
-
-                                        EvtSystem.EventDispatcher.Raise<ApplyStatusEffects>(applyStatusEffects);*/
                                     }
                                 }
                                 else
@@ -285,9 +290,9 @@ public class Weapon : NetworkBehaviour
                         if (ChaseGameManager.instance != null)
                         {
                             if (player.playerTeam == PlayerScript.Team.Blue)
-                                ChaseGameManager.instance.bluePoints += damageDone + bonusPointsPerShot;
+                                ChaseGameManager.instance.bluePoints += numPoints;
                             else
-                                ChaseGameManager.instance.redPoints += damageDone + bonusPointsPerShot;
+                                ChaseGameManager.instance.redPoints += numPoints;
                         }
                     }
                 }
@@ -315,6 +320,10 @@ public class Weapon : NetworkBehaviour
         }
     }
 
+
+    //BulletScript trailRender  = null;
+    //GameObject particleEffect = null;
+    //ParticleSystem particleSystem = null;
     [ClientRpc]
     void RpcOnFire(RaycastHit2D hit, Vector3 spreadDirection, Vector3 collisionPoint, String whatWasHit)
     {
@@ -332,10 +341,13 @@ public class Weapon : NetworkBehaviour
             Debug.Log("Hit Nothing:");
         }
         
-        var bulletInstance = Instantiate(bulletPrefab, firePoint.position, new Quaternion(0, 0, 0, 0));
+        var bulletInstance = Instantiate(bulletPrefab, firePoint.position, new Quaternion(0, 0, 0, 0)); //INSTANTIATE ACTUAL BULLET
+
         BulletScript trailRender = bulletInstance.GetComponent<BulletScript>();
         GameObject particleEffect = trailRender.effectPrefab;
         ParticleSystem particleSystem = particleEffect.GetComponent<ParticleSystem>();
+
+        //DETERMINE PARTICLE COLORS FOR THE HIT OBJECT
         var main = particleSystem.main;
             if(whatWasHit == "Base"){
                 main.startColor = Color.cyan;
@@ -346,10 +358,11 @@ public class Weapon : NetworkBehaviour
             else if(whatWasHit == "Wall"){
                 main.startColor = Color.gray;
             }
-        Instantiate(trailRender.effectPrefab, collisionPoint, new Quaternion(0, 0, 0, 0));
-        //playerAudioSource.PlayOneShot(weaponSpecs.bulletSound);
-        trailRender.SetTargetPosition(collisionPoint);
-        Debug.Log("Bullet Fired Client " + collisionPoint + " direction " + spreadDirection);
+
+        Instantiate(trailRender.effectPrefab, collisionPoint, new Quaternion(0, 0, 0, 0)); // INSTANTIATE TRAIL RENDER
+
+        trailRender.SetTargetPosition(collisionPoint); // ENSURE THE TRAIL VISUALLY LINES UP WITH THE ACTUAL BULLET
+        Debug.Log("Bullet Fired from Client: " + collisionPoint + ", in direction: " + spreadDirection);
     }
 
     public void SetDefaultValues()

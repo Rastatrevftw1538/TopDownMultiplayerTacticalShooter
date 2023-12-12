@@ -9,16 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ae4477f7c709fe48a5047d1c8951c34, type: 3}
-  m_Name: DOT Harm
+  m_Script: {fileID: 11500000, guid: 33dc806d0faa9d3438461fa526a47751, type: 3}
+  m_Name: Damage Amp
   m_EditorClassIdentifier: 
-  Name: DOT Harm
-  statusEffectType: 2
-  valueOverTime: 4
+  Name: Strength Buff
+  statusEffectType: 1
+  valueOverTime: 10
   movementPenalty: 0
   tickSpeed: 1
-  activeTime: 7
-  isDOT: 1
+  activeTime: 5
+  isDOT: 0
   isSlow: 0
   fireRate: 0
   fireRange: 0

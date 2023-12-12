@@ -30,6 +30,7 @@ public class ChaseGameManager : NetworkBehaviour
     [HideInInspector]
     public int connectedPlayersCount = 0;
     private bool gameStarted = false;
+    public  bool endedGame = false;
 
     public float teamRespawnTime = 2f;
 
@@ -64,6 +65,8 @@ public class ChaseGameManager : NetworkBehaviour
 
         //SUBSCRIBE TO EVENT 'PlayerDied' CALLED WITHIN 'PlayerHealth.cs', INVOKE 'AddPlayerDied'
         EvtSystem.EventDispatcher.AddListener<PlayerDied>(AddPlayerDied);
+
+        EvtSystem.EventDispatcher.AddListener<EndGame>(EndGameAndDisplay);
 
         //CACHING THE COMPONENTS
         BlueScoreUI = ui.transform.GetChild(0).GetComponent<TMP_Text>();
@@ -125,7 +128,7 @@ public class ChaseGameManager : NetworkBehaviour
         }
 
         //DETERMINE WINNER
-        if(currentTime <= 0){
+        if(currentTime <= 0 && !endedGame){
             DetermineWinnerForTimeOut();
         }
         
@@ -196,7 +199,32 @@ public class ChaseGameManager : NetworkBehaviour
 
     private void DetermineWinnerForTimeOut()
     {
-        
+        Invoke(nameof(EndGame), timeBeforeRestartingGame);
+    }
+
+    private void EndGameAndDisplay(EndGame evtData)
+    {
+        DisplayUI displayWinner = new DisplayUI();
+        if (evtData.BlueWin())
+        {
+            displayWinner.colorOfText = Color.blue;
+            displayWinner.textToDisplay = "BLUE TEAM WINS!!!!";
+        }
+        else
+        {
+            displayWinner.colorOfText = Color.red;
+            displayWinner.textToDisplay = "RED TEAM WINS!!!!";
+        }
+
+        foreach (GameObject allPlayers in players)
+        {
+            try { PlayerScript currentPlayer = allPlayers.GetComponent<PlayerScript>(); }
+            catch { }
+
+            currentPlayer.setCanMove(false);
+        }
+
+        EvtSystem.EventDispatcher.Raise<DisplayUI>(displayWinner);
     }
 
     [ClientRpc]
@@ -204,6 +232,10 @@ public class ChaseGameManager : NetworkBehaviour
     {
         //SET FUNCTIONALITY IN THE 'EndHost' FUNCTION IN 'CustomNetworkManager.cs'
         EndGame endGame = new EndGame();
+        endGame.bluePoints = bluePoints;
+        endGame.redPoints  = redPoints;
+
+
         EvtSystem.EventDispatcher.Raise<EndGame>(endGame);
 
 
