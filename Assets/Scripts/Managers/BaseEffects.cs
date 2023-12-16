@@ -24,6 +24,10 @@ public class BaseEffects : NetworkBehaviour
     private bool sentBaseDestroyedEvent = false;
     private ChangeBaseState lastBaseEvent = null;
 
+    private AudioSource baseAudioSource;
+    public AudioClip baseDestroyedSoundClip;
+    public AudioClip baseHitSound;
+
     public bool checkIfAlive
     {
         get { return isAlive; }
@@ -41,6 +45,7 @@ public class BaseEffects : NetworkBehaviour
     private void Awake()
     {
         //healthbarInternal = GetComponentInChildren<Slider>();
+        baseAudioSource = this.GetComponent<AudioSource>();
     }
 
     private void Start()
@@ -63,6 +68,8 @@ public class BaseEffects : NetworkBehaviour
         _damageTaken += amount;
 
         print("<color=red> OO Ouch I have taken: " + _damageTaken + " ouch! </color>");
+
+        baseAudioSource.PlayOneShot(baseHitSound);
     }
     private void Update()
     {
@@ -129,6 +136,9 @@ public class BaseEffects : NetworkBehaviour
     {
         isAlive = false;
         Respawn(respawnTime);
+
+        //BASE SOUND DESTRUCTION
+        baseAudioSource.PlayOneShot(baseDestroyedSoundClip);
     }
 
     private void CheckHealth()

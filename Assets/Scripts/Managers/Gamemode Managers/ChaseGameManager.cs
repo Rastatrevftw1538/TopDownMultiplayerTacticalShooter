@@ -33,6 +33,8 @@ public class ChaseGameManager : NetworkBehaviour
     public  bool endedGame = false;
 
     public float teamRespawnTime = 2f;
+    public AudioSource respawnAudioSource;
+    public List<AudioClip> respawnAudios = new List<AudioClip>();
 
     public bool HasGameStarted() {
         return this.gameStarted;
@@ -73,6 +75,8 @@ public class ChaseGameManager : NetworkBehaviour
         RedScoreUI  = ui.transform.GetChild(1).GetComponent<TMP_Text>();
         GameTimeUI  = ui.transform.GetChild(2).GetComponent<TMP_Text>();
         IPAddressUI = ui.transform.GetChild(6).GetComponent<TMP_Text>();
+
+        respawnAudioSource = this.GetComponent<AudioSource>();
 
         IPAddressUI.text = "The IP Address is: " + networkManager.GetLocalIPAddress();
         bluePoints = 0f;
@@ -287,6 +291,10 @@ public class ChaseGameManager : NetworkBehaviour
 
         if (!playersToRespawn.Contains(evtData.playerThatDied))
             playersToRespawn.Add(evtData.playerThatDied);
+
+        //DEATH SOUND
+        int rnd = UnityEngine.Random.Range(0,respawnAudios.Count - 1);
+        respawnAudioSource.PlayOneShot(respawnAudios[rnd]);
 
 
         /*//IF EITHER OF THE TEAMS ARE FULLY DEAD

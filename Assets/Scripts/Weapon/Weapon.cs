@@ -52,13 +52,34 @@ public class Weapon : NetworkBehaviour
 
     private StatusEffectData _statusEffectData = null;
     [HideInInspector]public int bonusPointsPerShot;
-   // AudioSource playerAudioSource;
+    AudioSource weaponAudioSource;
 
+    [Header("Gun Sounds")]
+    public List<AudioClip> ARSounds      = new List<AudioClip>();
+    public List<AudioClip> SMGSounds     = new List<AudioClip>();
+    public List<AudioClip> ShotgunSounds = new List<AudioClip>();
+    public List<AudioClip> FamasSounds   = new List<AudioClip>();
+    public List<AudioClip> SniperSounds  = new List<AudioClip>();
+
+    public AudioClip ARSoundsReload;
+    public AudioClip SMGSoundsReload;
+    public AudioClip ShotgunSoundsReload;
+    public AudioClip FamasSoundsReload;
+    public AudioClip SniperSoundsReload;
+
+    public AudioClip headShotSound;
+
+    private AudioClip currentGunSound = null;
 
     PlayerScript player;
     private void Awake() {
         player = this.transform.GetComponent<PlayerScript>();
-        //playerAudioSource = GetComponent<AudioSource>();
+
+        try { weaponAudioSource = GetComponent<AudioSource>();  }
+        catch { 
+            weaponAudioSource = gameObject.AddComponent<AudioSource>();
+            weaponAudioSource.volume = 0.3f;
+        }
 
         if (weaponSpecs != null){
             damage = weaponSpecs.damagePerBullet;
@@ -145,6 +166,8 @@ public class Weapon : NetworkBehaviour
 
         if(currentAmmo <= 0){
             StartCoroutine(Reload());
+            //SOUND
+            weaponAudioSource.PlayOneShot(getAudioForGunReload());
             return;
         }
 
@@ -216,10 +239,14 @@ public class Weapon : NetworkBehaviour
                                 if (hit.collider.gameObject.name == "Bullseye!")
                                 {
                                     damageDone = 2 * (damage * damageMultiplier);
+                                    currentGunSound = headShotSound;
                                 }
                                 else
                                 {
                                     damageDone = (damage * damageMultiplier);
+
+                                    //SOUND
+                                    currentGunSound = getAudioForGun();
                                 }
                                 enemyHealth.TakeDamage(damageDone);
                             }
@@ -302,6 +329,7 @@ public class Weapon : NetworkBehaviour
             {
                 whatWasHit = "NOTHING";
                 endPoint = Vector3.zero;
+                currentGunSound = getAudioForGun();
             }
 
             Debug.Log("HUh? Server: " + spreadDirection);
@@ -359,6 +387,9 @@ public class Weapon : NetworkBehaviour
                 main.startColor = Color.gray;
             }
 
+        //SOUND
+        weaponAudioSource.PlayOneShot(currentGunSound);
+
         Instantiate(trailRender.effectPrefab, collisionPoint, new Quaternion(0, 0, 0, 0)); // INSTANTIATE TRAIL RENDER
 
         trailRender.SetTargetPosition(collisionPoint); // ENSURE THE TRAIL VISUALLY LINES UP WITH THE ACTUAL BULLET
@@ -383,5 +414,35 @@ public class Weapon : NetworkBehaviour
     private void ApplyStatusEffects(ApplyStatusEffects evtData)
     {
         
+    }
+
+    private AudioClip getAudioForGun()
+    {
+        List<AudioClip> whichGunSounds = new List<AudioClip>();
+
+        if (weaponSpecs.name == "AR") whichGunSounds = ARSounds;
+        if (weaponSpecs.name == "SMG") whichGunSounds = SMGSounds;
+        if (weaponSpecs.name == "Famas") whichGunSounds = FamasSounds;
+        if (weaponSpecs.name == "Shotgun") whichGunSounds = ShotgunSounds;
+        if (weaponSpecs.name == "Sniper") whichGunSounds = SniperSounds;
+
+        if (whichGunSounds.Count == 0) return null;
+
+        int rand = UnityEngine.Random.RandomRange(0, whichGunSounds.Count - 1);
+
+        return whichGunSounds[rand];
+    }
+
+    private AudioClip getAudioForGunReload()
+    {
+        AudioClip whichGunSound = null;
+
+        if (weaponSpecs.name == "AR") whichGunSound = ARSoundsReload;
+        if (weaponSpecs.name == "SMG") whichGunSound = SMGSoundsReload;
+        if (weaponSpecs.name == "Famas") whichGunSound = FamasSoundsReload;
+        if (weaponSpecs.name == "Shotgun") whichGunSound = ShotgunSoundsReload;
+        if (weaponSpecs.name == "Sniper") whichGunSound = SniperSoundsReload;
+
+        return whichGunSound;
     }
 }

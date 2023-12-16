@@ -793,6 +793,26 @@ MonoBehaviour:
   shootingJoystick: {fileID: 3820486686981098696}
   reloadTime: 2
   bonusPointsPerShot: 0
+  ARSounds:
+  - {fileID: 8300000, guid: 2ffee7791d11c6b4487ec78c111675fe, type: 3}
+  - {fileID: 8300000, guid: 31a113be4dc4f454b8dcd741aa95062f, type: 3}
+  SMGSounds:
+  - {fileID: 8300000, guid: fd8a326c0d063854aa1fa6c3028c32f3, type: 3}
+  - {fileID: 8300000, guid: 203cde19754ed7c4d95a80a2cd2036f3, type: 3}
+  ShotgunSounds:
+  - {fileID: 8300000, guid: b732b470efe19884b9d37380421a5903, type: 3}
+  - {fileID: 8300000, guid: 1cf6e409a41a1e1458f8ad50141caec7, type: 3}
+  FamasSounds:
+  - {fileID: 8300000, guid: 31a113be4dc4f454b8dcd741aa95062f, type: 3}
+  SniperSounds:
+  - {fileID: 8300000, guid: 614966bfbb7f1b84586dcf0ab288698e, type: 3}
+  - {fileID: 8300000, guid: 0ad9d2161b771784bb49b91e6c9cedae, type: 3}
+  ARSoundsReload: {fileID: 8300000, guid: 030e79b5ca2fc6549b2429080bb33b8f, type: 3}
+  SMGSoundsReload: {fileID: 8300000, guid: 9c4c2bba4eafff7448fb50a47dc70338, type: 3}
+  ShotgunSoundsReload: {fileID: 8300000, guid: de2af039d89e54245b76b84eb8c960f3, type: 3}
+  FamasSoundsReload: {fileID: 8300000, guid: 030e79b5ca2fc6549b2429080bb33b8f, type: 3}
+  SniperSoundsReload: {fileID: 8300000, guid: 76abf317905b7464787b5dd49554b819, type: 3}
+  headShotSound: {fileID: 8300000, guid: 8ef6073ec3ae2f646a8f2a31cc7c298e, type: 3}
 --- !u!114 &8255556374250650021
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -810,6 +830,10 @@ MonoBehaviour:
   syncInterval: 0
   currentHealth: 100
   healthbarExternal: {fileID: 818156233035840216}
+  playerDeathSound:
+  - {fileID: 8300000, guid: a98bab27a199b6c4a979183ff05eb3f3, type: 3}
+  - {fileID: 8300000, guid: c5a7df032bc80b3438f7ac8109663fa9, type: 3}
+  - {fileID: 8300000, guid: 2711468c723134b4f9f5c9732c914517, type: 3}
 --- !u!114 &406546889883463678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1063,7 +1087,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.109
   m_Pitch: 1
   Loop: 0
   Mute: 0

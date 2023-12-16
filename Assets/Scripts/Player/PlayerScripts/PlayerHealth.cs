@@ -27,9 +27,14 @@ public class PlayerHealth : NetworkBehaviour
         return currentHealth;
     }
 
+    private AudioSource playerAudioSource;
+    public List<AudioClip> playerDeathSound = new List<AudioClip>();
+
+
     private void Awake()
     {
         healthbarInternal = GetComponentInChildren<Slider>();
+        playerAudioSource = this.GetComponent<AudioSource>();
     }
 
     public void TakeDamage(float amount)
@@ -98,8 +103,14 @@ public class PlayerHealth : NetworkBehaviour
          playerDied.playerThatDied = this.gameObject;
 
         if (!isRespawning)
+        {
             //EvtSystem.EventDispatcher.Raise<PlayerDied>(playerDied);
+            //PLAY SOUND
+            int rand = UnityEngine.Random.RandomRange(0, playerDeathSound.Count - 1);
+            playerAudioSource.PlayOneShot(playerDeathSound[rand]);
+
             Respawn(ChaseGameManager.instance.teamRespawnTime);
+        }
     }
     private void RestoreHealth()
     {
