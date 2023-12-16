@@ -313,7 +313,6 @@ MonoBehaviour:
   respawnTime: 2
   healthbarExternal: {fileID: 2055694164}
   canHit: 1
-  baseAudioSource: {fileID: 0}
   baseDestroyedSoundClip: {fileID: 8300000, guid: bee8f0e538b541c49866cbaf78d28f31, type: 3}
   baseHitSound: {fileID: 8300000, guid: bc5979cfa11596f409035ec11da31999, type: 3}
 --- !u!114 &328421000 stripped
@@ -353,7 +352,6 @@ MonoBehaviour:
   respawnTime: 2
   healthbarExternal: {fileID: 328421000}
   canHit: 1
-  baseAudioSource: {fileID: 0}
   baseDestroyedSoundClip: {fileID: 8300000, guid: bee8f0e538b541c49866cbaf78d28f31, type: 3}
   baseHitSound: {fileID: 8300000, guid: bc5979cfa11596f409035ec11da31999, type: 3}
 --- !u!82 &328421003
@@ -473,7 +471,6 @@ MonoBehaviour:
   respawnTime: 2
   healthbarExternal: {fileID: 2055694162}
   canHit: 1
-  baseAudioSource: {fileID: 0}
   baseDestroyedSoundClip: {fileID: 8300000, guid: bee8f0e538b541c49866cbaf78d28f31, type: 3}
   baseHitSound: {fileID: 8300000, guid: bc5979cfa11596f409035ec11da31999, type: 3}
 --- !u!1001 &929032429
@@ -561,7 +558,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3495637913854904000, guid: 870210b9d3399da4b802f487ede6990a, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5664829611089928122, guid: 870210b9d3399da4b802f487ede6990a, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -754,7 +751,6 @@ MonoBehaviour:
   respawnTime: 2
   healthbarExternal: {fileID: 2055694160}
   canHit: 1
-  baseAudioSource: {fileID: 0}
   baseDestroyedSoundClip: {fileID: 8300000, guid: bee8f0e538b541c49866cbaf78d28f31, type: 3}
   baseHitSound: {fileID: 8300000, guid: bc5979cfa11596f409035ec11da31999, type: 3}
 --- !u!1001 &1456153797
@@ -28112,7 +28108,6 @@ MonoBehaviour:
   respawnTime: 2
   healthbarExternal: {fileID: 2055694166}
   canHit: 1
-  baseAudioSource: {fileID: 0}
   baseDestroyedSoundClip: {fileID: 8300000, guid: bee8f0e538b541c49866cbaf78d28f31, type: 3}
   baseHitSound: {fileID: 8300000, guid: bc5979cfa11596f409035ec11da31999, type: 3}
 --- !u!114 &2055694173
@@ -28136,7 +28131,6 @@ MonoBehaviour:
   respawnTime: 2
   healthbarExternal: {fileID: 2055694168}
   canHit: 1
-  baseAudioSource: {fileID: 0}
   baseDestroyedSoundClip: {fileID: 8300000, guid: bee8f0e538b541c49866cbaf78d28f31, type: 3}
   baseHitSound: {fileID: 8300000, guid: bc5979cfa11596f409035ec11da31999, type: 3}
 --- !u!114 &2055694174
@@ -28160,7 +28154,6 @@ MonoBehaviour:
   respawnTime: 2
   healthbarExternal: {fileID: 2055694170}
   canHit: 1
-  baseAudioSource: {fileID: 0}
   baseDestroyedSoundClip: {fileID: 8300000, guid: bee8f0e538b541c49866cbaf78d28f31, type: 3}
   baseHitSound: {fileID: 8300000, guid: bc5979cfa11596f409035ec11da31999, type: 3}
 --- !u!82 &2055694175
