@@ -9,14 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58bbb6a9ab0af07489bc7e26a61c0ecc, type: 3}
-  m_Name: WhiteboxDash
+  m_Script: {fileID: 11500000, guid: e41b63935c04906488f18014af31b536, type: 3}
+  m_Name: DashSP
   m_EditorClassIdentifier: 
-  abilityName: Whitebox Dash
+  abilityName: SinglePlayer Dash
   statusEffectData: {fileID: 0}
   abilityType: 2
   playerEffects: 0
-  activationMethod: 0
+  activationMethod: 2
   abilityAppliance: 0
   activeTime: 0
   cooldownTime: 0
@@ -27,6 +27,6 @@ MonoBehaviour:
   radius: 0
   projectileSpeed: 0
   bulletColor: {r: 0, g: 0, b: 0, a: 0}
-  applicationType: 1
+  applicationType: 0
   dashVelocity: 10
   speedMultiplier: 10

@@ -18,7 +18,7 @@ public class UiShowSP : MonoBehaviour
         cameraHolder = Instantiate(cameraHolderPrefab,this.transform.parent);
         cameraHolder.SetActive(true);
         internalUI.SetActive(true);
-        if(this.transform.GetComponent<PlayerScript>().PlayerDevice == PlayerScript.SetDeviceType.Mobile){
+        if(this.transform.GetComponent<PlayerScriptSinglePlayer>().PlayerDevice == PlayerScriptSinglePlayer.SetDeviceType.Mobile){
             internalUI.transform.Find("ControllerHolder").gameObject.SetActive(true);
         }
         else{

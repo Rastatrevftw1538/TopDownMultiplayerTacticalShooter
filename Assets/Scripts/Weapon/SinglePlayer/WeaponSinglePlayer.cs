@@ -55,9 +55,9 @@ public class WeaponSinglePlayer : MonoBehaviour
     //AudioSource playerAudioSource;
 
 
-    PlayerScript player;
+    PlayerScriptSinglePlayer player;
     private void Awake() {
-        player = this.transform.GetComponent<PlayerScript>();
+        player = this.transform.GetComponent<PlayerScriptSinglePlayer>();
         //playerAudioSource = GetComponent<AudioSource>();
 
         if (weaponSpecs != null){
@@ -117,12 +117,13 @@ public class WeaponSinglePlayer : MonoBehaviour
         spreadCone.transform.localScale = new Vector3(Mathf.Clamp(coneScale, 0, 35), spreadCone.transform.localScale.y, 1f); //HERE
         spreadCone.color = new Color(1, 0, 0, Mathf.Clamp((Mathf.Clamp(spread, 0f, 100f) - 0) / (100 - 0), 0.25f, 0.75f));
 
-        if (player.PlayerDevice == PlayerScript.SetDeviceType.Mobile){ 
-            shootingGun = shootingJoystick.isShooting ;
+        if (player.PlayerDevice == PlayerScriptSinglePlayer.SetDeviceType.Mobile){ 
+            shootingGun = shootingJoystick.isShooting;
         }
-        else if(player.PlayerDevice == PlayerScript.SetDeviceType.PC){
+        else if(player.PlayerDevice == PlayerScriptSinglePlayer.SetDeviceType.PC){
             shootingGun = Input.GetMouseButton(0);
         }
+
         if (shootingGun && Time.time >= nextFireTime && !outOfAmmo)
         {
             nextFireTime = Time.time + fireRate;
@@ -131,7 +132,7 @@ public class WeaponSinglePlayer : MonoBehaviour
             Quaternion spreadRotation = Quaternion.Euler(0, 0, spreadAngle);
             direction = spreadRotation * direction;
             print("Direction thing: "+direction);
-            //CmdFire(direction);
+            CmdFire(direction);
             if(player.isRunning){
                 spread += Time.deltaTime * (spreadValue*2);
             }
@@ -211,7 +212,7 @@ public class WeaponSinglePlayer : MonoBehaviour
                         bool foundWhatHit = false;
                         //PLAYER HEALTH STUFF
                         PlayerHealth enemyHealth = objectOrigin.GetComponent<PlayerHealth>();
-                        PlayerScript playerScript = objectOrigin.GetComponent<PlayerScript>();
+                        PlayerScriptSinglePlayer playerScript = objectOrigin.GetComponent<PlayerScriptSinglePlayer>();
 
                         if (enemyHealth != null && !foundWhatHit && playerScript != null)
                         {
@@ -268,10 +269,10 @@ public class WeaponSinglePlayer : MonoBehaviour
                                     {
                                         baseHealthEffects.TakeDamage(damageDone);
 
-                                        WhoBrokeBase playerWhoBrokeBase = new WhoBrokeBase();
-                                        playerWhoBrokeBase.playerTeam = player.playerTeam;
-                                        playerWhoBrokeBase.whatBase = baseHealthEffects.gameObject;
-                                        EvtSystem.EventDispatcher.Raise<WhoBrokeBase>(playerWhoBrokeBase);
+                                        //WhoBrokeBase playerWhoBrokeBase = new WhoBrokeBase();
+                                        //playerWhoBrokeBase.playerTeam = player.playerTeam;
+                                        //playerWhoBrokeBase.whatBase = baseHealthEffects.gameObject;
+                                        //EvtSystem.EventDispatcher.Raise<WhoBrokeBase>(playerWhoBrokeBase);
 
                                         /*ApplyStatusEffects applyStatusEffects = new ApplyStatusEffects();
                                         applyStatusEffects.team = GetComponent<PlayerScript>().playerTeam;
@@ -294,7 +295,7 @@ public class WeaponSinglePlayer : MonoBehaviour
                         //APPLY POINTS
                         if (ChaseGameManager.instance != null)
                         {
-                            if (player.playerTeam == PlayerScript.Team.Blue)
+                            if (player.playerTeam == PlayerScriptSinglePlayer.Team.Blue)
                                 ChaseGameManager.instance.bluePoints += damageDone + bonusPointsPerShot;
                             else
                                 ChaseGameManager.instance.redPoints += damageDone + bonusPointsPerShot;

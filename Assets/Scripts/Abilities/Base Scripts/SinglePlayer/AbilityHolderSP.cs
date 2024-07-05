@@ -11,7 +11,7 @@ public class AbilityHolderSP : MonoBehaviour
     float activeTime;
     bool hasCorrectTag = false;
 
-    private PlayerScript playerScript;
+    private PlayerScriptSinglePlayer playerScript;
 
     enum AbilityState
     {
@@ -39,7 +39,7 @@ public class AbilityHolderSP : MonoBehaviour
 
     private void Start()
     {
-        playerScript = gameObject.transform.parent.gameObject.GetComponent<PlayerScript>();
+        playerScript = gameObject.transform.parent.gameObject.GetComponent<PlayerScriptSinglePlayer>();
     }
 
     int indx;
@@ -178,11 +178,11 @@ public class AbilityHolderSP : MonoBehaviour
 
     private bool CheckCorrectTag(PlayerEffects playerEffects, Collider2D other)
     {
-        PlayerScript target = other.gameObject.GetComponent<PlayerScript>();
+        PlayerScriptSinglePlayer target = other.gameObject.GetComponent<PlayerScriptSinglePlayer>();
 
         switch (playerEffects)
         {
-            case PlayerEffects.ENEMY: //IF ENEMY IS THE TARGET
+            /*case PlayerEffects.ENEMY: //IF ENEMY IS THE TARGET
             if (playerScript.playerTeam != target.playerTeam)
             {
                 Debug.LogError("Used ENEMY");
@@ -196,10 +196,10 @@ public class AbilityHolderSP : MonoBehaviour
                 Debug.LogError("Used TEAM");
                 return true;
             }
-            break;
+            break;*/
 
             case PlayerEffects.PLAYER:
-            if (playerScript.Equals(other.GetComponent<PlayerScript>()))
+            if (playerScript.Equals(other.GetComponent<PlayerScriptSinglePlayer>()))
             {
                 return true;
             }

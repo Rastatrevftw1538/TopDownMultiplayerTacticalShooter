@@ -42,6 +42,14 @@ public class PlayerScriptSinglePlayer : MonoBehaviour, IEffectable
     private bool isShooting;
     private bool canMove = true;
 
+    public enum Team
+    {
+        None,
+        Red,
+        Blue
+    }
+    public Team playerTeam;
+
     private string playerId;
 
     private void Awake()
@@ -53,7 +61,7 @@ public class PlayerScriptSinglePlayer : MonoBehaviour, IEffectable
     private void Start() {
         runSpeedNormal = runSpeed;
         walkSpeedNormal = walkSpeed;
-        this.GetComponent<Weapon>().spreadCone.enabled = true;
+        this.GetComponent<WeaponSinglePlayer>().spreadCone.enabled = true;
         if(rb != null)
         {
             Debug.LogWarning("got rb");
