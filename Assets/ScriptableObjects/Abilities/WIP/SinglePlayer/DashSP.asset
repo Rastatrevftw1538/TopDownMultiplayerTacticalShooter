@@ -18,15 +18,15 @@ MonoBehaviour:
   playerEffects: 0
   activationMethod: 2
   abilityAppliance: 0
-  activeTime: 0
+  activeTime: 0.1
   cooldownTime: 0
   delayTime: 0
-  isInstantAbility: 0
+  isInstantAbility: 1
   hasDelay: 0
   whichAbility: {fileID: 11400000}
   radius: 0
   projectileSpeed: 0
   bulletColor: {r: 0, g: 0, b: 0, a: 0}
-  applicationType: 0
-  dashVelocity: 10
-  speedMultiplier: 10
+  applicationType: 1
+  dashVelocity: 0
+  speedMultiplier: 5
