@@ -455,8 +455,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   statusEffectData: {fileID: 0}
-  abilities: []
-  debugKeys: 
+  abilities:
+  - {fileID: 11400000, guid: 396dad2db320741458415b40463c2caf, type: 2}
+  debugKeys: 65000000
 --- !u!1 &1888670782340055357
 GameObject:
   m_ObjectHideFlags: 0
@@ -749,6 +750,7 @@ MonoBehaviour:
   rotation: {x: 0, y: 0, z: 0, w: 0}
   rb: {fileID: 9002932500590422946}
   isRunning: 0
+  playerTeam: 0
   hasSetColors: 0
 --- !u!114 &1135771038941141367
 MonoBehaviour:

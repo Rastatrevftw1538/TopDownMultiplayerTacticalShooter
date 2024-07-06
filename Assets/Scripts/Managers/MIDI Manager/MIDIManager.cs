@@ -2,7 +2,7 @@ using UnityEngine;
 using System.IO;
 using Sanford.Multimedia.Midi;
 
-public class MIDIManager: MonoBehaviour
+public class MIDIManager : MonoBehaviour
 {
     public string filePath;
 
@@ -27,18 +27,20 @@ public class MIDIManager: MonoBehaviour
     [SerializeField]
     private GameObject YellowNote;
 
-    void Start() {
+    void Start()
+    {
         // Call EnumerateFiles in a foreach-loop.
         SearchForMidiData();
         LoadMidiData(filePathToRead);
     }
-    public void SearchForMidiData(){
-        filePathToRead = Application.streamingAssetsPath+"/"+filePath;
+    public void SearchForMidiData()
+    {
+        filePathToRead = Application.streamingAssetsPath + "/" + filePath;
         //Debug.Log(filePathToRead);
     }
     public void LoadMidiData(string filePath)
     {
-        FileStream midiStream = new FileStream  (filePath, FileMode.Open, FileAccess.Read);
+        FileStream midiStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
         LoadMidiData(midiStream);
         //Debug.Log("hi");
     }
@@ -52,12 +54,14 @@ public class MIDIManager: MonoBehaviour
     {
         Sequence midiSequence = new Sequence(midiStream);
         float length = midiSequence.GetLength() / midiSequence.Division;
-       // Debug.Log(length);
+        // Debug.Log(length);
         //Debug.Log(midiSequence.Division);
-       // Debug.Log(midiSequence.GetLength());
+        // Debug.Log(midiSequence.GetLength());
 
         foreach (Track midiTrack in midiSequence)
             ReadMidiTrack(midiTrack, midiSequence.Division);
+
+        PpqnClock.PpqnMinValue = 1;
     }
 
     void ReadMidiTrack(Track midiTrack, int sequencerDivision)
@@ -84,44 +88,55 @@ public class MIDIManager: MonoBehaviour
                 //Debug.Log("notePlayed");
                 //var rnd = Random.Range(1, 5);
                 Debug.Log(note);
-                if (note == 58){
+                if (note == 58)
+                {
                     //Debug.Log(note+" "+time+" "+velocity);
-                    Instantiate(RedNote,new Vector3(RedButP1.transform.position.x,time+2f,0f),RedNote.transform.rotation, NoteManager.transform);
+                    Instantiate(RedNote, new Vector3(RedButP1.transform.position.x, time + 2f, 0f), RedNote.transform.rotation, NoteManager.transform);
                 }
-                else if (note == 55){
+                else if (note == 55)
+                {
                     //Debug.Log(note+" "+time+" "+velocity);
-                    Instantiate(GreenNote,new Vector3(GreenButP1.transform.position.x,time+2f,0f),GreenNote.transform.rotation, NoteManager.transform);
+                    Instantiate(GreenNote, new Vector3(GreenButP1.transform.position.x, time + 2f, 0f), GreenNote.transform.rotation, NoteManager.transform);
                 }
-                else if (note == 56){
+                else if (note == 56)
+                {
                     //Debug.Log(note+" "+time+" "+velocity);
-                    Instantiate(BlueNote,new Vector3(BlueButP1.transform.position.x,time+2f,0f),BlueNote.transform.rotation, NoteManager.transform);
+                    Instantiate(BlueNote, new Vector3(BlueButP1.transform.position.x, time + 2f, 0f), BlueNote.transform.rotation, NoteManager.transform);
                 }
-                else if (note == 59){
+                else if (note == 59)
+                {
                     //Debug.Log(note+" "+time+" "+velocity);
-                    Instantiate(YellowNote,new Vector3(YellowButP1.transform.position.x,time+2f,0f),YellowNote.transform.rotation, NoteManager.transform);
+                    Instantiate(YellowNote, new Vector3(YellowButP1.transform.position.x, time + 2f, 0f), YellowNote.transform.rotation, NoteManager.transform);
                 }
-                if (note == 69){
+                if (note == 69)
+                {
                     //Debug.Log(note+" "+time+" "+velocity);
-                    Instantiate(RedNote,new Vector3(RedButP1.transform.position.x,time+2f,0f),RedNote.transform.rotation, NoteManager.transform);
+                    Instantiate(RedNote, new Vector3(RedButP1.transform.position.x, time + 2f, 0f), RedNote.transform.rotation, NoteManager.transform);
                 }
-                else if (note == 70){
+                else if (note == 70)
+                {
                     //Debug.Log(note+" "+time+" "+velocity);
-                    Instantiate(GreenNote,new Vector3(GreenButP1.transform.position.x,time+2f,0f),GreenNote.transform.rotation, NoteManager.transform);
+                    Instantiate(GreenNote, new Vector3(GreenButP1.transform.position.x, time + 2f, 0f), GreenNote.transform.rotation, NoteManager.transform);
                 }
-                else if (note == 71){
+                else if (note == 71)
+                {
                     //Debug.Log(note+" "+time+" "+velocity);
-                    Instantiate(BlueNote,new Vector3(BlueButP1.transform.position.x,time+2f,0f),BlueNote.transform.rotation, NoteManager.transform);                }
-                else if (note == 72){
-                    //Debug.Log(note+" "+time+" "+velocity);
-                    Instantiate(YellowNote,new Vector3(YellowButP1.transform.position.x,time+2f,0f),YellowNote.transform.rotation, NoteManager.transform);
+                    Instantiate(BlueNote, new Vector3(BlueButP1.transform.position.x, time + 2f, 0f), BlueNote.transform.rotation, NoteManager.transform);
                 }
-                else{
+                else if (note == 72)
+                {
+                    //Debug.Log(note+" "+time+" "+velocity);
+                    Instantiate(YellowNote, new Vector3(YellowButP1.transform.position.x, time + 2f, 0f), YellowNote.transform.rotation, NoteManager.transform);
+                }
+                else
+                {
                     //Debug.Log("MissedNote");
                 }
             }
         }
     }
-    void Wait(){
+    void Wait()
+    {
         //Debug.Log("wait");
     }
 }
