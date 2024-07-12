@@ -60,8 +60,6 @@ public class MIDIManager : MonoBehaviour
 
         foreach (Track midiTrack in midiSequence)
             ReadMidiTrack(midiTrack, midiSequence.Division);
-
-        PpqnClock.PpqnMinValue = 1;
     }
 
     void ReadMidiTrack(Track midiTrack, int sequencerDivision)

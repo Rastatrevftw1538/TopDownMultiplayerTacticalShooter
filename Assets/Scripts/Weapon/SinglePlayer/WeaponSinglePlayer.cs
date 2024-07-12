@@ -252,6 +252,33 @@ public class WeaponSinglePlayer : MonoBehaviour
                             }
                         }
 
+                        //training dummy
+                        if (!foundWhatHit)
+                        {
+                            TrainingDummy dummyHealth = objectOrigin.GetComponent<TrainingDummy>();
+                            if (dummyHealth != null && !foundWhatHit)
+                            {
+                                if (dummyHealth.canHit)
+                                {
+                                    //CLICKED ON BEAT?
+                                    if (BPMManager.instance.canClick == Color.green)
+                                    {
+                                        damageMultiplier = 2;
+                                        Debug.LogError("ON BEAT :)!! HIT DUMMY FOR " + damage * damageMultiplier);
+                                    }
+                                    else
+                                    {
+                                        damageMultiplier = 1;
+                                        Debug.LogError("NOT ON BEAT :(!! HIT DUMMY FOR " + damage * damageMultiplier);
+                                    }
+                                    damageDone = (damage * damageMultiplier);
+                                    dummyHealth.TakeDamage(damageDone);
+                                }
+
+                                foundWhatHit = true;
+                            }
+                        }
+
                         if (!foundWhatHit)
                         {
                             BaseEffects baseHealthEffects = objectOrigin.GetComponent<BaseEffects>();
