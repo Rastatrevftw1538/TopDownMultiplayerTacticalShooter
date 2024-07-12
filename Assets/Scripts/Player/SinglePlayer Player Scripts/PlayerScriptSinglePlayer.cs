@@ -5,9 +5,18 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerHealthSinglePlayer))]
 public class PlayerScriptSinglePlayer : MonoBehaviour, IEffectable
 {
+    #region State Variables
+    public PlayerStateMachine StateMachine { get; private set; }
+    public PlayerIdleState IdleState { get; private set; }
+    public PlayerMoveState MoveStateX { get; private set; }
+    public PlayerMoveState MoveStateY { get; private set; }
+    public Animator Anim { get; private set; }
+    public PlayerAbleToMoveState playerAbleToMove { get; private set; }
+    public PlayerInputHandler InputHandler { get; private set; }
+    #endregion
+
+    #region Device
     private Camera playerCamera;
-    private StatusEffectData _statusEffectData;
-    
 
     public enum SetDeviceType
     {
@@ -23,7 +32,9 @@ public class PlayerScriptSinglePlayer : MonoBehaviour, IEffectable
     private GameObject joystickMovementUI;
     [SerializeField]
     private GameObject joystickRotateUI;
-    
+    #endregion
+
+    #region Player Stats & Components
     [Header("Player Stats")]
     public float runSpeed = 5f;
     public float walkSpeed = 0.5f;
@@ -36,12 +47,15 @@ public class PlayerScriptSinglePlayer : MonoBehaviour, IEffectable
     public Vector2 movement;
     public Quaternion rotation;
     public Rigidbody2D rb;
+    private StatusEffectData _statusEffectData;
 
     [Header("Player Status")]
     public bool isRunning;
     private bool isShooting;
     private bool canMove = true;
+    #endregion
 
+    #region Player Team
     public enum Team
     {
         None,
@@ -49,23 +63,32 @@ public class PlayerScriptSinglePlayer : MonoBehaviour, IEffectable
         Blue
     }
     public Team playerTeam;
-
     private string playerId;
+    #endregion
 
     private void Awake()
     {
+        //STATUS EFFECT SETTERS
         EvtSystem.EventDispatcher.AddListener<PlayerDied>(ClearStatusEffects);
         EvtSystem.EventDispatcher.AddListener<ApplyStatusEffects>(SetStatusEffectData);
+
+        //STATE MACHINE
+        StateMachine = new PlayerStateMachine();
+
+        IdleState  = new PlayerIdleState(this, StateMachine, "Idle");
+        MoveStateX = new PlayerMoveState(this, StateMachine, "MoveHorizontal");
+        MoveStateY = new PlayerMoveState(this, StateMachine, "MoveVertical");
     }
 
     private void Start() {
-        runSpeedNormal = runSpeed;
+        //CACHE THE ORIGINAL VALUES SO WE CAN REVERT IT IF NECESSARY
+        runSpeedNormal  = runSpeed;
         walkSpeedNormal = walkSpeed;
-        this.GetComponent<WeaponSinglePlayer>().spreadCone.enabled = true;
-        if(rb != null)
-        {
-            Debug.LogWarning("got rb");
-        }
+
+        //this.GetComponent<WeaponSinglePlayer>().spreadCone.enabled = true;
+
+        //AUTOMATICALLY SET THE PLAYER'S ANIMATION STATE TO IDLE
+        StateMachine.Initialize(IdleState);
     }
     public SetDeviceType PlayerDevice
     {
@@ -79,8 +102,6 @@ public class PlayerScriptSinglePlayer : MonoBehaviour, IEffectable
     public bool hasSetColors;
     public void Update()
     {
-        //setColorsOfPlayers(ChaseGameManager.instance.players);
-
         if(_statusEffectData != null)
         {
             CmdHandleEffect();
@@ -159,6 +180,15 @@ public class PlayerScriptSinglePlayer : MonoBehaviour, IEffectable
             CmdRotate(rotation);
         }
         #endregion
+
+        StateMachine.CurrentState.PhysicsUpdate();
+    }
+
+    public void SetVelocity(float x, float y)
+    {
+        movement.Set(x, y);
+        rb.velocity = movement;
+        //CurrentVelocity = movement 
     }
 
     private void CmdMove(Vector2 movement)
@@ -183,18 +213,6 @@ public class PlayerScriptSinglePlayer : MonoBehaviour, IEffectable
         transform.GetChild(0).transform.rotation = rotation;
     }
 
-    
-        
-
-        // Request authority from the server
-        //CmdRequestAuthority();
-/*
-    public void setColorOfSelf()
-    {
-        this.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.yellow;
-        hasSetColors = false;
-    }
-*/
     public void setLayerForEnemies(GameObject[] players)
     {
         foreach(GameObject player in players)
@@ -204,38 +222,6 @@ public class PlayerScriptSinglePlayer : MonoBehaviour, IEffectable
         }
             
     }
-/*
-    public void setColorsOfPlayers(GameObject[] players)
-    {
-        foreach (GameObject player in players)
-        {
-            if (player != this.gameObject)
-            {
-                if (player.GetComponent<PlayerScript>().playerTeam != this.gameObject.GetComponent<PlayerScript>().playerTeam)
-                {
-                    //Debug.LogError("SET PLAYER COLOR TO RED");
-                    player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.red;
-                }
-                else if (player.GetComponent<PlayerScript>().playerTeam == this.gameObject.GetComponent<PlayerScript>().playerTeam)
-                {
-                    //Debug.LogError("SET PLAYER COLOR TO BLUE");
-                    player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.blue;
-                }
-                else
-                {
-                    player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.magenta;
-                }
-            }
-            //IF YOU WANT PLAYERS SELF COLOR TO BE YELLOW, USE THIS, IF NOT THEN JUST COMMENT IT OUT
-            else if (player == this.gameObject)
-            {
-                //Debug.LogWarning("SET PLAYER COLOR TO YELLOW");
-                player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.yellow;
-            }
-        }
-
-    }
-    */
 
     #region 'IEffectable' INTERFACE FUNCTIONS
     private ParticleSystem _effectParticles;

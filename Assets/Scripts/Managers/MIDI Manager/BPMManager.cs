@@ -42,17 +42,16 @@ public class BPMManager : MonoBehaviour
     {
         percentToBeat = 0f;
         BPS = c_MINUTE / BPM;
-        BPS = c_MINUTE / BPM;
         m_MAX = BPS;
 
         //BETWEENT THESE TWO VALUES, IS WHEN THE PLAYER IS GOOD TO SHOOT FOR A BONUS
-        lowerRange = m_MAX - errorWindow;
-        upperRange = m_MAX + errorWindow;
+        upperRange = m_MAX - errorWindow;
+        lowerRange = m_MIN + errorWindow;
+        //upperRange = m_MAX + errorWindow;
 
-        percentToBeat = Mathf.Clamp(percentToBeat, m_MIN, upperRange);
+        //percentToBeat = Mathf.Clamp(percentToBeat, m_MIN, upperRange);
     }
 
-    //public float percentToBeat;
     public Color canClick = Color.red;
 
     public void FixedUpdate()
@@ -61,8 +60,9 @@ public class BPMManager : MonoBehaviour
 
         if (percentToBeat >= BPS)
             percentToBeat = m_MIN;
-
-        if(percentToBeat >= lowerRange && percentToBeat <= upperRange)
+        
+        //if(percentToBeat <= lowerRange || percentToBeat <= upperRange)
+        if((percentToBeat <= lowerRange && percentToBeat >= m_MIN) || (percentToBeat >= upperRange))
         {
             canClick = Color.green;
             Debug.LogError("DO Click");

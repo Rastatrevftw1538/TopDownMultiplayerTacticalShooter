@@ -45,6 +45,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BPM: 80
-  errorWindow: 0.25
+  errorWindow: 0.15
   percentToBeat: 0
   canClick: {r: 1, g: 0, b: 0, a: 1}

@@ -788,7 +788,7 @@ MonoBehaviour:
   bulletPrefab: {fileID: 209056261796185724, guid: e88e32b0ab60951458b5460b47a868f1, type: 3}
   fireRange: 100
   numOfBulletsPerShot: 0
-  damageMultiplier: 0
+  damageMultiplier: 1
   mags: 99
   magSize: 0
   fireRate: 0.2

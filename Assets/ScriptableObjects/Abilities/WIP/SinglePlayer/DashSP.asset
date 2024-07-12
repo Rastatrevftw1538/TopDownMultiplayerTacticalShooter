@@ -19,7 +19,7 @@ MonoBehaviour:
   activationMethod: 2
   abilityAppliance: 0
   activeTime: 0.1
-  cooldownTime: 0
+  cooldownTime: 1
   delayTime: 0
   isInstantAbility: 1
   hasDelay: 0

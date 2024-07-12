@@ -75,7 +75,6 @@ public class TrainingDummy : MonoBehaviour
         hitDisplays.Add(currentDisplay);
 
        // currentDisplay.transform.position.y += 0.10f;
-
     }
 
     private void Update()

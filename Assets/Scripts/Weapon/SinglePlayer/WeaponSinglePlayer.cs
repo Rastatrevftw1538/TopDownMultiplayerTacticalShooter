@@ -76,6 +76,8 @@ public class WeaponSinglePlayer : MonoBehaviour
         damageMultiplier = 1;
         bonusPointsPerShot = 0;
 
+        spreadCone.enabled = true;
+
         EvtSystem.EventDispatcher.AddListener<ApplyStatusEffects>(ApplyStatusEffects);
     }
     public float getDamage(){
