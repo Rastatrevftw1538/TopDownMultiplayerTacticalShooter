@@ -14,8 +14,8 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         Red,
         Blue
     }
-    [SyncVar]
-    public Team playerTeam;
+
+    [SyncVar] public Team playerTeam;
 
     public enum SetDeviceType
     {
@@ -50,13 +50,22 @@ public class PlayerScript : NetworkBehaviour, IEffectable
     private bool isShooting;
     private bool canMove = true;
 
+    [SyncVar] private string playerId;
+
+    private void Awake()
+    {
+        EvtSystem.EventDispatcher.AddListener<PlayerDied>(ClearStatusEffects);
+        EvtSystem.EventDispatcher.AddListener<ApplyStatusEffects>(SetStatusEffectData);
+    }
+
     private void Start() {
         runSpeedNormal = runSpeed;
         walkSpeedNormal = walkSpeed;
 
         if (isLocalPlayer)
         {
-            Debug.Log("local Player" + netId);
+            Debug.Log("local Player: " + netId);
+            //cmdSetPlayerId();
             return;
         }
 
@@ -65,8 +74,6 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         {
             Debug.LogWarning("got rb");
         }
-
-        EvtSystem.EventDispatcher.AddListener<PlayerDied>(ClearStatusEffects);
     }
 
     public Team PlayerTeam
@@ -82,6 +89,8 @@ public class PlayerScript : NetworkBehaviour, IEffectable
     this.canMove = newCanMove;
     }
 
+
+    public bool hasSetColors;
     [ClientCallback]
     public void Update()
     {
@@ -89,10 +98,24 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         {
             return;
         }
-        //CHANGE TO SET WHEN GAME STARTS, OR WHEN PLAYER JOINS
-        setColorsOfPlayers();
 
-        if (deviceType == SetDeviceType.Auto) {
+        if (hasSetColors)
+        {
+            setColorOfSelf();
+        }
+
+        //setColorsOfPlayers(ChaseGameManager.instance.players);
+
+        if(_statusEffectData != null)
+        {
+            CmdHandleEffect();
+        }
+    }
+
+    public void FixedUpdate()
+    {
+        if (deviceType == SetDeviceType.Auto)
+        {
             if (Application.platform == RuntimePlatform.Android)
             {
                 deviceType = SetDeviceType.Mobile;
@@ -161,15 +184,6 @@ public class PlayerScript : NetworkBehaviour, IEffectable
             CmdRotate(rotation);
         }
         #endregion
-
-        #region ABILITY EFFECT CHECK
-        if(_statusEffectData != null)
-        {
-            Debug.LogError("not null");
-            CmdHandleEffect();
-            Debug.LogError("Applying effect");
-        }
-        #endregion
     }
 
     [Command]
@@ -190,6 +204,7 @@ public class PlayerScript : NetworkBehaviour, IEffectable
     private void RpcMove(Vector2 movement)
     {
         transform.Translate(movement * Time.fixedDeltaTime);
+        //transform.Translate(movement * Time.deltaTime);
     }
 
     [ClientRpc]
@@ -222,34 +237,6 @@ public class PlayerScript : NetworkBehaviour, IEffectable
 
         // Request authority from the server
         CmdRequestAuthority();
-    }
-    
-    [Client]
-    private void setColorsOfPlayers(){
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-            foreach (GameObject player in players){
-                if (player != this.gameObject)
-                {
-                    if (player.GetComponent<PlayerScript>().playerTeam == Team.Red || player.GetComponent<PlayerScript>().playerTeam == Team.None)
-                    {
-                        //Debug.LogError("SET PLAYER COLOR TO RED");
-                        player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.red;
-                    }
-                    else if (player.GetComponent<PlayerScript>().playerTeam == Team.Blue)
-                    {
-                        //Debug.LogError("SET PLAYER COLOR TO BLUE");
-                        player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.blue;
-                    }
-                }
-                //IF YOU WANT PLAYERS SELF COLOR TO BE YELLOW, USE THIS, IF NOT THEN JUST COMMENT IT OUT
-                else if (player == this.gameObject)
-                {
-                    //Debug.LogWarning("SET PLAYER COLOR TO YELLOW");
-                    player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.yellow;
-                }
-            }
-            
-
     }
 
     [Command]
@@ -296,8 +283,75 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         }
     }
 
+    [Client]
+    public void setColorOfSelf()
+    {
+        this.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.yellow;
+        hasSetColors = false;
+    }
+
+    [Client]
+    public void setLayerForEnemies(GameObject[] players)
+    {
+        if (!isLocalPlayer)
+        {
+            foreach(GameObject player in players)
+            {
+                if(player != this.gameObject)
+                    player.layer = LayerMask.NameToLayer("Enemy");
+            }
+        }
+            
+    }
+
+    [Client]
+    public void setColorsOfPlayers(GameObject[] players)
+    {
+        foreach (GameObject player in players)
+        {
+            if (player != this.gameObject)
+            {
+                if (player.GetComponent<PlayerScript>().playerTeam != this.gameObject.GetComponent<PlayerScript>().playerTeam)
+                {
+                    //Debug.LogError("SET PLAYER COLOR TO RED");
+                    player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.red;
+                }
+                else if (player.GetComponent<PlayerScript>().playerTeam == this.gameObject.GetComponent<PlayerScript>().playerTeam)
+                {
+                    //Debug.LogError("SET PLAYER COLOR TO BLUE");
+                    player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.blue;
+                }
+                else
+                {
+                    player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.magenta;
+                }
+            }
+            //IF YOU WANT PLAYERS SELF COLOR TO BE YELLOW, USE THIS, IF NOT THEN JUST COMMENT IT OUT
+            else if (player == this.gameObject)
+            {
+                //Debug.LogWarning("SET PLAYER COLOR TO YELLOW");
+                player.transform.GetChild(0).GetChild(3).GetChild(0).GetComponent<SpriteRenderer>().color = Color.yellow;
+            }
+        }
+
+    }
+
     #region 'IEffectable' INTERFACE FUNCTIONS
     private ParticleSystem _effectParticles;
+
+    [Command]
+    public void cmdSetPlayerId()
+    {
+        setPlayerId();
+    }
+
+    [ClientRpc]
+    public void setPlayerId()
+    {
+        for (int i = 0; i < 4; i++)
+            playerId += Random.Range(0, 9).ToString();
+        Debug.LogError("player id: " + playerId);
+    }
 
     [Command]
     public void CmdApplyEffect(StatusEffectData data)
@@ -305,6 +359,7 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         ApplyEffect(data);
     }
 
+    //POTENTIALLY WHY WE HAVE TO DO SO MANY NULL CHECKS
     [ClientRpc]
     public void ApplyEffect(StatusEffectData data)
     {
@@ -314,7 +369,7 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         //_effectParticles = Instantiate(_statusEffectData.EffectParticles, transform);
 
         //HandleEffect();
-        Debug.LogError("Applied effect");
+        //Debug.LogError("Applied effect");
     }
 
 
@@ -327,7 +382,7 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         RemoveEffect();
     }
 
-
+    [ClientRpc]
     public void RemoveEffect()
     {
         _statusEffectData = null;
@@ -338,25 +393,58 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         //{
         //   Destroy(_effectParticles);
         //}
+
+        if (weapon != null)
+            weapon.SetDefaultValues();
+
+        hasApplied = false;
     }
 
+    //CALLS IT MULTIPLE TIMES
     [Command]
     private void CmdHandleEffect()
     {
+        Debug.LogError("Calls effect handling");
         if(_statusEffectData != null)
             HandleEffect();
     }
 
+    //CALLS IT ONCE
+    [Command]
+    private void SetStatusEffectData(ApplyStatusEffects evtData)
+    {
+        //EvtSystem.EventDispatcher.RemoveListener<ApplyStatusEffects>(deleteListener);
+        Debug.LogError("Object recieved from event: " + evtData.player);
+        RpcSetStatusEffectData(evtData);
+    }
+
+    [ClientRpc]
+    private void RpcSetStatusEffectData(ApplyStatusEffects evtData)
+    {
+        if (evtData.team == playerTeam)
+            _statusEffectData = evtData.statusEffect;
+    }
+
+    private void deleteListener(ApplyStatusEffects evtData)
+    {
+
+    }
+
+    PlayerHealth playerHealth;
+    Weapon weapon;
     [ClientRpc]
     public void HandleEffect()
     {
-        //if (_statusEffectData != null)
-        //{
-        //CODE DIFFERENT CASES FOR WHAT THE ABILITY IS
+        _currentEffectTime += Time.deltaTime;
+        //CODE DIFFERENT CASES FOR WHAT THE STATUS EFFECT IS; STATUS EFFECTS CAN BE APPLIED THROUGH ABILITIES OR THROUGH THE DESTRUCTION OF BASES
         if (_statusEffectData != null)
         {
-            if (_currentEffectTime >= _statusEffectData.activeTime) { RemoveEffect(); }
-            _currentEffectTime += Time.deltaTime;
+            if (_currentEffectTime >= _statusEffectData.activeTime) 
+            { 
+                RemoveEffect(); 
+                Debug.LogError("status effect expired"); 
+                ClearStatusEffects(); 
+            }
 
             if (_statusEffectData != null)
             {
@@ -364,21 +452,131 @@ public class PlayerScript : NetworkBehaviour, IEffectable
                 {
                     _nextTickTime += _statusEffectData.tickSpeed;
 
-
                     //CHECK FOR DIFFERENT TYPES HERE
-                    PlayerHealth playerHealth = GetComponent<PlayerHealth>();
-                    ApplyDOT(playerHealth);
+
+                    if (_statusEffectData.statusEffectType == StatusEffectTypes.DOT)
+                    {
+                        Debug.LogError("DOT Effect");
+
+                        if (playerHealth == null)
+                            playerHealth = GetComponent<PlayerHealth>();
+
+                        ApplyDOT(playerHealth);
+                    }
+                    else if(_statusEffectData.statusEffectType == StatusEffectTypes.STRENGTH_BUFF)
+                    {
+                        Debug.LogError("Weapon Buff");
+
+                        if(weapon == null)
+                            weapon = GetComponent<Weapon>();
+
+
+                        //SUPER HARD CODED FOR NOWWW, IT'S OKAY
+                        Debug.LogError("THE NAME OF THE EFFECT IS: " + _statusEffectData.Name);
+
+                        if (!hasApplied)
+                        {
+                            switch (_statusEffectData.Name)
+                            {
+                                case "Damage Buff":
+                                    ApplyDamageBuff(weapon);
+                                    Debug.LogError("dmg");
+                                    break;
+                                case "Bonus Points":
+                                    BonusPointsBuff(weapon);
+                                    Debug.LogError("bonus");
+                                    break;
+                                case "Bullet Count":
+                                    BulletCountBuff(weapon);
+                                    Debug.LogError("BC");
+                                    break;
+                                case "Fire Range":
+                                    FireRangeBuff(weapon);
+                                    Debug.LogError("FRange");
+                                    break;
+                                case "Fire Rate":
+                                    FireRateBuff(weapon);
+                                    Debug.LogError("Frate");
+                                    break;
+                                case "Num of Shots":
+                                    NumOfShotsBuff(weapon);
+                                    Debug.LogError("numOf");
+                                    break;
+                                case "Reload":
+                                    ReloadBuff(weapon);
+                                    Debug.LogError("reload");
+                                    break;
+                                default:
+                                    ApplyDamageBuff(weapon);
+                                    Debug.LogError("DEFAULT");
+                                    break;
+                            }
+                        }
+                    }
+                    else if(_statusEffectData.statusEffectType == StatusEffectTypes.MOVEMENT)
+                    {
+                        Debug.LogError("Movement Buff");
+                    }
+                    else
+                        Debug.LogError("nothing?");
                 }
+
+                //EvtSystem.EventDispatcher.AddListener<ApplyStatusEffects>(SetStatusEffectData);
             }
         }
     }
 
+    [ClientRpc]
     public void ApplyDOT(PlayerHealth playerHealthScript)
     {
         //CHECK IF YOU WERE TRYING TO HEAL, OR TO DAMAGE
         int posOrNeg = _statusEffectData.isDOT ? -1 : 1;
+        //Debug.LogError("Applying DOT To player" + gameObject.name);
+        playerHealthScript.TakeDamage((int)_statusEffectData.valueOverTime * posOrNeg);
+    }
 
-        playerHealthScript.TakeDamage((int)_statusEffectData.valueOverTime * posOrNeg, 3f);
+    bool hasApplied;
+    [ClientRpc]
+    public void ApplyDamageBuff(Weapon weaponScript)
+    {
+        hasApplied = true;
+        weaponScript.damageMultiplier = _statusEffectData.damageBuff;
+    }
+    [ClientRpc]
+    public void ReloadBuff(Weapon weaponScript)
+    {
+        hasApplied = true;
+        weaponScript.reloadTime *= (1 - _statusEffectData.reloadTime);
+    }
+    [ClientRpc]
+    public void FireRateBuff(Weapon weaponScript)
+    {
+        hasApplied = true;
+        weaponScript.fireRate /= _statusEffectData.fireRate;
+    }
+    [ClientRpc]
+    public void FireRangeBuff(Weapon weaponScript)
+    {
+        hasApplied = true;
+        weaponScript.fireRange *= _statusEffectData.fireRange;
+    }
+    [ClientRpc]
+    public void BulletCountBuff(Weapon weaponScript)
+    {
+        hasApplied = true;
+        weaponScript.magSize += _statusEffectData.magSize;
+    }
+    [ClientRpc]
+    public void NumOfShotsBuff(Weapon weaponScript)
+    {
+        hasApplied = true;
+        weaponScript.numOfBulletsPerShot = _statusEffectData.numOfBulletsPerShot;
+    }
+    [ClientRpc]
+    public void BonusPointsBuff(Weapon weaponScript)
+    {
+        hasApplied = true;
+        weaponScript.bonusPointsPerShot = _statusEffectData.bonusPointsPerShot;
     }
 
     public void ApplyMoveSE()
@@ -396,13 +594,30 @@ public class PlayerScript : NetworkBehaviour, IEffectable
         }
     }
 
+
     private void ClearStatusEffects(PlayerDied evtData)
     {
         if(evtData.playerThatDied == this.gameObject)
-            RemoveEffect(); 
+            RemoveEffect();
 
+        if (weapon != null)
+            weapon.damageMultiplier = 1;
 
-        Debug.LogError("Removed all ongoing status effects on Player of TEAM: " + playerTeam);
+        Debug.LogError("Removed all ongoing status effects on Player: " + gameObject.name);
+    }
+
+    [ClientRpc]
+    private void ClearStatusEffects()
+    {
+        RemoveEffect();
+
+        if (weapon != null)
+        {
+            weapon.damageMultiplier = 1;
+            Debug.LogError("SET WEAPON DAMAGE BACK TO 1X");
+        }
+
+        Debug.LogError("Removed all ongoing status effects on Player: " + gameObject.name);
     }
     #endregion
 }

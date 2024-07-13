@@ -38,6 +38,14 @@ public enum AbilityAppliance
     INSTANT = 0,
     OVER_TIME = 1
 }
+
+[System.Serializable]
+public enum StatusEffectTypes
+{
+    DOT = 0,
+    STRENGTH_BUFF = 1,
+    MOVEMENT = 2
+}
 #endregion
 
 #region ABILITY TYPES

@@ -1,4 +1,4 @@
-Shader "Custom/NewSurfaceShader"
+Shader "Custom/Stencil Mask"
 {
     Properties
     {
@@ -9,7 +9,7 @@ Shader "Custom/NewSurfaceShader"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque"} // "Queue"="Objects"
+        Tags { "RenderType"="Opaque" "Queue" = "Geometry-100"} // "Queue"="Objects"
         ColorMask 0
         ZWrite off
         LOD 200

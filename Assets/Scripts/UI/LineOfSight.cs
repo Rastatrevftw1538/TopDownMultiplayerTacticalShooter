@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class LineOfSight : MonoBehaviour
+public class LineOfSight : NetworkBehaviour
 {
 	public float viewRadius;
 	[Range(0, 360)]
@@ -34,25 +34,30 @@ public class LineOfSight : MonoBehaviour
 		viewMesh.name = "View Mesh";
 		viewMeshFilter.mesh = viewMesh;
 
-		StartCoroutine("FindTargetsWithDelay", .2f);
+		//StartCoroutine("FindTargetsWithDelay", .2f);
 		playerCamera = GameObject.Find("ClientCamera").GetComponent<Camera>();
 	}
 
 
-	IEnumerator FindTargetsWithDelay(float delay)
+	/*IEnumerator FindTargetsWithDelay(float delay)
 	{
 		while (true)
 		{
 			yield return new WaitForSeconds(delay);
 			FindVisibleTargets();
 		}
-	}
+	}*/
 
 	void LateUpdate()
 	{
-		DrawFieldOfView();
+		if (isLocalPlayer)
+		{
+
+			DrawFieldOfView();
+		}
 		//Debug.LogWarning("The euler angle is: " + transform.eulerAngles.z);
 	}
+
 
 	[Client]
 	void FindVisibleTargets()
@@ -74,15 +79,16 @@ public class LineOfSight : MonoBehaviour
 					visibleTargets.Add(target);
 					string targetLayer = target.gameObject.layer.ToString();
 					//Debug.LogError(target.gameObject.layer.ToString());
+					Debug.DrawLine(transform.position, target.transform.position, Color.red);
 
-
-					playerCamera.cullingMask |= 1 << LayerMask.NameToLayer("Base");
+					//playerCamera.cullingMask |= 1 << LayerMask.NameToLayer("Enemy");
 				}
-                //else
-                //{
+                else
+                {
 					//Debug.LogError("not seen");
-					//playerCamera.cullingMask &= ~(1 << LayerMask.NameToLayer("Base"));
-				//}
+
+					//playerCamera.cullingMask &= ~(1 << LayerMask.NameToLayer("Enemy"));
+				}
 			}
 		}
 	}
@@ -102,7 +108,6 @@ public class LineOfSight : MonoBehaviour
 				return diff;
             }
 			//Debug.LogError("The actual angle is: " + invertDegrees(transform.eulerAngles.z));
-
 
 			float angle = (convertDegrees(transform.eulerAngles.z)) - viewAngle / 2 + stepAngleSize * i;
 			//Debug.LogError("The angle being used is: " + angle);
@@ -172,16 +177,16 @@ public class LineOfSight : MonoBehaviour
 					Debug.LogError("Seen Target");
 					visibleTargets.Add(target);
 					string targetLayer = target.gameObject.layer.ToString();
-					//Debug.LogError(target.gameObject.layer.ToString());
+					Debug.LogError(target.gameObject.layer.ToString());
 
 
-					playerCamera.cullingMask |= 1 << LayerMask.NameToLayer("Base");
+					playerCamera.cullingMask |= 1 << LayerMask.NameToLayer("Enemy");
 				}
-				//else
-				//{
-				//Debug.LogError("not seen");
-				//playerCamera.cullingMask &= ~(1 << LayerMask.NameToLayer("Base"));
-				//}
+				else
+				{
+					Debug.LogError("not seen");
+					playerCamera.cullingMask &= ~(1 << LayerMask.NameToLayer("Enemy"));
+				}
 			}
 		}
 	}

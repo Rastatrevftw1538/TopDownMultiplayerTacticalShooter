@@ -9,6 +9,7 @@ public class UiShow : NetworkBehaviour
     private int yOffset =5;
 
     private GameObject cameraHolder;
+    private Transform cameraTransform;
     public GameObject internalUI;
 
     private Transform playerTransform;
@@ -25,6 +26,7 @@ public class UiShow : NetworkBehaviour
             internalUI.transform.Find("ControllerHolder").gameObject.SetActive(false);
         }
         playerTransform = this.transform.GetChild(0).GetComponent<Transform>();
+        cameraTransform = cameraHolder.transform;
     }
     
     private void Update(){
@@ -40,13 +42,13 @@ public class UiShow : NetworkBehaviour
             else if(forwardVector.y < 0){
                 yOffset = -5;
             }
-            
-            cameraHolder.transform.GetChild(0).transform.localPosition = Vector3.Lerp(cameraHolder.transform.GetChild(0).transform.localPosition,new Vector3(cameraHolder.transform.GetChild(0).transform.localPosition.x,yOffset,cameraHolder.transform.GetChild(0).transform.localPosition.z),2.5f*Time.deltaTime);
+
+            cameraTransform.GetChild(0).transform.localPosition = Vector3.Lerp(cameraHolder.transform.GetChild(0).transform.localPosition,new Vector3(cameraHolder.transform.GetChild(0).transform.localPosition.x,yOffset,cameraHolder.transform.GetChild(0).transform.localPosition.z),2.5f*Time.deltaTime);
             // Apply the offset to the camera holder position to keep the player centered
-            cameraHolder.transform.localPosition = new Vector3(this.transform.localPosition.x,this.transform.localPosition.y+yOffset,0f);
+            cameraTransform.localPosition = new Vector3(this.transform.localPosition.x,this.transform.localPosition.y+yOffset,0f);
 
             // Reset the camera holder rotation to prevent unwanted rotation
-            cameraHolder.transform.localPosition = new Vector3(this.transform.position.x,this.transform.position.y,0f);
+            cameraTransform.localPosition = new Vector3(this.transform.position.x,this.transform.position.y,0f);
         }
     }
     
