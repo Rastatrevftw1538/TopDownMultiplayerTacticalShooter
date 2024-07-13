@@ -86,6 +86,7 @@ public class PlayerScriptSinglePlayer : MonoBehaviour, IEffectable
         walkSpeedNormal = walkSpeed;
 
         //this.GetComponent<WeaponSinglePlayer>().spreadCone.enabled = true;
+        Anim = gameObject.transform.GetChild(0).GetComponent<Animator>();
 
         //AUTOMATICALLY SET THE PLAYER'S ANIMATION STATE TO IDLE
         StateMachine.Initialize(IdleState);
@@ -98,8 +99,6 @@ public class PlayerScriptSinglePlayer : MonoBehaviour, IEffectable
     this.canMove = newCanMove;
     }
 
-
-    public bool hasSetColors;
     public void Update()
     {
         if(_statusEffectData != null)

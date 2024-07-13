@@ -8,38 +8,34 @@ using Debug = UnityEngine.Debug;
 
 public class WeaponSinglePlayer : MonoBehaviour
 {
-    [SerializeField]
+    [Header("Components")]
     public WeaponData weaponSpecs;
-    [SerializeField]
     public Transform firePoint;
     private Vector3 endPoint;
 
+    private float coneSpreadFactor = 0.1f;
     public SpriteRenderer weaponLooks;
     public SpriteRenderer spreadCone;
-    private float coneSpreadFactor = 0.1f;
+    [SerializeField]
+    private JoystickControllerRotationAndShooting shootingJoystick;
     public LayerMask targetLayers;
     public GameObject bulletPrefab;
     [HideInInspector] public float fireRange = 100f;
     [HideInInspector] public int numOfBulletsPerShot;
     private string gunName;
 
-    private float damage;
+    [Header("Damage Multipliers & Ammo")]
     public float damageMultiplier;
+    public float damageMultiplierBPM;
+    private float damage;
     private float spreadValue;
 
     public int mags = 3;
-    [HideInInspector] public int magSize;
-
-    private int currentAmmo;
-
     private int totalMags;
+    [HideInInspector] public int magSize;
     [HideInInspector] public float fireRate = 0.2f; // added fire rate variable
-
-    [SerializeField]
-    private JoystickControllerRotationAndShooting shootingJoystick;
-
+    private int currentAmmo;
     private float nextFireTime = 0f;
-
     private bool outOfAmmo = false;
     [HideInInspector] public float reloadTime = 2f; // added reload time variable
 
@@ -265,15 +261,14 @@ public class WeaponSinglePlayer : MonoBehaviour
                                     //CLICKED ON BEAT?
                                     if (BPMManager.instance.canClick == Color.green)
                                     {
-                                        damageMultiplier = 2;
-                                        Debug.LogError("ON BEAT :)!! HIT DUMMY FOR " + damage * damageMultiplier);
+                                        Debug.LogError("ON BEAT :)!! HIT DUMMY FOR " + damage * damageMultiplierBPM);
+                                        damageDone = (damage * damageMultiplierBPM);
                                     }
                                     else
                                     {
-                                        damageMultiplier = 1;
-                                        Debug.LogError("NOT ON BEAT :(!! HIT DUMMY FOR " + damage * damageMultiplier);
+                                        Debug.LogError("NOT ON BEAT :(!! HIT DUMMY FOR " + damage);
+                                        damageDone = (damage);
                                     }
-                                    damageDone = (damage * damageMultiplier);
                                     dummyHealth.TakeDamage(damageDone);
                                 }
 

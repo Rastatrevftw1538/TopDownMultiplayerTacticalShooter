@@ -23,7 +23,7 @@ public class BPMManager : MonoBehaviour
     private float m_MIN = 0f;
     private float m_MAX;
 
-    public float BPM = 30f; //BPM OF THE SONG
+    public float BPM; //BPM OF THE SONG
     public float errorWindow; //THE AMOUNT OF TIME AFTER AND BEFORE THE BEAT THAT THE PLAYER CAN SHOOT FOR A BONUS
 
     private float lowerRange;

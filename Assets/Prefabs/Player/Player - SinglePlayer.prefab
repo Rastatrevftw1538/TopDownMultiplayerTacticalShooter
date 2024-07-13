@@ -782,6 +782,7 @@ MonoBehaviour:
   firePoint: {fileID: 3525035225075943314}
   weaponLooks: {fileID: 1728614716099988865}
   spreadCone: {fileID: 4790736005001819478}
+  shootingJoystick: {fileID: 3820486686981098696}
   targetLayers:
     serializedVersion: 2
     m_Bits: 2147483647
@@ -789,10 +790,10 @@ MonoBehaviour:
   fireRange: 100
   numOfBulletsPerShot: 0
   damageMultiplier: 1
+  damageMultiplierBPM: 4
   mags: 99
   magSize: 0
   fireRate: 0.2
-  shootingJoystick: {fileID: 3820486686981098696}
   reloadTime: 2
   bonusPointsPerShot: 0
 --- !u!114 &406546889883463678
@@ -1491,6 +1492,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7058532137397429724}
   - component: {fileID: 4418764969609568228}
+  - component: {fileID: 2747392770728275547}
   m_Layer: 0
   m_Name: PlayerBody
   m_TagString: PlayerObject
@@ -1570,6 +1572,26 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &2747392770728275547
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4254051603601381221}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 429c0be3fad59ea4bb10c8b22ba6c2f2, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &4643259710611252097
 GameObject:
   m_ObjectHideFlags: 0
