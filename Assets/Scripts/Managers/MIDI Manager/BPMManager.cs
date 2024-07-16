@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Sanford.Multimedia.Midi;
+
 
 public class BPMManager : MonoBehaviour
 {
+    private AudioClip gameSong;
     private static BPMManager _instance;
 
     public static BPMManager instance
@@ -36,10 +39,14 @@ public class BPMManager : MonoBehaviour
     private void Awake()
     {
         _instance = this;
+        gameSong = GameObject.Find("Audio Manager").GetComponent<AudioSource>().clip;
+        BPM = UniBpmAnalyzer.AnalyzeBpm(gameSong);
+        BPM = BPM/4;
     }
 
     private void Start()
     {
+        GameObject.Find("NoteManager").GetComponent<BeatScroller>().hasStarted = true;
         percentToBeat = 0f;
         BPS = c_MINUTE / BPM;
         m_MAX = BPS;
