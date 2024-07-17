@@ -138,10 +138,10 @@ public class WeaponSinglePlayer : MonoBehaviour
                 spread += Time.deltaTime * spreadValue;
             }
             //currentAmmo -= numOfBulletsPerShot;
-            currentAmmo -= 1;
+            //currentAmmo -= 1;
         }
 
-        if(currentAmmo <= 0){
+        /*if(currentAmmo <= 0){
             StartCoroutine(Reload());
             return;
         }
@@ -149,7 +149,7 @@ public class WeaponSinglePlayer : MonoBehaviour
         if(totalMags < 0){
             outOfAmmo = true;
             weaponLooks.color = Color.red;
-        }
+        }*/ 
 
         if(!shootingGun){
             spread = 0f;
@@ -201,6 +201,7 @@ public class WeaponSinglePlayer : MonoBehaviour
             String whatWasHit = "";
             if (hit.collider != null)
             {
+                #region UGLY CODE FOR NOW
                 whatWasHit = hit.collider.tag;
                 if (hit.collider.name.Equals("HitBox") || hit.collider.name.Equals("Bullseye!"))
                 {
@@ -208,28 +209,6 @@ public class WeaponSinglePlayer : MonoBehaviour
                     if (objectOrigin != null)
                     {
                         bool foundWhatHit = false;
-                        //PLAYER HEALTH STUFF
-                        PlayerHealth enemyHealth = objectOrigin.GetComponent<PlayerHealth>();
-                        PlayerScriptSinglePlayer playerScript = objectOrigin.GetComponent<PlayerScriptSinglePlayer>();
-
-                        if (enemyHealth != null && !foundWhatHit && playerScript != null)
-                        {
-                            if (playerScript.playerTeam != player.playerTeam)
-                            {
-                                if (hit.collider.gameObject.name == "Bullseye!")
-                                {
-                                    damageDone = 2 * (damage * damageMultiplier);
-                                }
-                                else
-                                {
-                                    damageDone = (damage * damageMultiplier);
-                                }
-                                enemyHealth.TakeDamage(damageDone);
-                            }
-
-                            foundWhatHit = true;
-                        }
-
                         //DAMAGE BASE STUFF
                         if (!foundWhatHit)
                         {
@@ -276,6 +255,32 @@ public class WeaponSinglePlayer : MonoBehaviour
                             }
                         }
 
+                        //enemy
+                        if (!foundWhatHit)
+                        {
+                            EnemyTest dummyHealth = objectOrigin.GetComponent<EnemyTest>();
+                            if (dummyHealth != null && !foundWhatHit)
+                            {
+                                if (dummyHealth.canHit)
+                                {
+                                    //CLICKED ON BEAT?
+                                    if (BPMManager.instance.canClick == Color.green)
+                                    {
+                                        Debug.LogError("ON BEAT :)!! HIT ENEMY FOR " + damage * damageMultiplierBPM);
+                                        damageDone = (damage * damageMultiplierBPM);
+                                    }
+                                    else
+                                    {
+                                        Debug.LogError("NOT ON BEAT :(!! HIT ENEMY FOR " + damage);
+                                        damageDone = (damage);
+                                    }
+                                    dummyHealth.TakeDamage(damageDone);
+                                }
+
+                                foundWhatHit = true;
+                            }
+                        }
+
                         if (!foundWhatHit)
                         {
                             BaseEffects baseHealthEffects = objectOrigin.GetComponent<BaseEffects>();
@@ -298,11 +303,11 @@ public class WeaponSinglePlayer : MonoBehaviour
                                         //playerWhoBrokeBase.whatBase = baseHealthEffects.gameObject;
                                         //EvtSystem.EventDispatcher.Raise<WhoBrokeBase>(playerWhoBrokeBase);
 
-                                        /*ApplyStatusEffects applyStatusEffects = new ApplyStatusEffects();
+                                        ApplyStatusEffects applyStatusEffects = new ApplyStatusEffects();
                                         applyStatusEffects.team = GetComponent<PlayerScript>().playerTeam;
                                         applyStatusEffects.statusEffect = baseHealthEffects.statusEffect;
 
-                                        EvtSystem.EventDispatcher.Raise<ApplyStatusEffects>(applyStatusEffects);*/
+                                        EvtSystem.EventDispatcher.Raise<ApplyStatusEffects>(applyStatusEffects);
                                     }
                                 }
                                 else
@@ -325,7 +330,11 @@ public class WeaponSinglePlayer : MonoBehaviour
                                 ChaseGameManager.instance.redPoints += damageDone + bonusPointsPerShot;
                         }
                     }
+
+
+
                 }
+                #endregion
             }
 
             else
@@ -368,9 +377,11 @@ public class WeaponSinglePlayer : MonoBehaviour
         }
         
         var bulletInstance = Instantiate(bulletPrefab, firePoint.position, new Quaternion(0, 0, 0, 0));
+
         BulletScript trailRender = bulletInstance.GetComponent<BulletScript>();
         GameObject particleEffect = trailRender.effectPrefab;
         ParticleSystem particleSystem = particleEffect.GetComponent<ParticleSystem>();
+
         var main = particleSystem.main;
             if(whatWasHit == "Base"){
                 main.startColor = Color.cyan;
@@ -384,7 +395,7 @@ public class WeaponSinglePlayer : MonoBehaviour
             else{
                 main.startColor = Color.clear;
             }
-        Instantiate(trailRender.effectPrefab, collisionPoint, new Quaternion(0, 0, 0, 0));
+        Instantiate(particleEffect, collisionPoint, new Quaternion(0, 0, 0, 0));
         trailRender.SetTargetPosition(collisionPoint);
         Debug.Log("Bullet Fired Client " + collisionPoint + " direction " + spreadDirection);
 

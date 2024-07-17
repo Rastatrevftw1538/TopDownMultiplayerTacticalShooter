@@ -57,7 +57,7 @@ public class MIDIManager : MonoBehaviour
         Sequence midiSequence = new Sequence(midiStream);
         float length = midiSequence.GetLength() / midiSequence.Division;
         // Debug.Log(length);
-        //Debug.Log(midiSequence.Division);
+        // Debug.Log(midiSequence.Division);
         // Debug.Log(midiSequence.GetLength());
 
         foreach (Track midiTrack in midiSequence)

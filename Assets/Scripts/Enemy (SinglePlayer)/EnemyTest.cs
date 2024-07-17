@@ -2,16 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.AI;
 
 public class EnemyTest : MonoBehaviour
 {
-    [Header("TrainingDummy Stats")]
+    [Header("Enemy Stats")]
     public float maxHealth;
     [SerializeField] private float currentHealth;
     public float respawnTime = 2f;
+    [SerializeField] private Transform target;
+    private NavMeshAgent agent; 
+    public float stoppingDistance;
+    public float projectileSpeed;
+    public float startShotCooldown;
+    private float shotCooldown;
 
-    [Header("TrainingDummy Components")]
+    [Header("Enemy Components")]
     [SerializeField] private Image healthbarExternal;
+    [SerializeField] private GameObject projectile;
+    [SerializeField] private Transform enemyBody;
 
     [Header("Debug")]
     [SerializeField] private float _damageTaken = 0;
@@ -31,6 +40,50 @@ public class EnemyTest : MonoBehaviour
     {
         currentHealth = maxHealth;
         healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
+
+        //agent = GetComponent<NavMashAgent>();
+        agent = GetComponent<NavMeshAgent>();
+        agent.updateRotation = false;
+        agent.updateUpAxis = false;
+    }
+
+    private void Update()
+    {
+        //healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
+        agent.SetDestination(target.position);
+
+        //DISTANCE BEFORE STOPPING
+        if(agent.remainingDistance <= stoppingDistance)
+        {
+            agent.isStopped = true;
+        }
+        else
+        {
+            agent.isStopped = false;
+        }
+
+        if (shotCooldown <= 0)
+        {
+            Attack();
+        }
+        else
+        {
+            shotCooldown -= Time.fixedDeltaTime;
+        }
+
+        //attack
+    }
+
+    private void Attack()
+    {
+        GameObject currentProjectile = Instantiate(projectile, transform.position, transform.rotation);
+        shotCooldown = startShotCooldown;
+
+        if (!enemyBody)
+            enemyBody = gameObject.transform.Find("BaseBody");
+
+        Vector2 direction = new Vector2(target.position.x - enemyBody.position.x, target.position.y - enemyBody.position.y); //FIND DIRECTION OF PLAYER
+        transform.up = direction; //ROTATES THE ENEMY TO THE PLAYER 
     }
 
     public bool checkIfAlive
@@ -62,13 +115,6 @@ public class EnemyTest : MonoBehaviour
         timeSinceLastShot = Time.deltaTime;
 
         DisplayHit(amount);
-
-        //DISPLAY DAMAGE TAKEN
-        //DisplayUI displayUI = new DisplayUI();
-        //displayUI.colorOfText = Color.white;
-        //displayUI.textToDisplay = "-" + amount;
-
-        //EvtSystem.EventDispatcher.Raise<DisplayUI>(displayUI);
         healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
     }
 
@@ -82,11 +128,6 @@ public class EnemyTest : MonoBehaviour
        // currentDisplay.transform.position.y += 0.10f;
     }
 
-    private void Update()
-    {
-        //healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
-    }
-
     private void EndVulnerability()
     {
         this.canHit = false;
@@ -96,7 +137,7 @@ public class EnemyTest : MonoBehaviour
     private bool isRespawning;
     private void RestoreHealth()
     {
-        this.gameObject.active = true;
+        this.gameObject.SetActive(true);
         currentHealth = maxHealth;
         isAlive = true;
         isRespawning = false;
@@ -117,7 +158,7 @@ public class EnemyTest : MonoBehaviour
     void RpcDie()
     {
         isAlive = false;
-        this.gameObject.active = false;
+        this.gameObject.SetActive(false);
         Respawn(respawnTime);
     }
 
