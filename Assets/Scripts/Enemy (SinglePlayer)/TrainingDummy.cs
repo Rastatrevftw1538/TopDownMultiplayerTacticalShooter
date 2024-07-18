@@ -96,7 +96,7 @@ public class TrainingDummy : MonoBehaviour
     private bool isRespawning;
     private void RestoreHealth()
     {
-        this.gameObject.active = true;
+        this.gameObject.SetActive(true);
         currentHealth = maxHealth;
         isAlive = true;
         isRespawning = false;
@@ -117,7 +117,7 @@ public class TrainingDummy : MonoBehaviour
     void RpcDie()
     {
         isAlive = false;
-        this.gameObject.active = false;
+        this.gameObject.SetActive(false);
         Respawn(respawnTime);
     }
 

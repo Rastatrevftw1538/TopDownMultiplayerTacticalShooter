@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Sanford.Multimedia.Midi;
+
 
 public class BPMManager : MonoBehaviour
 {
+    private AudioClip gameSong;
     private static BPMManager _instance;
 
     public static BPMManager instance
@@ -29,17 +32,22 @@ public class BPMManager : MonoBehaviour
     private float lowerRange;
     private float upperRange;
 
-    public float percentToBeat; //KEEPS TRACK OF HOW CLOSE YOU ARE TO A BEAT
+    private float percentToBeat; //KEEPS TRACK OF HOW CLOSE YOU ARE TO A BEAT
 
     private float BPS;
 
     private void Awake()
     {
         _instance = this;
+        gameSong = GameObject.Find("Audio Manager").GetComponent<AudioSource>().clip;
+        //gameSong = GetComponent<AudioSource>().clip;
+        BPM = UniBpmAnalyzer.AnalyzeBpm(gameSong);
+        BPM = BPM/2; //FIXING THE BPM (SOME SONGS WILL BE DIFFERENT)
     }
 
     private void Start()
     {
+        //GameObject.Find("NoteManager").GetComponent<BeatScroller>().hasStarted = true;
         percentToBeat = 0f;
         BPS = c_MINUTE / BPM;
         m_MAX = BPS;
@@ -47,9 +55,6 @@ public class BPMManager : MonoBehaviour
         //BETWEENT THESE TWO VALUES, IS WHEN THE PLAYER IS GOOD TO SHOOT FOR A BONUS
         upperRange = m_MAX - errorWindow;
         lowerRange = m_MIN + errorWindow;
-        //upperRange = m_MAX + errorWindow;
-
-        //percentToBeat = Mathf.Clamp(percentToBeat, m_MIN, upperRange);
     }
 
     public Color canClick = Color.red;

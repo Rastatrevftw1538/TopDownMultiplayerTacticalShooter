@@ -56,7 +56,6 @@ public class AbilityHolderSP : MonoBehaviour
                 if (debugKeys.Contains(e.keyCode)) //COMMENT THIS OUT IF EVENTS ARE BREAKING THE GAME
                 {
                     indx = debugKeys.FindIndex(x => x == e.keyCode); //COMMENT THIS OUT IF EVENTS ARE BREAKING THE GAME
-                    statusEffectData = abilities[indx].statusEffectData;
                     //USE THIS IF EVENTS ARE BREAKING THE GAME
                     /*if (Input.GetKeyDown(debugKeys[0]))
                     {
@@ -66,6 +65,7 @@ public class AbilityHolderSP : MonoBehaviour
                     {
                         indx = 1;
                     }*/
+                    statusEffectData = abilities[indx].statusEffectData;
 
                     //IF THE ABILITY HAS A DELAY, INVOKE THE ABILITY WITH THE DELAY TIMER
 

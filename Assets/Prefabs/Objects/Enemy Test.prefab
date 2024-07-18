@@ -219,6 +219,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5994701145239110948}
   - component: {fileID: 259019136655839391}
+  - component: {fileID: 84084128}
   m_Layer: 0
   m_Name: Enemy Test
   m_TagString: Base
@@ -233,7 +234,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5994701145239110951}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.37, y: -5.64, z: 0}
   m_LocalScale: {x: 1.5374999, y: 1.5374999, z: 1}
   m_ConstrainProportionsScale: 0
@@ -258,12 +259,40 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 0
   respawnTime: 2
+  target: {fileID: 0}
+  stoppingDistance: 8
+  projectileSpeed: 2
+  startShotCooldown: 5
   healthbarExternal: {fileID: 5994701146539529053}
+  projectile: {fileID: 2252358114905661944, guid: ee2f2386eaf7bcd4aae1f965652cc1ec, type: 3}
+  enemyBody: {fileID: 0}
   _damageTaken: 0
   isAlive: 1
   canHit: 1
   hitDisplaySeconds: 0
   hitDisplays: []
+--- !u!195 &84084128
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5994701145239110951}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &5994701146355688127
 GameObject:
   m_ObjectHideFlags: 0

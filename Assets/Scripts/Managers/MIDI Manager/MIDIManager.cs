@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.IO;
 using Sanford.Multimedia.Midi;
+using System.Collections.Generic;
+using System;
 
 public class MIDIManager : MonoBehaviour
 {
@@ -55,7 +57,7 @@ public class MIDIManager : MonoBehaviour
         Sequence midiSequence = new Sequence(midiStream);
         float length = midiSequence.GetLength() / midiSequence.Division;
         // Debug.Log(length);
-        //Debug.Log(midiSequence.Division);
+        // Debug.Log(midiSequence.Division);
         // Debug.Log(midiSequence.GetLength());
 
         foreach (Track midiTrack in midiSequence)
@@ -79,7 +81,7 @@ public class MIDIManager : MonoBehaviour
 
             if (midiType == (byte)ChannelCommand.NoteOff || (midiType == (byte)ChannelCommand.NoteOn) && velocity == 0)
             {
-                //Debug.Log("No Note Played "+time);
+                Debug.Log("No Note Played "+time);
             }
             else if (midiType == (byte)ChannelCommand.NoteOn)
             {
@@ -88,43 +90,43 @@ public class MIDIManager : MonoBehaviour
                 Debug.Log(note);
                 if (note == 58)
                 {
-                    //Debug.Log(note+" "+time+" "+velocity);
-                    Instantiate(RedNote, new Vector3(RedButP1.transform.position.x, time + 2f, 0f), RedNote.transform.rotation, NoteManager.transform);
+                    Debug.Log(note+" "+time+" "+velocity);
+                    Instantiate(RedNote, new Vector3(RedButP1.transform.position.x, (time * 50) + 200f, 0f), RedNote.transform.rotation, NoteManager.transform);
                 }
                 else if (note == 55)
                 {
-                    //Debug.Log(note+" "+time+" "+velocity);
-                    Instantiate(GreenNote, new Vector3(GreenButP1.transform.position.x, time + 2f, 0f), GreenNote.transform.rotation, NoteManager.transform);
+                    Debug.Log(note+" "+time+" "+velocity);
+                    Instantiate(GreenNote, new Vector3(GreenButP1.transform.position.x, (time * 50) + 200f, 0f), GreenNote.transform.rotation, NoteManager.transform);
                 }
                 else if (note == 56)
                 {
-                    //Debug.Log(note+" "+time+" "+velocity);
-                    Instantiate(BlueNote, new Vector3(BlueButP1.transform.position.x, time + 2f, 0f), BlueNote.transform.rotation, NoteManager.transform);
+                    Debug.Log(note+" "+time+" "+velocity);
+                    Instantiate(BlueNote, new Vector3(BlueButP1.transform.position.x, (time * 50) + 200f, 0f), BlueNote.transform.rotation, NoteManager.transform);
                 }
                 else if (note == 59)
                 {
-                    //Debug.Log(note+" "+time+" "+velocity);
-                    Instantiate(YellowNote, new Vector3(YellowButP1.transform.position.x, time + 2f, 0f), YellowNote.transform.rotation, NoteManager.transform);
+                    Debug.Log(note+" "+time+" "+velocity);
+                    Instantiate(YellowNote, new Vector3(YellowButP1.transform.position.x, (time * 50) + 200f, 0f), YellowNote.transform.rotation, NoteManager.transform);
                 }
                 if (note == 69)
                 {
-                    //Debug.Log(note+" "+time+" "+velocity);
-                    Instantiate(RedNote, new Vector3(RedButP1.transform.position.x, time + 2f, 0f), RedNote.transform.rotation, NoteManager.transform);
+                    Debug.Log(note+" "+time+" "+velocity);
+                    Instantiate(RedNote, new Vector3(RedButP1.transform.position.x, (time * 50) + 200f, 0f), RedNote.transform.rotation, NoteManager.transform);
                 }
                 else if (note == 70)
                 {
-                    //Debug.Log(note+" "+time+" "+velocity);
-                    Instantiate(GreenNote, new Vector3(GreenButP1.transform.position.x, time + 2f, 0f), GreenNote.transform.rotation, NoteManager.transform);
+                    Debug.Log(note+" "+time+" "+velocity);
+                    Instantiate(GreenNote, new Vector3(GreenButP1.transform.position.x, (time * 50) + 200f, 0f), GreenNote.transform.rotation, NoteManager.transform);
                 }
                 else if (note == 71)
                 {
-                    //Debug.Log(note+" "+time+" "+velocity);
-                    Instantiate(BlueNote, new Vector3(BlueButP1.transform.position.x, time + 2f, 0f), BlueNote.transform.rotation, NoteManager.transform);
+                    Debug.Log(note+" "+time+" "+velocity);
+                    Instantiate(BlueNote, new Vector3(BlueButP1.transform.position.x, (time * 50) + 200f, 0f), BlueNote.transform.rotation, NoteManager.transform);
                 }
                 else if (note == 72)
                 {
-                    //Debug.Log(note+" "+time+" "+velocity);
-                    Instantiate(YellowNote, new Vector3(YellowButP1.transform.position.x, time + 2f, 0f), YellowNote.transform.rotation, NoteManager.transform);
+                    Debug.Log(note+" "+time+" "+velocity);
+                    Instantiate(YellowNote, new Vector3(YellowButP1.transform.position.x, (time * 50) + 200f , 0f), YellowNote.transform.rotation, NoteManager.transform);
                 }
                 else
                 {
