@@ -6,13 +6,15 @@ using TMPro;
 
 public class PlayerUIScript : MonoBehaviour
 {
-    Weapon gun;
+    //FOR NOW, JUST COMMENT OUT THE LINE THAT YOU'RE NOT GOING TO BE USING BASED ON SINGLEPLAYER/MULTIPLAYER
+    WeaponSinglePlayer gun;
+    //Weapon gun;
     [SerializeField]
     TMP_Text ammoUI;
     // Start is called before the first frame update
     void Start()
     {
-        gun = this.GetComponent<Weapon>();
+        gun = this.GetComponent<WeaponSinglePlayer>();
         ammoUI.text = gun.getCurrentAmmo().ToString() + " / "+ gun.getTotalMags().ToString();
     }
 
