@@ -39,8 +39,8 @@ public class BPMManager : MonoBehaviour
     private void Awake()
     {
         _instance = this;
-        //gameSong = GameObject.Find("Audio Manager").GetComponent<AudioSource>().clip;
-        gameSong = GetComponent<AudioSource>().clip;
+        gameSong = GameObject.Find("Audio Manager").GetComponent<AudioSource>().clip;
+        //gameSong = GetComponent<AudioSource>().clip;
         BPM = UniBpmAnalyzer.AnalyzeBpm(gameSong);
         BPM = BPM/2; //FIXING THE BPM (SOME SONGS WILL BE DIFFERENT)
     }
