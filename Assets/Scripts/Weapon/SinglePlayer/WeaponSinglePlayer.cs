@@ -258,7 +258,7 @@ public class WeaponSinglePlayer : MonoBehaviour
                         //enemy
                         if (!foundWhatHit)
                         {
-                            EnemyTest dummyHealth = objectOrigin.GetComponent<EnemyTest>();
+                            EnemyTest dummyHealth = objectOrigin.GetComponentInChildren<EnemyTest>();
                             if (dummyHealth != null && !foundWhatHit)
                             {
                                 if (dummyHealth.canHit)

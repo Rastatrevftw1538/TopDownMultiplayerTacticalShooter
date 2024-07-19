@@ -20,7 +20,6 @@ public class EnemyTest : MonoBehaviour
     [Header("Enemy Components")]
     [SerializeField] private Image healthbarExternal;
     [SerializeField] private GameObject projectile;
-    [SerializeField] private Transform enemyBody;
 
     [Header("Debug")]
     [SerializeField] private float _damageTaken = 0;
@@ -42,9 +41,11 @@ public class EnemyTest : MonoBehaviour
         healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
 
         //agent = GetComponent<NavMashAgent>();
-        agent = GetComponent<NavMeshAgent>();
+        agent = GetComponentInParent<NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
+
+        shotCooldown = startShotCooldown;
     }
 
     private void Update()
@@ -68,8 +69,11 @@ public class EnemyTest : MonoBehaviour
         }
         else
         {
-            shotCooldown -= Time.fixedDeltaTime;
+            shotCooldown -= Time.deltaTime;
         }
+
+        Vector2 direction = new Vector2(target.position.x - transform.position.x, target.position.y - transform.position.y); //FIND DIRECTION OF PLAYER
+        transform.up = direction; //ROTATES THE ENEMY TO THE PLAYER 
 
         //attack
     }
@@ -78,12 +82,6 @@ public class EnemyTest : MonoBehaviour
     {
         GameObject currentProjectile = Instantiate(projectile, transform.position, transform.rotation);
         shotCooldown = startShotCooldown;
-
-        if (!enemyBody)
-            enemyBody = gameObject.transform.Find("BaseBody");
-
-        Vector2 direction = new Vector2(target.position.x - enemyBody.position.x, target.position.y - enemyBody.position.y); //FIND DIRECTION OF PLAYER
-        transform.up = direction; //ROTATES THE ENEMY TO THE PLAYER 
     }
 
     public bool checkIfAlive
@@ -116,6 +114,9 @@ public class EnemyTest : MonoBehaviour
 
         DisplayHit(amount);
         healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
+
+        //SLOW ENEMY
+
     }
 
     public List<GameObject> hitDisplays = new List<GameObject>();
@@ -137,7 +138,7 @@ public class EnemyTest : MonoBehaviour
     private bool isRespawning;
     private void RestoreHealth()
     {
-        this.gameObject.SetActive(true);
+        this.transform.parent.gameObject.SetActive(true);
         currentHealth = maxHealth;
         isAlive = true;
         isRespawning = false;
@@ -158,7 +159,7 @@ public class EnemyTest : MonoBehaviour
     void RpcDie()
     {
         isAlive = false;
-        this.gameObject.SetActive(false);
+        this.transform.parent.gameObject.SetActive(false);
         Respawn(respawnTime);
     }
 

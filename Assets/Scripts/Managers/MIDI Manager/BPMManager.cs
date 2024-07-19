@@ -70,12 +70,12 @@ public class BPMManager : MonoBehaviour
         if((percentToBeat <= lowerRange && percentToBeat >= m_MIN) || (percentToBeat >= upperRange))
         {
             canClick = Color.green;
-            Debug.LogError("DO Click");
+            //Debug.LogError("DO Click");
         }
         else
         {
             canClick = Color.red;
-            Debug.LogError("CANT Click");
+            //Debug.LogError("CANT Click");
         }
     }
 }

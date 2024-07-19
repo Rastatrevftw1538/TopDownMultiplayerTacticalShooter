@@ -37,9 +37,9 @@ public class EnemyProjectile : MonoBehaviour
             playerHealth.TakeDamage(damage);
         }
 
-        if(other.gameObject.tag == "Wall")
+        if (other.gameObject.tag == "Wall")
         {
-            
+            DestroyProjectile();
         }
 
         DestroyProjectile();
@@ -50,13 +50,13 @@ public class EnemyProjectile : MonoBehaviour
         DestroyProjectile();
     }
 
-    public void Attack()
-    {
-        //transform.Translate(Vector2.up * speed * Time.fixedDeltaTime);
-    }
-
     private void DestroyProjectile()
     {
         Destroy(gameObject);
+    }
+
+    private void PlayParticles()
+    {
+
     }
 }

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1926956556111981982}
   - component: {fileID: 5134188970262822600}
+  - component: {fileID: 44879652}
   m_Layer: 0
   m_Name: BaseBody
   m_TagString: Untagged
@@ -74,7 +75,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 5
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -85,6 +86,32 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &44879652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3167820307694051131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d3c509a556313b45ab29200f0445d3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  currentHealth: 0
+  respawnTime: 2
+  target: {fileID: 0}
+  stoppingDistance: 8
+  projectileSpeed: 2
+  startShotCooldown: 1.5
+  healthbarExternal: {fileID: 5994701146355688125}
+  projectile: {fileID: 2252358114905661944, guid: ee2f2386eaf7bcd4aae1f965652cc1ec, type: 3}
+  _damageTaken: 0
+  isAlive: 1
+  canHit: 1
+  hitDisplaySeconds: 0
+  hitDisplays: []
 --- !u!1 &3557992833446249234
 GameObject:
   m_ObjectHideFlags: 0
@@ -218,8 +245,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5994701145239110948}
-  - component: {fileID: 259019136655839391}
-  - component: {fileID: 84084128}
+  - component: {fileID: 1697827055}
   m_Layer: 0
   m_Name: Enemy Test
   m_TagString: Base
@@ -244,34 +270,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &259019136655839391
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5994701145239110951}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d3c509a556313b45ab29200f0445d3e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  currentHealth: 0
-  respawnTime: 2
-  target: {fileID: 0}
-  stoppingDistance: 8
-  projectileSpeed: 2
-  startShotCooldown: 5
-  healthbarExternal: {fileID: 5994701146539529053}
-  projectile: {fileID: 2252358114905661944, guid: ee2f2386eaf7bcd4aae1f965652cc1ec, type: 3}
-  enemyBody: {fileID: 0}
-  _damageTaken: 0
-  isAlive: 1
-  canHit: 1
-  hitDisplaySeconds: 0
-  hitDisplays: []
---- !u!195 &84084128
+--- !u!195 &1697827055
 NavMeshAgent:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
