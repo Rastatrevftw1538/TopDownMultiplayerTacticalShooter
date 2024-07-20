@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 2249023874906633523}
   - component: {fileID: 2810483960013391518}
   - component: {fileID: 269556321}
-  - component: {fileID: 2281403092281069489}
   m_Layer: 0
   m_Name: EnemyProjectileTest
   m_TagString: Untagged
@@ -119,27 +118,6 @@ MonoBehaviour:
   speed: 1.5
   damage: 10
   projectileLifeTime: 3
---- !u!50 &2281403092281069489
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2252358114905661944}
-  m_BodyType: 2
-  m_Simulated: 0
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!1001 &3464921503617304699
 PrefabInstance:
   m_ObjectHideFlags: 0
