@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sanford.Multimedia.Midi;
 
-
 public class BPMManager : MonoBehaviour
 {
     private AudioClip gameSong;
@@ -22,27 +21,23 @@ public class BPMManager : MonoBehaviour
     }
 
     private const float c_MINUTE = 60f;
-
     private float m_MIN = 0f;
     private float m_MAX;
+    private float lowerRange;
+    private float upperRange;
+    private float percentToBeat; //KEEPS TRACK OF HOW CLOSE YOU ARE TO A BEAT
+    private float BPS;
 
     public float BPM; //BPM OF THE SONG
     public float errorWindow; //THE AMOUNT OF TIME AFTER AND BEFORE THE BEAT THAT THE PLAYER CAN SHOOT FOR A BONUS
 
-    private float lowerRange;
-    private float upperRange;
-
-    private float percentToBeat; //KEEPS TRACK OF HOW CLOSE YOU ARE TO A BEAT
-
-    private float BPS;
-
     private void Awake()
     {
         _instance = this;
-        gameSong = GameObject.Find("Audio Manager").GetComponent<AudioSource>().clip;
-        //gameSong = GetComponent<AudioSource>().clip;
+       // gameSong = GameObject.Find("Audio Manager").GetComponent<AudioSource>().clip;
+        gameSong = GetComponent<AudioSource>().clip;
         BPM = UniBpmAnalyzer.AnalyzeBpm(gameSong);
-        BPM = BPM/2; //FIXING THE BPM (SOME SONGS WILL BE DIFFERENT)
+        BPM = BPM; //FIXING THE BPM (SOME SONGS WILL BE DIFFERENT)
     }
 
     private void Start()
@@ -57,8 +52,7 @@ public class BPMManager : MonoBehaviour
         lowerRange = m_MIN + errorWindow;
     }
 
-    public Color canClick = Color.red;
-
+    public Color canClick = Color.red; //JUST FOR DEBUGGING AND HELPING DESIGNERS VISUALIZE WHEN TO CLICK, WILL TRANSITION INTO MATH
     public void FixedUpdate()
     {
         percentToBeat += Time.deltaTime;

@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 5
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 0, g: 0.5471698, b: 0.5218553, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -102,9 +102,8 @@ MonoBehaviour:
   currentHealth: 0
   respawnTime: 2
   target: {fileID: 0}
-  stoppingDistance: 8
-  projectileSpeed: 2
-  startShotCooldown: 1.5
+  stoppingDistance: 4
+  startShotCooldown: 1
   healthbarExternal: {fileID: 5994701146355688125}
   projectile: {fileID: 2252358114905661944, guid: ee2f2386eaf7bcd4aae1f965652cc1ec, type: 3}
   _damageTaken: 0

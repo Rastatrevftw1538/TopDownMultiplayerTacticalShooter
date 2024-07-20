@@ -47,7 +47,10 @@ public class EnemyProjectile : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        DestroyProjectile();
+        if (other.gameObject.tag == "Wall")
+        {
+            DestroyProjectile();
+        }
     }
 
     private void DestroyProjectile()
