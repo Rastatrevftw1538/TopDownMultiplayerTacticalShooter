@@ -1,3 +1,6 @@
+using System.Linq;
+using System.Numerics;
+using System.IO.Enumeration;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -44,9 +47,14 @@ public class PlayerScriptSinglePlayer : MonoBehaviour, IEffectable
     public float walkSpeedNormal;
 
     [Header("Player Components")]
-    public Vector2 movement;
-    public Quaternion rotation;
+    public UnityEngine.Vector2 movement;
+    public UnityEngine.Quaternion rotation;
     public Rigidbody2D rb;
+    private GameObject playerBodyArms;
+    private GameObject playerBodyBody;
+
+    private SpriteRenderer playerBodyArmsSkelSprite;
+    private SpriteRenderer playerBodyBodySkelSprite;
     private StatusEffectData _statusEffectData;
 
     [Header("Player Status")]
@@ -78,6 +86,11 @@ public class PlayerScriptSinglePlayer : MonoBehaviour, IEffectable
         IdleState  = new PlayerIdleState(this, StateMachine, "Idle");
         MoveStateX = new PlayerMoveState(this, StateMachine, "MoveHorizontal");
         MoveStateY = new PlayerMoveState(this, StateMachine, "MoveVertical");
+
+        playerBodyArms = GameObject.Find("PlayerBody - Arms").gameObject;
+        playerBodyArmsSkelSprite = playerBodyArms.transform.GetChild(0).GetComponent<SpriteRenderer>();
+        playerBodyBody = GameObject.Find("PlayerBody - Body").gameObject;
+        playerBodyBodySkelSprite = playerBodyBody.transform.GetChild(0).GetComponent<SpriteRenderer>();
     }
 
     private void Start() {
@@ -139,19 +152,30 @@ public class PlayerScriptSinglePlayer : MonoBehaviour, IEffectable
                 isRunning = false;
             }
 
-            movement = new Vector2
+            movement = new UnityEngine.Vector2
             {
                 x = Input.GetAxisRaw("Horizontal"),
                 y = Input.GetAxisRaw("Vertical")
             };
-            movement = new Vector2(movement.x, movement.y).normalized * (isRunning ? runSpeed : walkSpeed) * 0.25f;
+            movement = new UnityEngine.Vector2(movement.x, movement.y).normalized * (isRunning ? runSpeed : walkSpeed) * 0.25f;
 
-            Vector3 mousePosition = Input.mousePosition;
+            UnityEngine.Vector3 mousePosition = Input.mousePosition;
             mousePosition.z = -playerCamera.transform.position.z;
-            Vector3 mouseWorldPosition = playerCamera.ScreenToWorldPoint(mousePosition);
-            Vector3 aimDirection = mouseWorldPosition - transform.position;
-            rotation = Quaternion.LookRotation(Vector3.forward, aimDirection);
+            UnityEngine.Vector3 mouseWorldPosition = playerCamera.ScreenToWorldPoint(mousePosition);
+            UnityEngine.Vector3 aimDirection = mouseWorldPosition - transform.position;
+            rotation = UnityEngine.Quaternion.LookRotation(UnityEngine.Vector3.forward, aimDirection);
             //print(rotation);
+
+            if(0f >= playerBodyArms.transform.localEulerAngles.z || playerBodyArms.transform.localEulerAngles.z <= 180f){
+                playerBodyArmsSkelSprite.flipY = true;
+                playerBodyBodySkelSprite.flipX = true;
+                Debug.Log("Z Rotation is: "+playerBodyArms.transform.localEulerAngles.z);
+            }
+            else{
+                playerBodyArmsSkelSprite.flipY = false;
+                playerBodyBodySkelSprite.flipX = false;
+                Debug.Log("Z Rotation is: "+playerBodyArms.transform.localEulerAngles.z);
+            }
         }
         #endregion
 
@@ -168,7 +192,7 @@ public class PlayerScriptSinglePlayer : MonoBehaviour, IEffectable
             rotation = rotationJoystick.GetRotationInput();
             isShooting = rotationJoystick.isShooting;
             isRunning = joystickController.isRunning;
-            movement = new Vector2(horizontal, vertical).normalized * (isRunning ? runSpeed : walkSpeed);
+            movement = new UnityEngine.Vector2(horizontal, vertical).normalized * (isRunning ? runSpeed : walkSpeed);
         }
         #endregion
 
@@ -190,24 +214,24 @@ public class PlayerScriptSinglePlayer : MonoBehaviour, IEffectable
         //CurrentVelocity = movement 
     }
 
-    private void CmdMove(Vector2 movement)
+    private void CmdMove(UnityEngine.Vector2 movement)
     {
         //RpcMove(movement);
         transform.Translate(movement * Time.fixedDeltaTime);    
     }
-    private void CmdRotate(Quaternion rotation)
+    private void CmdRotate(UnityEngine.Quaternion rotation)
     {
         //RpcRotation(rotation);
         transform.GetChild(0).transform.rotation = rotation;
     }
 
-    private void RpcMove(Vector2 movement)
+    private void RpcMove(UnityEngine.Vector2 movement)
     {
         transform.Translate(movement * Time.fixedDeltaTime);
         //transform.Translate(movement * Time.deltaTime);
     }
 
-    private void RpcRotation(Quaternion rotation)
+    private void RpcRotation(UnityEngine.Quaternion rotation)
     {
         transform.GetChild(0).transform.rotation = rotation;
     }

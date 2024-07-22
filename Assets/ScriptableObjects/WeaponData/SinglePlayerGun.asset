@@ -18,7 +18,7 @@ MonoBehaviour:
   fireRate: 0.15
   fireRange: 20
   numOfBulletsPerShot: 1
-  weaponSprite: {fileID: 21300000, guid: 1bb69cd91685d9248a58b144052746f3, type: 3}
+  weaponSprite: {fileID: 21300000, guid: 1faeac08259414fb2965137a09a43a84, type: 3}
   ammo: 30
   reloadTime: 2
   spreadIncreasePerSecond: 0.3
