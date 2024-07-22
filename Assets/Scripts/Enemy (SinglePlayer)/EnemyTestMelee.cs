@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.AI;
 
-public class EnemyTest : MonoBehaviour
+public class EnemyTestMelee : MonoBehaviour
 {
     [Header("Enemy Stats")]
     public float maxHealth;

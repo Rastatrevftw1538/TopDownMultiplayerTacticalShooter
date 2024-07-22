@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using static PlayerScriptSinglePlayer;
+
 public class PlayerHealthSinglePlayer : MonoBehaviour {
 
     public const float maxHealth = 100;
 
     public float currentHealth = maxHealth;
+    public float respawnTime;
 
     private Slider healthbarInternal;
     [SerializeField] private Image healthbarExternal;
@@ -39,6 +41,8 @@ public class PlayerHealthSinglePlayer : MonoBehaviour {
 
         if(currentHealth > 0)
             currentHealth -= amount;
+
+        healthbarExternal.fillAmount = currentHealth / maxHealth;
 
         checkHealth();
     }
@@ -83,8 +87,8 @@ public class PlayerHealthSinglePlayer : MonoBehaviour {
     void RpcDie()
     {
         // Stop player movement
-        this.GetComponent<PlayerScript>().setCanMove(false);
-        this.GetComponent<Weapon>().enabled = false;
+        this.GetComponent<PlayerScriptSinglePlayer>().setCanMove(false);
+        this.GetComponent<WeaponSinglePlayer>().enabled = false;
         isAlive = false;
         // Teleport player back to spawn
         // Restore health after 3 seconds
@@ -96,15 +100,15 @@ public class PlayerHealthSinglePlayer : MonoBehaviour {
 
         if (!isRespawning)
             //EvtSystem.EventDispatcher.Raise<PlayerDied>(playerDied);
-            Respawn(ChaseGameManager.instance.teamRespawnTime);
+            Respawn(respawnTime);
     }
     private void RestoreHealth()
     {
         currentHealth = maxHealth;
         isAlive = true;
         isRespawning = false;
-        GetComponent<Weapon>().enabled = true;
-        GetComponent<PlayerScript>().setCanMove(true);
+        GetComponent<WeaponSinglePlayer>().enabled = true;
+        GetComponent<PlayerScriptSinglePlayer>().setCanMove(true);
 
         //TO ENSURE THE SAME EVENTS DON'T GET RAISED MORE THAN ONCE
         hasSentEvent = false;
@@ -115,12 +119,13 @@ public class PlayerHealthSinglePlayer : MonoBehaviour {
     public void Respawn(float respawnTime)
     {
         //Debug.LogError(this.name+"DIED!");
-        foreach (Transform spawnPoints in /*TODO: Replace with game starting points*/ spawnPointList) {
+        /*TODO: Replace with game starting points*/
+        /*foreach (Transform spawnPoints in spawnPointList) {
                 Debug.LogError("got respawn point");
-                if (spawnPoints.CompareTag(this.GetComponent<PlayerScript>().PlayerTeam.ToString())) {
+                if (spawnPoints.CompareTag(this.GetComponent<PlayerScriptSinglePlayer>().PlayerTeam.ToString())) {
                     transform.position = spawnPoints.position;
                 }
-            }
+        }*/
 
         isRespawning = true;
         //ACTUALLY RESTORE HEALTH TO THE PLAYER

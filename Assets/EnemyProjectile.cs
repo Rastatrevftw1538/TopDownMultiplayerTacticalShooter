@@ -37,9 +37,9 @@ public class EnemyProjectile : MonoBehaviour
             playerHealth.TakeDamage(damage);
         }
 
-        if(other.gameObject.tag == "Wall")
+        if (other.gameObject.tag == "Wall")
         {
-            
+            DestroyProjectile();
         }
 
         DestroyProjectile();
@@ -47,16 +47,19 @@ public class EnemyProjectile : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        DestroyProjectile();
-    }
-
-    public void Attack()
-    {
-        //transform.Translate(Vector2.up * speed * Time.fixedDeltaTime);
+        if (other.gameObject.tag == "Wall")
+        {
+            DestroyProjectile();
+        }
     }
 
     private void DestroyProjectile()
     {
         Destroy(gameObject);
+    }
+
+    private void PlayParticles()
+    {
+
     }
 }

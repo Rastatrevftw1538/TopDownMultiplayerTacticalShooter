@@ -180,7 +180,7 @@ public class PlayerScriptSinglePlayer : MonoBehaviour, IEffectable
         }
         #endregion
 
-        StateMachine.CurrentState.PhysicsUpdate();
+        //StateMachine.CurrentState.PhysicsUpdate();
     }
 
     public void SetVelocity(float x, float y)
