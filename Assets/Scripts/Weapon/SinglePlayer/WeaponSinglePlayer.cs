@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -34,6 +35,8 @@ public class WeaponSinglePlayer : MonoBehaviour
     private int totalMags;
     [HideInInspector] public int magSize;
     [HideInInspector] public float fireRate = 0.2f; // added fire rate variable
+    private bool semiAuto;
+    private bool allowedToFire;
     private int currentAmmo;
     private float nextFireTime = 0f;
     private bool outOfAmmo = false;
@@ -61,6 +64,7 @@ public class WeaponSinglePlayer : MonoBehaviour
             fireRange = weaponSpecs.fireRange;
             numOfBulletsPerShot = weaponSpecs.numOfBulletsPerShot;
             fireRate = weaponSpecs.fireRate;
+            semiAuto = weaponSpecs.semiAuto;
             weaponLooks.sprite = weaponSpecs.weaponSprite;
             magSize = weaponSpecs.ammo;
             reloadTime = weaponSpecs.reloadTime;
@@ -110,7 +114,6 @@ public class WeaponSinglePlayer : MonoBehaviour
     {
         if (isReloading)
             return;
-
         float coneScale = 1f + (spread * coneSpreadFactor);
         spreadCone.transform.localScale = new Vector3(Mathf.Clamp(coneScale, 0, 35), spreadCone.transform.localScale.y, 1f); //HERE
         spreadCone.color = new Color(1, 0, 0, Mathf.Clamp((Mathf.Clamp(spread, 0f, 100f) - 0) / (100 - 0), 0.25f, 0.75f));
@@ -174,7 +177,12 @@ public class WeaponSinglePlayer : MonoBehaviour
         }
         isReloading = false;
     }
-
+    IEnumerator Cooldown()
+    {
+        allowedToFire = false;
+        yield return new WaitForSeconds(fireRate);
+        allowedToFire = true;
+    }
     //[Command]
     public void CmdFire(Vector2 direction)
     {
