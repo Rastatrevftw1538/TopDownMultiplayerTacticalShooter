@@ -1,7 +1,5 @@
 {
   "dependencies": {
-    "com.unity.2d.animation": "7.1.1",
-    "com.unity.2d.psdimporter": "6.0.9",
     "com.unity.cinemachine": "2.8.9",
     "com.unity.collab-proxy": "1.15.17",
     "com.unity.feature.2d": "1.0.0",
