@@ -209,7 +209,7 @@ public class WeaponSinglePlayer : MonoBehaviour
             {
                 #region UGLY CODE FOR NOW
                 whatWasHit = hit.collider.tag;
-                Debug.LogError(hit.collider.gameObject);
+                //Debug.LogError(hit.collider.gameObject);
                 if (hit.collider.name.Equals("HitBox") || hit.collider.name.Equals("Bullseye!"))
                 {
                     Transform objectOrigin = hit.collider.transform.parent.parent;
@@ -299,12 +299,15 @@ public class WeaponSinglePlayer : MonoBehaviour
                         {
                             IEnemy enemy = objectOrigin.GetComponent<IEnemy>();
                             float dmg = damage;
-                            if (CheckBPM())
+                            if (CheckBPM() && enemy != null)
                             {
                                 dmg = damage * damageMultiplierBPM;
                             }
                             enemy.TakeDamage(dmg);
                         }
+                        break;
+
+                    default:
                         break;
                 }
             }

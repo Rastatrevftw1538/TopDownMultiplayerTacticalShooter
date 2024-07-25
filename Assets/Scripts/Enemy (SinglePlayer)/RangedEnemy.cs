@@ -46,6 +46,16 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         agent.updateUpAxis = false;
 
         shotCooldown = startShotCooldown;
+
+        if (target == null && player != null)
+        {
+            target = player.gameObject.transform;
+        }
+        else if (target == null && player == null)
+        {
+            target = GameObject.Find("Player - SinglePlayer").transform;
+            player = target.GetComponent<PlayerHealthSinglePlayer>();
+        }
     }
 
     private void Update()
@@ -172,8 +182,11 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     void RpcDie()
     {
         isAlive = false;
-        this.transform.parent.gameObject.SetActive(false);
-        Respawn(respawnTime);
+        //this.transform.parent.gameObject.SetActive(false);
+        //Respawn(respawnTime);
+        Destroy(this.transform.parent.gameObject);
+
+        SPGameManager.Instance.enemiesKilled++;
     }
 
     private void CheckHealth()

@@ -4,12 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.AI;
 
-public class MeleeEnemy : MonoBehaviour
+public class MeleeEnemy : MonoBehaviour, IEnemy
 {
     [Header("Enemy Stats")]
     public float maxHealth;
     [SerializeField] private float currentHealth;
     public float damage;
+    public float attackSpd;
     public float respawnTime = 2f;
     [SerializeField] private Transform target;
     private NavMeshAgent agent;
@@ -40,6 +41,14 @@ public class MeleeEnemy : MonoBehaviour
         agent = GetComponentInParent<NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
+
+        if (target == null && player != null)
+        {
+            target = player.gameObject.transform;
+        } else if (target == null && player == null){
+            target = GameObject.Find("Player - SinglePlayer").transform;
+            player = target.GetComponent<PlayerHealthSinglePlayer>();
+        }
     }
 
     private void Update()
@@ -65,9 +74,9 @@ public class MeleeEnemy : MonoBehaviour
         }
     }
 
-    private void Attack()
+    private IEnumerator Attack()
     {
-
+        yield return new WaitForSeconds(attackSpd);
     }
 
     public bool checkIfAlive
@@ -141,8 +150,12 @@ public class MeleeEnemy : MonoBehaviour
     void RpcDie()
     {
         isAlive = false;
-        this.transform.parent.gameObject.SetActive(false);
-        Respawn(respawnTime);
+        //this.transform.parent.gameObject.SetActive(false);
+        //Respawn(respawnTime);
+        Destroy(this.transform.parent.gameObject);
+
+        //IDEALLY, we move this to the interface
+        SPGameManager.Instance.enemiesKilled++;
     }
 
     private void CheckHealth()

@@ -34372,18 +34372,6 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 398991765}
-    - target: {fileID: 44879652, guid: 7105842b1afb0c84bad44410fb35bea4, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3167820307694051131, guid: 7105842b1afb0c84bad44410fb35bea4, type: 3}
-      propertyPath: m_Name
-      value: HitBox
-      objectReference: {fileID: 0}
-    - target: {fileID: 3167820307694051131, guid: 7105842b1afb0c84bad44410fb35bea4, type: 3}
-      propertyPath: m_TagString
-      value: Enemy
-      objectReference: {fileID: 0}
     - target: {fileID: 5994701145239110948, guid: 7105842b1afb0c84bad44410fb35bea4, type: 3}
       propertyPath: m_RootOrder
       value: 9
@@ -34431,18 +34419,6 @@ PrefabInstance:
     - target: {fileID: 5994701145239110951, guid: 7105842b1afb0c84bad44410fb35bea4, type: 3}
       propertyPath: m_Name
       value: Enemy Test
-      objectReference: {fileID: 0}
-    - target: {fileID: 5994701145239110951, guid: 7105842b1afb0c84bad44410fb35bea4, type: 3}
-      propertyPath: m_TagString
-      value: Enemy
-      objectReference: {fileID: 0}
-    - target: {fileID: 5994701146456239410, guid: 7105842b1afb0c84bad44410fb35bea4, type: 3}
-      propertyPath: m_TagString
-      value: Untagged
-      objectReference: {fileID: 0}
-    - target: {fileID: 7841998165010052505, guid: 7105842b1afb0c84bad44410fb35bea4, type: 3}
-      propertyPath: m_Enabled
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7105842b1afb0c84bad44410fb35bea4, type: 3}
