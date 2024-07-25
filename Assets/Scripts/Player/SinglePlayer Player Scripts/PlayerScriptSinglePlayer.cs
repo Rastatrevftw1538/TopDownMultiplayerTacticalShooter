@@ -169,12 +169,12 @@ public class PlayerScriptSinglePlayer : MonoBehaviour, IEffectable
             if(0f >= playerBodyArms.transform.localEulerAngles.z || playerBodyArms.transform.localEulerAngles.z <= 180f){
                 playerBodyArmsSkelSprite.flipY = true;
                 playerBodyBodySkelSprite.flipX = true;
-                Debug.Log("Z Rotation is: "+playerBodyArms.transform.localEulerAngles.z);
+                //Debug.Log("Z Rotation is: "+playerBodyArms.transform.localEulerAngles.z);
             }
             else{
                 playerBodyArmsSkelSprite.flipY = false;
                 playerBodyBodySkelSprite.flipX = false;
-                Debug.Log("Z Rotation is: "+playerBodyArms.transform.localEulerAngles.z);
+                //Debug.Log("Z Rotation is: "+playerBodyArms.transform.localEulerAngles.z);
             }
         }
         #endregion

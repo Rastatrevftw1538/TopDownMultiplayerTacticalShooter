@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.AI;
 
-public class EnemyTestMelee : MonoBehaviour
+public class RangedEnemy : MonoBehaviour, Enemy
 {
     [Header("Enemy Stats")]
     public float maxHealth;
@@ -14,6 +14,7 @@ public class EnemyTestMelee : MonoBehaviour
     private NavMeshAgent agent; 
     public float stoppingDistance;
     public float startShotCooldown;
+    public float touchDamage;
     private float shotCooldown;
 
     [Header("Enemy Components")]
@@ -75,6 +76,19 @@ public class EnemyTestMelee : MonoBehaviour
         transform.up = direction; //ROTATES THE ENEMY TO THE PLAYER 
 
         //attack
+    }
+
+    static PlayerHealthSinglePlayer player;
+    public void OnTriggerEnter2D(Collider2D other)
+    {
+        //attack
+        if (other.gameObject.tag == "Player")
+        {
+            if (!player)
+                player = other.gameObject.GetComponent<PlayerHealthSinglePlayer>();
+
+            player.TakeDamage(touchDamage);
+        }
     }
 
     private void Attack()

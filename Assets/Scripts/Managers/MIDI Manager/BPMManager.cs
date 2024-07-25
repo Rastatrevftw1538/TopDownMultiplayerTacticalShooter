@@ -61,7 +61,7 @@ public class BPMManager : MonoBehaviour
             percentToBeat = m_MIN;
         
         //if(percentToBeat <= lowerRange || percentToBeat <= upperRange)
-        if((percentToBeat <= lowerRange && percentToBeat >= m_MIN) || (percentToBeat >= upperRange))
+        if((percentToBeat <= lowerRange && percentToBeat >= m_MIN) || (percentToBeat >= upperRange && percentToBeat <= m_MAX))
         {
             canClick = Color.green;
             //Debug.LogError("DO Click");

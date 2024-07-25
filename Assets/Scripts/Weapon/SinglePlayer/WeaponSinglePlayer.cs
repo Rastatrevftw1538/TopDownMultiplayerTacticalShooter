@@ -258,7 +258,32 @@ public class WeaponSinglePlayer : MonoBehaviour
                         //enemy
                         if (!foundWhatHit)
                         {
-                            EnemyTest dummyHealth = objectOrigin.GetComponentInChildren<EnemyTest>();
+                            RangedEnemy dummyHealth = objectOrigin.GetComponentInChildren<RangedEnemy>();
+                            if (dummyHealth != null && !foundWhatHit)
+                            {
+                                if (dummyHealth.canHit)
+                                {
+                                    //CLICKED ON BEAT?
+                                    if (BPMManager.instance.canClick == Color.green)
+                                    {
+                                        Debug.LogError("ON BEAT :)!! HIT ENEMY FOR " + damage * damageMultiplierBPM);
+                                        damageDone = (damage * damageMultiplierBPM);
+                                    }
+                                    else
+                                    {
+                                        Debug.LogError("NOT ON BEAT :(!! HIT ENEMY FOR " + damage);
+                                        damageDone = (damage);
+                                    }
+                                    dummyHealth.TakeDamage(damageDone);
+                                }
+
+                                foundWhatHit = true;
+                            }
+                        }
+
+                        if (!foundWhatHit)
+                        {
+                            MeleeEnemy dummyHealth = objectOrigin.GetComponentInChildren<MeleeEnemy>();
                             if (dummyHealth != null && !foundWhatHit)
                             {
                                 if (dummyHealth.canHit)

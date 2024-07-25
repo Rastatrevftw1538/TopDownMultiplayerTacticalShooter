@@ -4,21 +4,18 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.AI;
 
-public class EnemyTest : MonoBehaviour
+public class MeleeEnemy : MonoBehaviour
 {
     [Header("Enemy Stats")]
     public float maxHealth;
     [SerializeField] private float currentHealth;
+    public float damage;
     public float respawnTime = 2f;
     [SerializeField] private Transform target;
-    private NavMeshAgent agent; 
-    public float stoppingDistance;
-    public float startShotCooldown;
-    private float shotCooldown;
+    private NavMeshAgent agent;
 
     [Header("Enemy Components")]
     [SerializeField] private Image healthbarExternal;
-    [SerializeField] private GameObject projectile;
 
     [Header("Debug")]
     [SerializeField] private float _damageTaken = 0;
@@ -43,8 +40,6 @@ public class EnemyTest : MonoBehaviour
         agent = GetComponentInParent<NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
-
-        shotCooldown = startShotCooldown;
     }
 
     private void Update()
@@ -52,35 +47,27 @@ public class EnemyTest : MonoBehaviour
         //healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
         agent.SetDestination(target.position);
 
-        //DISTANCE BEFORE STOPPING
-        if(agent.remainingDistance <= stoppingDistance)
-        {
-            agent.isStopped = true;
-        }
-        else
-        {
-            agent.isStopped = false;
-        }
-
-        if (shotCooldown <= 0)
-        {
-            Attack();
-        }
-        else
-        {
-            shotCooldown -= Time.deltaTime;
-        }
-
         Vector2 direction = new Vector2(target.position.x - transform.position.x, target.position.y - transform.position.y); //FIND DIRECTION OF PLAYER
         transform.up = direction; //ROTATES THE ENEMY TO THE PLAYER 
 
         //attack
     }
 
+    static PlayerHealthSinglePlayer player;
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.gameObject.tag == "Player")
+        {
+            if (player == null)
+                player = other.gameObject.GetComponent<PlayerHealthSinglePlayer>();
+
+            player.TakeDamage(damage);
+        }
+    }
+
     private void Attack()
     {
-        GameObject currentProjectile = Instantiate(projectile, transform.position, transform.rotation);
-        shotCooldown = startShotCooldown;
+
     }
 
     public bool checkIfAlive
@@ -96,8 +83,6 @@ public class EnemyTest : MonoBehaviour
     {
         this.currentHealth = healthValue;
     }
-
-    private float timeSinceLastShot;
     public void TakeDamage(float amount)
     {
         //FIRST CHECK IF THE BASE'S HEALTH IS BELOW 0
@@ -108,8 +93,6 @@ public class EnemyTest : MonoBehaviour
 
         //THEN CHECK FOR ALL THE OTHER DAMAGE CONDITIONS
         _damageTaken += amount;
-
-        timeSinceLastShot = Time.deltaTime;
 
         DisplayHit(amount);
         healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
