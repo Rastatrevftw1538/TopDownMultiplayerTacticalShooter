@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-interface Enemy
+interface IEnemy
 {
+    void TakeDamage(float damage)
+    {
 
+    }
 }

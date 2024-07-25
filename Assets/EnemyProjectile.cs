@@ -41,8 +41,6 @@ public class EnemyProjectile : MonoBehaviour
         {
             DestroyProjectile();
         }
-
-        DestroyProjectile();
     }
 
     private void OnCollisionEnter2D(Collision2D other)

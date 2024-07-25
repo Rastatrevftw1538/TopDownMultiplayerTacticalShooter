@@ -181,6 +181,12 @@ public class WeaponSinglePlayer : MonoBehaviour
         RpcFire(direction);
     }
 
+    private bool CheckBPM()
+    {
+        if (BPMManager.instance.canClick == Color.green) return true;
+        return false;
+    }
+
     //[ClientRpc]
     public void RpcFire(Vector2 direction)
     {
@@ -203,6 +209,7 @@ public class WeaponSinglePlayer : MonoBehaviour
             {
                 #region UGLY CODE FOR NOW
                 whatWasHit = hit.collider.tag;
+                Debug.LogError(hit.collider.gameObject);
                 if (hit.collider.name.Equals("HitBox") || hit.collider.name.Equals("Bullseye!"))
                 {
                     Transform objectOrigin = hit.collider.transform.parent.parent;
@@ -223,83 +230,6 @@ public class WeaponSinglePlayer : MonoBehaviour
                                     print("<color=yellow> Damage to base: " + damageDone + "</color>");
                                     baseHealth.TakeDamage(damageDone);
                                     Debug.Log("<color=orange>did Hit base </color>");
-                                }
-
-                                foundWhatHit = true;
-                            }
-                        }
-
-                        //training dummy
-                        if (!foundWhatHit)
-                        {
-                            TrainingDummy dummyHealth = objectOrigin.GetComponent<TrainingDummy>();
-                            if (dummyHealth != null && !foundWhatHit)
-                            {
-                                if (dummyHealth.canHit)
-                                {
-                                    //CLICKED ON BEAT?
-                                    if (BPMManager.instance.canClick == Color.green)
-                                    {
-                                        Debug.LogError("ON BEAT :)!! HIT DUMMY FOR " + damage * damageMultiplierBPM);
-                                        damageDone = (damage * damageMultiplierBPM);
-                                    }
-                                    else
-                                    {
-                                        Debug.LogError("NOT ON BEAT :(!! HIT DUMMY FOR " + damage);
-                                        damageDone = (damage);
-                                    }
-                                    dummyHealth.TakeDamage(damageDone);
-                                }
-
-                                foundWhatHit = true;
-                            }
-                        }
-
-                        //enemy
-                        if (!foundWhatHit)
-                        {
-                            RangedEnemy dummyHealth = objectOrigin.GetComponentInChildren<RangedEnemy>();
-                            if (dummyHealth != null && !foundWhatHit)
-                            {
-                                if (dummyHealth.canHit)
-                                {
-                                    //CLICKED ON BEAT?
-                                    if (BPMManager.instance.canClick == Color.green)
-                                    {
-                                        Debug.LogError("ON BEAT :)!! HIT ENEMY FOR " + damage * damageMultiplierBPM);
-                                        damageDone = (damage * damageMultiplierBPM);
-                                    }
-                                    else
-                                    {
-                                        Debug.LogError("NOT ON BEAT :(!! HIT ENEMY FOR " + damage);
-                                        damageDone = (damage);
-                                    }
-                                    dummyHealth.TakeDamage(damageDone);
-                                }
-
-                                foundWhatHit = true;
-                            }
-                        }
-
-                        if (!foundWhatHit)
-                        {
-                            MeleeEnemy dummyHealth = objectOrigin.GetComponentInChildren<MeleeEnemy>();
-                            if (dummyHealth != null && !foundWhatHit)
-                            {
-                                if (dummyHealth.canHit)
-                                {
-                                    //CLICKED ON BEAT?
-                                    if (BPMManager.instance.canClick == Color.green)
-                                    {
-                                        Debug.LogError("ON BEAT :)!! HIT ENEMY FOR " + damage * damageMultiplierBPM);
-                                        damageDone = (damage * damageMultiplierBPM);
-                                    }
-                                    else
-                                    {
-                                        Debug.LogError("NOT ON BEAT :(!! HIT ENEMY FOR " + damage);
-                                        damageDone = (damage);
-                                    }
-                                    dummyHealth.TakeDamage(damageDone);
                                 }
 
                                 foundWhatHit = true;
@@ -360,6 +290,23 @@ public class WeaponSinglePlayer : MonoBehaviour
 
                 }
                 #endregion
+
+                switch (hit.collider.tag)
+                {
+                    case "Enemy":
+                        Transform objectOrigin = hit.collider.transform;
+                        if (objectOrigin != null)
+                        {
+                            IEnemy enemy = objectOrigin.GetComponent<IEnemy>();
+                            float dmg = damage;
+                            if (CheckBPM())
+                            {
+                                dmg = damage * damageMultiplierBPM;
+                            }
+                            enemy.TakeDamage(dmg);
+                        }
+                        break;
+                }
             }
 
             else
@@ -387,9 +334,9 @@ public class WeaponSinglePlayer : MonoBehaviour
     //[ClientRpc]
     void RpcOnFire(RaycastHit2D hit, Vector3 spreadDirection, Vector3 collisionPoint, String whatWasHit)
     {
-        Debug.Log("Collision Point: " + collisionPoint);
-        Debug.Log("Hit: " + whatWasHit);
-        Debug.Log("HUh? Client: " + spreadDirection);
+        //Debug.Log("Collision Point: " + collisionPoint);
+        //Debug.Log("Hit: " + whatWasHit);
+        //Debug.Log("HUh? Client: " + spreadDirection);
         
         if (whatWasHit != "NOTHING")
         {

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.AI;
 
-public class RangedEnemy : MonoBehaviour, Enemy
+public class RangedEnemy : MonoBehaviour, IEnemy
 {
     [Header("Enemy Stats")]
     public float maxHealth;
@@ -186,3 +186,88 @@ public class RangedEnemy : MonoBehaviour, Enemy
         }
     }
 }
+/*
+bool foundWhatHit = false;
+//training dummy
+if (!foundWhatHit)
+{
+    TrainingDummy dummyHealth = objectOrigin.GetComponent<TrainingDummy>();
+    if (dummyHealth != null && !foundWhatHit)
+    {
+        if (dummyHealth.canHit)
+        {
+            //CLICKED ON BEAT?
+            if (BPMManager.instance.canClick == Color.green)
+            {
+                Debug.LogError("ON BEAT :)!! HIT DUMMY FOR " + damage * damageMultiplierBPM);
+                damageDone = (damage * damageMultiplierBPM);
+            }
+            else
+            {
+                Debug.LogError("NOT ON BEAT :(!! HIT DUMMY FOR " + damage);
+                damageDone = (damage);
+            }
+            dummyHealth.TakeDamage(damageDone);
+        }
+
+        foundWhatHit = true;
+    }
+}
+
+//enemy
+
+if (!foundWhatHit)
+{
+    Debug.LogError("made it here1");
+    RangedEnemy dummyHealth = objectOrigin.GetComponent<RangedEnemy>();
+    if (dummyHealth != null && !foundWhatHit)
+    {
+        Debug.LogError("made it here1a");
+        if (dummyHealth.canHit)
+        {
+            Debug.LogError("made it here1b");
+            //CLICKED ON BEAT?
+            if (BPMManager.instance.canClick == Color.green)
+            {
+                Debug.LogError("ON BEAT :)!! HIT ENEMY FOR " + damage * damageMultiplierBPM);
+                damageDone = (damage * damageMultiplierBPM);
+            }
+            else
+            {
+                Debug.LogError("NOT ON BEAT :(!! HIT ENEMY FOR " + damage);
+                damageDone = (damage);
+            }
+            dummyHealth.TakeDamage(damageDone);
+        }
+
+        foundWhatHit = true;
+    }
+}
+
+if (!foundWhatHit)
+{
+    Debug.LogError("made it here2");
+    MeleeEnemy dummyHealth = objectOrigin.GetComponent<MeleeEnemy>();
+    if (dummyHealth != null && !foundWhatHit)
+    {
+        Debug.LogError("made it here2a");
+        if (dummyHealth.canHit)
+        {
+            Debug.LogError("made it here2b");
+            //CLICKED ON BEAT?
+            if (BPMManager.instance.canClick == Color.green)
+            {
+                Debug.LogError("ON BEAT :)!! HIT ENEMY FOR " + damage * damageMultiplierBPM);
+                damageDone = (damage * damageMultiplierBPM);
+            }
+            else
+            {
+                Debug.LogError("NOT ON BEAT :(!! HIT ENEMY FOR " + damage);
+                damageDone = (damage);
+            }
+            dummyHealth.TakeDamage(damageDone);
+        }
+
+        foundWhatHit = true;
+    }
+}*/
