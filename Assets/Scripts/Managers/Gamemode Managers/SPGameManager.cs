@@ -31,7 +31,10 @@ public class SPGameManager : Singleton<SPGameManager>
         public void SpawnEnemies(GameObject currentSpawn)
         {
             foreach (GameObject enemy in _enemies)
+            {
                 GameObject.Instantiate(enemy, currentSpawn.transform);
+                _amtEnemies++;
+            }
         }
 
         public float AmtEnemies()
