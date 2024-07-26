@@ -7594,6 +7594,11 @@ MonoBehaviour:
   m_InstancedGameObject: {fileID: 0}
   m_Flags: 3
   m_ColliderType: 1
+--- !u!1 &1102605777 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8616342455689032815, guid: ed11e4f1c822cbc4896722a3dd504166, type: 3}
+  m_PrefabInstance: {fileID: 2639691167624583661}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1105458785
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22053,7 +22058,7 @@ MonoBehaviour:
   - {fileID: 2062938735}
   - {fileID: 346562976}
   wave3SpawnAreas:
-  - {fileID: 0}
+  - {fileID: 1393132178}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -22066,7 +22071,8 @@ MonoBehaviour:
   - {fileID: 5994701145239110951, guid: 7105842b1afb0c84bad44410fb35bea4, type: 3}
   - {fileID: 5994701145239110951, guid: 7105842b1afb0c84bad44410fb35bea4, type: 3}
   - {fileID: 8616342455689032815, guid: ed11e4f1c822cbc4896722a3dd504166, type: 3}
-  wave3Enemies: []
+  wave3Enemies:
+  - {fileID: 1102605777}
   victoryScreen: {fileID: 0}
 --- !u!4 &1397416010
 Transform:
