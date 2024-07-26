@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0d332ebd4ca0354fb4b0febea93c68f, type: 3}
   m_Name: AR
   m_EditorClassIdentifier: 
+  shootSound: []
+  reloadSound: []
   damagePerBullet: 15
   fireRate: 0.15
   fireRange: 10

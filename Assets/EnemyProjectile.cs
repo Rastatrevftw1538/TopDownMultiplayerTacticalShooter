@@ -41,13 +41,14 @@ public class EnemyProjectile : MonoBehaviour
         {
             DestroyProjectile();
         }
-
-        DestroyProjectile();
     }
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        DestroyProjectile();
+        if (other.gameObject.tag == "Wall")
+        {
+            DestroyProjectile();
+        }
     }
 
     private void DestroyProjectile()

@@ -53,7 +53,7 @@ public class AbilityHolderSP : MonoBehaviour
             case AbilityState.ready:
                 //IF THE DEBUG KEY IS PRESSED, ACTIVATE THE ABILITY
                 //if(Input.GetKeyDown(debugKeys[0]) || Input.GetKeyDown(debugKeys[1]))//USE THIS IF EVENTS ARE BREAKING THE GAME
-                if (debugKeys.Contains(e.keyCode)) //COMMENT THIS OUT IF EVENTS ARE BREAKING THE GAME
+                if (e != null && debugKeys.Contains(e.keyCode)) //COMMENT THIS OUT IF EVENTS ARE BREAKING THE GAME
                 {
                     indx = debugKeys.FindIndex(x => x == e.keyCode); //COMMENT THIS OUT IF EVENTS ARE BREAKING THE GAME
                     //USE THIS IF EVENTS ARE BREAKING THE GAME
