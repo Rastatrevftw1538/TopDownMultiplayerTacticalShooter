@@ -25,13 +25,18 @@ public class SPGameManager : Singleton<SPGameManager>
         {
             _spawnAreas = spawnAreas;
             _enemies = enemies;
-            _amtEnemies = spawnAreas.Count * enemies.Count;
+            _amtEnemies = 0f;
         }
 
         public void SpawnEnemies(GameObject currentSpawn)
         {
             foreach (GameObject enemy in _enemies)
-                GameObject.Instantiate(enemy, currentSpawn.transform);
+            {
+                if (currentSpawn != null) { 
+                    GameObject.Instantiate(enemy, currentSpawn.transform);
+                    _amtEnemies++;
+                }   
+            }
         }
 
         public float AmtEnemies()
@@ -102,29 +107,34 @@ public class SPGameManager : Singleton<SPGameManager>
     bool endedPreviousWave = false;
     void Update()
     {
-       /*if (enemiesKilled == WaveOne.AmtEnemies())
+        /*if (enemiesKilled == WaveOne.AmtEnemies())
+         {
+             endedPreviousWave = true;
+             if (endedPreviousWave)
+             {
+                 enemiesKilled = 0f;
+                 currentWave++;
+                 endedPreviousWave = false;
+
+                 //StartWave(WaveTwo);
+                 EndedPhase();
+                 Debug.LogError("Starting Wave Two");
+                 //StartWave
+             }
+         }
+        */
+        Debug.LogError("you need " + waves[currentWave - 1].AmtEnemies());
+        Debug.LogError("on wave" + currentWave);
+        if (enemiesKilled == waves[currentWave - 1].AmtEnemies())
         {
             endedPreviousWave = true;
             if (endedPreviousWave)
             {
+                endedPreviousWave = false;
                 enemiesKilled = 0f;
                 currentWave++;
-                endedPreviousWave = false;
 
-                //StartWave(WaveTwo);
-                EndedPhase();
-                Debug.LogError("Starting Wave Two");
-                //StartWave
-            }
-        }
-       */
-        if(enemiesKilled == waves[currentWave - 1].AmtEnemies())
-        {
-            endedPreviousWave = true;
-            if (endedPreviousWave)
-            {
                 StartWave(EndedWave());
-                endedPreviousWave = false;
             }
         }
     }
@@ -141,9 +151,9 @@ public class SPGameManager : Singleton<SPGameManager>
             foreach (GameObject spawnPoint in wave._spawnAreas)
             {
                 //spawn those enemies, in each of the spawn points
-                wave.SpawnEnemies(spawnPoint);
+                if(spawnPoint != null)
+                    wave.SpawnEnemies(spawnPoint);
             }
-            currentWave++;
             return;
         }
         //if you completed all the waves, start the next level
