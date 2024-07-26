@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
 
 public class SPGameManager : Singleton<SPGameManager>
 {
     //change to interface enemy later, and do custom editor stuff
+    private static List<Wave> waves = new List<Wave>();
     public struct Wave
     {
         public List<GameObject> _spawnAreas;
@@ -16,6 +19,7 @@ public class SPGameManager : Singleton<SPGameManager>
             _spawnAreas = spawnAreas;
             _enemies = enemies;
         }*/
+
 
         Wave(List<GameObject> spawnAreas, List<GameObject> enemies)
         {
@@ -41,7 +45,7 @@ public class SPGameManager : Singleton<SPGameManager>
     }
 
     [Header("Spawn Areas & Waves")]
-    public float waveCount;
+    public int currentWave;
     //public List<GameObject> spawnAreas = new List<GameObject>();
     public float spawnInterval;
     public float enemiesKilled;
@@ -54,6 +58,10 @@ public class SPGameManager : Singleton<SPGameManager>
     public List<GameObject> wave1Enemies = new List<GameObject>();
     public List<GameObject> wave2Enemies = new List<GameObject>();
     public List<GameObject> wave3Enemies = new List<GameObject>();
+
+    [Header("Temp UI")]
+    public GameObject victoryScreen;
+
     void OnGUI()
     {
 
@@ -79,39 +87,85 @@ public class SPGameManager : Singleton<SPGameManager>
         WaveThree._spawnAreas = wave3SpawnAreas;
         WaveThree._enemies = wave3Enemies;
 
-        StartWave(WaveOne);
-        Debug.LogError("Starting Wave One");
+        waves.Add(WaveOne);
+        waves.Add(WaveTwo);
+        waves.Add(WaveThree);
+
+        //START THE FIRST WAVE
+        currentWave = 1; //always start on wave 1
+        StartWave(waves[currentWave - 1]);
+
+        Debug.LogError("Starting Wave one");
     }
 
     // Update is called once per frame
     bool endedPreviousWave = false;
     void Update()
     {
-        if (enemiesKilled == WaveOne.AmtEnemies())
+       /*if (enemiesKilled == WaveOne.AmtEnemies())
         {
             endedPreviousWave = true;
             if (endedPreviousWave)
             {
                 enemiesKilled = 0f;
-                StartWave(WaveTwo);
+                currentWave++;
                 endedPreviousWave = false;
+
+                //StartWave(WaveTwo);
+                EndedPhase();
                 Debug.LogError("Starting Wave Two");
+                //StartWave
+            }
+        }
+       */
+        if(enemiesKilled == waves[currentWave - 1].AmtEnemies())
+        {
+            endedPreviousWave = true;
+            if (endedPreviousWave)
+            {
+                StartWave(EndedWave());
+                endedPreviousWave = false;
             }
         }
     }
 
-    private void StartWave(Wave wave)
+    async void StartWave(Wave wave)
     {
-        //for every spawn point area in this wave,
-        foreach(GameObject spawnPoint in wave._spawnAreas)
+        wave = waves[currentWave - 1];
+        await Task.Run(() => EndedWave());
+
+        //If there are still waves to spawn,
+        if (currentWave <= waves.Count)
         {
-            //spawn those enemies, in each of the spawn points
-            wave.SpawnEnemies(spawnPoint);
+            //for every spawn point area in this wave,
+            foreach (GameObject spawnPoint in wave._spawnAreas)
+            {
+                //spawn those enemies, in each of the spawn points
+                wave.SpawnEnemies(spawnPoint);
+            }
+            currentWave++;
+            return;
         }
+        //if you completed all the waves, start the next level
+        EndedLevel();
+
     }
 
-    private void SpawnEnemies(Wave wave)
+    async void StartLevel()
     {
+        await Task.Run(() => EndedLevel());
 
+        //start new unity scene
+    }
+
+    private Wave EndedWave()
+    {
+        return waves[currentWave - 1];
+    }
+
+    private void EndedLevel()
+    {
+        victoryScreen.SetActive(true);
+        Debug.LogError("Ended Level (all waves are complete for this scene.");
     }
 }
