@@ -59,10 +59,12 @@ public class SPGameManager : Singleton<SPGameManager>
     public List<GameObject> wave1SpawnAreas = new List<GameObject>();
     public List<GameObject> wave2SpawnAreas = new List<GameObject>();
     public List<GameObject> wave3SpawnAreas = new List<GameObject>();
+    public List<GameObject> wave4SpawnAreas = new List<GameObject>();
 
     public List<GameObject> wave1Enemies = new List<GameObject>();
     public List<GameObject> wave2Enemies = new List<GameObject>();
     public List<GameObject> wave3Enemies = new List<GameObject>();
+    public List<GameObject> wave4Enemies = new List<GameObject>();
 
     [Header("Temp UI")]
     public GameObject victoryScreen;
@@ -76,6 +78,8 @@ public class SPGameManager : Singleton<SPGameManager>
     Wave WaveOne;
     Wave WaveTwo;
     Wave WaveThree;
+    Wave WaveFour;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -92,9 +96,13 @@ public class SPGameManager : Singleton<SPGameManager>
         WaveThree._spawnAreas = wave3SpawnAreas;
         WaveThree._enemies = wave3Enemies;
 
+        WaveFour._spawnAreas =  wave4SpawnAreas;
+        WaveFour._enemies = wave4Enemies;
+
         waves.Add(WaveOne);
         waves.Add(WaveTwo);
         waves.Add(WaveThree);
+        waves.Add(WaveFour);
 
         //START THE FIRST WAVE
         currentWave = 1; //always start on wave 1
