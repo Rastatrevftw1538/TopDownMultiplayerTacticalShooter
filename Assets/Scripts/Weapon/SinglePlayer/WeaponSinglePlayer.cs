@@ -80,6 +80,7 @@ public class WeaponSinglePlayer : MonoBehaviour
 
         EvtSystem.EventDispatcher.AddListener<ApplyStatusEffects>(ApplyStatusEffects);
     }
+
     public float getDamage(){
         return this.damage;
     }
@@ -110,6 +111,7 @@ public class WeaponSinglePlayer : MonoBehaviour
             SetDefaultValues();
     }
 
+    bool onBeat;
     private void FixedUpdate()
     {
         if (isReloading)
@@ -192,7 +194,12 @@ public class WeaponSinglePlayer : MonoBehaviour
 
     private bool CheckBPM()
     {
-        if (BPMManager.instance.canClick == Color.green) return true;
+        if (BPMManager.instance.CanClick())
+        {
+            onBeat = true;
+            return true;
+        }
+        onBeat = false;
         return false;
     }
 
@@ -314,11 +321,14 @@ public class WeaponSinglePlayer : MonoBehaviour
                         {
                             IEnemy enemy = objectOrigin.GetComponent<IEnemy>();
                             float dmg = damage;
+                            float points = enemy.pointsPerHit;
                             if (CheckBPM() && enemy != null)
                             {
-                                dmg = damage * damageMultiplierBPM;
+                                dmg *= damageMultiplierBPM;
+                                points *= damageMultiplierBPM;
                             }
                             enemy.TakeDamage(dmg);
+                            UIManager.Instance.AddPoints(points);
                         }
                         break;
 
@@ -344,12 +354,12 @@ public class WeaponSinglePlayer : MonoBehaviour
             {
                 endPoint = hit.point;
             }
-            RpcOnFire(hit, spreadDirection, endPoint, whatWasHit);
+            RpcOnFire(hit, spreadDirection, endPoint, whatWasHit, onBeat);
         }
     }
 
     //[ClientRpc]
-    void RpcOnFire(RaycastHit2D hit, Vector3 spreadDirection, Vector3 collisionPoint, String whatWasHit)
+    void RpcOnFire(RaycastHit2D hit, Vector3 spreadDirection, Vector3 collisionPoint, String whatWasHit, bool onBeat)
     {
         //Debug.Log("Collision Point: " + collisionPoint);
         //Debug.Log("Hit: " + whatWasHit);
@@ -386,6 +396,25 @@ public class WeaponSinglePlayer : MonoBehaviour
             }*/
         GameObject tempParticle = Instantiate(particleEffect, collisionPoint, new Quaternion(0, 0, 0, 0));
         Destroy(tempParticle, 0.5f);
+
+        //IF ON BEAT, MAKE THE TRAIL RENDER DIFFERENT COLOR
+        if (onBeat)
+        {
+            TrailRenderer trailrenderer = trailRender.GetComponent<TrailRenderer>();
+
+            if (trailrenderer)
+            {
+                trailrenderer.widthMultiplier = 2f;
+                trailrenderer.startColor = Color.magenta;
+                trailrenderer.endColor = Color.blue;
+            }
+
+            //some camera shake stuff (unoptimized)
+
+            //camera shake
+            StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.1f, 0.2f));
+        }
+
         trailRender.SetTargetPosition(collisionPoint);
         //Debug.Log("Bullet Fired Client " + collisionPoint + " direction " + spreadDirection);
 

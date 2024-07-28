@@ -50,4 +50,25 @@ public class CameraShake : MonoBehaviour
 			camTransform.localPosition = originalPos;
 		}
 	}
+
+	float tempAmt;
+	float tempDur;
+	public IEnumerator CustomCameraShake(float _shakeDuration, float _shakeAmount)
+    {
+		tempAmt = shakeAmount;
+		tempDur = shakeDuration;
+
+		shakeAmount = _shakeAmount;
+		shakeDuration = _shakeDuration;
+
+		this.enabled = true;
+		Invoke(nameof(RevertValues), shakeDuration);
+		yield return new WaitForSeconds(_shakeDuration);
+    }
+
+	private void RevertValues()
+    {
+		shakeAmount = tempAmt;
+		shakeDuration = tempDur;
+	}
 }

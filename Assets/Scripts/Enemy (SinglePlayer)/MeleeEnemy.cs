@@ -12,6 +12,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     public float damage;
     public float attackSpd;
     public float respawnTime = 2f;
+    [field: SerializeField] public float pointsPerHit { get; set; }
     [SerializeField] private Transform target;
     private NavMeshAgent agent;
 

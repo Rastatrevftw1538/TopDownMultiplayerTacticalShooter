@@ -99,11 +99,11 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
         playerDied.playerThatDied = this.gameObject;
 
         ///FOR NOW RYAN DOOOO NOTT FORGETT
-        if (!isRespawning)
+        //if (!isRespawning)
             //EvtSystem.EventDispatcher.Raise<PlayerDied>(playerDied);
-            Respawn(respawnTime);
+            //Respawn(respawnTime);
 
-        //SPGameManager.Instance.ShowDefeat();
+        UIManager.Instance.ShowDefeat();
     }
     private void RestoreHealth()
     {

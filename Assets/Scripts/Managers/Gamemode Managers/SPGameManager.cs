@@ -67,26 +67,9 @@ public class SPGameManager : Singleton<SPGameManager>
     public List<GameObject> wave3Enemies = new List<GameObject>();
     public List<GameObject> wave4Enemies = new List<GameObject>();
 
-    [Header("Temp UI")]
-    public GameObject victoryScreen;
-    public GameObject defeatScreen;
+    //CAMERA STUFF
     private GameObject clientCamera;
     private CameraShake cameraShake;
-
-    void OnGUI()
-    {
-
-    }
-
-    public void ShowDefeat()
-    {
-        defeatScreen.SetActive(true);
-    }
-
-    public void ShowVictory()
-    {
-        victoryScreen.SetActive(true);
-    }
 
     private GameObject player;
     Wave WaveOne;
@@ -119,8 +102,8 @@ public class SPGameManager : Singleton<SPGameManager>
         waves.Add(WaveFour);
 
         //Camera stuff
-        clientCamera = GameObject.Find("ClientCamera");
-        cameraShake  = clientCamera.GetComponent<CameraShake>();
+        clientCamera = ClientCamera.Instance.gameObject;
+        cameraShake  = ClientCamera.Instance.cameraShake;
 
         //START THE FIRST WAVE
         currentWave = 1; //always start on wave 1
@@ -157,9 +140,12 @@ public class SPGameManager : Singleton<SPGameManager>
             if (endedPreviousWave)
             {
                 endedPreviousWave = false;
-                cameraShake.enabled = true;
                 enemiesKilled = 0f;
                 currentWave++;
+
+                //camera shake for wave start
+                if(cameraShake)
+                    cameraShake.enabled = true;
 
                 StartWave(EndedWave());
             }
@@ -169,6 +155,8 @@ public class SPGameManager : Singleton<SPGameManager>
     async void StartWave(Wave wave)
     {
         wave = waves[currentWave - 1];
+        UIManager.Instance.ChangeWaveNumber(currentWave);
+
         await Task.Run(() => EndedWave());
 
         //If there are still waves to spawn,
@@ -185,7 +173,6 @@ public class SPGameManager : Singleton<SPGameManager>
         }
         //if you completed all the waves, start the next level
         EndedLevel();
-
     }
 
     async void StartLevel()
@@ -202,7 +189,7 @@ public class SPGameManager : Singleton<SPGameManager>
 
     private void EndedLevel()
     {
-        ShowVictory();
+        UIManager.Instance.ShowVictory();
         Debug.LogError("Ended Level (all waves are complete for this scene.");
     }
 }

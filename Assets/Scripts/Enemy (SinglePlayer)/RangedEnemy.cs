@@ -15,6 +15,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     public float stoppingDistance;
     public float startShotCooldown;
     public float touchDamage;
+    [field: SerializeField] public float pointsPerHit { get; set; }
     private float shotCooldown;
 
     [Header("Enemy Components")]
