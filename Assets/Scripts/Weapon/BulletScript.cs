@@ -14,7 +14,6 @@ public class BulletScript : MonoBehaviour
     void Start()
     {
         _startPosition = transform.position = new Vector3(transform.position.x,transform.position.y,-1);
-        DestroySelf();
     }
 
     // Update is called once per frame
@@ -32,11 +31,5 @@ public class BulletScript : MonoBehaviour
         ParticleSystem particleSystem = effectPrefab.GetComponent<ParticleSystem>();
         var main = particleSystem.main;
         main.startColor = color;
-        Destroy(particleSystem, 0.5f);
-    }
-
-    private void DestroySelf()
-    {
-
     }
 }
