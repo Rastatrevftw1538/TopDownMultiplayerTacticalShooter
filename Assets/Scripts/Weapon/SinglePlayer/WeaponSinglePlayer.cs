@@ -371,7 +371,7 @@ public class WeaponSinglePlayer : MonoBehaviour
         GameObject particleEffect = trailRender.effectPrefab;
         ParticleSystem particleSystem = particleEffect.GetComponent<ParticleSystem>();
 
-        var main = particleSystem.main;
+        /*var main = particleSystem.main;
             if(whatWasHit == "Base"){
                 main.startColor = Color.cyan;
             }
@@ -383,10 +383,11 @@ public class WeaponSinglePlayer : MonoBehaviour
             }
             else{
                 main.startColor = Color.clear;
-            }
-        Instantiate(particleEffect, collisionPoint, new Quaternion(0, 0, 0, 0));
+            }*/
+        GameObject tempParticle = Instantiate(particleEffect, collisionPoint, new Quaternion(0, 0, 0, 0));
+        Destroy(tempParticle, 0.5f);
         trailRender.SetTargetPosition(collisionPoint);
-        Debug.Log("Bullet Fired Client " + collisionPoint + " direction " + spreadDirection);
+        //Debug.Log("Bullet Fired Client " + collisionPoint + " direction " + spreadDirection);
 
         ShootSound shootSound = new ShootSound();
         shootSound.GunName  = weaponSpecs.name;

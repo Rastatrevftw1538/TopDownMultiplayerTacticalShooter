@@ -142,8 +142,8 @@ public class SPGameManager : Singleton<SPGameManager>
              }
          }
         */
-        Debug.LogError("you need " + waves[currentWave - 1].AmtEnemies());
-        Debug.LogError("on wave" + currentWave);
+        //Debug.LogError("you need " + waves[currentWave - 1].AmtEnemies());
+        //Debug.LogError("on wave" + currentWave);
         if (enemiesKilled == waves[currentWave - 1].AmtEnemies())
         {
             endedPreviousWave = true;
