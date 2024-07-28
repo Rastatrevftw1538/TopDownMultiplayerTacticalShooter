@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static PlayerScriptSinglePlayer;
 
-public class PlayerHealthSinglePlayer : MonoBehaviour {
+public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
 
     public const float maxHealth = 100;
 
@@ -98,9 +98,12 @@ public class PlayerHealthSinglePlayer : MonoBehaviour {
         PlayerDied playerDied = new PlayerDied();
         playerDied.playerThatDied = this.gameObject;
 
+        ///FOR NOW RYAN DOOOO NOTT FORGETT
         if (!isRespawning)
             //EvtSystem.EventDispatcher.Raise<PlayerDied>(playerDied);
             Respawn(respawnTime);
+
+        //SPGameManager.Instance.ShowDefeat();
     }
     private void RestoreHealth()
     {

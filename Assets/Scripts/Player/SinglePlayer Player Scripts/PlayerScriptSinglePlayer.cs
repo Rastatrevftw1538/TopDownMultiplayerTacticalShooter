@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerHealthSinglePlayer))]
-public class PlayerScriptSinglePlayer : MonoBehaviour, IEffectable
+public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEffectable
 {
     #region State Variables
     public PlayerStateMachine StateMachine { get; private set; }

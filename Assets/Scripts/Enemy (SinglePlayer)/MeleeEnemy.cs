@@ -49,6 +49,8 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
             target = GameObject.Find("Player - SinglePlayer").transform;
             player = target.GetComponent<PlayerHealthSinglePlayer>();
         }
+        //player = PlayerHealthSinglePlayer.Instance;
+        //target = PlayerHealthSinglePlayer.Instance.gameObject.transform;
     }
 
     private void Update()

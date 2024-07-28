@@ -9,14 +9,14 @@ public class EnemyProjectile : MonoBehaviour
     public float damage;
     public float projectileLifeTime;
 
-    ParticleSystem particleSystem;
+    public GameObject particles;
 
     private float lifeTime;
 
     // Start is called before the first frame update
     void Start()
     {
-        particleSystem = GetComponent<ParticleSystem>();
+        //particleSystem = GetComponent<ParticleSystem>();
     }
 
     // Update is called once per frame
@@ -54,10 +54,12 @@ public class EnemyProjectile : MonoBehaviour
     private void DestroyProjectile()
     {
         Destroy(gameObject);
+        PlayParticles();
     }
 
     private void PlayParticles()
     {
-
+        GameObject effect = Instantiate(particles, transform.position, Quaternion.identity);
+        Destroy(effect, 3f);
     }
 }
