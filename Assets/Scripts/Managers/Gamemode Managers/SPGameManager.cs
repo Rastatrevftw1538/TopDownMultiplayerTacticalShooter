@@ -32,7 +32,8 @@ public class SPGameManager : Singleton<SPGameManager>
         {
             foreach (GameObject enemy in _enemies)
             {
-                if (currentSpawn != null) { 
+                if (currentSpawn != null) {
+                    //look into Random.insideUnitSphere
                     GameObject.Instantiate(enemy, currentSpawn.transform);
                     _amtEnemies++;
                 }   
@@ -69,6 +70,8 @@ public class SPGameManager : Singleton<SPGameManager>
     [Header("Temp UI")]
     public GameObject victoryScreen;
     public GameObject defeatScreen;
+    private GameObject clientCamera;
+    private CameraShake cameraShake;
 
     void OnGUI()
     {
@@ -115,6 +118,10 @@ public class SPGameManager : Singleton<SPGameManager>
         waves.Add(WaveThree);
         waves.Add(WaveFour);
 
+        //Camera stuff
+        clientCamera = GameObject.Find("ClientCamera");
+        cameraShake  = clientCamera.GetComponent<CameraShake>();
+
         //START THE FIRST WAVE
         currentWave = 1; //always start on wave 1
         StartWave(waves[currentWave - 1]);
@@ -150,6 +157,7 @@ public class SPGameManager : Singleton<SPGameManager>
             if (endedPreviousWave)
             {
                 endedPreviousWave = false;
+                cameraShake.enabled = true;
                 enemiesKilled = 0f;
                 currentWave++;
 
