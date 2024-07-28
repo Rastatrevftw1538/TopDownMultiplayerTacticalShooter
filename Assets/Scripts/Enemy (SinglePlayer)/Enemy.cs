@@ -4,6 +4,7 @@ using UnityEngine;
 
 public interface IEnemy
 {
+    public float pointsPerHit { get; set; }
     void TakeDamage(float damage)
     {
 

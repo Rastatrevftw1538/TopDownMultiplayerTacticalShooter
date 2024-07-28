@@ -104,6 +104,7 @@ MonoBehaviour:
   damage: 10
   attackSpd: 0
   respawnTime: 2
+  <pointsPerHit>k__BackingField: 30
   target: {fileID: 0}
   healthbarExternal: {fileID: 8616342454603650037}
   _damageTaken: 0

@@ -32,7 +32,8 @@ public class SPGameManager : Singleton<SPGameManager>
         {
             foreach (GameObject enemy in _enemies)
             {
-                if (currentSpawn != null) { 
+                if (currentSpawn != null) {
+                    //look into Random.insideUnitSphere
                     GameObject.Instantiate(enemy, currentSpawn.transform);
                     _amtEnemies++;
                 }   
@@ -66,24 +67,9 @@ public class SPGameManager : Singleton<SPGameManager>
     public List<GameObject> wave3Enemies = new List<GameObject>();
     public List<GameObject> wave4Enemies = new List<GameObject>();
 
-    [Header("Temp UI")]
-    public GameObject victoryScreen;
-    public GameObject defeatScreen;
-
-    void OnGUI()
-    {
-
-    }
-
-    public void ShowDefeat()
-    {
-        defeatScreen.SetActive(true);
-    }
-
-    public void ShowVictory()
-    {
-        victoryScreen.SetActive(true);
-    }
+    //CAMERA STUFF
+    private GameObject clientCamera;
+    private CameraShake cameraShake;
 
     private GameObject player;
     Wave WaveOne;
@@ -115,6 +101,10 @@ public class SPGameManager : Singleton<SPGameManager>
         waves.Add(WaveThree);
         waves.Add(WaveFour);
 
+        //Camera stuff
+        clientCamera = ClientCamera.Instance.gameObject;
+        cameraShake  = ClientCamera.Instance.cameraShake;
+
         //START THE FIRST WAVE
         currentWave = 1; //always start on wave 1
         StartWave(waves[currentWave - 1]);
@@ -142,8 +132,8 @@ public class SPGameManager : Singleton<SPGameManager>
              }
          }
         */
-        Debug.LogError("you need " + waves[currentWave - 1].AmtEnemies());
-        Debug.LogError("on wave" + currentWave);
+        //Debug.LogError("you need " + waves[currentWave - 1].AmtEnemies());
+        //Debug.LogError("on wave" + currentWave);
         if (enemiesKilled == waves[currentWave - 1].AmtEnemies())
         {
             endedPreviousWave = true;
@@ -153,6 +143,10 @@ public class SPGameManager : Singleton<SPGameManager>
                 enemiesKilled = 0f;
                 currentWave++;
 
+                //camera shake for wave start
+                if(cameraShake)
+                    cameraShake.enabled = true;
+
                 StartWave(EndedWave());
             }
         }
@@ -161,6 +155,8 @@ public class SPGameManager : Singleton<SPGameManager>
     async void StartWave(Wave wave)
     {
         wave = waves[currentWave - 1];
+        UIManager.Instance.ChangeWaveNumber(currentWave);
+
         await Task.Run(() => EndedWave());
 
         //If there are still waves to spawn,
@@ -177,7 +173,6 @@ public class SPGameManager : Singleton<SPGameManager>
         }
         //if you completed all the waves, start the next level
         EndedLevel();
-
     }
 
     async void StartLevel()
@@ -194,7 +189,7 @@ public class SPGameManager : Singleton<SPGameManager>
 
     private void EndedLevel()
     {
-        ShowVictory();
+        UIManager.Instance.ShowVictory();
         Debug.LogError("Ended Level (all waves are complete for this scene.");
     }
 }

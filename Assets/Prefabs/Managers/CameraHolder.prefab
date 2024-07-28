@@ -41,6 +41,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7438195445385342557}
+  - component: {fileID: 4044484250662628834}
+  - component: {fileID: 5763854358283223558}
   - component: {fileID: 8943834989106653708}
   - component: {fileID: 5755782827518670392}
   m_Layer: 0
@@ -65,6 +67,34 @@ Transform:
   m_Father: {fileID: 8209907695732434518}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4044484250662628834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8799601266199330072}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c91952c5e71fdc34b806ca7e8428165c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5763854358283223558
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8799601266199330072}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbde01a985614f44dbc90f9621311f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  camTransform: {fileID: 7438195445385342557}
+  shakeDuration: 0.8
+  shakeAmount: 0.4
+  decreaseFactor: 1
 --- !u!20 &8943834989106653708
 Camera:
   m_ObjectHideFlags: 0

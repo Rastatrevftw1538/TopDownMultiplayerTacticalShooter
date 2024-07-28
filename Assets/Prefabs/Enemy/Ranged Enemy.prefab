@@ -103,9 +103,10 @@ MonoBehaviour:
   currentHealth: 0
   respawnTime: 2
   target: {fileID: 0}
-  stoppingDistance: 4
+  stoppingDistance: 7
   startShotCooldown: 1
   touchDamage: 10
+  <pointsPerHit>k__BackingField: 50
   healthbarExternal: {fileID: 5994701146355688125}
   projectile: {fileID: 2252358114905661944, guid: ee2f2386eaf7bcd4aae1f965652cc1ec, type: 3}
   _damageTaken: 0
