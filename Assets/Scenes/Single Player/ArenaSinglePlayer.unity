@@ -33359,8 +33359,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waveDisplay: {fileID: 770018263}
   pointsDisplay: {fileID: 1284630237}
-  victoryScreen: {fileID: 42477846}
-  defeatScreen: {fileID: 1470474906}
+  victoryScreen: {fileID: 1470474906}
+  defeatScreen: {fileID: 42477846}
   points: 0
   waveFlashes: 3
   waveFlashLength: 0.3
