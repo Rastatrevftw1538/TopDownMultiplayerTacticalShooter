@@ -8029,6 +8029,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1728614716099988865, guid: f64c0c7594c267b4cb627018d8cec409, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2692482570812366574, guid: f64c0c7594c267b4cb627018d8cec409, type: 3}
       propertyPath: m_Name
       value: Player - SinglePlayer
@@ -40485,7 +40489,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
