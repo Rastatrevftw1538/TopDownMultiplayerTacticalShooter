@@ -9,6 +9,7 @@ public class WeaponData : ScriptableObject
     public float[] reloadSound;
     public int damagePerBullet;
     public float fireRate;
+    public bool semiAuto;
     public float fireRange;
     public int numOfBulletsPerShot = 1;
     public Sprite weaponSprite;

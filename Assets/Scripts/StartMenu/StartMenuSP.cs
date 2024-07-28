@@ -20,4 +20,10 @@ public class StartMenuSP : MonoBehaviour
     {
         Application.Quit(0);
     }
+
+    public void ReloadScene()
+    {
+        Scene scene = SceneManager.GetActiveScene(); 
+        SceneManager.LoadScene(scene.name);
+    }
 }

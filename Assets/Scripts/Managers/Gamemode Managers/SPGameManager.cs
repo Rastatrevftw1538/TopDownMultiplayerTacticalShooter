@@ -68,10 +68,21 @@ public class SPGameManager : Singleton<SPGameManager>
 
     [Header("Temp UI")]
     public GameObject victoryScreen;
+    public GameObject defeatScreen;
 
     void OnGUI()
     {
 
+    }
+
+    public void ShowDefeat()
+    {
+        defeatScreen.SetActive(true);
+    }
+
+    public void ShowVictory()
+    {
+        victoryScreen.SetActive(true);
     }
 
     private GameObject player;
@@ -183,7 +194,7 @@ public class SPGameManager : Singleton<SPGameManager>
 
     private void EndedLevel()
     {
-        victoryScreen.SetActive(true);
+        ShowVictory();
         Debug.LogError("Ended Level (all waves are complete for this scene.");
     }
 }

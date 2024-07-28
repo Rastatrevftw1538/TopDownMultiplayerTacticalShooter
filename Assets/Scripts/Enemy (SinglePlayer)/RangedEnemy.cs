@@ -46,16 +46,18 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         agent.updateUpAxis = false;
 
         shotCooldown = startShotCooldown;
-
-        if (target == null && player != null)
-        {
-            target = player.gameObject.transform;
-        }
-        else if (target == null && player == null)
-        {
-            target = GameObject.Find("Player - SinglePlayer").transform;
-            player = target.GetComponent<PlayerHealthSinglePlayer>();
-        }
+        
+                if (target == null && player != null)
+                {
+                    target = player.gameObject.transform;
+                }
+                else if (target == null && player == null)
+                {
+                    target = GameObject.Find("Player - SinglePlayer").transform;
+                    player = target.GetComponent<PlayerHealthSinglePlayer>();
+                }
+        //player = PlayerHealthSinglePlayer.Instance;
+        //target = PlayerHealthSinglePlayer.Instance.gameObject.transform;
     }
 
     private void Update()
