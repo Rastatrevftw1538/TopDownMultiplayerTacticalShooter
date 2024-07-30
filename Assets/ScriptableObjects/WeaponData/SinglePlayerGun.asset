@@ -15,7 +15,7 @@ MonoBehaviour:
   shootSound: []
   reloadSound: []
   damagePerBullet: 30
-  fireRate: 0.5
+  fireRate: 0.1
   semiAuto: 0
   fireRange: 20
   numOfBulletsPerShot: 1

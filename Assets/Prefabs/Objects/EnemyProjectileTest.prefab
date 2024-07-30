@@ -117,7 +117,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 1.5
   damage: 10
-  projectileLifeTime: 3
+  projectileLifeTime: 2
   particles: {fileID: 2837609728858217907, guid: 30538aa757d5768459b127b9b70d4362, type: 3}
 --- !u!1001 &3464921503617304699
 PrefabInstance:
