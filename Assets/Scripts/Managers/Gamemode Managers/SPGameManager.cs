@@ -7,14 +7,13 @@ using System.Threading.Tasks;
 public class SPGameManager : Singleton<SPGameManager>
 {
     //change to interface enemy later, and do custom editor stuff
-    private static List<Wave> waves = new List<Wave>();
     [System.Serializable]
     public struct Wave
     {
         public List<GameObject> _spawnAreas;
-        public List<GameObject> _enemies;
-        public float _amtEnemies;
+        public List<WaveEnemy> _enemies;
         public float _waveCost;
+        private float _amtEnemies;
         //List<IEnemy> _enemies;
         /*Wave(List<GameObject> spawnAreas, List<IEnemy> enemies)
         {
@@ -23,7 +22,7 @@ public class SPGameManager : Singleton<SPGameManager>
         }*/
 
 
-        Wave(List<GameObject> spawnAreas, List<GameObject> enemies)
+        Wave(List<GameObject> spawnAreas, List<WaveEnemy> enemies)
         {
             _spawnAreas = spawnAreas;
             _enemies = enemies;
@@ -33,12 +32,12 @@ public class SPGameManager : Singleton<SPGameManager>
 
         public void SpawnEnemies(GameObject currentSpawn)
         {
-            foreach (GameObject enemy in _enemies)
+            foreach (WaveEnemy enemy in _enemies)
             {
                 if (currentSpawn != null)
                 {
                     //look into Random.insideUnitSphere
-                    GameObject.Instantiate(enemy, currentSpawn.transform);
+                    GameObject.Instantiate(enemy.enemyPrefab, currentSpawn.transform);
                     _amtEnemies++;
                 }
             }
@@ -70,6 +69,7 @@ public class SPGameManager : Singleton<SPGameManager>
     public List<GameObject> wave2Enemies = new List<GameObject>();
     public List<GameObject> wave3Enemies = new List<GameObject>();
     public List<GameObject> wave4Enemies = new List<GameObject>();*/
+    public List<Wave> waves = new List<Wave>();
 
     //CAMERA STUFF
     private GameObject clientCamera;
