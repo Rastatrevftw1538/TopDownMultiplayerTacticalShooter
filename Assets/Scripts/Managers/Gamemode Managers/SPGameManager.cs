@@ -174,7 +174,7 @@ public class SPGameManager : Singleton<SPGameManager>
         //if you completed all the waves, start the next level
         EndedLevel();
     }
-    
+
     async void StartLevel()
     {
         await Task.Run(() => EndedLevel());

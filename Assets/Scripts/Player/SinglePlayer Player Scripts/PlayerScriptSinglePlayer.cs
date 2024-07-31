@@ -61,7 +61,6 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
     public bool isRunning;
     private bool isShooting;
     private bool canMove = true;
-    private bool m_IsPaused = false;
     #endregion
 
     #region Player Team
@@ -245,13 +244,6 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
                 player.layer = LayerMask.NameToLayer("Enemy");
         }
             
-    }
-
-    public void DisplayCursor(bool display)
-    {
-        m_IsPaused = display;
-        Cursor.lockState = display ? CursorLockMode.None : CursorLockMode.Locked;
-        Cursor.visible = display;
     }
 
     #region 'IEffectable' INTERFACE FUNCTIONS
