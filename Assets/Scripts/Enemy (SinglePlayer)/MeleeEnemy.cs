@@ -59,8 +59,8 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         //healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
         agent.SetDestination(target.position);
 
-        Vector2 direction = new Vector2(target.position.x - transform.position.x, target.position.y - transform.position.y); //FIND DIRECTION OF PLAYER
-        transform.up = direction; //ROTATES THE ENEMY TO THE PLAYER 
+        //Vector2 direction = new Vector2(target.position.x - transform.position.x, target.position.y - transform.position.y); //FIND DIRECTION OF PLAYER
+        //transform.up = direction; //ROTATES THE ENEMY TO THE PLAYER 
 
         //attack
     }
