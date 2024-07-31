@@ -8,11 +8,13 @@ public class SPGameManager : Singleton<SPGameManager>
 {
     //change to interface enemy later, and do custom editor stuff
     private static List<Wave> waves = new List<Wave>();
+    [System.Serializable]
     public struct Wave
     {
         public List<GameObject> _spawnAreas;
         public List<GameObject> _enemies;
         public float _amtEnemies;
+        public float _waveCost;
         //List<IEnemy> _enemies;
         /*Wave(List<GameObject> spawnAreas, List<IEnemy> enemies)
         {
@@ -26,17 +28,19 @@ public class SPGameManager : Singleton<SPGameManager>
             _spawnAreas = spawnAreas;
             _enemies = enemies;
             _amtEnemies = 0f;
+            _waveCost = 0f;
         }
 
         public void SpawnEnemies(GameObject currentSpawn)
         {
             foreach (GameObject enemy in _enemies)
             {
-                if (currentSpawn != null) {
+                if (currentSpawn != null)
+                {
                     //look into Random.insideUnitSphere
                     GameObject.Instantiate(enemy, currentSpawn.transform);
                     _amtEnemies++;
-                }   
+                }
             }
         }
 
@@ -49,7 +53,7 @@ public class SPGameManager : Singleton<SPGameManager>
             return _amtEnemies;
         }
     }
-
+    
     [Header("Spawn Areas & Waves")]
     public int currentWave;
     //public List<GameObject> spawnAreas = new List<GameObject>();
@@ -57,7 +61,7 @@ public class SPGameManager : Singleton<SPGameManager>
     public float enemiesKilled;
 
     //going to make dynamic instead of hardcoding each wave (time crunch for now)
-    public List<GameObject> wave1SpawnAreas = new List<GameObject>();
+    /*public List<GameObject> wave1SpawnAreas = new List<GameObject>();
     public List<GameObject> wave2SpawnAreas = new List<GameObject>();
     public List<GameObject> wave3SpawnAreas = new List<GameObject>();
     public List<GameObject> wave4SpawnAreas = new List<GameObject>();
@@ -65,17 +69,17 @@ public class SPGameManager : Singleton<SPGameManager>
     public List<GameObject> wave1Enemies = new List<GameObject>();
     public List<GameObject> wave2Enemies = new List<GameObject>();
     public List<GameObject> wave3Enemies = new List<GameObject>();
-    public List<GameObject> wave4Enemies = new List<GameObject>();
+    public List<GameObject> wave4Enemies = new List<GameObject>();*/
 
     //CAMERA STUFF
     private GameObject clientCamera;
     private CameraShake cameraShake;
 
     private GameObject player;
-    Wave WaveOne;
-    Wave WaveTwo;
-    Wave WaveThree;
-    Wave WaveFour;
+    //Wave WaveOne;
+    //Wave WaveTwo;
+    //Wave WaveThree;
+    //Wave WaveFour;
 
     // Start is called before the first frame update
     void Start()
@@ -84,7 +88,7 @@ public class SPGameManager : Singleton<SPGameManager>
         player = GameObject.Find("Player - SinglePlayer");
 
         //going to clean this up DONT WORRY TREVOR
-        WaveOne._spawnAreas = wave1SpawnAreas;
+        /*WaveOne._spawnAreas = wave1SpawnAreas;
         WaveOne._enemies = wave1Enemies;
 
         WaveTwo._spawnAreas = wave2SpawnAreas;
@@ -99,7 +103,7 @@ public class SPGameManager : Singleton<SPGameManager>
         waves.Add(WaveOne);
         waves.Add(WaveTwo);
         waves.Add(WaveThree);
-        waves.Add(WaveFour);
+        waves.Add(WaveFour);*/
 
         //Camera stuff
         clientCamera = ClientCamera.Instance.gameObject;
@@ -192,4 +196,11 @@ public class SPGameManager : Singleton<SPGameManager>
         UIManager.Instance.ShowVictory();
         Debug.LogError("Ended Level (all waves are complete for this scene.");
     }
+}
+
+[System.Serializable]
+public struct WaveEnemy
+{
+    public GameObject enemyPrefab;
+    public float enemyCost;
 }
