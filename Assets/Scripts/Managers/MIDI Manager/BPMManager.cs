@@ -5,6 +5,10 @@ using Sanford.Multimedia.Midi;
 
 public class BPMManager : MonoBehaviour
 {
+    [Header("BPM Indicator")]
+    public GameObject BPMIndicatorBar;
+    public GameObject BPMIndicatorProgress;
+    public GameObject BPMIndicatorToHit;
     private AudioClip gameSong;
     private static BPMManager _instance;
 
@@ -61,7 +65,7 @@ public class BPMManager : MonoBehaviour
             percentToBeat = m_MIN;
         
         //if(percentToBeat <= lowerRange || percentToBeat <= upperRange)
-        if((percentToBeat <= lowerRange && percentToBeat >= m_MIN) || (percentToBeat >= upperRange))
+        if((percentToBeat <= lowerRange && percentToBeat >= m_MIN) || (percentToBeat >= upperRange && percentToBeat <= m_MAX))
         {
             canClick = Color.green;
             //Debug.LogError("DO Click");
@@ -71,5 +75,28 @@ public class BPMManager : MonoBehaviour
             canClick = Color.red;
             //Debug.LogError("CANT Click");
         }
+
+        MoveBPMIndicator();
+    }
+
+    Transform BPMProgressTransform;
+    private void MoveBPMIndicator()
+    {
+        //WIP
+        if (!BPMProgressTransform)
+            BPMProgressTransform = BPMIndicatorProgress.transform;
+
+        BPMIndicatorProgress.transform.position = new Vector3(
+            BPMProgressTransform.position.x + Time.deltaTime * BPM,
+            BPMProgressTransform.position.y,
+            BPMProgressTransform.position.z);
+    }
+
+    public bool CanClick()
+    {
+        if (canClick == Color.red)
+            return false;
+        else
+            return true;
     }
 }

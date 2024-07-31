@@ -101,8 +101,8 @@ TrailRenderer:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0
-        value: 0.06181717
+        time: 0.03582258
+        value: 0.08784485
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -162,5 +162,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4e72bd317901024cb9c8adb33c08894, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectPrefab: {fileID: 5706064857750014841, guid: 1b6d18f608de54c9787fbfd66144957d, type: 3}
+  effectPrefab: {fileID: 105608, guid: 9c6af9e56f998094e8a7ade8f0e2a0a9, type: 3}
   _bulletSpeed: 50
