@@ -15,26 +15,23 @@ public class PlayerUIScript : MonoBehaviour
     void Start()
     {
         gun = this.GetComponent<WeaponSinglePlayer>();
-        if(ammoUI) ammoUI.text = gun.getCurrentAmmo().ToString() + " / "+ gun.getTotalMags().ToString();
+        ammoUI.text = gun.getCurrentAmmo().ToString() + " / "+ gun.getTotalMags().ToString();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (ammoUI)
+        if (gun.isGunReloading())
         {
-            if (gun.isGunReloading())
-            {
-                ammoUI.text = "Reloading";
-            }
-            else if (gun.isOutOfAmmo())
-            {
-                ammoUI.text = "Out of Ammo";
-            }
-            else
-            {
-                ammoUI.text = gun.getCurrentAmmo().ToString() + " / " + gun.getTotalMags().ToString();
-            }
+            ammoUI.text = "Reloading";
+        }
+        else if (gun.isOutOfAmmo())
+        {
+            ammoUI.text = "Out of Ammo";
+        }
+        else
+        {
+            ammoUI.text = gun.getCurrentAmmo().ToString() + " / " + gun.getTotalMags().ToString();
         }
     }
 }

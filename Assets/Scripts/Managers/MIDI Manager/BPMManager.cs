@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using Sanford.Multimedia.Midi;
 
 public class BPMManager : MonoBehaviour
@@ -10,9 +9,7 @@ public class BPMManager : MonoBehaviour
     public GameObject BPMIndicatorBar;
     public GameObject BPMIndicatorProgress;
     public GameObject BPMIndicatorToHit;
-    private AudioSource audioSource;
     private AudioClip gameSong;
-    [SerializeField]private Intervals[] intervals;
     private static BPMManager _instance;
 
     public static BPMManager instance
@@ -43,7 +40,6 @@ public class BPMManager : MonoBehaviour
         _instance = this;
        // gameSong = GameObject.Find("Audio Manager").GetComponent<AudioSource>().clip;
         gameSong = GetComponent<AudioSource>().clip;
-        audioSource = GetComponent<AudioSource>();
         BPM = UniBpmAnalyzer.AnalyzeBpm(gameSong);
         BPM = BPM/2; //FIXING THE BPM (SOME SONGS WILL BE DIFFERENT)
     }
@@ -83,15 +79,6 @@ public class BPMManager : MonoBehaviour
         MoveBPMIndicator();
     }
 
-    /*private void Update()
-    {
-        foreach(Intervals interval in intervals)
-        {
-            float sampledTime = (audioSource.timeSamples / (gameSong.frequency * interval.GetIntervalLength(BPM)));
-            interval.CheckForNewInterval(sampledTime);
-        }
-    }*/
-
     Transform BPMProgressTransform;
     private void MoveBPMIndicator()
     {
@@ -111,28 +98,5 @@ public class BPMManager : MonoBehaviour
             return false;
         else
             return true;
-    }
-}
-
-[System.Serializable]
-public class Intervals
-{
-    [SerializeField] private float _steps;
-    [SerializeField] private UnityEvent _trigger;
-    private int _lastInterval;
-
-    public float GetIntervalLength(float bpm)
-    {
-        return 60f / (bpm * _steps);
-    }
-
-    public void CheckForNewInterval(float interval)
-    {
-        
-        if(Mathf.FloorToInt(interval) != _lastInterval)
-        {
-            _lastInterval = Mathf.FloorToInt(interval);
-            _trigger.Invoke();
-        }
     }
 }
