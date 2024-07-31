@@ -10,35 +10,39 @@ public class SPGameManager : Singleton<SPGameManager>
     [System.Serializable]
     public struct Wave
     {
-        public List<GameObject> _spawnAreas;
-        public List<WaveEnemy> _enemies;
-        public float _waveCost;
-        private float _amtEnemies;
-        //List<IEnemy> _enemies;
-        /*Wave(List<GameObject> spawnAreas, List<IEnemy> enemies)
+        public GameObject _spawnAreas;
+        [NonReorderable] public List<WaveEnemy> _enemies;
+        public float _waveValue;
+        private int _amtEnemies;
+        private float _amtSpawnAreas;
+
+        Wave(GameObject spawnAreas, List<WaveEnemy> enemies)
         {
             _spawnAreas = spawnAreas;
             _enemies = enemies;
-        }*/
-
-
-        Wave(List<GameObject> spawnAreas, List<WaveEnemy> enemies)
-        {
-            _spawnAreas = spawnAreas;
-            _enemies = enemies;
-            _amtEnemies = 0f;
-            _waveCost = 0f;
+            _amtEnemies = 0;
+            _waveValue = 0f;
+            _amtSpawnAreas = 0;
         }
 
-        public void SpawnEnemies(GameObject currentSpawn)
+        public void SpawnEnemies()
         {
-            foreach (WaveEnemy enemy in _enemies)
+            while(_waveValue > 0)
             {
-                if (currentSpawn != null)
+                int randEnemyId = Random.Range(0, _enemies.Count);
+                int randEnemyCost = _enemies[randEnemyId].cost;
+
+                if(_waveValue-randEnemyCost >= 0)
                 {
-                    //look into Random.insideUnitSphere
-                    GameObject.Instantiate(enemy.enemyPrefab, currentSpawn.transform);
-                    _amtEnemies++;
+                    int rando = Random.Range(0, _spawnAreas.transform.childCount);
+                    GameObject currentSpawn = _spawnAreas.transform.GetChild(rando).gameObject;
+                    Instantiate(_enemies[randEnemyId].enemyPrefab, currentSpawn.transform);
+
+                    _waveValue -= randEnemyCost;
+                }
+                else
+                {
+                    break;
                 }
             }
         }
@@ -47,29 +51,24 @@ public class SPGameManager : Singleton<SPGameManager>
         {
             if (_amtEnemies == 0f)
             {
-                _amtEnemies = _spawnAreas.Count * _enemies.Count;
+                _amtEnemies = GetSpawnAreaCount() * _enemies.Count;
             }
             return _amtEnemies;
         }
+
+        private int GetSpawnAreaCount()
+        {
+            return _spawnAreas.transform.childCount;
+        }
     }
     
-    [Header("Spawn Areas & Waves")]
+    [Header("Waves")]
+    [NonReorderable] public List<Wave> waves = new List<Wave>();
+    [Header("Wave Statistics")]
     public int currentWave;
     //public List<GameObject> spawnAreas = new List<GameObject>();
     public float spawnInterval;
     public float enemiesKilled;
-
-    //going to make dynamic instead of hardcoding each wave (time crunch for now)
-    /*public List<GameObject> wave1SpawnAreas = new List<GameObject>();
-    public List<GameObject> wave2SpawnAreas = new List<GameObject>();
-    public List<GameObject> wave3SpawnAreas = new List<GameObject>();
-    public List<GameObject> wave4SpawnAreas = new List<GameObject>();
-
-    public List<GameObject> wave1Enemies = new List<GameObject>();
-    public List<GameObject> wave2Enemies = new List<GameObject>();
-    public List<GameObject> wave3Enemies = new List<GameObject>();
-    public List<GameObject> wave4Enemies = new List<GameObject>();*/
-    public List<Wave> waves = new List<Wave>();
 
     //CAMERA STUFF
     private GameObject clientCamera;
@@ -87,31 +86,13 @@ public class SPGameManager : Singleton<SPGameManager>
         //find player
         player = GameObject.Find("Player - SinglePlayer");
 
-        //going to clean this up DONT WORRY TREVOR
-        /*WaveOne._spawnAreas = wave1SpawnAreas;
-        WaveOne._enemies = wave1Enemies;
-
-        WaveTwo._spawnAreas = wave2SpawnAreas;
-        WaveTwo._enemies = wave2Enemies;
-
-        WaveThree._spawnAreas = wave3SpawnAreas;
-        WaveThree._enemies = wave3Enemies;
-
-        WaveFour._spawnAreas =  wave4SpawnAreas;
-        WaveFour._enemies = wave4Enemies;
-
-        waves.Add(WaveOne);
-        waves.Add(WaveTwo);
-        waves.Add(WaveThree);
-        waves.Add(WaveFour);*/
-
         //Camera stuff
         clientCamera = ClientCamera.Instance.gameObject;
         cameraShake  = ClientCamera.Instance.cameraShake;
 
         //START THE FIRST WAVE
         currentWave = 1; //always start on wave 1
-        StartWave(waves[currentWave - 1]);
+        waves[currentWave - 1].SpawnEnemies();
 
         Debug.LogError("Starting Wave one");
     }
@@ -120,22 +101,6 @@ public class SPGameManager : Singleton<SPGameManager>
     bool endedPreviousWave = false;
     void Update()
     {
-        /*if (enemiesKilled == WaveOne.AmtEnemies())
-         {
-             endedPreviousWave = true;
-             if (endedPreviousWave)
-             {
-                 enemiesKilled = 0f;
-                 currentWave++;
-                 endedPreviousWave = false;
-
-                 //StartWave(WaveTwo);
-                 EndedPhase();
-                 Debug.LogError("Starting Wave Two");
-                 //StartWave
-             }
-         }
-        */
         //Debug.LogError("you need " + waves[currentWave - 1].AmtEnemies());
         //Debug.LogError("on wave" + currentWave);
         if (enemiesKilled == waves[currentWave - 1].AmtEnemies())
@@ -151,28 +116,27 @@ public class SPGameManager : Singleton<SPGameManager>
                 if(cameraShake)
                     cameraShake.enabled = true;
 
-                StartWave(EndedWave());
+                //StartWave(EndedWave());
             }
         }
     }
 
-    async void StartWave(Wave wave)
+   /* async void StartWave(Wave wave)
     {
         wave = waves[currentWave - 1];
         UIManager.Instance.ChangeWaveNumber(currentWave);
 
-        await Task.Run(() => EndedWave());
+        //await Task.Run(() => EndedWave());
 
         //If there are still waves to spawn,
         if (currentWave <= waves.Count)
         {
+            int amtChildren = wave._spawnAreas.transform.childCount;
+            int rando = Random.Range(0, amtChildren);
             //for every spawn point area in this wave,
-            foreach (GameObject spawnPoint in wave._spawnAreas)
-            {
                 //spawn those enemies, in each of the spawn points
-                if(spawnPoint != null)
-                    wave.SpawnEnemies(spawnPoint);
-            }
+                if(wave._spawnAreas.transform.GetChild(rando) != null)
+                    wave.SpawnEnemies(wave._spawnAreas.transform.GetChild(rando).gameObject);
             return;
         }
         //if you completed all the waves, start the next level
@@ -196,11 +160,11 @@ public class SPGameManager : Singleton<SPGameManager>
         UIManager.Instance.ShowVictory();
         Debug.LogError("Ended Level (all waves are complete for this scene.");
     }
+   */
 }
-
 [System.Serializable]
 public struct WaveEnemy
 {
     public GameObject enemyPrefab;
-    public float enemyCost;
+    public int cost;
 }
