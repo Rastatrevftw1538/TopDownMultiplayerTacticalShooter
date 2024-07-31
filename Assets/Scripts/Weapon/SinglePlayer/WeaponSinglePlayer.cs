@@ -398,7 +398,7 @@ public class WeaponSinglePlayer : MonoBehaviour
         Destroy(tempParticle, 0.5f);
 
         //IF ON BEAT, MAKE THE TRAIL RENDER DIFFERENT COLOR
-        if (onBeat)
+        if (CheckBPM())
         {
             TrailRenderer trailrenderer = trailRender.GetComponent<TrailRenderer>();
 
@@ -410,7 +410,6 @@ public class WeaponSinglePlayer : MonoBehaviour
             }
 
             //some camera shake stuff (unoptimized)
-
             //camera shake
             StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.1f, 0.2f));
         }

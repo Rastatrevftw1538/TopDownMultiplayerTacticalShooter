@@ -1025,7 +1025,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraHolderPrefab: {fileID: 7673417122852368875, guid: 055af2a4c0c4e3440905306746eed26f, type: 3}
-  internalUI: {fileID: 3336948777028240098}
+  yOffset: 0
 --- !u!96 &-354695964791044671
 TrailRenderer:
   serializedVersion: 2
