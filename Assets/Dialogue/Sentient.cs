@@ -3,13 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public abstract class Sentient : MonoBehaviour
+public abstract class Sentient : MonoBehaviour, IInteractable
 {
     private void Update()
     {
         if//(eventsystemTrigger == true)
         {
-            //interact
+            Interact();  
         }
+    }
+
+    public void Interact()
+    {
+
     }
 }
