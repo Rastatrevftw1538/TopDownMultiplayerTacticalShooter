@@ -23,7 +23,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 19430501481126987}
-  m_LocalRotation: {x: -0, y: -0, z: -0.9904685, w: -0.13773929}
+  m_LocalRotation: {x: -0, y: -0, z: -0.9945251, w: -0.104498066}
   m_LocalPosition: {x: 0.5023215, y: 0.6565509, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -31,7 +31,7 @@ Transform:
   - {fileID: 6114061349374418911}
   m_Father: {fileID: 5168019145510414049}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -195.834}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -191.996}
 --- !u!1 &631395544107044369
 GameObject:
   m_ObjectHideFlags: 0
@@ -56,7 +56,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 631395544107044369}
   m_LocalRotation: {x: -0, y: -0, z: -0.9878756, w: -0.15524772}
-  m_LocalPosition: {x: 2.500729, y: 1.3913949, z: 0}
+  m_LocalPosition: {x: 2.3308637, y: 1.5074499, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -376,14 +376,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1672402033993495331}
-  m_LocalRotation: {x: -0, y: -0, z: 0.05169177, w: 0.99866307}
+  m_LocalRotation: {x: -0, y: -0, z: 0.13926132, w: 0.9902557}
   m_LocalPosition: {x: 3.0155795, y: -0.12937045, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7441850480065997377}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 5.926}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 16.01}
 --- !u!1 &1968538681376927085
 GameObject:
   m_ObjectHideFlags: 0
@@ -408,7 +408,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1968538681376927085}
   m_LocalRotation: {x: -0, y: -0, z: 0.054241285, w: 0.9985279}
-  m_LocalPosition: {x: 2.196816, y: 0.019584775, z: 0}
+  m_LocalPosition: {x: 2.1968162, y: 0.019584097, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -905,9 +905,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8616342455689032812}
   - component: {fileID: 2639691167907592615}
-  - component: {fileID: 5927869686200712856}
   m_Layer: 0
-  m_Name: Melee Enemy
+  m_Name: Melee Enemy Animation
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -952,23 +951,3 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!95 &5927869686200712856
-Animator:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8616342455689032815}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: a6fd9964cda254b0ea8d65f55e243613, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
