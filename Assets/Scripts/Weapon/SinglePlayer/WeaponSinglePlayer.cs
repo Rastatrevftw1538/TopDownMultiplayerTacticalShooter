@@ -211,6 +211,7 @@ public class WeaponSinglePlayer : MonoBehaviour
         hits = Physics2D.RaycastAll(firePoint.position, direction, fireRange, targetLayers);
         //CHANGE TO NUM OF BULLETS FOR OTHER WEAPONS
         for (int i = 0; i < hits.Length; i++)
+        //for (int i = 0; i < numOfBulletsPerShot; i++)
         {
             //CinemachineShake.Instance.ShakeCamera(5f, .1f);
             Vector3 spreadDirection = direction;
@@ -225,7 +226,14 @@ public class WeaponSinglePlayer : MonoBehaviour
             //var hit = Physics2D.Raycast(firePoint.position, spreadDirection, fireRange, targetLayers);
 
             String whatWasHit = "";
-            RaycastHit2D hit = hits[i];
+            RaycastHit2D hit;
+            if (hits.Length > 0)
+                hit = hits[i];
+            else
+            {
+                hit = new RaycastHit2D();
+                hit.point = Vector3.zero;
+            }
             //PASTE HERE
             if (hit && hit.collider != null)
             {
@@ -312,7 +320,6 @@ public class WeaponSinglePlayer : MonoBehaviour
 
                 }
                 #endregion
-
                 switch (hit.collider.tag)
                 {
                     case "Enemy":
@@ -333,6 +340,7 @@ public class WeaponSinglePlayer : MonoBehaviour
                         break;
 
                     default:
+                        
                         break;
                 }
             }
@@ -342,14 +350,20 @@ public class WeaponSinglePlayer : MonoBehaviour
                 endPoint = Vector3.zero;
             }
 
-            Debug.Log("HUh? Server: " + spreadDirection);
+            //Debug.Log("HUh? Server: " + spreadDirection);
 
             if (endPoint == Vector3.zero)
             {
                 //BOOOOOOOOOOOOOOOOOOM
+                //Debug.LogError("then....");
                 Debug.DrawLine(firePoint.position, firePoint.position + (spreadDirection * fireRange), Color.red);
-                endPoint = new Vector3(firePoint.position.x, firePoint.position.y, firePoint.position.z) + (spreadDirection * fireRange);
+                endPoint = firePoint.position + (spreadDirection * fireRange);
             }
+            //else if(hit.collider.tag == "Enemy")
+            //{
+            //    endPoint = firePoint.position + (spreadDirection * fireRange);
+            //
+            //}
             else
             {
                 endPoint = hit.point;
