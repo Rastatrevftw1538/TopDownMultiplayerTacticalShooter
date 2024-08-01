@@ -12,8 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f028d3969a5640043b30e83ad07b47e3, type: 3}
   m_Name: Level01_Wave01
   m_EditorClassIdentifier: 
-  _spawnAreas: {fileID: 0}
-  _enemies: []
-  _waveValue: 0
-  enemiesToSpawn: []
+  _enemies:
+  - enemyPrefab: {fileID: 5994701145239110951, guid: 7105842b1afb0c84bad44410fb35bea4, type: 3}
+    cost: 1
+  - enemyPrefab: {fileID: 8616342455689032815, guid: ed11e4f1c822cbc4896722a3dd504166, type: 3}
+    cost: 2
+  _waveValue: 10
+  enemiesToSpawn:
+  - {fileID: 5994701145239110951, guid: 7105842b1afb0c84bad44410fb35bea4, type: 3}
+  - {fileID: 8616342455689032815, guid: ed11e4f1c822cbc4896722a3dd504166, type: 3}
+  - {fileID: 5994701145239110951, guid: 7105842b1afb0c84bad44410fb35bea4, type: 3}
+  - {fileID: 8616342455689032815, guid: ed11e4f1c822cbc4896722a3dd504166, type: 3}
+  - {fileID: 8616342455689032815, guid: ed11e4f1c822cbc4896722a3dd504166, type: 3}
+  - {fileID: 8616342455689032815, guid: ed11e4f1c822cbc4896722a3dd504166, type: 3}
   _amtEnemies: 0

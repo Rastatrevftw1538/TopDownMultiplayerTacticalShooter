@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 
 public class SPGameManager : Singleton<SPGameManager>
 {
-    //change to interface enemy later, and do custom editor stuff
-    
     [Header("Waves")]
-    [NonReorderable] public List<Wave> waves = new List<Wave>();
+    public List<Wave> waves = new List<Wave>();
+    public GameObject spawnAreas;
+
     [Header("Wave Statistics")]
     public int currentWave;
-    //public List<GameObject> spawnAreas = new List<GameObject>();
     public float spawnInterval;
     public float enemiesKilled;
 
@@ -21,10 +20,6 @@ public class SPGameManager : Singleton<SPGameManager>
     private CameraShake cameraShake;
 
     private GameObject player;
-    //Wave WaveOne;
-    //Wave WaveTwo;
-    //Wave WaveThree;
-    //Wave WaveFour;
 
     // Start is called before the first frame update
     void Start()
@@ -33,56 +28,48 @@ public class SPGameManager : Singleton<SPGameManager>
         player = GameObject.Find("Player - SinglePlayer");
 
         //Camera stuff
-        clientCamera = ClientCamera.Instance.gameObject;
-        cameraShake  = ClientCamera.Instance.cameraShake;
+        //clientCamera = ClientCamera.Instance.gameObject;
+        //cameraShake  = ClientCamera.Instance.cameraShake;
 
         //START THE FIRST WAVE
         currentWave = 1; //always start on wave 1
-        //waves[currentWave - 1].SpawnEnemies();
-       // waves[currentWave - 1].GenerateEnemies();
-
-        Debug.LogError("Starting Wave one");
+        StartWave(waves[currentWave - 1]);
     }
 
     // Update is called once per frame
     bool endedPreviousWave = false;
     void Update()
     {
-        /*Debug.LogError("you need " + waves[currentWave - 1].AmtEnemies());
-        //Debug.LogError("on wave" + currentWave);
+        Debug.LogError("You need to kill: " + waves[currentWave - 1].AmtEnemies() + " enemies to advance to the next wave.");
         if (enemiesKilled == waves[currentWave - 1].AmtEnemies())
         {
             endedPreviousWave = true;
-            if (endedPreviousWave)
+            if (endedPreviousWave && currentWave <= waves.Count - 1)
             {
                 endedPreviousWave = false;
                 enemiesKilled = 0f;
                 currentWave++;
 
                 //camera shake for wave start
-                if(cameraShake)
+                if (cameraShake)
                     cameraShake.enabled = true;
 
-                //StartWave(EndedWave());
+                StartWave(waves[currentWave - 1]);
             }
-        }*/
+            else if(currentWave <= waves.Count)
+            {
+                EndedLevel();
+            }
+        }
     }
 
-    async void StartWave(Wave wave)
+    void StartWave(Wave wave)
     {
         wave = waves[currentWave - 1];
         UIManager.Instance.ChangeWaveNumber(currentWave);
 
-        //await Task.Run(() => EndedWave());
-
-        //If there are still waves to spawn,
-        if (currentWave <= waves.Count)
-        {
-            //wave.SpawnEnemies();
-            return;
-        }
-        //if you completed all the waves, start the next level
-        EndedLevel();
+        wave.GenerateEnemies(spawnAreas);
+        return;
     }
 
     async void StartLevel()
@@ -103,10 +90,4 @@ public class SPGameManager : Singleton<SPGameManager>
         Debug.LogError("Ended Level (all waves are complete for this scene.");
     }
    
-}
-[System.Serializable]
-public struct WaveEnemy
-{
-    public GameObject enemyPrefab;
-    public int cost;
 }
