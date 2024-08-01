@@ -13,7 +13,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     public float attackSpd;
     public float respawnTime = 2f;
     [field: SerializeField] public float pointsPerHit { get; set; }
-    [SerializeField] private Transform target;
+    [SerializeField] static Transform target;
     private NavMeshAgent agent;
 
     [Header("Enemy Components")]
@@ -43,15 +43,21 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         agent.updateRotation = false;
         agent.updateUpAxis = false;
 
-        if (target == null && player != null)
+        /*if (target == null && player != null)
         {
             target = player.gameObject.transform;
         } else if (target == null && player == null){
             target = GameObject.Find("Player - SinglePlayer").transform;
             player = target.GetComponent<PlayerHealthSinglePlayer>();
+        }*/
+
+        if(!player)
+            player = GameObject.FindWithTag("Player").GetComponent<PlayerHealthSinglePlayer>();
+
+        if (!target)
+        {
+            target = GameObject.FindWithTag("Player").transform;
         }
-        //player = PlayerHealthSinglePlayer.Instance;
-        //target = PlayerHealthSinglePlayer.Instance.gameObject.transform;
     }
 
     private void Update()
@@ -70,9 +76,6 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     {
         if(other.gameObject.tag == "Player")
         {
-            if (player == null)
-                player = other.gameObject.GetComponent<PlayerHealthSinglePlayer>();
-
             player.TakeDamage(damage);
         }
     }
@@ -158,7 +161,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         Destroy(this.transform.parent.gameObject);
 
         //IDEALLY, we move this to the interface
-        SPGameManager.Instance.enemiesKilled++;
+        WaveManager.Instance.enemiesKilled++;
     }
 
     private void CheckHealth()

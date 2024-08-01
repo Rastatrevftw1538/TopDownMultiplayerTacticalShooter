@@ -83,13 +83,13 @@ public class BPMManager : MonoBehaviour
     private void MoveBPMIndicator()
     {
         //WIP
-        if (!BPMProgressTransform)
+        /*if (!BPMProgressTransform)
             BPMProgressTransform = BPMIndicatorProgress.transform;
 
         BPMIndicatorProgress.transform.position = new Vector3(
             BPMProgressTransform.position.x + Time.deltaTime * BPM,
             BPMProgressTransform.position.y,
-            BPMProgressTransform.position.z);
+            BPMProgressTransform.position.z);*/
     }
 
     public bool CanClick()

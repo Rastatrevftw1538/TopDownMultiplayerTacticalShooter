@@ -48,7 +48,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
 
         shotCooldown = startShotCooldown;
         
-                if (target == null && player != null)
+               /* if (target == null && player != null)
                 {
                     target = player.gameObject.transform;
                 }
@@ -56,9 +56,14 @@ public class RangedEnemy : MonoBehaviour, IEnemy
                 {
                     target = GameObject.Find("Player - SinglePlayer").transform;
                     player = target.GetComponent<PlayerHealthSinglePlayer>();
-                }
-        //player = PlayerHealthSinglePlayer.Instance;
-        //target = PlayerHealthSinglePlayer.Instance.gameObject.transform;
+                }*/
+
+        if(!player)
+            player = GameObject.FindWithTag("Player").GetComponent<PlayerHealthSinglePlayer>();
+        if (!target)
+        {
+            target = GameObject.FindWithTag("Player").transform;
+        }
     }
 
     private void Update()
@@ -96,17 +101,14 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     {
         //attack
         if (other.gameObject.tag == "Player")
-        {
-            if (!player)
-                player = other.gameObject.GetComponent<PlayerHealthSinglePlayer>();
-
+        { 
             player.TakeDamage(touchDamage);
         }
     }
 
     private void Attack()
     {
-        GameObject currentProjectile = Instantiate(projectile, transform.position, transform.rotation);
+        Instantiate(projectile, transform.position, transform.rotation);
         shotCooldown = startShotCooldown;
     }
 
@@ -189,7 +191,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         //Respawn(respawnTime);
         Destroy(this.transform.parent.gameObject);
 
-        SPGameManager.Instance.enemiesKilled++;
+        WaveManager.Instance.enemiesKilled++;
     }
 
     private void CheckHealth()
