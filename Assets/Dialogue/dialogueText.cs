@@ -9,5 +9,6 @@ public class dialogueText : ScriptableObject
     public string speakerName;
     public string speakerType;
 
+    [TextArea (3,5)]
     public string[] paragraphs;
 } 
