@@ -7,8 +7,8 @@ using UnityEngine.SceneManagement;
 public class LevelObject : ScriptableObject
 {
     public List<Wave> waves = new List<Wave>();
-    public Scene levelLayout;
     public GameObject levelDoor;
+    public Scene levelLayout;
 
     // Start is called before the first frame update
     void Start()

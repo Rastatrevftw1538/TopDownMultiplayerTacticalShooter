@@ -52,7 +52,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         }*/
 
         if(!player)
-            player = PlayerHealthSinglePlayer.Instance;
+            player = GameObject.FindWithTag("Player").GetComponent<PlayerHealthSinglePlayer>();
 
         if (!target)
         {
