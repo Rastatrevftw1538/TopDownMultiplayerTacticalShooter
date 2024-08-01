@@ -45,6 +45,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
     public float runSpeedNormal;
     [HideInInspector]
     public float walkSpeedNormal;
+    private bool m_IsPaused = false;
 
     [Header("Player Components")]
     public UnityEngine.Vector2 movement;
@@ -244,6 +245,12 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
                 player.layer = LayerMask.NameToLayer("Enemy");
         }
             
+    }
+    public void DisplayCursor(bool display)
+    {
+        m_IsPaused = display;
+        Cursor.lockState = display ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = display;
     }
 
     #region 'IEffectable' INTERFACE FUNCTIONS

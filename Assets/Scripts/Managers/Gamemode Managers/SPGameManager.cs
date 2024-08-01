@@ -39,7 +39,7 @@ public class SPGameManager : Singleton<SPGameManager>
         //START THE FIRST WAVE
         currentWave = 1; //always start on wave 1
         //waves[currentWave - 1].SpawnEnemies();
-        waves[currentWave - 1].GenerateEnemies();
+       // waves[currentWave - 1].GenerateEnemies();
 
         Debug.LogError("Starting Wave one");
     }
@@ -48,7 +48,7 @@ public class SPGameManager : Singleton<SPGameManager>
     bool endedPreviousWave = false;
     void Update()
     {
-        Debug.LogError("you need " + waves[currentWave - 1].AmtEnemies());
+        /*Debug.LogError("you need " + waves[currentWave - 1].AmtEnemies());
         //Debug.LogError("on wave" + currentWave);
         if (enemiesKilled == waves[currentWave - 1].AmtEnemies())
         {
@@ -65,7 +65,7 @@ public class SPGameManager : Singleton<SPGameManager>
 
                 //StartWave(EndedWave());
             }
-        }
+        }*/
     }
 
     async void StartWave(Wave wave)

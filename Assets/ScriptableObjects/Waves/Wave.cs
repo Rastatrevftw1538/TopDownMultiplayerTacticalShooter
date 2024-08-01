@@ -14,6 +14,7 @@ public class Wave : ScriptableObject
 
     public void GenerateEnemies()
     {
+        _spawnAreas = GameObject.Find("SpawnAreas");
         List<GameObject> _generatedEnemies = new List<GameObject>();
         while (_waveValue > 0)
         {
@@ -37,6 +38,7 @@ public class Wave : ScriptableObject
                 break;
             }
         }
+        _spawnAreas = null;
         enemiesToSpawn.Clear();
         enemiesToSpawn = _generatedEnemies;
     }
