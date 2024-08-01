@@ -9,7 +9,7 @@ public enum CheckMethod
 public class ScenePartLoader : MonoBehaviour
 {
 
-    private Transform player;
+    public Transform player;
     public CheckMethod checkMethod;
     public float loadRange;
 
@@ -18,7 +18,6 @@ public class ScenePartLoader : MonoBehaviour
     private bool shouldLoad;
     void Start()
     {
-        player = GameObject.Find("Player - SinglePlayer").transform;
         //verify if the scene is already open to avoid opening a scene twice
         if (SceneManager.sceneCount > 0)
         {

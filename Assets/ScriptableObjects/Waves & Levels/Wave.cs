@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 
-[CreateAssetMenu(fileName = "Wave", menuName = "Levels and Waves")]
+[CreateAssetMenu(fileName = "Wave", menuName = "Levels and Waves/Wave")]
 public class Wave : ScriptableObject
 {
     [NonReorderable] public List<WaveEnemy> _enemies;

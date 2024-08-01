@@ -143,4 +143,9 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
             RpcDie();
         }
     }
+
+    public GameObject ReturnGameObject()
+    {
+        return gameObject;
+    }
 }

@@ -13,7 +13,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     public float attackSpd;
     public float respawnTime = 2f;
     [field: SerializeField] public float pointsPerHit { get; set; }
-    [SerializeField] private Transform target;
+    [SerializeField] static Transform target;
     private NavMeshAgent agent;
 
     [Header("Enemy Components")]
@@ -43,15 +43,19 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         agent.updateRotation = false;
         agent.updateUpAxis = false;
 
-        if (target == null && player != null)
+        /*if (target == null && player != null)
         {
             target = player.gameObject.transform;
         } else if (target == null && player == null){
             target = GameObject.Find("Player - SinglePlayer").transform;
             player = target.GetComponent<PlayerHealthSinglePlayer>();
-        }
-        //player = PlayerHealthSinglePlayer.Instance;
-        //target = PlayerHealthSinglePlayer.Instance.gameObject.transform;
+        }*/
+
+        if(!player)
+            player = PlayerHealthSinglePlayer.Instance;
+
+        if(!target)
+            target = PlayerHealthSinglePlayer.Instance.ReturnGameObject().transform;
     }
 
     private void Update()
@@ -70,9 +74,6 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     {
         if(other.gameObject.tag == "Player")
         {
-            if (player == null)
-                player = other.gameObject.GetComponent<PlayerHealthSinglePlayer>();
-
             player.TakeDamage(damage);
         }
     }
