@@ -7,9 +7,12 @@ using System.Threading.Tasks;
 public class SPGameManager : Singleton<SPGameManager>
 {
     public int currentLevel;
-
     public List<Level> levels = new List<Level>();
 
+    private void Awake()
+    {
+
+    }
     private void Start()
     {
         

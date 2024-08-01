@@ -56,9 +56,8 @@ public class Wave : ScriptableObject
     {
         foreach(GameObject enemy in enemiesToSpawn)
         {
-            int rando = Random.Range(0, spawnArea.transform.childCount);
-            
             //this ensures enemies dont spawn pixel perfectly on top of each other
+            int rando = Random.Range(0, spawnArea.transform.childCount);
             float randomOffset = Random.Range(0, 0.5f);
             GameObject currentSpawn = spawnArea.transform.GetChild(rando).gameObject;
             Vector2 minorDiff = new Vector2(currentSpawn.transform.position.x, currentSpawn.transform.position.y + randomOffset);

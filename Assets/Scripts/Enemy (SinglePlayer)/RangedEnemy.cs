@@ -57,8 +57,13 @@ public class RangedEnemy : MonoBehaviour, IEnemy
                     target = GameObject.Find("Player - SinglePlayer").transform;
                     player = target.GetComponent<PlayerHealthSinglePlayer>();
                 }*/
-        player = PlayerHealthSinglePlayer.Instance;
-        target = PlayerHealthSinglePlayer.Instance.gameObject.transform;
+
+        if(!player)
+            player = PlayerHealthSinglePlayer.Instance;
+        if (!target)
+        {
+            target = GameObject.FindWithTag("Player").transform;
+        }
     }
 
     private void Update()
@@ -103,7 +108,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
 
     private void Attack()
     {
-        GameObject currentProjectile = Instantiate(projectile, transform.position, transform.rotation);
+        Instantiate(projectile, transform.position, transform.rotation);
         shotCooldown = startShotCooldown;
     }
 

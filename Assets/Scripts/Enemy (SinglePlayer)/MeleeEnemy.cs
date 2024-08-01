@@ -54,8 +54,10 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         if(!player)
             player = PlayerHealthSinglePlayer.Instance;
 
-        if(!target)
-            target = PlayerHealthSinglePlayer.Instance.ReturnGameObject().transform;
+        if (!target)
+        {
+            target = GameObject.FindWithTag("Player").transform;
+        }
     }
 
     private void Update()

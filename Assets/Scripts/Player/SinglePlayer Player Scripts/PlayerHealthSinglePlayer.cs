@@ -19,6 +19,7 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
     private bool isAlive = true;
     private bool isRespawning = false;
     private Transform[] spawnPointList;
+
     public bool checkIfAlive
     {
         get { return isAlive; }
@@ -142,10 +143,5 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
             currentHealth = 0;
             RpcDie();
         }
-    }
-
-    public GameObject ReturnGameObject()
-    {
-        return gameObject;
     }
 }
