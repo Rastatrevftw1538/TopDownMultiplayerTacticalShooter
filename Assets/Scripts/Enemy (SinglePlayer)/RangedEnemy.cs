@@ -189,7 +189,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         //Respawn(respawnTime);
         Destroy(this.transform.parent.gameObject);
 
-        SPGameManager.Instance.enemiesKilled++;
+        WaveManager.Instance.enemiesKilled++;
     }
 
     private void CheckHealth()

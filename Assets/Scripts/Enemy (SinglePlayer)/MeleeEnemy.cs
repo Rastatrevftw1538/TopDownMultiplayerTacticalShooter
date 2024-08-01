@@ -158,7 +158,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         Destroy(this.transform.parent.gameObject);
 
         //IDEALLY, we move this to the interface
-        SPGameManager.Instance.enemiesKilled++;
+        WaveManager.Instance.enemiesKilled++;
     }
 
     private void CheckHealth()

@@ -1,6 +1,8 @@
-/*using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
 
 public class WaveManager : Singleton<WaveManager>
 {
@@ -10,33 +12,39 @@ public class WaveManager : Singleton<WaveManager>
 
     [Header("Wave Statistics")]
     public int currentWave;
+    public float spawnInterval;
     public float enemiesKilled;
 
     //CAMERA STUFF
     private GameObject clientCamera;
     private CameraShake cameraShake;
 
+    private GameObject player;
+
+    // Start is called before the first frame update
     void Start()
     {
+        //find player
+        player = GameObject.Find("Player - SinglePlayer");
+
         //Camera stuff
-        clientCamera = ClientCamera.Instance.gameObject;
-        cameraShake = ClientCamera.Instance.cameraShake;
+        //clientCamera = ClientCamera.Instance.gameObject;
+        //cameraShake  = ClientCamera.Instance.cameraShake;
 
         //START THE FIRST WAVE
         currentWave = 1; //always start on wave 1
-        waves[0].GenerateEnemies(spawnAreas);
-
-        Debug.LogError("Starting Wave one");
+        StartWave(waves[currentWave - 1]);
     }
 
+    // Update is called once per frame
     bool endedPreviousWave = false;
     void Update()
     {
-        Debug.LogError("you need " + waves[currentWave - 1].AmtEnemies());
+        Debug.LogError("You need to kill: " + waves[currentWave - 1].AmtEnemies() + " enemies to advance to the next wave.");
         if (enemiesKilled == waves[currentWave - 1].AmtEnemies())
         {
             endedPreviousWave = true;
-            if (endedPreviousWave)
+            if (endedPreviousWave && currentWave <= waves.Count - 1)
             {
                 endedPreviousWave = false;
                 enemiesKilled = 0f;
@@ -48,6 +56,10 @@ public class WaveManager : Singleton<WaveManager>
 
                 StartWave(waves[currentWave - 1]);
             }
+            else if (currentWave <= waves.Count)
+            {
+                SPGameManager.Instance.EndedLevel();
+            }
         }
     }
 
@@ -56,20 +68,8 @@ public class WaveManager : Singleton<WaveManager>
         wave = waves[currentWave - 1];
         UIManager.Instance.ChangeWaveNumber(currentWave);
 
-        //If there are still waves to spawn,
-        if (currentWave <= waves.Count)
-        {
-            wave.GenerateEnemies(spawnAreas);
-            return;
-        }
-        //if you completed all the waves, start the next level
-        EndedLevel();
+        wave.GenerateEnemies(spawnAreas);
+        return;
     }
 
-    private void EndedLevel()
-    {
-        UIManager.Instance.ShowVictory();
-        Debug.LogError("Ended Level (all waves are complete for this scene.");
-    }
 }
-*/
