@@ -209,8 +209,11 @@ public class WeaponSinglePlayer : MonoBehaviour
         float damageDone = 0;
         RaycastHit2D[] hits;
         hits = Physics2D.RaycastAll(firePoint.position, direction, fireRange, targetLayers);
+
+        String whatWasHit = "";
+        bool hitWall = false;
         //CHANGE TO NUM OF BULLETS FOR OTHER WEAPONS
-        for (int i = 0; i < hits.Length; i++)
+        for (int i = 0; i < hits.Length && !hitWall; i++)
         //for (int i = 0; i < numOfBulletsPerShot; i++)
         {
             //CinemachineShake.Instance.ShakeCamera(5f, .1f);
@@ -225,16 +228,16 @@ public class WeaponSinglePlayer : MonoBehaviour
 
             //var hit = Physics2D.Raycast(firePoint.position, spreadDirection, fireRange, targetLayers);
 
-            String whatWasHit = "";
-            RaycastHit2D hit;
-            if (hits.Length > 0)
+            //String whatWasHit = "";
+            RaycastHit2D hit = hits[i];
+           /* if (hits.Length > 0)
                 hit = hits[i];
             else
             {
                 hit = new RaycastHit2D();
                 hit.point = Vector3.zero;
-            }
-            //PASTE HERE
+            }*/
+            
             if (hit && hit.collider != null)
             {
                 #region UGLY CODE FOR NOW
@@ -324,6 +327,7 @@ public class WeaponSinglePlayer : MonoBehaviour
                 {
                     case "Enemy":
                         Transform objectOrigin = hit.collider.transform;
+                        whatWasHit = "Enemy";
                         if (objectOrigin != null)
                         {
                             IEnemy enemy = objectOrigin.GetComponent<IEnemy>();
@@ -339,6 +343,9 @@ public class WeaponSinglePlayer : MonoBehaviour
                         }
                         break;
 
+                    case "Wall":
+                        hitWall = true;
+                        break;
                     default:
                         
                         break;
@@ -386,8 +393,9 @@ public class WeaponSinglePlayer : MonoBehaviour
         else
         {
             //collisionPoint = spreadDirection;
-            Debug.Log("Hit Nothing:");
+            Debug.Log("Hit Nothing:"); 
         }
+        Debug.LogError("shot");
         
         var bulletInstance = Instantiate(bulletPrefab, firePoint.position, new Quaternion(0, 0, 0, 0));
 
