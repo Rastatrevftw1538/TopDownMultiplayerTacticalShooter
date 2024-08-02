@@ -94,10 +94,3 @@ public struct WaveEnemy
     public GameObject enemyPrefab;
     public int cost;
 }
-
-[System.Serializable]
-public struct Level
-{
-    public GameObject door;
-    public List<Wave> waves;
-}

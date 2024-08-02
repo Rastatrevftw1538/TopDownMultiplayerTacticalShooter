@@ -11,6 +11,8 @@ TagManager:
   - Red
   - Blue
   - Enemy
+  - LevelDoor
+  - SpawnHolder
   layers:
   - Default
   - TransparentFX

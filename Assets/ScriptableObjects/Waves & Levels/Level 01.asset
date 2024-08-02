@@ -17,6 +17,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a5afa6a3282d75b40977d3fee9009385, type: 2}
   - {fileID: 11400000, guid: d90ed1188c0abb44ab3a76ece56a42fa, type: 2}
   - {fileID: 11400000, guid: 9621eb35e48ed5f4bbd14ac5ae9458ca, type: 2}
-  levelLayout:
-    m_Handle: 0
   levelDoor: {fileID: 0}

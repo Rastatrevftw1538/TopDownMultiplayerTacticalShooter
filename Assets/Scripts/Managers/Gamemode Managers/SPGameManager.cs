@@ -11,11 +11,11 @@ public class SPGameManager : Singleton<SPGameManager>
 
     private void Awake()
     {
-
+        currentLevel = 1;
     }
     private void Start()
     {
-        
+
     }
     private void StartLevel()
     {
@@ -32,5 +32,6 @@ public class SPGameManager : Singleton<SPGameManager>
         currentLevel++;
         //levels[currentLevel - 1].door.SetActive(false);
         Debug.LogError("Ended Level (all waves are complete for this scene.");
+        WaveManager.Instance.startNext = false;
     }
 }

@@ -31,6 +31,7 @@ public class ScenePartLoader : MonoBehaviour
             }
         }
         player = GameObject.FindWithTag("Player").transform;
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     void Update()
@@ -78,6 +79,13 @@ public class ScenePartLoader : MonoBehaviour
             SceneManager.UnloadSceneAsync(gameObject.name);
             isLoaded = false;
         }
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.LogError("loaded scene");
+        WaveManager.Instance.spawnAreas.Add(GameObject.FindWithTag("SpawnHolder"));
+        WaveManager.Instance.startNext = true;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
