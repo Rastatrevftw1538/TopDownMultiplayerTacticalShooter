@@ -25,9 +25,10 @@ public class SPGameManager : Singleton<SPGameManager>
     public void EndedLevel()
     {
         //UIManager.Instance.ShowVictory();
-        
+
         //remove the door to the next level
         //probably some camera movement polish stuff here later
+        UIManager.Instance.ChangeWaveNumber(1);
         levels[currentLevel - 1].door.SetActive(false);
         Debug.LogError("Ended Level (all waves are complete for this scene.");
     }

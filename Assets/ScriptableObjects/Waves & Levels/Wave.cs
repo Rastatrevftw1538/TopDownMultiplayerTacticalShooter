@@ -8,7 +8,7 @@ public class Wave : ScriptableObject
 {
     [NonReorderable] public List<WaveEnemy> _enemies;
     public float _waveValue;
-    private List<GameObject> enemiesToSpawn;
+    private List<GameObject> enemiesToSpawn = new List<GameObject>();
     [HideInInspector] public int _amtEnemies;
 
     public void GenerateEnemies(GameObject spawnAreas)

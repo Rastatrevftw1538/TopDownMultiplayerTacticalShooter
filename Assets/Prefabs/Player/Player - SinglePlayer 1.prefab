@@ -235,7 +235,7 @@ MonoBehaviour:
   targetLayers:
     serializedVersion: 2
     m_Bits: 947
-  bulletPrefab: {fileID: 209056261796185724, guid: e88e32b0ab60951458b5460b47a868f1, type: 3}
+  bulletPrefab: {fileID: 209056261796185724, guid: 04691741bf0ccfb48a0c85b7314e5e45, type: 3}
   fireRange: 100
   numOfBulletsPerShot: 0
   damageMultiplier: 1
