@@ -45,7 +45,7 @@ public class WaveManager : Singleton<WaveManager>
     void Update()
     {
         Debug.LogError("You need to kill: " + levels[currentLevel].waves[currentWave].AmtEnemies() + " enemies to advance to the next wave.");
-        if (enemiesKilled == levels[currentLevel - 1].waves[currentWave - 1].AmtEnemies())
+        if (enemiesKilled == levels[currentLevel].waves[currentWave].AmtEnemies())
         {
             endedPreviousWave = true;
             if (endedPreviousWave && currentWave <= levels[currentLevel].waves.Count - 1 && startNext)
