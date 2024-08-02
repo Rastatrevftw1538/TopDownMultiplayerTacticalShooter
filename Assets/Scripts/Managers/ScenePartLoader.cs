@@ -30,6 +30,7 @@ public class ScenePartLoader : MonoBehaviour
                 }
             }
         }
+        player = GameObject.FindWithTag("Player").transform;
     }
 
     void Update()
@@ -63,6 +64,7 @@ public class ScenePartLoader : MonoBehaviour
         if (!isLoaded)
         {
             //Loading the scene, using the gameobject name as it's the same as the name of the scene to load
+            //"Level" + SPManager.Instance.currentLevel,
             SceneManager.LoadSceneAsync(gameObject.name, LoadSceneMode.Additive);
             //We set it to true to avoid loading the scene twice
             isLoaded = true;

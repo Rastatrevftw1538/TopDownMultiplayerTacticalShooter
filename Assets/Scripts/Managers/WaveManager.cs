@@ -59,7 +59,7 @@ public class WaveManager : Singleton<WaveManager>
             else if (currentWave <= waves.Count)
             {
                 //SPGameManager.Instance.EndedLevel();
-                SPGameManager gameManager = GetComponent<SPGameManager>();
+                SPGameManager gameManager = SPGameManager.Instance;
                 gameManager.EndedLevel();
             }
         }

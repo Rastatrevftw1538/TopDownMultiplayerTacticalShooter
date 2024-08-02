@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 public class SPGameManager : Singleton<SPGameManager>
 {
     public int currentLevel;
-    public List<Level> levels = new List<Level>();
+    //public List<Level> levels = new List<Level>();
 
     private void Awake()
     {
@@ -29,7 +29,8 @@ public class SPGameManager : Singleton<SPGameManager>
         //remove the door to the next level
         //probably some camera movement polish stuff here later
         UIManager.Instance.ChangeWaveNumber(1);
-        levels[currentLevel - 1].door.SetActive(false);
+        currentLevel++;
+        //levels[currentLevel - 1].door.SetActive(false);
         Debug.LogError("Ended Level (all waves are complete for this scene.");
     }
 }

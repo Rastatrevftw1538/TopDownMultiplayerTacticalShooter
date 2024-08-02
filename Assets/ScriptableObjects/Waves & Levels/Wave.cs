@@ -67,9 +67,14 @@ public class Wave : ScriptableObject
             int rando = Random.Range(0, spawnArea.transform.childCount);
             float randomOffset = Random.Range(0, 0.5f);
             GameObject currentSpawn = spawnArea.transform.GetChild(rando).gameObject;
-            Vector2 minorDiff = new Vector2(currentSpawn.transform.position.x, currentSpawn.transform.position.y + randomOffset);
+            Vector2 minorDiff = new Vector2(currentSpawn.transform.position.x, currentSpawn.transform.position.y);
+            Vector3 spawnPos = new Vector3(currentSpawn.transform.position.x, currentSpawn.transform.position.y, currentSpawn.transform.position.z);
+            Quaternion quaternion = new Quaternion();
+            quaternion.x = 0;
+            quaternion.y = currentSpawn.transform.rotation.y;
+            quaternion.z = currentSpawn.transform.rotation.z;
 
-            Instantiate(enemy, spawnArea.transform.GetChild(rando));
+            Instantiate(enemy, spawnPos, quaternion, currentSpawn.transform);
         }
     }
 
