@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Single Player/ArenaSinglePlayer.unity
     guid: c829405fbb166a24bb013039362b6ef2
+  - enabled: 1
+    path: Assets/Scenes/Single Player/SceneLoadingTest.unity
+    guid: ce47ac3f5159f7d44893d062ea804c6b
   m_configObjects: {}

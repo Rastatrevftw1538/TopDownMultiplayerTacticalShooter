@@ -74,4 +74,12 @@ public class WaveManager : Singleton<WaveManager>
         return;
     }
 
+    public void ResetWaveData()
+    {
+        foreach(Wave wave in waves)
+        {
+            wave.ResetData();
+        }
+    }
+
 }

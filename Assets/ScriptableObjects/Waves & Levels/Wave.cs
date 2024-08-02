@@ -10,13 +10,12 @@ public class Wave : ScriptableObject
     public float _waveValue;
     private List<GameObject> enemiesToSpawn = new List<GameObject>();
     [HideInInspector] public int _amtEnemies;
+    private float tempWaveValue;
 
     public void GenerateEnemies(GameObject spawnAreas)
     {
-        float tempWaveValue = _waveValue;
-        enemiesToSpawn.Clear();
-        _waveValue = tempWaveValue;
-        _amtEnemies = 0;
+        tempWaveValue = _waveValue;
+        ResetData();
 
         if (spawnAreas == null)
         {
@@ -50,6 +49,14 @@ public class Wave : ScriptableObject
         _waveValue = tempWaveValue;
         enemiesToSpawn = _generatedEnemies;
         SpawnEnemies(spawnAreas);
+    }
+
+    public void ResetData()
+    {
+        _waveValue = tempWaveValue;
+        enemiesToSpawn.Clear();
+        _waveValue = tempWaveValue;
+        _amtEnemies = 0;
     }
 
     public void SpawnEnemies(GameObject spawnArea)

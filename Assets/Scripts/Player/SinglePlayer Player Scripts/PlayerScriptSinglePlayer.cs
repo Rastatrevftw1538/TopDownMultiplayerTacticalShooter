@@ -51,6 +51,8 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
     public UnityEngine.Vector2 movement;
     public UnityEngine.Quaternion rotation;
     public Rigidbody2D rb;
+    //public GameObject pointer;
+    //public GameObject endOfBarrel;
     private GameObject playerBodyArms;
     private GameObject playerBodyBody;
 

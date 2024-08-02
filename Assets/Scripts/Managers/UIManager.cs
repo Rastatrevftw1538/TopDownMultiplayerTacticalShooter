@@ -65,11 +65,17 @@ public class UIManager : Singleton<UIManager>
 
     public void ShowDefeat()
     {
+        if (WaveManager.Instance != null)
+            WaveManager.Instance.ResetWaveData();
+
         defeatScreen.SetActive(true);
     }
 
     public void ShowVictory()
     {
+        if (WaveManager.Instance != null)
+            WaveManager.Instance.ResetWaveData();
+
         victoryScreen.SetActive(true);
     }
 }
