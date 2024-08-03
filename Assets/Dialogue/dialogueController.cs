@@ -27,6 +27,8 @@ public class DialogueController : MonoBehaviour
             {
                 //end a conversation
                 EndConversation(dialogueText);
+                return;
+
             }
 
         }
@@ -54,7 +56,17 @@ public class DialogueController : MonoBehaviour
 
     private void EndConversation(DialogueText dialogueText)
     {
+        //clear the queue
+        paragraphs.Clear();
 
+        //return bool to false
+        conversationEnded = false;
+
+        //deactivate game object
+        if (gameObject.activeSelf)
+        {
+            gameObject.SetActive(false);
+        }
     }
     
 }
