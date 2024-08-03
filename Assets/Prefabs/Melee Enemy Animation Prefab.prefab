@@ -396,6 +396,8 @@ MonoBehaviour:
   target: {fileID: 0}
   stoppingDistance: 4
   startShotCooldown: 1
+  touchDamage: 0
+  <pointsPerHit>k__BackingField: 0
   healthbarExternal: {fileID: 4879204933256169961}
   projectile: {fileID: 2252358114905661944, guid: ee2f2386eaf7bcd4aae1f965652cc1ec, type: 3}
   _damageTaken: 0
@@ -444,7 +446,7 @@ Animator:
   m_GameObject: {fileID: 4283279686884553839}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8ef23b9c63e3d489088088f8639c8e0b, type: 2}
+  m_Controller: {fileID: 9100000, guid: a6fd9964cda254b0ea8d65f55e243613, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

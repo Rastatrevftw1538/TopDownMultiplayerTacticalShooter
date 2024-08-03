@@ -8,15 +8,15 @@ public class Wave : ScriptableObject
 {
     [NonReorderable] public List<WaveEnemy> _enemies;
     public float _waveValue;
-    private List<GameObject> enemiesToSpawn;
+    private List<GameObject> enemiesToSpawn = new List<GameObject>();
     [HideInInspector] public int _amtEnemies;
+    private float tempWaveValue;
+    private bool isComplete;
 
     public void GenerateEnemies(GameObject spawnAreas)
     {
-        float tempWaveValue = _waveValue;
-        enemiesToSpawn.Clear();
-        _waveValue = tempWaveValue;
-        _amtEnemies = 0;
+        tempWaveValue = _waveValue;
+        ResetData();
 
         if (spawnAreas == null)
         {
@@ -36,7 +36,6 @@ public class Wave : ScriptableObject
                 GameObject currentSpawn = spawnAreas.transform.GetChild(rando).gameObject;
                 //_spawnedEnemies.Add(Instantiate(_enemies[randEnemyId].enemyPrefab, currentSpawn.transform));
                 _generatedEnemies.Add(_enemies[randEnemyId].enemyPrefab);
-                this._amtEnemies++;
                 //Debug.LogError("there are now" + _amtEnemies);
                 _waveValue -= randEnemyCost;
                 //Debug.LogError("wave value now at" + _waveValue);
@@ -52,6 +51,15 @@ public class Wave : ScriptableObject
         SpawnEnemies(spawnAreas);
     }
 
+    public void ResetData()
+    {
+        isComplete = false;
+        _waveValue = tempWaveValue;
+        enemiesToSpawn.Clear();
+        _waveValue = tempWaveValue;
+        _amtEnemies = 0;
+    }
+
     public void SpawnEnemies(GameObject spawnArea)
     {
         foreach(GameObject enemy in enemiesToSpawn)
@@ -60,9 +68,13 @@ public class Wave : ScriptableObject
             int rando = Random.Range(0, spawnArea.transform.childCount);
             float randomOffset = Random.Range(0, 0.5f);
             GameObject currentSpawn = spawnArea.transform.GetChild(rando).gameObject;
-            Vector2 minorDiff = new Vector2(currentSpawn.transform.position.x, currentSpawn.transform.position.y + randomOffset);
+            Vector3 minorDiff = new Vector3(currentSpawn.transform.position.x, currentSpawn.transform.position.y + randomOffset, currentSpawn.transform.position.z);
+            Quaternion quaternion = new Quaternion();
+            quaternion.x = 0;
+            enemy.transform.rotation = quaternion;
 
-            Instantiate(enemy, spawnArea.transform.GetChild(rando));
+            Instantiate(enemy, minorDiff,  Quaternion.identity);
+            _amtEnemies++;
         }
     }
 
@@ -70,6 +82,17 @@ public class Wave : ScriptableObject
     {
         //return _spawnedEnemies.Count;
         return _amtEnemies;
+    }
+
+    public void MarkComplete(bool set)
+    {
+        Debug.LogError(this.name + " has been set to: " + set);
+        isComplete = set;
+    }
+
+    public bool IsComplete()
+    {
+        return isComplete;
     }
 
     public void OnApplicationQuit()
@@ -83,11 +106,4 @@ public struct WaveEnemy
 {
     public GameObject enemyPrefab;
     public int cost;
-}
-
-[System.Serializable]
-public struct Level
-{
-    public GameObject door;
-    public List<Wave> waves;
 }

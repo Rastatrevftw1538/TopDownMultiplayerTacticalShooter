@@ -51,6 +51,8 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
     public UnityEngine.Vector2 movement;
     public UnityEngine.Quaternion rotation;
     public Rigidbody2D rb;
+    //public GameObject pointer;
+    //public GameObject endOfBarrel;
     private GameObject playerBodyArms;
     private GameObject playerBodyBody;
 
@@ -100,7 +102,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
         walkSpeedNormal = walkSpeed;
 
         //this.GetComponent<WeaponSinglePlayer>().spreadCone.enabled = true;
-        Anim = gameObject.transform.GetChild(0).GetComponent<Animator>();
+        Anim = GetComponentInChildren<Animator>();
 
         //AUTOMATICALLY SET THE PLAYER'S ANIMATION STATE TO IDLE
         StateMachine.Initialize(IdleState);
@@ -160,6 +162,22 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
             };
             movement = new UnityEngine.Vector2(movement.x, movement.y).normalized * (isRunning ? runSpeed : walkSpeed) * 0.25f;
 
+            if (movement.magnitude > 0)
+            {
+                Anim.SetFloat("Idle", 0);
+                Anim.SetFloat("Moving", movement.normalized.magnitude);
+            }
+            //else if (movement.normalized.y > 0)
+            //{
+            //    Anim.SetFloat("Idle", 0);
+            //    Anim.SetFloat("Moving", movement.normalized.y);
+            //}
+            else
+            {
+                Anim.SetFloat("Idle", 1);
+                Anim.SetFloat("Moving", 0);
+            }
+
             UnityEngine.Vector3 mousePosition = Input.mousePosition;
             mousePosition.z = -playerCamera.transform.position.z;
             UnityEngine.Vector3 mouseWorldPosition = playerCamera.ScreenToWorldPoint(mousePosition);
@@ -218,7 +236,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
     private void CmdMove(UnityEngine.Vector2 movement)
     {
         //RpcMove(movement);
-        transform.Translate(movement * Time.fixedDeltaTime);    
+        transform.Translate(movement * Time.fixedDeltaTime);
     }
     private void CmdRotate(UnityEngine.Quaternion rotation)
     {

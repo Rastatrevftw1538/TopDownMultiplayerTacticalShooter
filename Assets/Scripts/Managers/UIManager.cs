@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 using TMPro;
 
@@ -20,7 +21,11 @@ public class UIManager : Singleton<UIManager>
 
     void Start()
     {
-        points = 0f;
+        SetPoints(0f);
+        DontDestroyOnLoad(waveDisplay.gameObject);
+        DontDestroyOnLoad(pointsDisplay.gameObject);
+        DontDestroyOnLoad(victoryScreen.gameObject);
+        DontDestroyOnLoad(defeatScreen.gameObject);
     }
 
     void FixedUpdate()
@@ -55,6 +60,13 @@ public class UIManager : Singleton<UIManager>
         pointsDisplay.text = points.ToString();
     }
 
+    public void SetPoints(float num)
+    {
+        if (!pointsDisplay) return;
+        points = num;
+        pointsDisplay.text = points.ToString();
+    }
+
     public void SubtractPoints(float num)
     {
         if (!pointsDisplay) return;
@@ -65,12 +77,62 @@ public class UIManager : Singleton<UIManager>
 
     public void ShowDefeat()
     {
+        //if (WaveManager.Instance != null)
+        //    WaveManager.Instance.ResetWaveData();
+
         defeatScreen.SetActive(true);
     }
 
     public void ShowVictory()
     {
+        /*if (WaveManager.Instance != null)
+        {
+            WaveManager.Instance.ResetWaveData();
+    
+        }*/
+        SetPoints(0);
+
         victoryScreen.SetActive(true);
+    }
+
+    public void SetWaveDisplay(bool set)
+    {
+        waveDisplay.gameObject.SetActive(set);
+    }
+
+    public void ResetSingletons()
+    {
+        if (SPGameManager.Instance != null)
+            Destroy(SPGameManager.Instance.gameObject);
+
+        if (WaveManager.Instance != null)
+            Destroy(WaveManager.Instance.gameObject);
+
+        if (PlayerHealthSinglePlayer.Instance != null)
+            Destroy(PlayerHealthSinglePlayer.Instance.gameObject);
+
+        if (PlayerScriptSinglePlayer.Instance != null)
+            Destroy(PlayerScriptSinglePlayer.Instance.gameObject);
+
+        if (this.gameObject != null)
+            Destroy(this.gameObject);
+    }
+
+    public void ReturnToMainMenu()
+    {
+        foreach(Scene sceneLoaded in SceneManager.GetAllScenes())
+            SceneManager.UnloadSceneAsync(sceneLoaded);
+
+        SceneManager.LoadSceneAsync("MainMenuSP", LoadSceneMode.Single);
+        //MainMenu mainMenu = GameObject.FindObjectOfType<MainMenu>();
+        //mainMenu.ReturnToMenu();
+
+        ResetSingletons();
+    }
+
+    public void ResetScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
 

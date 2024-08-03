@@ -8,6 +8,7 @@ using static PlayerScriptSinglePlayer;
 public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
 
     public const float maxHealth = 100;
+    public float iFrames;
 
     public float currentHealth = maxHealth;
     public float respawnTime;
@@ -18,7 +19,9 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
     private bool hasSentEvent = false;
     private bool isAlive = true;
     private bool isRespawning = false;
+    private bool canHit = true;
     private Transform[] spawnPointList;
+    private Animator Anim; //move to statemachine later
 
     public bool checkIfAlive
     {
@@ -32,10 +35,12 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
     private void Awake()
     {
         healthbarInternal = GetComponentInChildren<Slider>();
+        Anim = GetComponentInChildren<Animator>();
     }
 
     public void TakeDamage(float amount)
     {
+        if (!canHit) return;
         //CHECK IF THE DAMAGE PASSED IN WAS NEGATIVE, IF IT WAS, THIS FUNCTION WILL ADD HEALTH INSTEAD
         amount = 
             amount > 0 ? amount : amount * -1;
@@ -46,6 +51,21 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
         healthbarExternal.fillAmount = currentHealth / maxHealth;
 
         checkHealth();
+        canHit = false;
+        Invoke(nameof(SetCanHitTrue), iFrames);
+
+        //animation
+        StartCoroutine(nameof(GotHitAnim));
+    }
+    
+    private void SetCanHitTrue()
+    {
+        canHit = true;
+    }
+
+    private bool CanHit()
+    {
+        return canHit;
     }
 
     private void Update()
@@ -143,5 +163,13 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
             currentHealth = 0;
             RpcDie();
         }
+    }
+    
+    private IEnumerator GotHitAnim()
+    {
+        Anim.SetBool("GotHit", true);
+        yield return new WaitForSeconds(iFrames);
+        Anim.SetBool("GotHit", false);
+        Debug.Log("stopped getting hit");
     }
 }
