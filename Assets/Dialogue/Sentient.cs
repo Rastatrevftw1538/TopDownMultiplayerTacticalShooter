@@ -22,7 +22,7 @@ public abstract class Sentient : MonoBehaviour, IInteractable
 
         //finding what wave the games on
         waveCheck = FindObjectOfType<WaveManager>();
-        Debug.Log(waveCheck.currentWave);
+        //need a way to read the current wave
     }
 
     private void Update()
@@ -43,8 +43,11 @@ public abstract class Sentient : MonoBehaviour, IInteractable
         {
             //if the sprite isn't on but we're in interact distance, turn on the sprite
             _interactSprite.gameObject.SetActive(true);
-
         }
+
+       //need a way to update the current wave
+
+
     }
 
     public abstract void Interact();
