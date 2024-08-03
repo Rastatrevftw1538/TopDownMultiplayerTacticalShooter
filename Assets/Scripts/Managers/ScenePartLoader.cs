@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
 
 public enum CheckMethod
 {
@@ -16,8 +17,9 @@ public class ScenePartLoader : MonoBehaviour
     //Scene state
     private bool isLoaded;
     private bool shouldLoad;
-    void Start()
+    void Awake()
     {
+        SceneManager.sceneLoaded += OnSceneLoaded;
         //verify if the scene is already open to avoid opening a scene twice
         if (SceneManager.sceneCount > 0)
         {
@@ -31,7 +33,6 @@ public class ScenePartLoader : MonoBehaviour
             }
         }
         player = GameObject.FindWithTag("Player").transform;
-        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     void Update()
@@ -83,9 +84,23 @@ public class ScenePartLoader : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.LogError("loaded scene");
-        WaveManager.Instance.spawnAreas.Add(GameObject.FindWithTag("SpawnHolder"));
-        WaveManager.Instance.startNext = true;
+        if (scene.name == "ArenaSinglePlayer") return;
+
+        //Debug.LogError("loaded scene called from " + this.gameObject.name);
+        WaveManager.Instance.currentSpawnArea = GameObject.FindGameObjectsWithTag("SpawnHolder")[GameObject.FindGameObjectsWithTag("SpawnHolder").Length-1];
+
+        if (GameObject.FindGameObjectsWithTag("LevelDoor").Length > 0)
+        {
+            WaveManager.Instance.GetLevelDoor(GameObject.FindGameObjectsWithTag("LevelDoor")[GameObject.FindGameObjectsWithTag("LevelDoor").Length - 1]);
+            //Debug.LogError("level door is object called: " + GameObject.FindGameObjectsWithTag("LevelDoor")[GameObject.FindGameObjectsWithTag("LevelDoor").Length - 1].name);
+        }
+        else
+        {
+            //Debug.LogError("cannot find a level door...");
+        }
+        //WaveManager.Instance.StartWave(WaveManager.Instance.levels[WaveManager.Instance.currentLevel].waves[WaveManager.Instance.currentWave]);
+        WaveManager.Instance.toBuffer = false;
+        //Debug.LogError("buffer set to FALSE");
     }
 
     private void OnTriggerEnter2D(Collider2D other)

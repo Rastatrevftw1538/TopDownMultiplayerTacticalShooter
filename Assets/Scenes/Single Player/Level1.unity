@@ -155,10 +155,12 @@ MonoBehaviour:
   levels:
   - {fileID: 11400000, guid: 522ec6d3d53b112498ee0e2929c14121, type: 2}
   - {fileID: 0}
-  spawnAreas: []
+  currentSpawnArea: {fileID: 0}
   currentWave: 0
   spawnInterval: 0
   enemiesKilled: 0
+  currentLevel: 0
+  toBuffer: 1
 --- !u!4 &279179502
 Transform:
   m_ObjectHideFlags: 0

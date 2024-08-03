@@ -8,11 +8,12 @@ public class Level : ScriptableObject
 {
     public List<Wave> waves = new List<Wave>();
     public GameObject levelDoor;
+    private bool _isCompleted;
 
     // Start is called before the first frame update
     void Start()
     {
-        levelDoor = GameObject.FindWithTag("LevelDoor");
+        //levelDoor = GameObject.FindWithTag("LevelDoor");
     }
 
     public void StartLevel(Wave wave, GameObject spawnArea)
@@ -23,5 +24,15 @@ public class Level : ScriptableObject
     public void SetLevelDoor(bool set)
     {
         levelDoor.SetActive(set);
+    }
+
+    public void SetLevelCompletion(bool set)
+    {
+        _isCompleted = set;
+    }
+
+    public bool GetLevelCompletion()
+    {
+        return _isCompleted;
     }
 }

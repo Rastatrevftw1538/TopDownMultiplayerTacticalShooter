@@ -59,7 +59,7 @@ public class EnemyProjectile : MonoBehaviour
 
     private void PlayParticles()
     {
-        GameObject effect = Instantiate(particles, transform.position, Quaternion.identity);
+        GameObject effect = Instantiate(particles, transform.position, Quaternion.identity, this.gameObject.transform);
         Destroy(effect, 0.5f);
     }
 }

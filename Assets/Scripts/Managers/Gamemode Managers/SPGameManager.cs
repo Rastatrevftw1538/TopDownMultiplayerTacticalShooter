@@ -19,7 +19,8 @@ public class SPGameManager : Singleton<SPGameManager>
     }
     private void StartLevel()
     {
-
+        UIManager.Instance.SetWaveDisplay(true);
+        UIManager.Instance.ChangeWaveNumber(1);
     }
 
     public void EndedLevel()
@@ -28,10 +29,15 @@ public class SPGameManager : Singleton<SPGameManager>
 
         //remove the door to the next level
         //probably some camera movement polish stuff here later
-        UIManager.Instance.ChangeWaveNumber(1);
-        currentLevel++;
+        UIManager.Instance.SetWaveDisplay(false);
+        WaveManager.Instance.currentLevel++;
         //levels[currentLevel - 1].door.SetActive(false);
         Debug.LogError("Ended Level (all waves are complete for this scene.");
-        WaveManager.Instance.startNext = false;
+    }
+
+    public void WonGame()
+    {
+        Debug.LogError("YOU BEAT THE GAME!!");
+        UIManager.Instance.ShowVictory();
     }
 }

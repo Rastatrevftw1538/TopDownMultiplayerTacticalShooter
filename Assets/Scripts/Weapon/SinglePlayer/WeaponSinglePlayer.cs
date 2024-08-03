@@ -390,7 +390,6 @@ public class WeaponSinglePlayer : MonoBehaviour
             //collisionPoint = spreadDirection;
             Debug.Log("Hit Nothing:"); 
         }
-        Debug.LogError("shot");
         
         var bulletInstance = Instantiate(bulletPrefab, firePoint.position, new Quaternion(0, 0, 0, 0));
 

@@ -11,6 +11,7 @@ public class Wave : ScriptableObject
     private List<GameObject> enemiesToSpawn = new List<GameObject>();
     [HideInInspector] public int _amtEnemies;
     private float tempWaveValue;
+    private bool isComplete;
 
     public void GenerateEnemies(GameObject spawnAreas)
     {
@@ -35,7 +36,6 @@ public class Wave : ScriptableObject
                 GameObject currentSpawn = spawnAreas.transform.GetChild(rando).gameObject;
                 //_spawnedEnemies.Add(Instantiate(_enemies[randEnemyId].enemyPrefab, currentSpawn.transform));
                 _generatedEnemies.Add(_enemies[randEnemyId].enemyPrefab);
-                this._amtEnemies++;
                 //Debug.LogError("there are now" + _amtEnemies);
                 _waveValue -= randEnemyCost;
                 //Debug.LogError("wave value now at" + _waveValue);
@@ -53,6 +53,7 @@ public class Wave : ScriptableObject
 
     public void ResetData()
     {
+        isComplete = false;
         _waveValue = tempWaveValue;
         enemiesToSpawn.Clear();
         _waveValue = tempWaveValue;
@@ -73,6 +74,7 @@ public class Wave : ScriptableObject
             enemy.transform.rotation = quaternion;
 
             Instantiate(enemy, minorDiff,  Quaternion.identity);
+            _amtEnemies++;
         }
     }
 
@@ -80,6 +82,17 @@ public class Wave : ScriptableObject
     {
         //return _spawnedEnemies.Count;
         return _amtEnemies;
+    }
+
+    public void MarkComplete(bool set)
+    {
+        Debug.LogError(this.name + " has been set to: " + set);
+        isComplete = set;
+    }
+
+    public bool IsComplete()
+    {
+        return isComplete;
     }
 
     public void OnApplicationQuit()

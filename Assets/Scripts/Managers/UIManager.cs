@@ -21,6 +21,10 @@ public class UIManager : Singleton<UIManager>
     void Start()
     {
         points = 0f;
+        DontDestroyOnLoad(waveDisplay.gameObject);
+        DontDestroyOnLoad(pointsDisplay.gameObject);
+        DontDestroyOnLoad(victoryScreen.gameObject);
+        DontDestroyOnLoad(defeatScreen.gameObject);
     }
 
     void FixedUpdate()
@@ -55,6 +59,12 @@ public class UIManager : Singleton<UIManager>
         pointsDisplay.text = points.ToString();
     }
 
+    public void SetPoints(float num)
+    {
+        if (!pointsDisplay) return;
+        points = num;
+    }
+
     public void SubtractPoints(float num)
     {
         if (!pointsDisplay) return;
@@ -65,18 +75,27 @@ public class UIManager : Singleton<UIManager>
 
     public void ShowDefeat()
     {
-        if (WaveManager.Instance != null)
-            WaveManager.Instance.ResetWaveData();
+        //if (WaveManager.Instance != null)
+        //    WaveManager.Instance.ResetWaveData();
 
         defeatScreen.SetActive(true);
     }
 
     public void ShowVictory()
     {
-        if (WaveManager.Instance != null)
+        /*if (WaveManager.Instance != null)
+        {
             WaveManager.Instance.ResetWaveData();
+    
+        }*/
+        SetPoints(0);
 
         victoryScreen.SetActive(true);
+    }
+
+    public void SetWaveDisplay(bool set)
+    {
+        waveDisplay.gameObject.SetActive(set);
     }
 }
 
