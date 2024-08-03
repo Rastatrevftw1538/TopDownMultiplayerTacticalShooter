@@ -4,6 +4,6 @@ using UnityEngine;
 
 public interface ITalkable
 {
-    public void Talk(dialogueText DialogueText);
+    public void Talk(DialogueText dialogueText);
     
 }

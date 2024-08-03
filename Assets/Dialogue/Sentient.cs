@@ -18,7 +18,7 @@ public abstract class Sentient : MonoBehaviour, IInteractable
     {
 
         //finding the player
-        _playerTransform = GameObject.FindObjectWithTag("Player").transform;
+        _playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
 
         //finding what wave the games on
         waveCheck = FindObjectOfType<WaveManager>();

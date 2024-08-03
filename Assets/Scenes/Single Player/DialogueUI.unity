@@ -303,7 +303,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6edc953df8845ca44bc91c2255252aaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NPCNameText: {fileID: 0}
+  NPCNameText: {fileID: 891005610}
+  NPCDialogueText: {fileID: 1968653285}
 --- !u!1 &891005608
 GameObject:
   m_ObjectHideFlags: 0
@@ -661,9 +662,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 1769623910}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64d9b136ae120e04fb374e8a239ae7a4, type: 3}
+  m_Script: {fileID: 11500000, guid: 4fbf3a704edd16a4bb229c02f01b2d5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interactSprite: {fileID: 1769623912}
+  waveCheck: {fileID: 0}
+  waveToTalk: 1
+  dialogueText: {fileID: 11400000, guid: 83799500fc697d74fa03510099efd0bc, type: 2}
+  dialogueController: {fileID: 820251741}
+--- !u!212 &1769623912 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3994505487010415125, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
+  m_PrefabInstance: {fileID: 1769623909}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1906512525
 GameObject:
   m_ObjectHideFlags: 0
