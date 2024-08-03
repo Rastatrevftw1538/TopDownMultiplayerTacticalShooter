@@ -19,13 +19,15 @@ public abstract class Sentient : MonoBehaviour, IInteractable
 
         //finding the player
         _playerTransform = GameObject.FindObjectWithTag("Player").transform;
+
         //finding what wave the games on
-        waveCheck = FindObjectOfType WaveManager;
+        waveCheck = FindObjectOfType<WaveManager>();
         Debug.Log(waveCheck.currentWave);
     }
+
     private void Update()
     {
-        if(Keyboard.current.eKey.wasPressedThisFrame)
+        if(Keyboard.current.eKey.wasPressedThisFrame && IsWithinInteractDistance())
         {
             Interact();
         }
@@ -45,34 +47,36 @@ public abstract class Sentient : MonoBehaviour, IInteractable
         }
     }
 
-    public abstract void Interact()
-    
+    public abstract void Interact();
+
+    private bool IsWithinInteractDistance()
+    {
+        if (Vector2.Distance(_playerTransform.position, transform.position) < INTERACT_DISTANCE)
+        {
+            return true;
+        }
+
+        else
+        {
+            return false;
+        }
+    }
+
+    /*public bool IsTalkingTime()
+    {
+        if (whatWave == waveToTalk)
+        {
+            return true;
+        }
+
+        else
+        {
+            return false;
+        }
+    }*/
+
+
 }
 
-private bool IsWithinInteractDistance()
-{
-    if(Vector2.Distance(_playerTransform.position, transform.position) < INTERACT_DISTANCE)
-    {
-        return true;
-    }
-
-    else
-    {
-        return false;   
-    }
-}
-
-/*public bool IsTalkingTime()
-{
-    if (whatWave == waveToTalk)
-    {
-        return true;
-    }
-
-    else
-    {
-        return false;
-    }
-}*/
 
 
