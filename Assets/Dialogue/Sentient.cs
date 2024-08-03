@@ -27,7 +27,7 @@ public abstract class Sentient : MonoBehaviour, IInteractable
 
     private void Update()
     {
-        if(Keyboard.current.eKey.wasPressedThisFrame && IsWithinInteractDistance())
+        if(Keyboard.current.lKey.wasPressedThisFrame && IsWithinInteractDistance())
         {
             Interact();
         }

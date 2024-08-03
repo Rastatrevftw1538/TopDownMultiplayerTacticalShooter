@@ -34,6 +34,14 @@ public class DialogueController : MonoBehaviour
         }
 
         //if there's something in the paragraph queue
+       // p = paragraphs.Dequeue();
+
+        //update conversation text
+        /*NPCDialogueText.text = p;
+        if(paragraphs.Count == 0)
+        {
+            conversationEnded = true;
+        }*/
     }
 
     private void StartConversation(DialogueText dialogueText)
