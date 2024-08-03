@@ -5,15 +5,15 @@ using UnityEngine;
 public class TalkableMeleeEnemy : Sentient, ITalkable
 {
     //variable to read in the text its supposed to say
-    [SerializeField] private dialogueText DialogueText;
+    [SerializeField] private DialogueText dialogueText;
 
     public override void Interact()
     {
-        Talk(DialogueText);
+        Talk(dialogueText);
     }
 
 
-    public void Talk(dialogueText DialogueText)
+    public void Talk(DialogueText dialogueText)
     {
         //start conversation
     }
