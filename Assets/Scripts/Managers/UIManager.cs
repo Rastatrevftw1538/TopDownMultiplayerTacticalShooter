@@ -128,5 +128,10 @@ public class UIManager : Singleton<UIManager>
 
         ResetSingletons();
     }
+
+    public void ResetScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
 }
 

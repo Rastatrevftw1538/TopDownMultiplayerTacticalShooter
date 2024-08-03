@@ -2150,9 +2150,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1021238593}
-        m_TargetAssemblyTypeName: StartMenuSP, Assembly-CSharp
-        m_MethodName: ReloadScene
+      - m_Target: {fileID: 1397416014}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: ResetScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2292,6 +2292,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 260670405065659731, guid: 304995720cd4925488467bc47552fe0b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 616062688646629727, guid: 304995720cd4925488467bc47552fe0b, type: 3}
       propertyPath: m_Name
       value: Player - SinglePlayer
@@ -2352,6 +2356,22 @@ PrefabInstance:
       propertyPath: healthbarExternal
       value: 
       objectReference: {fileID: 1507783764}
+    - target: {fileID: 2639086166200628676, guid: 304995720cd4925488467bc47552fe0b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3292167675986020091, guid: 304995720cd4925488467bc47552fe0b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3435360028187977486, guid: 304995720cd4925488467bc47552fe0b, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3435360028187977486, guid: 304995720cd4925488467bc47552fe0b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5757488870445440909, guid: 304995720cd4925488467bc47552fe0b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.49
@@ -3343,7 +3363,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1516706680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3819,9 +3839,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1021238593}
-        m_TargetAssemblyTypeName: StartMenuSP, Assembly-CSharp
-        m_MethodName: ReloadScene
+      - m_Target: {fileID: 1397416014}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: ResetScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
