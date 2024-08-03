@@ -21,7 +21,7 @@ public class UIManager : Singleton<UIManager>
 
     void Start()
     {
-        SetPoints(0);
+        SetPoints(0f);
         DontDestroyOnLoad(waveDisplay.gameObject);
         DontDestroyOnLoad(pointsDisplay.gameObject);
         DontDestroyOnLoad(victoryScreen.gameObject);
@@ -64,6 +64,7 @@ public class UIManager : Singleton<UIManager>
     {
         if (!pointsDisplay) return;
         points = num;
+        pointsDisplay.text = points.ToString();
     }
 
     public void SubtractPoints(float num)
