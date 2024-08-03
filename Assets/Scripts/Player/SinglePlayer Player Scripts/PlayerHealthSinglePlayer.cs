@@ -22,6 +22,9 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
     private bool canHit = true;
     private Transform[] spawnPointList;
     private Animator Anim; //move to statemachine later
+    private SpriteRenderer[] sprites;
+    public Color flashColor = Color.red;
+    public float flashTime = 0.25f;
 
     public bool checkIfAlive
     {
@@ -32,8 +35,36 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
         return currentHealth;
     }
 
+    private IEnumerator DamageFlash()
+    {
+        SetFlashColor(flashColor);
+        float currentFlashAmt = 0f;
+        float elapsedTime = 0f;
+
+        while(elapsedTime < flashTime)
+        {
+            elapsedTime += Time.deltaTime;
+
+            currentFlashAmt = Mathf.Lerp(1f, 0f, (elapsedTime / flashTime));
+
+            yield return new WaitForSeconds(0.5f);
+
+            SetFlashColor(Color.white);
+        }
+    }
+
+    private void SetFlashColor(Color color)
+    {
+        foreach(SpriteRenderer spriteRenderer in sprites)
+        {
+            if(spriteRenderer.gameObject.name != "Pointer")
+            spriteRenderer.color = color;
+        }
+    }
+
     private void Awake()
     {
+        sprites = GetComponentsInChildren<SpriteRenderer>();
         healthbarInternal = GetComponentInChildren<Slider>();
         Anim = GetComponentInChildren<Animator>();
     }
@@ -44,6 +75,8 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
         //CHECK IF THE DAMAGE PASSED IN WAS NEGATIVE, IF IT WAS, THIS FUNCTION WILL ADD HEALTH INSTEAD
         amount = 
             amount > 0 ? amount : amount * -1;
+
+        StartCoroutine(nameof(DamageFlash));
 
         if(currentHealth > 0)
             currentHealth -= amount;
