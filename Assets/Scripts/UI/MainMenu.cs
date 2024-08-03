@@ -22,6 +22,13 @@ public class MainMenu : MonoBehaviour
         StartCoroutine(LoadingScreen());
     }
 
+    public void ReturnToMenu()
+    {
+        HideMenu();
+        ShowLoadingScreen();
+        StartCoroutine(LoadingScreen());
+    }
+
     public void StartGameSO()
     {
         HideMenu();

@@ -113,7 +113,8 @@ public class WaveManager : Singleton<WaveManager>
 
     public void SetLevelDoor(bool set)
     {
-        levels[currentLevel].levelDoor.SetActive(set);
+        if(levels[currentLevel].levelDoor != null)
+            levels[currentLevel].levelDoor.SetActive(set);
     }
 
     public void StartWave(Wave wave)

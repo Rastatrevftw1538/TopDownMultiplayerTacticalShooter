@@ -87,7 +87,8 @@ public class ScenePartLoader : MonoBehaviour
         if (scene.name == "ArenaSinglePlayer") return;
 
         //Debug.LogError("loaded scene called from " + this.gameObject.name);
-        WaveManager.Instance.currentSpawnArea = GameObject.FindGameObjectsWithTag("SpawnHolder")[GameObject.FindGameObjectsWithTag("SpawnHolder").Length-1];
+        if(WaveManager.Instance != null && GameObject.FindGameObjectsWithTag("SpawnHolder").Length > 0)
+            WaveManager.Instance.currentSpawnArea = GameObject.FindGameObjectsWithTag("SpawnHolder")[GameObject.FindGameObjectsWithTag("SpawnHolder").Length-1];
 
         if (GameObject.FindGameObjectsWithTag("LevelDoor").Length > 0)
         {
@@ -99,7 +100,7 @@ public class ScenePartLoader : MonoBehaviour
             //Debug.LogError("cannot find a level door...");
         }
         //WaveManager.Instance.StartWave(WaveManager.Instance.levels[WaveManager.Instance.currentLevel].waves[WaveManager.Instance.currentWave]);
-        WaveManager.Instance.toBuffer = false;
+        if (WaveManager.Instance != null) WaveManager.Instance.toBuffer = false;
         //Debug.LogError("buffer set to FALSE");
     }
 
