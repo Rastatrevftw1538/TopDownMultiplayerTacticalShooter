@@ -21,7 +21,7 @@ public class UIManager : Singleton<UIManager>
 
     void Start()
     {
-        points = 0f;
+        SetPoints(0);
         DontDestroyOnLoad(waveDisplay.gameObject);
         DontDestroyOnLoad(pointsDisplay.gameObject);
         DontDestroyOnLoad(victoryScreen.gameObject);

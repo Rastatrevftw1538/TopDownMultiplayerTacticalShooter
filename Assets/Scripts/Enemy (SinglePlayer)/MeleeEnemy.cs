@@ -11,10 +11,13 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     [SerializeField] private float currentHealth;
     public float damage;
     public float attackSpd;
+    //public float attackRange;
     public float respawnTime = 2f;
+    //private
     [field: SerializeField] public float pointsPerHit { get; set; }
     [SerializeField] static Transform target;
     private NavMeshAgent agent;
+    private Animator anim;
 
     [Header("Enemy Components")]
     [SerializeField] private Image healthbarExternal;
@@ -39,6 +42,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
 
         //agent = GetComponent<NavMashAgent>();
+        anim = GetComponent<Animator>();
         agent = GetComponentInParent<NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
@@ -51,7 +55,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
             player = target.GetComponent<PlayerHealthSinglePlayer>();
         }*/
 
-        if(!player)
+        if (!player)
             player = GameObject.FindWithTag("Player").GetComponent<PlayerHealthSinglePlayer>();
 
         if (!target)
@@ -65,6 +69,8 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         //healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
         agent.SetDestination(target.position);
 
+        //move to state machine
+        anim.SetBool("IsMoving", true);
         //Vector2 direction = new Vector2(target.position.x - transform.position.x, target.position.y - transform.position.y); //FIND DIRECTION OF PLAYER
         //transform.up = direction; //ROTATES THE ENEMY TO THE PLAYER 
 
@@ -74,15 +80,25 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     static PlayerHealthSinglePlayer player;
     void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player")
         {
-            player.TakeDamage(damage);
+            //player.TakeDamage(damage);
+            StartCoroutine(nameof(Attack));
         }
+    }
+
+    private void SetAttackingTrue()
+    {
+
     }
 
     private IEnumerator Attack()
     {
-        yield return new WaitForSeconds(attackSpd);
+        anim.SetBool("IsAttacking", true);
+        player.TakeDamage(damage);
+        yield return new WaitForSeconds(1f);
+        anim.SetBool("IsAttacking", false);
+
     }
 
     public bool checkIfAlive
@@ -98,8 +114,18 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     {
         this.currentHealth = healthValue;
     }
+
+    public IEnumerator GotHit()
+    {
+        anim.SetBool("GotHit", true);
+        yield return new WaitForSeconds(1f);
+        anim.SetBool("GotHit", false);
+        Debug.Log("Set to false");
+    }
+
     public void TakeDamage(float amount)
     {
+        StartCoroutine(nameof(GotHit));
         //FIRST CHECK IF THE BASE'S HEALTH IS BELOW 0
         if (currentHealth > 0)
             currentHealth -= amount;
