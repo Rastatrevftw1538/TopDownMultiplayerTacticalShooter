@@ -7,7 +7,7 @@ public abstract class Sentient : MonoBehaviour, IInteractable
 {
     //vars for finding the distance between the NPC and the player
     [SerializeField] private SpriteRenderer _interactSprite;
-    private Transform _playerTransform;
+    [SerializeField] private Transform _playerTransform;
     private const float INTERACT_DISTANCE = 5.0f;
 
     //vars for finding what wave the games on
@@ -18,7 +18,7 @@ public abstract class Sentient : MonoBehaviour, IInteractable
     {
 
         //finding the player
-        _playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        //_playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
 
         //finding what wave the games on
         waveCheck = FindObjectOfType<WaveManager>();
