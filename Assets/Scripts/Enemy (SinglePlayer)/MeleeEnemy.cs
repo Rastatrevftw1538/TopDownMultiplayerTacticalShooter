@@ -70,7 +70,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         agent.SetDestination(target.position);
 
         //move to state machine
-        anim.SetBool("IsMoving", true);
+        anim.SetFloat("IsMoving", 1);
         //Vector2 direction = new Vector2(target.position.x - transform.position.x, target.position.y - transform.position.y); //FIND DIRECTION OF PLAYER
         //transform.up = direction; //ROTATES THE ENEMY TO THE PLAYER 
 

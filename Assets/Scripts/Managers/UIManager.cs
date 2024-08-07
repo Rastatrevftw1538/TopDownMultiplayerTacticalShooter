@@ -22,10 +22,6 @@ public class UIManager : Singleton<UIManager>
     void Start()
     {
         SetPoints(0f);
-        DontDestroyOnLoad(waveDisplay.gameObject);
-        DontDestroyOnLoad(pointsDisplay.gameObject);
-        DontDestroyOnLoad(victoryScreen.gameObject);
-        DontDestroyOnLoad(defeatScreen.gameObject);
     }
 
     void FixedUpdate()

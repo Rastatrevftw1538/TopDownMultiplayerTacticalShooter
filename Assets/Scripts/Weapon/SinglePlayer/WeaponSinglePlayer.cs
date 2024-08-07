@@ -131,31 +131,8 @@ public class WeaponSinglePlayer : MonoBehaviour
         {
             nextFireTime = Time.time + fireRate;
             Vector2 direction = firePoint.transform.up;
-            //FOR RECOIL
-            //float spreadAngle = Mathf.Clamp(UnityEngine.Random.Range(0, spread) - spread / 2f,-45,45); //HERE
-            //Quaternion spreadRotation = Quaternion.Euler(0, 0, spreadAngle);
-            //direction = spreadRotation * direction;
-            //print("Direction thing: "+direction);
             CmdFire(direction);
-            //if(player.isRunning){
-            //    spread += Time.deltaTime * (spreadValue*2);
-            //}
-            //else{
-            //    spread += Time.deltaTime * spreadValue;
-            //}
-            //currentAmmo -= numOfBulletsPerShot;
-            //currentAmmo -= 1;
         }
-
-        /*if(currentAmmo <= 0){
-            StartCoroutine(Reload());
-            return;
-        }
-
-        if(totalMags < 0){
-            outOfAmmo = true;
-            weaponLooks.color = Color.red;
-        }*/ 
 
         if(!shootingGun){
             spread = 0f;
@@ -206,182 +183,72 @@ public class WeaponSinglePlayer : MonoBehaviour
     //[ClientRpc]
     public void RpcFire(Vector2 direction)
     {
-        float damageDone = 0;
         RaycastHit2D[] hits;
         hits = Physics2D.RaycastAll(firePoint.position, direction, fireRange, targetLayers);
-        Vector3 spreadDirection = direction;
         RaycastHit2D hit = new RaycastHit2D();
-        hit.point = Vector3.zero;
+        hit.point = firePoint.position;
+
+        Vector3 spreadDirection = direction;
 
         string whatWasHit = "";
         bool hitWall = false;
-        //CHANGE TO NUM OF BULLETS FOR OTHER WEAPONS
-        if (hits.Length > 0)
+        //IF THE BULLET DOESN'T HIT ANYTHING...
+        if (hits.Length <= 0)
         {
-            for (int i = 0; i < hits.Length && !hitWall; i++)
-            //for (int i = 0; i < numOfBulletsPerShot; i++)
-            {
-                //CinemachineShake.Instance.ShakeCamera(5f, .1f);
-                //print("Direction thing SERVER: " + spreadDirection);
-                if (numOfBulletsPerShot > 1)
-                {
-                    float spreadAngle = Mathf.Clamp(i * (spread / numOfBulletsPerShot) + UnityEngine.Random.Range(0, spreadValue) - spreadValue / 2f, -5, 5);
-                    Quaternion spreadRotation = Quaternion.Euler(0, 0, spreadAngle);
-                    spreadDirection = spreadRotation * direction;
-                }
-
-                //var hit = Physics2D.Raycast(firePoint.position, spreadDirection, fireRange, targetLayers);
-                hit = hits[i];
-
-                if (hit && hit.collider != null)
-                {
-                    #region UGLY CODE FOR NOW
-                    whatWasHit = hit.collider.tag;
-                    //Debug.LogError(hit.collider.gameObject);
-                    if (hit.collider.name.Equals("HitBox") || hit.collider.name.Equals("Bullseye!"))
-                    {
-                        Transform objectOrigin = hit.collider.transform.parent.parent;
-                        if (objectOrigin != null)
-                        {
-                            bool foundWhatHit = false;
-                            //DAMAGE BASE STUFF
-                            if (!foundWhatHit)
-                            {
-                                Base baseHealth = objectOrigin.GetComponent<Base>();
-                                if (baseHealth != null && !foundWhatHit)
-                                {
-                                    Debug.Log("<color=orange>did grab base </color>");
-                                    if (baseHealth.canHit && !baseHealth.CompareTag(player.playerTeam.ToString()))
-                                    {
-                                        //damageDone = (damage * damageMultiplier) * (2 / (NetworkServer.connections.Count / 2));
-                                        //print(NetworkServer.connections.Count);
-                                        print("<color=yellow> Damage to base: " + damageDone + "</color>");
-                                        baseHealth.TakeDamage(damageDone);
-                                        Debug.Log("<color=orange>did Hit base </color>");
-                                    }
-
-                                    foundWhatHit = true;
-                                }
-                            }
-
-                            if (!foundWhatHit)
-                            {
-                                BaseEffects baseHealthEffects = objectOrigin.GetComponent<BaseEffects>();
-                                if (baseHealthEffects != null)
-                                {
-
-                                    Debug.Log("<color=orange>Grabbed base: " + baseHealthEffects.gameObject.name + "</color>");
-                                    if (baseHealthEffects.canHit && baseHealthEffects.GetHealth() >= 0)
-                                    {
-                                        damageDone = (damage * damageMultiplier);// * (2 / (NetworkServer.connections.Count / 2));
-                                                                                 //print(NetworkServer.connections.Count);
-                                        baseHealthEffects.TakeDamage(damageDone);
-
-                                        if (baseHealthEffects.GetHealth() <= 0)
-                                        {
-                                            baseHealthEffects.TakeDamage(damageDone);
-
-                                            //WhoBrokeBase playerWhoBrokeBase = new WhoBrokeBase();
-                                            //playerWhoBrokeBase.playerTeam = player.playerTeam;
-                                            //playerWhoBrokeBase.whatBase = baseHealthEffects.gameObject;
-                                            //EvtSystem.EventDispatcher.Raise<WhoBrokeBase>(playerWhoBrokeBase);
-
-                                            ApplyStatusEffects applyStatusEffects = new ApplyStatusEffects();
-                                            applyStatusEffects.team = GetComponent<PlayerScript>().playerTeam;
-                                            applyStatusEffects.statusEffect = baseHealthEffects.statusEffect;
-
-                                            EvtSystem.EventDispatcher.Raise<ApplyStatusEffects>(applyStatusEffects);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        Debug.LogError("Base cannot be hit");
-                                    }
-
-                                    foundWhatHit = true;
-                                    Debug.LogWarning("<color=yellow> Damage to base: " + damageDone + "</color>");
-                                    Debug.LogWarning("<color=yellow> Base health: " + baseHealthEffects.GetHealth() + "</color>");
-                                }
-                            }
-
-                            //APPLY POINTS
-                            if (ChaseGameManager.instance != null)
-                            {
-                                if (player.playerTeam == PlayerScriptSinglePlayer.Team.Blue)
-                                    ChaseGameManager.instance.bluePoints += damageDone + bonusPointsPerShot;
-                                else
-                                    ChaseGameManager.instance.redPoints += damageDone + bonusPointsPerShot;
-                            }
-                        }
-
-
-
-                    }
-                    #endregion
-                    switch (hit.collider.tag)
-                    {
-                        case "Enemy":
-                            Transform objectOrigin = hit.collider.transform;
-                            whatWasHit = "Enemy";
-                            if (objectOrigin != null)
-                            {
-                                IEnemy enemy = objectOrigin.GetComponent<IEnemy>();
-                                float dmg = damage;
-                                float points = enemy.pointsPerHit;
-                                if (CheckBPM() && enemy != null)
-                                {
-                                    dmg *= damageMultiplierBPM;
-                                    points *= damageMultiplierBPM;
-                                }
-                                enemy.TakeDamage(dmg);
-                                UIManager.Instance.AddPoints(points);
-                            }
-                            break;
-
-                        case "Wall":
-                            hitWall = true;
-                            break;
-                        default:
-
-                            break;
-                    }
-                }
-                else
-                {
-                    whatWasHit = "NOTHING";
-                    endPoint = Vector3.zero;
-                }
-
-                //Debug.Log("HUh? Server: " + spreadDirection);
-                if (endPoint == Vector3.zero)
-                {
-                    //BOOOOOOOOOOOOOOOOOOM
-                    //Debug.LogError("then....");
-                    Debug.DrawLine(firePoint.position, firePoint.position + (spreadDirection * fireRange), Color.red);
-                    endPoint = firePoint.position + (spreadDirection * fireRange);
-                }
-                else
-                {
-                    endPoint = hit.point;
-                }
-                RpcOnFire(hit, spreadDirection, endPoint, whatWasHit, onBeat);
-            }
-        }
-        else
-        {
+            Debug.LogError("hit nothing...");
             endPoint = firePoint.position + (spreadDirection * fireRange);
             RpcOnFire(hit, spreadDirection, endPoint, whatWasHit, onBeat);
+            return;
         }
+
+        for (int i = 0; i < hits.Length && !hitWall; i++)
+        {
+            hit = hits[i];
+            switch (hit.collider.tag)
+            {
+                case "Enemy":
+                    Transform objectOrigin = hit.collider.transform;
+                    whatWasHit = "Enemy";
+                    if (objectOrigin != null)
+                    {
+                        IEnemy enemy = objectOrigin.GetComponent<IEnemy>();
+                        float dmg = damage;
+                        float points = enemy.pointsPerHit;
+                        if (CheckBPM() && enemy != null)
+                        {
+                            dmg *= damageMultiplierBPM;
+                            points *= damageMultiplierBPM;
+                        }
+                        enemy.TakeDamage(dmg);
+                        UIManager.Instance.AddPoints(points);
+                    }
+                    break;
+
+                case "Wall":
+                    hitWall = true;
+                    break;
+                default:
+
+                    break;
+            }
+        }
+        endPoint = hit.point;
+        RpcOnFire(hit, spreadDirection, endPoint, whatWasHit, onBeat);
     }
 
     //[ClientRpc]
+    BulletScript trailRender;
+    GameObject particleEffect;
+    ParticleSystem particleSystemIns;
+    GameObject tempParticle;
+    TrailRenderer trailRenderer;
     void RpcOnFire(RaycastHit2D hit, Vector3 spreadDirection, Vector3 collisionPoint, String whatWasHit, bool onBeat)
     {
         //Debug.Log("Collision Point: " + collisionPoint);
         //Debug.Log("Hit: " + whatWasHit);
         //Debug.Log("HUh? Client: " + spreadDirection);
         
-        if (whatWasHit != "NOTHING")
+        /*if (whatWasHit != "NOTHING")
         {
             Debug.Log("Hit " + collisionPoint);
         }
@@ -389,41 +256,25 @@ public class WeaponSinglePlayer : MonoBehaviour
         {
             //collisionPoint = spreadDirection;
             Debug.Log("Hit Nothing:"); 
-        }
+        }*/
         
         var bulletInstance = Instantiate(bulletPrefab, firePoint.position, new Quaternion(0, 0, 0, 0));
 
-        BulletScript trailRender = bulletInstance.GetComponent<BulletScript>();
-        GameObject particleEffect = trailRender.effectPrefab;
-        ParticleSystem particleSystem = particleEffect.GetComponent<ParticleSystem>();
+        if(!trailRender) trailRender = bulletInstance.GetComponent<BulletScript>();
+        if(!particleEffect) particleEffect = trailRender.effectPrefab;
+        if(!particleSystemIns) particleSystemIns = particleEffect.GetComponent<ParticleSystem>();
 
-        /*var main = particleSystem.main;
-            if(whatWasHit == "Base"){
-                main.startColor = Color.cyan;
-            }
-            else if(whatWasHit == "Player"){
-                main.startColor = Color.red;
-            }
-            else if(whatWasHit == "Wall"){
-                main.startColor = Color.gray;
-            }
-            else{
-                main.startColor = Color.clear;
-            }*/
-        GameObject tempParticle = Instantiate(particleEffect, collisionPoint, new Quaternion(0, 0, 0, 0));
+        tempParticle = Instantiate(particleEffect, collisionPoint, new Quaternion(0, 0, 0, 0));
         Destroy(tempParticle, 0.5f);
 
         //IF ON BEAT, MAKE THE TRAIL RENDER DIFFERENT COLOR
         if (CheckBPM())
         {
-            TrailRenderer trailrenderer = trailRender.GetComponent<TrailRenderer>();
+            if (!trailRenderer) trailRenderer = trailRender.GetComponent<TrailRenderer>();
 
-            if (trailrenderer)
-            {
-                trailrenderer.widthMultiplier = 2f;
-                trailrenderer.startColor = Color.magenta;
-                trailrenderer.endColor = Color.blue;
-            }
+            trailRenderer.widthMultiplier = 2f;
+            trailRenderer.startColor = Color.magenta;
+            trailRenderer.endColor = Color.blue;
 
             //some camera shake stuff (unoptimized)
             //camera shake
@@ -432,11 +283,6 @@ public class WeaponSinglePlayer : MonoBehaviour
 
         trailRender.SetTargetPosition(collisionPoint);
         //Debug.Log("Bullet Fired Client " + collisionPoint + " direction " + spreadDirection);
-
-        ShootSound shootSound = new ShootSound();
-        shootSound.GunName  = weaponSpecs.name;
-        shootSound.position = this.transform.position;
-        EvtSystem.EventDispatcher.Raise<ShootSound>(shootSound);
     }
 
     private void PlaySound()
@@ -469,110 +315,3 @@ public class WeaponSinglePlayer : MonoBehaviour
         
     }
 }
-
-/*if (hit.collider != null)
-            {
-                #region UGLY CODE FOR NOW
-                whatWasHit = hit.collider.tag;
-                //Debug.LogError(hit.collider.gameObject);
-                if (hit.collider.name.Equals("HitBox") || hit.collider.name.Equals("Bullseye!"))
-                {
-                    Transform objectOrigin = hit.collider.transform.parent.parent;
-                    if (objectOrigin != null)
-                    {
-                        bool foundWhatHit = false;
-                        //DAMAGE BASE STUFF
-                        if (!foundWhatHit)
-                        {
-                            Base baseHealth = objectOrigin.GetComponent<Base>();
-                            if (baseHealth != null && !foundWhatHit)
-                            {
-                                Debug.Log("<color=orange>did grab base </color>");
-                                if (baseHealth.canHit && !baseHealth.CompareTag(player.playerTeam.ToString()))
-                                {
-                                    //damageDone = (damage * damageMultiplier) * (2 / (NetworkServer.connections.Count / 2));
-                                    //print(NetworkServer.connections.Count);
-                                    print("<color=yellow> Damage to base: " + damageDone + "</color>");
-                                    baseHealth.TakeDamage(damageDone);
-                                    Debug.Log("<color=orange>did Hit base </color>");
-                                }
-
-                                foundWhatHit = true;
-                            }
-                        }
-
-                        if (!foundWhatHit)
-                        {
-                            BaseEffects baseHealthEffects = objectOrigin.GetComponent<BaseEffects>();
-                            if (baseHealthEffects != null)
-                            {
-
-                                Debug.Log("<color=orange>Grabbed base: " + baseHealthEffects.gameObject.name + "</color>");
-                                if (baseHealthEffects.canHit && baseHealthEffects.GetHealth() >= 0)
-                                {
-                                    damageDone = (damage * damageMultiplier);// * (2 / (NetworkServer.connections.Count / 2));
-                                    //print(NetworkServer.connections.Count);
-                                    baseHealthEffects.TakeDamage(damageDone);
-
-                                    if (baseHealthEffects.GetHealth() <= 0)
-                                    {
-                                        baseHealthEffects.TakeDamage(damageDone);
-
-                                        //WhoBrokeBase playerWhoBrokeBase = new WhoBrokeBase();
-                                        //playerWhoBrokeBase.playerTeam = player.playerTeam;
-                                        //playerWhoBrokeBase.whatBase = baseHealthEffects.gameObject;
-                                        //EvtSystem.EventDispatcher.Raise<WhoBrokeBase>(playerWhoBrokeBase);
-
-                                        ApplyStatusEffects applyStatusEffects = new ApplyStatusEffects();
-                                        applyStatusEffects.team = GetComponent<PlayerScript>().playerTeam;
-                                        applyStatusEffects.statusEffect = baseHealthEffects.statusEffect;
-
-                                        EvtSystem.EventDispatcher.Raise<ApplyStatusEffects>(applyStatusEffects);
-                                    }
-                                }
-                                else
-                                {
-                                    Debug.LogError("Base cannot be hit");
-                                }
-
-                                foundWhatHit = true;
-                                Debug.LogWarning("<color=yellow> Damage to base: " + damageDone + "</color>");
-                                Debug.LogWarning("<color=yellow> Base health: " + baseHealthEffects.GetHealth() + "</color>");
-                            }
-                        }
-
-                        //APPLY POINTS
-                        if (ChaseGameManager.instance != null)
-                        {
-                            if (player.playerTeam == PlayerScriptSinglePlayer.Team.Blue)
-                                ChaseGameManager.instance.bluePoints += damageDone + bonusPointsPerShot;
-                            else
-                                ChaseGameManager.instance.redPoints += damageDone + bonusPointsPerShot;
-                        }
-                    }
-
-
-
-                }
-                #endregion
-
-                switch (hit.collider.tag)
-                {
-                    case "Enemy":
-                        Transform objectOrigin = hit.collider.transform;
-                        if (objectOrigin != null)
-                        {
-                            IEnemy enemy = objectOrigin.GetComponent<IEnemy>();
-                            float dmg = damage;
-                            if (CheckBPM() && enemy != null)
-                            {
-                                dmg = damage * damageMultiplierBPM;
-                            }
-                            enemy.TakeDamage(dmg);
-                        }
-                        break;
-
-                    default:
-                        break;
-                }
-            }*/
