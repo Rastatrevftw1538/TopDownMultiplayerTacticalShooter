@@ -64,6 +64,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
     public bool isRunning;
     private bool isShooting;
     private bool canMove = true;
+    public List<AudioClip> terrainFootSteps = new List<AudioClip>();
     #endregion
 
     #region Player Team
@@ -107,6 +108,36 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
         //AUTOMATICALLY SET THE PLAYER'S ANIMATION STATE TO IDLE
         StateMachine.Initialize(IdleState);
     }
+
+    int lastLayer;
+    private AudioClip GetFootStepAudio()
+    {
+        switch (lastLayer)
+        {
+            //FOR NOWWWWWWWWWWWW
+            //11 IS GRASS
+            //12 IS METAL
+            //13 IS CONCRETE
+            case 11:
+                return terrainFootSteps[0];
+            case 12:
+                return terrainFootSteps[1];
+            case 13:
+                return terrainFootSteps[2];
+            default:
+                return terrainFootSteps[0];
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        //11 is the current environment starting layer...
+        if (collision.gameObject.layer >= 11)
+        {
+            lastLayer = collision.gameObject.layer;
+            GetFootStepAudio();
+        }
+    }
     public SetDeviceType PlayerDevice
     {
         get { return deviceType; }
@@ -123,6 +154,9 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
         }
     }
 
+
+    float fxCooldown = 0.75f;
+    float fxTimer;
     public void FixedUpdate()
     {
         if (deviceType == SetDeviceType.Auto)
@@ -173,6 +207,15 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
 
             if(movement.magnitude > 0)
             {
+                if (fxTimer >= fxCooldown) {
+                    CallSoundFXTerrain();
+                    fxTimer = 0;
+                }
+                else
+                {
+                    fxTimer += Time.fixedDeltaTime;
+                }
+
                 Anim.SetFloat("Idle", 0);
                 Anim.SetFloat("Moving", movement.normalized.magnitude);
             }else
@@ -227,6 +270,11 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
         #endregion
 
         //StateMachine.CurrentState.PhysicsUpdate();
+    }
+
+    private void CallSoundFXTerrain()
+    {
+        SoundFXManager.Instance.PlaySoundFXClip(GetFootStepAudio(), transform , 0.4f);
     }
 
     public void SetVelocity(float x, float y)

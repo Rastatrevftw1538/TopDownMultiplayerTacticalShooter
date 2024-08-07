@@ -130,8 +130,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d3c509a556313b45ab29200f0445d3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
   currentHealth: 0
+  <maxHealth>k__BackingField: 100
   respawnTime: 2
   target: {fileID: 0}
   stoppingDistance: 7
@@ -144,6 +144,10 @@ MonoBehaviour:
   isAlive: 1
   canHit: 1
   hitDisplaySeconds: 0
+  <hitSound>k__BackingField: {fileID: 0}
+  <movementSound>k__BackingField: {fileID: 0}
+  <firingSound>k__BackingField: {fileID: 0}
+  <defeatSound>k__BackingField: {fileID: 0}
   hitDisplays: []
 --- !u!50 &2656607692588302123
 Rigidbody2D:

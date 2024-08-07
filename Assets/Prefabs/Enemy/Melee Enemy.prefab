@@ -166,8 +166,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52057e91a2239384396929be4a89f748, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
   currentHealth: 0
+  <maxHealth>k__BackingField: 100
   damage: 10
   attackSpd: 0
   respawnTime: 2
@@ -177,6 +177,7 @@ MonoBehaviour:
   isAlive: 1
   canHit: 1
   hitDisplaySeconds: 0
+  <hitSound>k__BackingField: {fileID: 0}
   hitDisplays: []
 --- !u!61 &5221447582837671121
 BoxCollider2D:

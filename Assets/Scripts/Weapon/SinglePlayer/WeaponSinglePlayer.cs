@@ -10,7 +10,7 @@ using Debug = UnityEngine.Debug;
 public class WeaponSinglePlayer : MonoBehaviour
 {
     [Header("Components")]
-    public WeaponData weaponSpecs;
+    public WeaponDataSP weaponSpecs;
     public Transform firePoint;
     private Vector3 endPoint;
 
@@ -282,12 +282,15 @@ public class WeaponSinglePlayer : MonoBehaviour
         }
 
         trailRender.SetTargetPosition(collisionPoint);
+        //if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(weaponSpecs.shootSound, transform, 1f);
         //Debug.Log("Bullet Fired Client " + collisionPoint + " direction " + spreadDirection);
     }
 
-    private void PlaySound()
+    AudioSource audioSource;
+    private void PlaySound(AudioClip sound)
     {
-        //playerAudioSource.PlayOneShot(weaponSpecs.bulletSound);
+        if (!audioSource) audioSource = GetComponent<AudioSource>();
+        //audioSource.PlayOneShot(weaponSpecs.shootSound);
     }
 
     public void SetDefaultValues()

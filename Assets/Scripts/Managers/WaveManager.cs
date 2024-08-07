@@ -34,7 +34,7 @@ public class WaveManager : Singleton<WaveManager>
         //START THE FIRST WAVE
         currentWave = 0; //always start on wave 1, i.e INDEX 0 of the levels list
         currentLevel = 0;
-        GetLevelDoor(null);
+        //GetLevelDoor(null);
         //StartWave(levels[currentLevel].waves[currentWave]);
     }
     //LOADING THE CURRENT SPAWN AREA IN ScenePartLoader.cs
@@ -58,14 +58,14 @@ public class WaveManager : Singleton<WaveManager>
         }
         if (currentSpawnArea == null)
         {
-            Debug.LogError("currentSpawnArea is null");
+            //Debug.LogError("currentSpawnArea is null");
             return;
         }
 
         if (firstWave)
         {
             StartWave(levels[currentLevel].waves[currentWave]);
-            Debug.LogError("first wave spawned.");
+            //Debug.LogError("first wave spawned.");
             firstWave = false;
         }
 
@@ -123,8 +123,7 @@ public class WaveManager : Singleton<WaveManager>
         Debug.LogError("Starting Level " + (currentLevel+1) + ", Wave " + (currentWave+1));
         UIManager.Instance.ChangeWaveNumber(currentWave + 1);
 
-
-
+        levels[currentLevel].PlaySpawnSound(currentSpawnArea.transform);
         wave.GenerateEnemies(currentSpawnArea);
         return;
     }

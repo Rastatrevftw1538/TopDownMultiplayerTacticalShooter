@@ -7,8 +7,8 @@ using UnityEngine.AI;
 public class RangedEnemy : MonoBehaviour, IEnemy
 {
     [Header("Enemy Stats")]
-    public float maxHealth;
     [SerializeField] private float currentHealth;
+    [field: SerializeField] public float maxHealth { get; set; }
     public float respawnTime = 2f;
     [SerializeField] private Transform target;
     private NavMeshAgent agent; 
@@ -30,6 +30,10 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     [Header("Hit Display")]
     //public GameObject hitDisplay;
     public float hitDisplaySeconds;
+    [field: SerializeField] public AudioClip hitSound { get; set; }
+    [field: SerializeField] public AudioClip movementSound { get; set; }
+    [field: SerializeField] public AudioClip firingSound { get; set; }
+    [field: SerializeField] public AudioClip defeatSound { get; set; }
 
     private void Awake()
     {
@@ -47,16 +51,6 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         agent.updateUpAxis = false;
 
         shotCooldown = startShotCooldown;
-        
-               /* if (target == null && player != null)
-                {
-                    target = player.gameObject.transform;
-                }
-                else if (target == null && player == null)
-                {
-                    target = GameObject.Find("Player - SinglePlayer").transform;
-                    player = target.GetComponent<PlayerHealthSinglePlayer>();
-                }*/
 
         if(!player)
             player = GameObject.FindWithTag("Player").GetComponent<PlayerHealthSinglePlayer>();
@@ -70,6 +64,10 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     {
         //healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
         agent.SetDestination(target.position);
+        if(agent.velocity.magnitude > 0)
+        {
+            PlaySound(movementSound, 0.5f);
+        }
 
         //DISTANCE BEFORE STOPPING
         if(agent.remainingDistance <= stoppingDistance)
@@ -108,6 +106,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
 
     private void Attack()
     {
+        PlaySound(firingSound);
         Instantiate(projectile, transform.position, transform.rotation);
         shotCooldown = startShotCooldown;
     }
@@ -129,6 +128,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     private float timeSinceLastShot;
     public void TakeDamage(float amount)
     {
+        PlaySound(hitSound);
         //FIRST CHECK IF THE BASE'S HEALTH IS BELOW 0
         if (currentHealth > 0)
             currentHealth -= amount;
@@ -145,6 +145,12 @@ public class RangedEnemy : MonoBehaviour, IEnemy
 
         //SLOW ENEMY
 
+    }
+
+    private void PlaySound(AudioClip sound, float volume = 1f)
+    {
+        if (!SoundFXManager.Instance) return;
+            SoundFXManager.Instance.PlaySoundFXClip(sound, transform, 1f);
     }
 
     public List<GameObject> hitDisplays = new List<GameObject>();
@@ -189,9 +195,10 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         isAlive = false;
         //this.transform.parent.gameObject.SetActive(false);
         //Respawn(respawnTime);
+        PlaySound(defeatSound);
         Destroy(this.transform.parent.gameObject);
 
-        WaveManager.Instance.enemiesKilled++;
+       if(WaveManager.Instance) WaveManager.Instance.enemiesKilled++;
     }
 
     private void CheckHealth()
@@ -204,88 +211,3 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         }
     }
 }
-/*
-bool foundWhatHit = false;
-//training dummy
-if (!foundWhatHit)
-{
-    TrainingDummy dummyHealth = objectOrigin.GetComponent<TrainingDummy>();
-    if (dummyHealth != null && !foundWhatHit)
-    {
-        if (dummyHealth.canHit)
-        {
-            //CLICKED ON BEAT?
-            if (BPMManager.instance.canClick == Color.green)
-            {
-                Debug.LogError("ON BEAT :)!! HIT DUMMY FOR " + damage * damageMultiplierBPM);
-                damageDone = (damage * damageMultiplierBPM);
-            }
-            else
-            {
-                Debug.LogError("NOT ON BEAT :(!! HIT DUMMY FOR " + damage);
-                damageDone = (damage);
-            }
-            dummyHealth.TakeDamage(damageDone);
-        }
-
-        foundWhatHit = true;
-    }
-}
-
-//enemy
-
-if (!foundWhatHit)
-{
-    Debug.LogError("made it here1");
-    RangedEnemy dummyHealth = objectOrigin.GetComponent<RangedEnemy>();
-    if (dummyHealth != null && !foundWhatHit)
-    {
-        Debug.LogError("made it here1a");
-        if (dummyHealth.canHit)
-        {
-            Debug.LogError("made it here1b");
-            //CLICKED ON BEAT?
-            if (BPMManager.instance.canClick == Color.green)
-            {
-                Debug.LogError("ON BEAT :)!! HIT ENEMY FOR " + damage * damageMultiplierBPM);
-                damageDone = (damage * damageMultiplierBPM);
-            }
-            else
-            {
-                Debug.LogError("NOT ON BEAT :(!! HIT ENEMY FOR " + damage);
-                damageDone = (damage);
-            }
-            dummyHealth.TakeDamage(damageDone);
-        }
-
-        foundWhatHit = true;
-    }
-}
-
-if (!foundWhatHit)
-{
-    Debug.LogError("made it here2");
-    MeleeEnemy dummyHealth = objectOrigin.GetComponent<MeleeEnemy>();
-    if (dummyHealth != null && !foundWhatHit)
-    {
-        Debug.LogError("made it here2a");
-        if (dummyHealth.canHit)
-        {
-            Debug.LogError("made it here2b");
-            //CLICKED ON BEAT?
-            if (BPMManager.instance.canClick == Color.green)
-            {
-                Debug.LogError("ON BEAT :)!! HIT ENEMY FOR " + damage * damageMultiplierBPM);
-                damageDone = (damage * damageMultiplierBPM);
-            }
-            else
-            {
-                Debug.LogError("NOT ON BEAT :(!! HIT ENEMY FOR " + damage);
-                damageDone = (damage);
-            }
-            dummyHealth.TakeDamage(damageDone);
-        }
-
-        foundWhatHit = true;
-    }
-}*/

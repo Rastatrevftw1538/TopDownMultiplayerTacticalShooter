@@ -8,12 +8,13 @@ using static PlayerScriptSinglePlayer;
 [RequireComponent(typeof(PlayerScriptSinglePlayer))]
 public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
 
+    [Header("Player Stats")]
     public const float maxHealth = 100;
-    public float iFrames;
-
     public float currentHealth = maxHealth;
+    public float iFrames;
     public float respawnTime;
 
+    [Header("Components")]
     private Slider healthbarInternal;
     [SerializeField] private Image healthbarExternal;
 
@@ -23,8 +24,16 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
     private bool canHit = true;
     private Animator Anim; //move to statemachine later
     private SpriteRenderer[] sprites;
+
+    [Header("Flash Color")]
     public Color flashColor = Color.red;
     public float flashTime = 0.25f;
+
+    [Header("Player Sounds")]
+    [SerializeField] private AudioClip gotHitAudio;
+    [SerializeField] private AudioClip diedAudio;
+    [SerializeField] private AudioClip spawnAudio;
+    private string lastLayerOn;
 
     public bool checkIfAlive
     {

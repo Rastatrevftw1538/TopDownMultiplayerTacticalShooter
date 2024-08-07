@@ -216,6 +216,8 @@ MonoBehaviour:
   currentHealth: 100
   respawnTime: 2
   healthbarExternal: {fileID: 0}
+  flashColor: {r: 1, g: 0, b: 0, a: 1}
+  flashTime: 0.25
 --- !u!114 &1394335429370971273
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -228,7 +230,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a047d0f574eafd46844a57cea7b9635, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponSpecs: {fileID: 11400000, guid: 029eab3d09b5add4385c2b571bd5a779, type: 2}
+  weaponSpecs: {fileID: 11400000, guid: b7bf55eefcc53424394e85c31df51113, type: 2}
   firePoint: {fileID: 2106101045170016291}
   weaponLooks: {fileID: 4191842508402268720}
   spreadCone: {fileID: 8047143506606203623}

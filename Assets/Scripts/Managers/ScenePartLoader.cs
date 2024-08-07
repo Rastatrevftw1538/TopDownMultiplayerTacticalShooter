@@ -93,7 +93,7 @@ public class ScenePartLoader : MonoBehaviour
         if (GameObject.FindGameObjectsWithTag("LevelDoor").Length > 0)
         {
             WaveManager.Instance.GetLevelDoor(GameObject.FindGameObjectsWithTag("LevelDoor")[GameObject.FindGameObjectsWithTag("LevelDoor").Length - 1]);
-            //Debug.LogError("level door is object called: " + GameObject.FindGameObjectsWithTag("LevelDoor")[GameObject.FindGameObjectsWithTag("LevelDoor").Length - 1].name);
+            Debug.LogError("level door is object called: " + GameObject.FindGameObjectsWithTag("LevelDoor")[GameObject.FindGameObjectsWithTag("LevelDoor").Length - 1].name);
         }
         else
         {

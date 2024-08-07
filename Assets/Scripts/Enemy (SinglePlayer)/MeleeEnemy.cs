@@ -7,8 +7,8 @@ using UnityEngine.AI;
 public class MeleeEnemy : MonoBehaviour, IEnemy
 {
     [Header("Enemy Stats")]
-    public float maxHealth;
     [SerializeField] private float currentHealth;
+    [field: SerializeField] public float maxHealth { get; set; }
     public float damage;
     public float attackSpd;
     //public float attackRange;
@@ -30,6 +30,10 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     [Header("Hit Display")]
     //public GameObject hitDisplay;
     public float hitDisplaySeconds;
+    [field: SerializeField] public AudioClip hitSound { get; set; }
+    [field: SerializeField] public AudioClip movementSound { get; set; }
+    [field: SerializeField] public AudioClip firingSound { get; set; }
+    [field: SerializeField] public AudioClip defeatSound { get; set; }
 
     private void Awake()
     {
@@ -75,6 +79,11 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         //transform.up = direction; //ROTATES THE ENEMY TO THE PLAYER 
 
         //attack
+
+        if (agent.velocity.magnitude > 0)
+        {
+            PlaySound(movementSound, 0.5f);
+        }
     }
 
     static PlayerHealthSinglePlayer player;
@@ -123,8 +132,15 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         Debug.Log("Set to false");
     }
 
+    private void PlaySound(AudioClip sound, float volume = 1f)
+    {
+        if (!SoundFXManager.Instance) return;
+        SoundFXManager.Instance.PlaySoundFXClip(sound, transform, 1f);
+    }
+
     public void TakeDamage(float amount)
     {
+        PlaySound(hitSound);
         StartCoroutine(nameof(GotHit));
         //FIRST CHECK IF THE BASE'S HEALTH IS BELOW 0
         if (currentHealth > 0)
@@ -139,6 +155,11 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
 
         //SLOW ENEMY
+
+        //FLASH COLOR ENEMY
+
+        //PLAY HIT SOUND
+        if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(hitSound, transform, 1f);
 
     }
 
@@ -181,13 +202,14 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
 
     void RpcDie()
     {
+        PlaySound(defeatSound);
         isAlive = false;
         //this.transform.parent.gameObject.SetActive(false);
         //Respawn(respawnTime);
         Destroy(this.transform.parent.gameObject);
 
         //IDEALLY, we move this to the interface
-        WaveManager.Instance.enemiesKilled++;
+        if (WaveManager.Instance) WaveManager.Instance.enemiesKilled++;
     }
 
     private void CheckHealth()

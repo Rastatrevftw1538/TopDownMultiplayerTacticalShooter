@@ -18,3 +18,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d90ed1188c0abb44ab3a76ece56a42fa, type: 2}
   - {fileID: 11400000, guid: 9621eb35e48ed5f4bbd14ac5ae9458ca, type: 2}
   levelDoor: {fileID: 0}
+  spawnSound: {fileID: 0}

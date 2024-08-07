@@ -8,6 +8,7 @@ public class Level : ScriptableObject
 {
     public List<Wave> waves = new List<Wave>();
     public GameObject levelDoor;
+    [SerializeField] private AudioClip spawnSound;
     private bool _isCompleted;
 
     // Start is called before the first frame update
@@ -34,5 +35,11 @@ public class Level : ScriptableObject
     public bool GetLevelCompletion()
     {
         return _isCompleted;
+    }
+
+    public void PlaySpawnSound(Transform where)
+    {
+        if (!SoundFXManager.Instance || !spawnSound) return;
+        SoundFXManager.Instance.PlaySoundFXClip(spawnSound, where, 0.3f);
     }
 }
