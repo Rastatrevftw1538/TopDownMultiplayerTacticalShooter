@@ -162,17 +162,20 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
             };
             movement = new UnityEngine.Vector2(movement.x, movement.y).normalized * (isRunning ? runSpeed : walkSpeed) * 0.25f;
 
-            if (movement.magnitude > 0)
+            if (movement.x > 0)
+            {
+                playerBodyBodySkelSprite.flipX = false;
+            }
+            else
+            {
+                playerBodyBodySkelSprite.flipX = true;
+            }
+
+            if(movement.magnitude > 0)
             {
                 Anim.SetFloat("Idle", 0);
                 Anim.SetFloat("Moving", movement.normalized.magnitude);
-            }
-            //else if (movement.normalized.y > 0)
-            //{
-            //    Anim.SetFloat("Idle", 0);
-            //    Anim.SetFloat("Moving", movement.normalized.y);
-            //}
-            else
+            }else
             {
                 Anim.SetFloat("Idle", 1);
                 Anim.SetFloat("Moving", 0);
