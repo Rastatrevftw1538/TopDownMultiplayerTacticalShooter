@@ -15,3 +15,4 @@ MonoBehaviour:
   waves:
   - {fileID: 11400000, guid: bddfaa0ef6c6c31408d3ebcdea4b5c9a, type: 2}
   levelDoor: {fileID: 0}
+  spawnSound: {fileID: 8300000, guid: b6da13f2c30fe9145b6654cf841beb32, type: 3}
