@@ -300,8 +300,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f22dbc4c0dd47349a0695f112469779, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHealth: 200
-  iFrames: 0
+  maxHealth: 200
+  currentHealth: 0
+  iFrames: 0.3
   respawnTime: 2
   healthbarExternal: {fileID: 0}
   flashColor: {r: 1, g: 0, b: 0, a: 1}

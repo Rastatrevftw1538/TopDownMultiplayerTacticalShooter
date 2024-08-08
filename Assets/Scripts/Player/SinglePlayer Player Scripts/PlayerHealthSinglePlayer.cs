@@ -9,8 +9,8 @@ using static PlayerScriptSinglePlayer;
 public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
 
     [Header("Player Stats")]
-    public const float maxHealth = 100;
-    public float currentHealth = maxHealth;
+    public float maxHealth = 100;
+    public float currentHealth;
     public float iFrames;
     public float respawnTime;
 
@@ -58,6 +58,8 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
         sprites = GetComponentsInChildren<SpriteRenderer>();
         healthbarInternal = GetComponentInChildren<Slider>();
         Anim = GetComponentInChildren<Animator>();
+
+        currentHealth = maxHealth;
     }
 
     public void TakeDamage(float amount)
@@ -112,17 +114,17 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
 
     private void Update()
     {
-        if (healthbarInternal != null)
-        {
-            healthbarInternal.value = currentHealth;
-        }
-
         if (healthbarExternal != null)
         {
             //Debug.Log("Health: " + (float)currentHealth);
             healthbarExternal.fillAmount = currentHealth / maxHealth;
             //Debug.Log("Health Changed - Bar: " + healthbarExternal.fillAmount + " Health: " + currentHealth);
         }
+
+        /*if (healthbarInternal != null)
+        {
+            healthbarInternal.value = currentHealth / maxHealth;
+        }*/
     }
 
     WeaponSinglePlayer weapon;

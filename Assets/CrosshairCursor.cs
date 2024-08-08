@@ -6,7 +6,7 @@ using UnityEngine.Rendering;
 public class CrosshairCursor : MonoBehaviour
 {
     // Start is called before the first frame update
-    public Sprite mouseSprite;
+    //public Sprite mouseSprite;
     private Camera playerCamera;
     void Start()
     {
@@ -19,6 +19,7 @@ public class CrosshairCursor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //terrible i know
         if(!playerCamera) playerCamera = GameObject.Find("ClientCamera").GetComponent<Camera>();
 
         Vector3 mouseCursorPos = playerCamera.ScreenToWorldPoint(Input.mousePosition );
