@@ -58,6 +58,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
 
     private SpriteRenderer playerBodyArmsSkelSprite;
     private SpriteRenderer playerBodyBodySkelSprite;
+    private SpriteRenderer playerBodyHeadSprite;
     private StatusEffectData _statusEffectData;
 
     [Header("Player Status")]
@@ -92,9 +93,11 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
         MoveStateY = new PlayerMoveState(this, StateMachine, "MoveVertical");
 
         playerBodyArms = GameObject.Find("PlayerBody - Arms").gameObject;
-        playerBodyArmsSkelSprite = playerBodyArms.transform.GetChild(0).GetComponent<SpriteRenderer>();
+        //playerBodyArmsSkelSprite = playerBodyArms.transform.GetChild(0).GetComponent<SpriteRenderer>();
+        playerBodyArmsSkelSprite = GameObject.Find("Arms and Gun").GetComponent<SpriteRenderer>();
         playerBodyBody = GameObject.Find("PlayerBody - Body").gameObject;
         playerBodyBodySkelSprite = playerBodyBody.transform.GetChild(0).GetComponent<SpriteRenderer>();
+        playerBodyHeadSprite = GameObject.Find("Head").gameObject.GetComponent<SpriteRenderer>();
     }
 
     private void Start() {
@@ -226,21 +229,34 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
             }
 
             UnityEngine.Vector3 mousePosition = Input.mousePosition;
-            mousePosition.z = -playerCamera.transform.position.z;
+            mousePosition.z = (playerCamera.transform.position.z);
             UnityEngine.Vector3 mouseWorldPosition = playerCamera.ScreenToWorldPoint(mousePosition);
             UnityEngine.Vector3 aimDirection = mouseWorldPosition - transform.position;
             rotation = UnityEngine.Quaternion.LookRotation(UnityEngine.Vector3.forward, aimDirection);
             //print(rotation);
 
-            if(0f >= playerBodyArms.transform.localEulerAngles.z || playerBodyArms.transform.localEulerAngles.z <= 180f){
-                playerBodyArmsSkelSprite.flipY = true;
-                playerBodyBodySkelSprite.flipX = true;
+            /*if(0f >= playerBodyArms.transform.localEulerAngles.z || playerBodyArms.transform.localEulerAngles.z <= 180f){
+                playerBodyArmsSkelSprite.flipY = false;
+                playerBodyBodySkelSprite.flipX = false;
                 //Debug.Log("Z Rotation is: "+playerBodyArms.transform.localEulerAngles.z);
             }
             else{
                 playerBodyArmsSkelSprite.flipY = false;
-                playerBodyBodySkelSprite.flipX = false;
+                playerBodyBodySkelSprite.flipX = true;
                 //Debug.Log("Z Rotation is: "+playerBodyArms.transform.localEulerAngles.z);
+            }*/
+
+            if( playerBodyArms.transform.rotation.z >= 0 && playerBodyArms.transform.rotation.z <= 180)
+            {
+                playerBodyBodySkelSprite.flipX = true;
+                playerBodyArmsSkelSprite.flipY = true;
+                playerBodyHeadSprite.flipY = true;
+            }
+            else if (playerBodyArms.transform.rotation.z < 0 && playerBodyArms.transform.rotation.z >= -180)
+            {
+                playerBodyBodySkelSprite.flipX = false;
+                playerBodyArmsSkelSprite.flipY = false;
+                playerBodyHeadSprite.flipY = false;
             }
         }
         #endregion
