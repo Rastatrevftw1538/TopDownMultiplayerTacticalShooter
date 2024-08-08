@@ -2917,7 +2917,7 @@ GameObject:
   - component: {fileID: 1397416013}
   - component: {fileID: 1397416014}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: Game and UI Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2964,7 +2964,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waveDisplay: {fileID: 770018263}
-  pointsDisplay: {fileID: 0}
+  pointsDisplay: {fileID: 32184434}
   victoryScreen: {fileID: 1470474906}
   defeatScreen: {fileID: 42477846}
   points: 0

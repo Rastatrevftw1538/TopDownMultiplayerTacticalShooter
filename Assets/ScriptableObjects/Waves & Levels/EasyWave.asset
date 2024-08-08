@@ -20,4 +20,4 @@ MonoBehaviour:
   - enemyPrefab: {fileID: 8616342455689032815, guid: ed11e4f1c822cbc4896722a3dd504166, type: 3}
     cost: 2
   _waveValue: 2
-  _amtEnemies: 1
+  _amtEnemies: 119
