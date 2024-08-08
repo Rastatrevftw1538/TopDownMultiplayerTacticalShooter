@@ -13,6 +13,7 @@ TagManager:
   - Enemy
   - LevelDoor
   - SpawnHolder
+  - NPC
   layers:
   - Default
   - TransparentFX
