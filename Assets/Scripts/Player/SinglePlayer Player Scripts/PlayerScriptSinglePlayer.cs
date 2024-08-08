@@ -112,6 +112,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
     int lastLayer;
     private AudioClip GetFootStepAudio()
     {
+        if (terrainFootSteps.Count == 0) return null;
         switch (lastLayer)
         {
             //FOR NOWWWWWWWWWWWW

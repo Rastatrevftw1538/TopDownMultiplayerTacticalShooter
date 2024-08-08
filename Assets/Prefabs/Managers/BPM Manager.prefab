@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3513524578336109779}
   - component: {fileID: 1689190612204667492}
   - component: {fileID: 3513524578336109788}
+  - component: {fileID: 2018068236926679293}
   m_Layer: 0
   m_Name: BPM Manager
   m_TagString: Untagged
@@ -147,3 +148,16 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &2018068236926679293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3513524578336109790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4066bb75099a20045b3c8236c8d4fe82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundFXObject: {fileID: 2294200199544277999, guid: 3b81ebaa073b72f4aac5b69a3e913e43, type: 3}
