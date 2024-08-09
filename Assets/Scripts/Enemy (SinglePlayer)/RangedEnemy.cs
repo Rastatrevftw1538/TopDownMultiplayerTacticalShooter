@@ -21,6 +21,8 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     [Header("Enemy Components")]
     [SerializeField] private Image healthbarExternal;
     [SerializeField] private GameObject projectile;
+    [field: SerializeField] public float dropChance { get; set; }
+    [field: SerializeField] public GameObject dropObject { get; set; }
 
     [Header("Debug")]
     [SerializeField] private float _damageTaken = 0;
@@ -190,8 +192,18 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         Invoke(nameof(RestoreHealth), respawnTime);
     }
 
+    public void DropOnDeath()
+    {
+        int randDropProb = Random.Range(0, 100);
+
+        if(randDropProb <= dropChance)
+        Instantiate(dropObject, transform.position, Quaternion.identity);
+    }
+
     void RpcDie()
     {
+        DropOnDeath();
+
         isAlive = false;
         //this.transform.parent.gameObject.SetActive(false);
         //Respawn(respawnTime);

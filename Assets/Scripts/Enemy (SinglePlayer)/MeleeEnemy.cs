@@ -21,6 +21,8 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
 
     [Header("Enemy Components")]
     [SerializeField] private Image healthbarExternal;
+    [field: SerializeField] public float dropChance { get; set; }
+    [field: SerializeField] public GameObject dropObject { get; set; }
 
     [Header("Debug")]
     [SerializeField] private float _damageTaken = 0;
@@ -108,6 +110,12 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         yield return new WaitForSeconds(1f);
         anim.SetBool("IsAttacking", false);
 
+    }
+
+    [HideInInspector] public bool dropOnDeath { get; set; }
+    public void DropOnDeath(OnDeathDrop evtData)
+    {
+        Instantiate(evtData.drop, transform.position, Quaternion.identity);
     }
 
     public bool checkIfAlive
@@ -200,8 +208,19 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         Invoke(nameof(RestoreHealth), respawnTime);
     }
 
+    public void DropOnDeath()
+    {
+        int randDropProb = Random.Range(0, 100);
+
+        if (randDropProb <= dropChance)
+            Instantiate(dropObject, transform.position, Quaternion.identity);
+    }
+
     void RpcDie()
     {
+
+        DropOnDeath();
+
         PlaySound(defeatSound);
         isAlive = false;
         //this.transform.parent.gameObject.SetActive(false);

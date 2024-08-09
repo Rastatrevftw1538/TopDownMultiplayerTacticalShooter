@@ -12,8 +12,8 @@ public interface IEnemy
     public AudioClip movementSound { get; set; }
     public AudioClip firingSound { get; set; }
     public AudioClip defeatSound { get; set; }
-    void TakeDamage(float damage)
-    {
+    public float dropChance { get; set; }
+    public GameObject dropObject {get;set;}
 
-    }
+    void TakeDamage(float damage);
 }
