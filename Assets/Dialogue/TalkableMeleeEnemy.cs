@@ -6,7 +6,15 @@ public class TalkableMeleeEnemy : Sentient, ITalkable
 {
     //variable to read in the text its supposed to say
     [SerializeField] private DialogueText dialogueText;
-    [SerializeField] private DialogueController dialogueController;
+     private DialogueController dialogueController;
+
+    private void Update()
+    {
+        if (!dialogueController)
+        {
+            dialogueController = GameObject.FindGameObjectWithTag("DialogueBox").transform.GetComponent<DialogueController>();
+        }
+    }
 
     public override void Interact()
     {

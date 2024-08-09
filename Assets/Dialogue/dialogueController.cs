@@ -12,6 +12,12 @@ public class DialogueController : MonoBehaviour
 
     private bool conversationEnded;
 
+    private void Start()
+    {
+        NPCNameText.gameObject.SetActive(false);
+        NPCDialogueText.gameObject.SetActive(false);
+    }
+
     public void DisplayNextParagraph(DialogueText dialogueText)
     {
         //if there's nothing in the paragraph queue
