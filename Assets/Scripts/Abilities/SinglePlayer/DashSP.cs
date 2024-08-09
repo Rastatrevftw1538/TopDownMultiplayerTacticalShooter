@@ -17,12 +17,14 @@ public class DashSP : MovementAbility
     [Header("Ability Stats")]
     public float dashVelocity;
     public float speedMultiplier;
+    public AudioClip dashAudio;
 
     private CircleCollider2D aura;
 
     public override void Activate(GameObject parent){
         PlayerScriptSinglePlayer player = parent.GetComponent<PlayerScriptSinglePlayer>();
         StartDash(parent);
+        if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(dashAudio, player.gameObject.transform);
         //SpawnAura(player, true);
     }
 
