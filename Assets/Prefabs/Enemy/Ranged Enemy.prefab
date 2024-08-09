@@ -140,6 +140,8 @@ MonoBehaviour:
   <pointsPerHit>k__BackingField: 50
   healthbarExternal: {fileID: 5994701146355688125}
   projectile: {fileID: 2252358114905661944, guid: ee2f2386eaf7bcd4aae1f965652cc1ec, type: 3}
+  <dropChance>k__BackingField: 20
+  <dropObject>k__BackingField: {fileID: 6384325973079197979, guid: ccb46c434963ac649a3a180fece6995a, type: 3}
   _damageTaken: 0
   isAlive: 1
   canHit: 1

@@ -173,11 +173,16 @@ MonoBehaviour:
   respawnTime: 2
   <pointsPerHit>k__BackingField: 30
   healthbarExternal: {fileID: 8616342454603650037}
+  <dropChance>k__BackingField: 20
+  <dropObject>k__BackingField: {fileID: 6384325973079197979, guid: ccb46c434963ac649a3a180fece6995a, type: 3}
   _damageTaken: 0
   isAlive: 1
   canHit: 1
   hitDisplaySeconds: 0
   <hitSound>k__BackingField: {fileID: 0}
+  <movementSound>k__BackingField: {fileID: 0}
+  <firingSound>k__BackingField: {fileID: 0}
+  <defeatSound>k__BackingField: {fileID: 0}
   hitDisplays: []
 --- !u!61 &5221447582837671121
 BoxCollider2D:
