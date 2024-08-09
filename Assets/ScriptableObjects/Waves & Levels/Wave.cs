@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
+using UnityEngine.Assertions.Must;
+using System.Diagnostics.Eventing.Reader;
 
 [CreateAssetMenu(fileName = "Wave", menuName = "Levels and Waves/Wave")]
 public class Wave : ScriptableObject
 {
     [NonReorderable] public List<WaveEnemy> _enemies;
     public float _waveValue;
+
     private List<GameObject> enemiesToSpawn = new List<GameObject>();
     [HideInInspector] public int _amtEnemies;
     private float tempWaveValue;
@@ -69,11 +72,13 @@ public class Wave : ScriptableObject
             float randomOffset = Random.Range(0, 0.5f);
             GameObject currentSpawn = spawnArea.transform.GetChild(rando).gameObject;
             Vector3 minorDiff = new Vector3(currentSpawn.transform.position.x, currentSpawn.transform.position.y + randomOffset, currentSpawn.transform.position.z);
+            
+            //Ensures enemy spawns on the correct axis
             Quaternion quaternion = new Quaternion();
             quaternion.x = 0;
             enemy.transform.rotation = quaternion;
 
-            Instantiate(enemy, minorDiff,  Quaternion.identity);
+            Instantiate(enemy, minorDiff, Quaternion.identity);
             _amtEnemies++;
         }
     }

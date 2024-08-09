@@ -73,6 +73,11 @@ public class StartTeamRespawn : EvtSystem.Event
     public PlayerScript.Team team;
 }
 
+public class OnDeathDrop : EvtSystem.Event
+{
+    public GameObject drop;
+}
+
 public class ChangeBaseState : EvtSystem.Event
 {
     public bool isBaseVulnerable;

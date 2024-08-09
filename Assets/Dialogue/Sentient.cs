@@ -14,7 +14,7 @@ public abstract class Sentient : MonoBehaviour, IInteractable
     public WaveManager waveCheck;
     [SerializeField] public int waveToTalk;
 
-    private void start()
+    private void Start()
     {
 
         //finding the player

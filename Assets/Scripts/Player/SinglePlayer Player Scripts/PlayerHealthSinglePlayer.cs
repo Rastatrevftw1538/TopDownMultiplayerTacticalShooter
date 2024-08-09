@@ -62,6 +62,16 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
         currentHealth = maxHealth;
     }
 
+    public void AddHealth(float amount)
+    {
+        if (currentHealth + amount > maxHealth)
+            currentHealth = maxHealth;
+        else
+            currentHealth += amount;
+
+        CheckHealth();
+    }
+
     public void TakeDamage(float amount)
     {
         if (!canHit) return;
@@ -176,6 +186,5 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
         Anim.SetBool("GotHit", true);
         yield return new WaitForSeconds(iFrames);
         Anim.SetBool("GotHit", false);
-        Debug.Log("stopped getting hit");
     }
 }
