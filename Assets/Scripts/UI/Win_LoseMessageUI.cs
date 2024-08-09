@@ -10,12 +10,11 @@ public class Win_LoseMessageUI : UI
     {
         message = this.GetComponent<TMP_Text>();
         this.gameObject.SetActive(false);
-        EvtSystem.EventDispatcher.AddListener<BaseDestroyed>(UpdateUI);
-        EvtSystem.EventDispatcher.AddListener<DisableUI>(DisableUI);
-        EvtSystem.EventDispatcher.AddListener<TiedGame>(TiedGameUI);
+        //EvtSystem.EventDispatcher.AddListener<BaseDestroyed>(UpdateUI);
+        //EvtSystem.EventDispatcher.AddListener<DisableUI>(DisableUI);
+        //EvtSystem.EventDispatcher.AddListener<TiedGame>(TiedGameUI);
     }
 
-    [ClientRpc]
     public override void UpdateUI(BaseDestroyed evtData)
     {
         this.gameObject.SetActive(true);

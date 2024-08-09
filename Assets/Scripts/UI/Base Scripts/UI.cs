@@ -10,6 +10,9 @@ public class UI : NetworkBehaviour
     [Header("Message Components")]
     public string announcement = "";
     public Color messageColor;
+    public float activeTime;
+    [HideInInspector]public float defActiveTime;
+    [HideInInspector]public bool hasRecievedMessage;
 
     //OFTEN USED COMPONENTS
     [HideInInspector]public TMP_Text message;
@@ -30,10 +33,21 @@ public class UI : NetworkBehaviour
 
     }
 
+    public virtual void UpdateUI(DisplayUI evtData)
+    {
+
+    }
+
     public void DisableUI(DisableUI evtData)
     {
         if(this.gameObject != evtData.priorityUI)
             this.gameObject.SetActive(false);
+    }
+
+    public void DisableUI()
+    {
+        this.gameObject.SetActive(false);
+        hasRecievedMessage = false;
     }
 
     public void MakePriorityUI()
@@ -42,5 +56,10 @@ public class UI : NetworkBehaviour
         DisableUI disableUI = new DisableUI();
         disableUI.priorityUI = this.gameObject;
         EvtSystem.EventDispatcher.Raise<DisableUI>(disableUI);
+    }
+
+    public void ReplaceUI(ReplaceUI evtData)
+    {
+        message.text = evtData.replacementMessage;
     }
 }

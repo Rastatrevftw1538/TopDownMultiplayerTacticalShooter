@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f955669090062d84192b13e9cbbe1aac, type: 3}
+  m_Name: SinglePlayerDash
+  m_EditorClassIdentifier: 
+  abilityName: Single Player Dash
+  statusEffectData: {fileID: 0}
+  abilityType: 2
+  playerEffects: 0
+  activationMethod: 2
+  abilityAppliance: 0
+  activeTime: 0.1
+  cooldownTime: 2
+  delayTime: 0
+  isInstantAbility: 0
+  hasDelay: 0
+  whichAbility: {fileID: 11400000, guid: 981e8893798a5c74ab03138ff1f8219c, type: 2}
+  radius: 0
+  projectileSpeed: 0
+  bulletColor: {r: 0, g: 0, b: 0, a: 0}

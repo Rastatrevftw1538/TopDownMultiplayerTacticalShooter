@@ -77,6 +77,7 @@ public class ChangeBaseState : EvtSystem.Event
 {
     public bool isBaseVulnerable;
     public Base thisBase;
+    public BaseEffects thisBaseEffects;
     public PlayerScript.Team team;
 }
 
@@ -88,6 +89,8 @@ public class PlayerDied : EvtSystem.Event
 public class BaseDestroyed : EvtSystem.Event
 {
     public Base thisBase;
+    public BaseEffects baseEffects;
+    public StatusEffectData statusEffect;
 }
 
 public class EndGame : EvtSystem.Event
@@ -98,4 +101,36 @@ public class EndGame : EvtSystem.Event
 public class TiedGame : EvtSystem.Event
 {
 
+}
+
+public class ApplyStatusEffects : EvtSystem.Event
+{
+    public PlayerScript.Team team;
+    public GameObject player;
+    public StatusEffectData statusEffect;
+}
+
+public class WhoBrokeBase : EvtSystem.Event
+{
+    public PlayerScript.Team playerTeam;
+    public GameObject whatBase;
+}
+
+public class DisplayUI : EvtSystem.Event
+{
+    public string textToDisplay;
+    public string statusEffectName;
+    public Color  colorOfText;
+}
+
+public class ShootSound : EvtSystem.Event
+{
+    public Vector3 position;
+    public string GunName;
+}
+
+public class ReloadSound : EvtSystem.Event
+{
+    public Vector3 position;
+    public string GunName;
 }

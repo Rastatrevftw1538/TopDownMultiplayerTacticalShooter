@@ -12,12 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0d332ebd4ca0354fb4b0febea93c68f, type: 3}
   m_Name: Sniper
   m_EditorClassIdentifier: 
+  shootSound: []
+  reloadSound: []
   damagePerBullet: 150
   fireRate: 1.5
+  semiAuto: 1
   fireRange: 35
   numOfBulletsPerShot: 1
   weaponSprite: {fileID: 21300000, guid: 15d3c315af8faf2498573371308b9d3e, type: 3}
   ammo: 4
   reloadTime: 5
-  zoomOutValue: 125
   spreadIncreasePerSecond: 100000

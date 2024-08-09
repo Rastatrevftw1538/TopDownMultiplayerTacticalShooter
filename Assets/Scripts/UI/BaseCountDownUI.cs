@@ -17,8 +17,8 @@ public class BaseCountDownUI : UI
     {
         this.gameObject.SetActive(false);
         message = this.GetComponent<TMP_Text>();
-        EvtSystem.EventDispatcher.AddListener<StartTeamRespawn>(UpdateUI);
-        EvtSystem.EventDispatcher.AddListener<DisableUI>(DisableUI);
+        //EvtSystem.EventDispatcher.AddListener<StartTeamRespawn>(UpdateUI);
+        //EvtSystem.EventDispatcher.AddListener<DisableUI>(DisableUI);
     }
 
     // Update is called once per frame

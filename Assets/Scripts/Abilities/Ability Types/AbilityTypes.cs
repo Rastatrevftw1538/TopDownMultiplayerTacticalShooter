@@ -1,11 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System;
+/*public class AbilityType : MonoBehaviour
+{
+    public virtual void Activate(GameObject parent) { }
+
+    public virtual void BeginCooldown(GameObject parent) { }
+}*/
 
 #region ENUMS
 [System.Serializable]
-public enum AbilityType
+public enum AbilityClass
 {
     DAMAGE = 0,
     HEALING = 1,
@@ -36,27 +38,64 @@ public enum AbilityAppliance
     INSTANT = 0,
     OVER_TIME = 1
 }
+
+[System.Serializable]
+public enum StatusEffectTypes
+{
+    DOT = 0,
+    STRENGTH_BUFF = 1,
+    MOVEMENT = 2
+}
 #endregion
 
-#region CLASSES
-public class HealingAbility : Ability
+#region ABILITY TYPES
+public class HealingAbility : Ability, IHealable
 {
 
 }
 
-public class DamageAbility : Ability
+public class DamageAbility : Ability, IDamageable
 {
 
 }
 
-public class MovementAbility : Ability
+public class MovementAbility : Ability, IMoveable
 {
-    //public float waitTime;
+    public float speed { get; set; }
 }
 
-public class FOVAbility : Ability
+public class FOVAbility : Ability, ISightBlockable
 {
 
 }
 
+#endregion
+
+#region INTERFACES
+public interface IMoveable
+{
+    float speed { get; set; }
+}
+
+public interface IDamageable
+{
+
+}
+
+public interface IHealable
+{
+
+}
+
+public interface ISightBlockable
+{
+
+}
+
+public interface IEffectable
+{
+    public void ApplyEffect(StatusEffectData data);
+    public void RemoveEffect();
+    public void HandleEffect();
+}
 #endregion
