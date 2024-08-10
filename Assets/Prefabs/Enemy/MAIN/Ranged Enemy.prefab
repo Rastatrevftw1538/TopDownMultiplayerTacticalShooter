@@ -24,9 +24,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1330402976650344706}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.018, y: -0.082, z: 0}
-  m_LocalScale: {x: 0.17319691, y: 0.17319691, z: 0.17319691}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.017999995, y: -0.081999995, z: 0}
+  m_LocalScale: {x: 0.1731969, y: 0.1731969, z: 0.17319691}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5994701145239110948}
@@ -150,6 +150,9 @@ MonoBehaviour:
   <movementSound>k__BackingField: {fileID: 0}
   <firingSound>k__BackingField: {fileID: 8300000, guid: 72b281817f4c63a428bda1a48f5ff021, type: 3}
   <defeatSound>k__BackingField: {fileID: 8300000, guid: bcdaf08509ea36d4cbd1435cdb1e11b3, type: 3}
+  flashColor: {r: 1, g: 0, b: 0, a: 1}
+  flashTime: 0.25
+  spriteRenderer: {fileID: 4535507047002042580}
   hitDisplays: []
 --- !u!50 &2656607692588302123
 Rigidbody2D:

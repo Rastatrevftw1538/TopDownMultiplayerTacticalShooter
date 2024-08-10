@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.AI;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class MeleeEnemy : MonoBehaviour, IEnemy
 {
@@ -36,6 +37,10 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     [field: SerializeField] public AudioClip movementSound { get; set; }
     [field: SerializeField] public AudioClip firingSound { get; set; }
     [field: SerializeField] public AudioClip defeatSound { get; set; }
+    [Header("Flash Color")]
+    public Color flashColor = Color.red;
+    public float flashTime = 0.25f;
+    private SpriteRenderer[] sprites;
 
     private void Awake()
     {
@@ -50,6 +55,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         //agent = GetComponent<NavMashAgent>();
         anim = GetComponent<Animator>();
         agent = GetComponentInParent<NavMeshAgent>();
+        sprites = GetComponentsInChildren<SpriteRenderer>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
 
@@ -85,6 +91,33 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         if (agent.velocity.magnitude > 0)
         {
             PlaySound(movementSound, 0.5f);
+        }
+    }
+
+    private IEnumerator DamageFlash()
+    {
+        SetFlashColor(flashColor);
+        float currentFlashAmt = 0f;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < flashTime)
+        {
+            elapsedTime += Time.deltaTime;
+
+            currentFlashAmt = Mathf.Lerp(1f, 0f, (elapsedTime / flashTime));
+
+            yield return new WaitForSeconds(0.5f);
+
+            SetFlashColor(Color.white);
+        }
+    }
+
+    private void SetFlashColor(Color color)
+    {
+        foreach (SpriteRenderer spriteRenderer in sprites)
+        {
+            if (spriteRenderer.gameObject.name != "Pointer")
+                spriteRenderer.color = color;
         }
     }
 
@@ -134,11 +167,12 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
 
     public IEnumerator GotHit()
     {
+        StartCoroutine(nameof(DamageFlash));
         PlaySound(hitSound, 0.15f);
         anim.SetBool("GotHit", true);
         yield return new WaitForSeconds(1f);
         anim.SetBool("GotHit", false);
-        Debug.Log("Set to false");
+        //Debug.Log("Set to false");
     }
 
     private void PlaySound(AudioClip sound, float volume = 1f)

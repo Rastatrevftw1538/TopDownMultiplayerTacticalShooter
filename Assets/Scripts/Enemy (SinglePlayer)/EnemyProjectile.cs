@@ -8,6 +8,7 @@ public class EnemyProjectile : MonoBehaviour
     public float speed;
     public float damage;
     public float projectileLifeTime;
+    private TrailRenderer trailRenderer;
     public List<AudioClip> shootSounds;
 
     public GameObject particles;
@@ -19,13 +20,15 @@ public class EnemyProjectile : MonoBehaviour
     {
         int rand = Random.Range(0, shootSounds.Count);
         if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(shootSounds[rand], transform, 0.05f);
+        trailRenderer = GetComponent<TrailRenderer>();
+        trailRenderer.emitting = true;
         //particleSystem = GetComponent<ParticleSystem>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector2.up * speed * Time.fixedDeltaTime);
+        transform.Translate(Vector2.up * speed * Time.fixedDeltaTime * Time.timeScale);
         lifeTime += Time.deltaTime;
 
         if (lifeTime >= projectileLifeTime)
@@ -38,6 +41,7 @@ public class EnemyProjectile : MonoBehaviour
         {
             PlayerHealthSinglePlayer playerHealth = other.gameObject.GetComponent<PlayerHealthSinglePlayer>();
             playerHealth.TakeDamage(damage);
+            DestroyProjectile();
         }
 
         if (other.gameObject.tag == "Wall")
@@ -56,8 +60,8 @@ public class EnemyProjectile : MonoBehaviour
 
     private void DestroyProjectile()
     {
+        //PlayParticles();
         Destroy(gameObject);
-        PlayParticles();
     }
 
     private void PlayParticles()

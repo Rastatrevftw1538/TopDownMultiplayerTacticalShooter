@@ -11,6 +11,7 @@ public class BPMManager : Singleton<BPMManager>
     public GameObject BPMIndicatorToHit;
     public List<AudioClip> gameSongs = new List<AudioClip>();
     [HideInInspector] public AudioSource audioSource;
+    [HideInInspector] public AudioLowPassFilter filter;
 
     private const float c_MINUTE = 60f;
     private float m_MIN = 0f;
@@ -32,6 +33,8 @@ public class BPMManager : Singleton<BPMManager>
         audioSource.clip = randSong;
         audioSource.Play();
 
+        filter = GetComponent<AudioLowPassFilter>();
+
         BPM = UniBpmAnalyzer.AnalyzeBpm(randSong);
         BPM = BPM/2; //FIXING THE BPM (SOME SONGS WILL BE DIFFERENT)
     }
@@ -51,7 +54,7 @@ public class BPMManager : Singleton<BPMManager>
     public Color canClick = Color.red; //JUST FOR DEBUGGING AND HELPING DESIGNERS VISUALIZE WHEN TO CLICK, WILL TRANSITION INTO MATH
     public void FixedUpdate()
     {
-        percentToBeat += Time.deltaTime;
+        percentToBeat += Time.deltaTime * Time.timeScale;
 
         if (percentToBeat >= BPS)
             percentToBeat = m_MIN;

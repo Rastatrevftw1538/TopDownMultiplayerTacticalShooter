@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.AI;
+using System.Threading.Tasks;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class RangedEnemy : MonoBehaviour, IEnemy
 {
@@ -36,6 +38,10 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     [field: SerializeField] public AudioClip movementSound { get; set; }
     [field: SerializeField] public AudioClip firingSound { get; set; }
     [field: SerializeField] public AudioClip defeatSound { get; set; }
+    [Header("Flash Color")]
+    public Color flashColor = Color.red;
+    public float flashTime = 0.25f;
+    public SpriteRenderer spriteRenderer;
 
     private void Awake()
     {
@@ -106,6 +112,29 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         }
     }
 
+    private IEnumerator DamageFlash()
+    {
+        SetFlashColor(flashColor);
+        float currentFlashAmt = 0f;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < flashTime)
+        {
+            elapsedTime += Time.deltaTime;
+
+            currentFlashAmt = Mathf.Lerp(1f, 0f, (elapsedTime / flashTime));
+
+            yield return new WaitForSeconds(0.5f);
+
+            SetFlashColor(Color.white);
+        }
+    }
+
+    private void SetFlashColor(Color color)
+    {
+        spriteRenderer.color = color;
+    }
+
     private void Attack()
     {
         //PlaySound(firingSound);
@@ -131,6 +160,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     public void TakeDamage(float amount)
     {
         PlaySound(hitSound, 0.15f);
+        StartCoroutine(nameof(DamageFlash));
         //FIRST CHECK IF THE BASE'S HEALTH IS BELOW 0
         if (currentHealth > 0)
             currentHealth -= amount;
@@ -153,7 +183,6 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     {
         if (!SoundFXManager.Instance) return;
             SoundFXManager.Instance.PlaySoundFXClip(sound, transform, volume);
-        Debug.LogError("hit a ranged!");
     }
 
     public List<GameObject> hitDisplays = new List<GameObject>();

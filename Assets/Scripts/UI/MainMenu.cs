@@ -33,17 +33,17 @@ public class MainMenu : MonoBehaviour
 
     public void PlayClickSound()
     {
-        audioSource.PlayOneShot(clickSound, 0.4f);
+        audioSource.PlayOneShot(clickSound, 0.8f);
     }
 
     public void PlayClickPlaySound()
     {
-        audioSource.PlayOneShot(clickSound, 0.4f);
+        audioSource.PlayOneShot(clickSound, 0.8f);
     }
 
     public void PlayHoverSound()
     {
-        audioSource.PlayOneShot(hoverSound, 0.4f);
+        audioSource.PlayOneShot(hoverSound, 0.8f);
     }
 
     public void ReturnToMenu()

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1689190612204667492}
   - component: {fileID: 3513524578336109788}
   - component: {fileID: 2018068236926679293}
+  - component: {fileID: 2970943512982108980}
   m_Layer: 0
   m_Name: BPM Manager
   m_TagString: Untagged
@@ -52,6 +53,8 @@ MonoBehaviour:
   gameSongs:
   - {fileID: 8300000, guid: 4c5681dd823552648a71683c16af6dea, type: 3}
   - {fileID: 8300000, guid: 26364aaf1f64b40c1a047b0bacfbd10e, type: 3}
+  audioSource: {fileID: 0}
+  filter: {fileID: 0}
   BPM: 0
   errorWindow: 0.15
   canClick: {r: 1, g: 0, b: 0, a: 1}
@@ -67,7 +70,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.326
+  m_Volume: 0.45
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -164,3 +167,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   soundFXObject: {fileID: 2294200199544277999, guid: 3b81ebaa073b72f4aac5b69a3e913e43, type: 3}
+--- !u!169 &2970943512982108980
+AudioLowPassFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3513524578336109790}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_LowpassResonanceQ: 1
+  lowpassLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

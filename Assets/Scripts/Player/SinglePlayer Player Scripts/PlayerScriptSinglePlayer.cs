@@ -98,6 +98,8 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
         playerBodyBody = GameObject.Find("PlayerBody - Body").gameObject;
         playerBodyBodySkelSprite = playerBodyBody.transform.GetChild(0).GetComponent<SpriteRenderer>();
         playerBodyHeadSprite = GameObject.Find("Head").gameObject.GetComponent<SpriteRenderer>();
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Start() {
@@ -212,7 +214,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
             if(movement.magnitude > 0)
             {
                 if (fxTimer >= fxCooldown) {
-                    CallSoundFXTerrain();
+                    //CallSoundFXTerrain();
                     fxTimer = 0;
                 }
                 else
@@ -289,9 +291,12 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
         //StateMachine.CurrentState.PhysicsUpdate();
     }
 
+    AudioSource audioSource;
     private void CallSoundFXTerrain()
     {
-        SoundFXManager.Instance.PlaySoundFXClip(GetFootStepAudio(), transform);
+        //SoundFXManager.Instance.PlaySoundFXClip(GetFootStepAudio(), transform);
+        if (!audioSource) return;
+            audioSource.PlayOneShot(GetFootStepAudio());
     }
 
     public void SetVelocity(float x, float y)

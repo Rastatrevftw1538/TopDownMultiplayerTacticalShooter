@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
+using System;
 
 public class WaveManager : Singleton<WaveManager>
 {
@@ -66,12 +67,15 @@ public class WaveManager : Singleton<WaveManager>
         if (firstWave)
         {
             //COMMENT OUT THIS IF STATEMENT IF THIS BUGS OUT
-            if (currentLevel <= levels.Count - 1)
+            if (currentLevel <= levels.Count)
             {
                 StartWave(levels[currentLevel].waves[currentWave]);
+                //StartCoroutine(nameof(WaveBuffer));
                 //Debug.LogError("first wave spawned.");
                 firstWave = false;
-                GetLevelDoor(GameObject.FindGameObjectsWithTag("LevelDoor")[GameObject.FindGameObjectsWithTag("LevelDoor").Length - 1]);
+
+                if(GameObject.FindGameObjectsWithTag("LevelDoor").Length > 0)
+                    GetLevelDoor(GameObject.FindGameObjectsWithTag("LevelDoor")[GameObject.FindGameObjectsWithTag("LevelDoor").Length - 1]);
             }
             //GetLevelDoor(GameObject.FindGameObjectsWithTag("LevelDoor")[GameObject.FindGameObjectsWithTag("LevelDoor").Length - 1]);
         }
@@ -123,10 +127,20 @@ public class WaveManager : Singleton<WaveManager>
          currentLevelDoor.SetActive(set);
     }
 
+    private IEnumerator WaveBuffer()
+    {
+        yield return new WaitForSeconds(spawnInterval);
+        Debug.LogError("Starting Level " + (currentLevel + 1) + ", Wave " + (currentWave + 1));
+        UIManager.Instance.ChangeWaveNumber(currentWave + 1);
+
+        levels[currentLevel].PlaySpawnSound(currentSpawnArea.transform);
+        levels[currentLevel].waves[currentWave].GenerateEnemies(currentSpawnArea);
+    }
+
     public void StartWave(Wave wave)
     {
         //wave = levels[currentLevel - 1].waves[currentWave - 1];
-        Debug.LogError("Starting Level " + (currentLevel+1) + ", Wave " + (currentWave+1));
+        Debug.LogError("Starting Level " + (currentLevel + 1) + ", Wave " + (currentWave + 1));
         UIManager.Instance.ChangeWaveNumber(currentWave + 1);
 
         levels[currentLevel].PlaySpawnSound(currentSpawnArea.transform);
@@ -148,8 +162,14 @@ public class WaveManager : Singleton<WaveManager>
     public void GetLevelDoor(GameObject levelDoor)
     {
         //levels[currentLevel].levelDoor = levelDoor;
-        if(GameObject.FindGameObjectsWithTag("LevelDoor")[GameObject.FindGameObjectsWithTag("LevelDoor").Length - 1] != null)
+        try
+        {
             currentLevelDoor = GameObject.FindGameObjectsWithTag("LevelDoor")[GameObject.FindGameObjectsWithTag("LevelDoor").Length - 1];
+        }
+        catch (Exception ex)
+        {
+            Debug.LogException(ex, this);
+        }
     }
 
     public void ResetWaveData()
