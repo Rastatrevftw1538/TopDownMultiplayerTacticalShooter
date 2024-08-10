@@ -130,7 +130,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     private float timeSinceLastShot;
     public void TakeDamage(float amount)
     {
-        PlaySound(hitSound);
+        PlaySound(hitSound, 0.2f);
         //FIRST CHECK IF THE BASE'S HEALTH IS BELOW 0
         if (currentHealth > 0)
             currentHealth -= amount;
@@ -153,6 +153,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     {
         if (!SoundFXManager.Instance) return;
             SoundFXManager.Instance.PlaySoundFXClip(sound, transform, volume);
+        Debug.LogError("hit a ranged!");
     }
 
     public List<GameObject> hitDisplays = new List<GameObject>();
@@ -207,7 +208,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         isAlive = false;
         //this.transform.parent.gameObject.SetActive(false);
         //Respawn(respawnTime);
-        PlaySound(defeatSound);
+        PlaySound(defeatSound, 0.4f);
         Destroy(this.transform.parent.gameObject);
 
        if(WaveManager.Instance) WaveManager.Instance.enemiesKilled++;

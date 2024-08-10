@@ -290,7 +290,7 @@ public class WeaponSinglePlayer : MonoBehaviour
         }
 
         trailRender.SetTargetPosition(collisionPoint);
-        if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(weaponSpecs.shootSound, transform, 0.3f);
+        if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(weaponSpecs.shootSound, transform, 0.15f);
         //Debug.Log("Bullet Fired Client " + collisionPoint + " direction " + spreadDirection);
     }
 

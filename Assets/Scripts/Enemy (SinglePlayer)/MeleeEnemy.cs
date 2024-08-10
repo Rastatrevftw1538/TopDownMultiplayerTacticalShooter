@@ -134,7 +134,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
 
     public IEnumerator GotHit()
     {
-        PlaySound(hitSound);
+        PlaySound(hitSound, 0.2f);
         anim.SetBool("GotHit", true);
         yield return new WaitForSeconds(1f);
         anim.SetBool("GotHit", false);
@@ -149,7 +149,6 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
 
     public void TakeDamage(float amount)
     {
-        PlaySound(hitSound);
         StartCoroutine(nameof(GotHit));
         //FIRST CHECK IF THE BASE'S HEALTH IS BELOW 0
         if (currentHealth > 0)
@@ -166,10 +165,6 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         //SLOW ENEMY
 
         //FLASH COLOR ENEMY
-
-        //PLAY HIT SOUND
-        if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(hitSound, transform, 1f);
-
     }
 
     public List<GameObject> hitDisplays = new List<GameObject>();
@@ -221,7 +216,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     {
         DropOnDeath();
 
-        PlaySound(defeatSound);
+        PlaySound(defeatSound, 0.4f);
         isAlive = false;
         //this.transform.parent.gameObject.SetActive(false);
         //Respawn(respawnTime);
