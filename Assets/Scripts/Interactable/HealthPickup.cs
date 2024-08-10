@@ -6,6 +6,7 @@ public class HealthPickup : MonoBehaviour, IInteractable
 {
     [Header("Health Stats")]
     public float addHealth;
+    public AudioClip pickupSound;
 
     [Header("Float Speed & Height")]
     public float floatSpeed;
@@ -19,6 +20,7 @@ public class HealthPickup : MonoBehaviour, IInteractable
 
     public void Interact()
     {
+        if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(pickupSound, transform);
         player.AddHealth(addHealth);
         Debug.LogError("Picked up health.");
         Destroy(gameObject);

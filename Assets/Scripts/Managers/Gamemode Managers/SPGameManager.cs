@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 public class SPGameManager : Singleton<SPGameManager>
 {
     public int currentLevel;
+    public AudioClip defeatSound;
     //public List<Level> levels = new List<Level>();
 
     private void Awake()

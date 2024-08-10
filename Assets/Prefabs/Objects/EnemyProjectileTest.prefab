@@ -118,6 +118,9 @@ MonoBehaviour:
   speed: 1.5
   damage: 10
   projectileLifeTime: 2
+  shootSounds:
+  - {fileID: 8300000, guid: d976eb466e232cb45987fd1ca8db20b8, type: 3}
+  - {fileID: 8300000, guid: 72b281817f4c63a428bda1a48f5ff021, type: 3}
   particles: {fileID: 2837609728858217907, guid: 30538aa757d5768459b127b9b70d4362, type: 3}
 --- !u!1001 &3464921503617304699
 PrefabInstance:

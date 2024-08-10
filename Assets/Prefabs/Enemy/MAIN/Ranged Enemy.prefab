@@ -146,10 +146,10 @@ MonoBehaviour:
   isAlive: 1
   canHit: 1
   hitDisplaySeconds: 0
-  <hitSound>k__BackingField: {fileID: 0}
+  <hitSound>k__BackingField: {fileID: 8300000, guid: da44d3e50635d2a47b49c214f406b8f7, type: 3}
   <movementSound>k__BackingField: {fileID: 0}
-  <firingSound>k__BackingField: {fileID: 0}
-  <defeatSound>k__BackingField: {fileID: 0}
+  <firingSound>k__BackingField: {fileID: 8300000, guid: 72b281817f4c63a428bda1a48f5ff021, type: 3}
+  <defeatSound>k__BackingField: {fileID: 8300000, guid: bcdaf08509ea36d4cbd1435cdb1e11b3, type: 3}
   hitDisplays: []
 --- !u!50 &2656607692588302123
 Rigidbody2D:

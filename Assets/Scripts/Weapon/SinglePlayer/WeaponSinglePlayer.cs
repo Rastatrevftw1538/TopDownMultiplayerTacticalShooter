@@ -193,10 +193,9 @@ public class WeaponSinglePlayer : MonoBehaviour
     {
         RaycastHit2D[] hits;
         hits = Physics2D.RaycastAll(firePoint.position, direction, fireRange, targetLayers);
-        RaycastHit2D hit = new RaycastHit2D();
-        hit.point = firePoint.position;
 
         Vector3 spreadDirection = direction;
+        RaycastHit2D hit = new RaycastHit2D();
 
         string whatWasHit = "";
         bool hitWall = false;
@@ -240,6 +239,7 @@ public class WeaponSinglePlayer : MonoBehaviour
                     break;
             }
         }
+
         endPoint = hit.point;
         RpcOnFire(hit, spreadDirection, endPoint, whatWasHit, onBeat);
     }

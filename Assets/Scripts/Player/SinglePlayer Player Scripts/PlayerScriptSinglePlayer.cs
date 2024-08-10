@@ -291,7 +291,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
 
     private void CallSoundFXTerrain()
     {
-        SoundFXManager.Instance.PlaySoundFXClip(GetFootStepAudio(), transform , 0.4f);
+        SoundFXManager.Instance.PlaySoundFXClip(GetFootStepAudio(), transform);
     }
 
     public void SetVelocity(float x, float y)

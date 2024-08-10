@@ -8,6 +8,7 @@ public class EnemyProjectile : MonoBehaviour
     public float speed;
     public float damage;
     public float projectileLifeTime;
+    public List<AudioClip> shootSounds;
 
     public GameObject particles;
 
@@ -16,6 +17,8 @@ public class EnemyProjectile : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        int rand = Random.Range(0, shootSounds.Count);
+        if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(shootSounds[rand], transform, 0.1f);
         //particleSystem = GetComponent<ParticleSystem>();
     }
 

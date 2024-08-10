@@ -179,10 +179,10 @@ MonoBehaviour:
   isAlive: 1
   canHit: 1
   hitDisplaySeconds: 0
-  <hitSound>k__BackingField: {fileID: 0}
+  <hitSound>k__BackingField: {fileID: 8300000, guid: 1632bb2757c1434418a2d330b0b26f5e, type: 3}
   <movementSound>k__BackingField: {fileID: 0}
   <firingSound>k__BackingField: {fileID: 0}
-  <defeatSound>k__BackingField: {fileID: 0}
+  <defeatSound>k__BackingField: {fileID: 8300000, guid: bcdaf08509ea36d4cbd1435cdb1e11b3, type: 3}
   hitDisplays: []
 --- !u!61 &5221447582837671121
 BoxCollider2D:
