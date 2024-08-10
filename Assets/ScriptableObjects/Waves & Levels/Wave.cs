@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 using UnityEngine.Assertions.Must;
-using System.Diagnostics.Eventing.Reader;
 
 [CreateAssetMenu(fileName = "Wave", menuName = "Levels and Waves/Wave")]
 public class Wave : ScriptableObject
@@ -37,6 +36,7 @@ public class Wave : ScriptableObject
             {
                 int rando = Random.Range(0, spawnAreas.transform.childCount);
                 GameObject currentSpawn = spawnAreas.transform.GetChild(rando).gameObject;
+                
                 //_spawnedEnemies.Add(Instantiate(_enemies[randEnemyId].enemyPrefab, currentSpawn.transform));
                 _generatedEnemies.Add(_enemies[randEnemyId].enemyPrefab);
                 //Debug.LogError("there are now" + _amtEnemies);

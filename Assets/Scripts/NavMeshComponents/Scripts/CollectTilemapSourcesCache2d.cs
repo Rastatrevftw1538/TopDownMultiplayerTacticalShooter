@@ -27,6 +27,7 @@ namespace NavMeshPlus.Extensions
             base.Awake();
         }
 
+        /*
         private void OnTilemapTileChanged(Tilemap tilemap, Tilemap.SyncTile[] syncTiles)
         {
             if (tilemap == _tilemap)
@@ -50,7 +51,7 @@ namespace NavMeshPlus.Extensions
                     }
                 }
             }
-        }
+        }*/
 
         public AsyncOperation UpdateNavMesh(NavMeshData data)
         {
@@ -75,13 +76,13 @@ namespace NavMeshPlus.Extensions
                     _lookup[position] = i;
                 }
             }
-            Tilemap.tilemapTileChanged -= OnTilemapTileChanged;
-            Tilemap.tilemapTileChanged += OnTilemapTileChanged;
+            //Tilemap.tilemapTileChanged -= OnTilemapTileChanged;
+            //Tilemap.tilemapTileChanged += OnTilemapTileChanged;
         }
 
         protected override void OnDestroy()
         {
-            Tilemap.tilemapTileChanged -= OnTilemapTileChanged;
+            //Tilemap.tilemapTileChanged -= OnTilemapTileChanged;
             base.OnDestroy();
         }
     }

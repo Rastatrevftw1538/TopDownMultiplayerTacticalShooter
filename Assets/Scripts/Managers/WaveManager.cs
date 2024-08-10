@@ -137,6 +137,23 @@ public class WaveManager : Singleton<WaveManager>
         levels[currentLevel].waves[currentWave].GenerateEnemies(currentSpawnArea);
     }
 
+    Animator currentAnim;
+    SpriteRenderer currentSpawnSprite;
+    private IEnumerator PlaySpawnAnim()
+    {
+        currentAnim = currentSpawnArea.GetComponent<Animator>();
+        currentSpawnSprite = currentSpawnArea.GetComponent<SpriteRenderer>();
+
+        if (currentAnim && currentSpawnSprite)
+        {
+            currentAnim.enabled = true;
+            currentAnim.SetTrigger("Played");
+            yield return new WaitForSeconds(1f);
+        }
+        currentSpawnSprite.enabled = false;
+        currentAnim.enabled = false;
+    }
+
     public void StartWave(Wave wave)
     {
         //wave = levels[currentLevel - 1].waves[currentWave - 1];

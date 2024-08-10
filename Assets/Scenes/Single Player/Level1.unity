@@ -156,6 +156,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 522ec6d3d53b112498ee0e2929c14121, type: 2}
   - {fileID: 0}
   currentSpawnArea: {fileID: 0}
+  currentLevelDoor: {fileID: 0}
   currentWave: 0
   spawnInterval: 0
   enemiesKilled: 0
