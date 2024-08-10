@@ -21,6 +21,7 @@ public class BulletScript : MonoBehaviour
     {
         _progress += Time.deltaTime * _bulletSpeed;
         transform.position = Vector3.Lerp(_startPosition,_targetPosition,_progress);
+        //transform.position = Vector3.MoveTowards(_startPosition, _targetPosition, _progress);
     }
 
     public void SetTargetPosition(Vector3 targetPosition){

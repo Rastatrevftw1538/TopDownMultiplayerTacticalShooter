@@ -108,7 +108,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
 
     private void Attack()
     {
-        PlaySound(firingSound);
+        //PlaySound(firingSound);
         Instantiate(projectile, transform.position, transform.rotation);
         shotCooldown = startShotCooldown;
     }
@@ -152,7 +152,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     private void PlaySound(AudioClip sound, float volume = 1f)
     {
         if (!SoundFXManager.Instance) return;
-            SoundFXManager.Instance.PlaySoundFXClip(sound, transform, 1f);
+            SoundFXManager.Instance.PlaySoundFXClip(sound, transform, volume);
     }
 
     public List<GameObject> hitDisplays = new List<GameObject>();

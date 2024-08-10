@@ -134,6 +134,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
 
     public IEnumerator GotHit()
     {
+        PlaySound(hitSound);
         anim.SetBool("GotHit", true);
         yield return new WaitForSeconds(1f);
         anim.SetBool("GotHit", false);
@@ -143,7 +144,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     private void PlaySound(AudioClip sound, float volume = 1f)
     {
         if (!SoundFXManager.Instance) return;
-        SoundFXManager.Instance.PlaySoundFXClip(sound, transform, 1f);
+        SoundFXManager.Instance.PlaySoundFXClip(sound, transform, volume);
     }
 
     public void TakeDamage(float amount)
@@ -218,7 +219,6 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
 
     void RpcDie()
     {
-
         DropOnDeath();
 
         PlaySound(defeatSound);

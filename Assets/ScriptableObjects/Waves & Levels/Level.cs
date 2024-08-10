@@ -34,6 +34,6 @@ public class Level : ScriptableObject
     public void PlaySpawnSound(Transform where)
     {
         if (!SoundFXManager.Instance || !spawnSound) return;
-        SoundFXManager.Instance.PlaySoundFXClip(spawnSound, where, 0.3f);
+        SoundFXManager.Instance.PlaySoundFXClip(spawnSound, where);
     }
 }

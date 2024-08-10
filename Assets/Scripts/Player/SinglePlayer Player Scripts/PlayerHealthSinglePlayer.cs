@@ -75,9 +75,8 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
     public void TakeDamage(float amount)
     {
         if (!canHit) return;
-        //CHECK IF THE DAMAGE PASSED IN WAS NEGATIVE, IF IT WAS, THIS FUNCTION WILL ADD HEALTH INSTEAD
-        amount = 
-            amount > 0 ? amount : amount * -1;
+
+        PlaySound(gotHitAudio);
 
         //subtract health
         currentHealth -= amount;
@@ -153,12 +152,20 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
     }
     void RpcDie()
     {
+        PlaySound(diedAudio);
         // Stop player movement
         SetPlayerWep(false);
         isAlive = false;
 
         if(UIManager.Instance) UIManager.Instance.ShowDefeat();
     }
+
+    private void PlaySound(AudioClip sound, float volume = 1f)
+    {
+        if (!SoundFXManager.Instance) return;
+        SoundFXManager.Instance.PlaySoundFXClip(sound, transform, volume);
+    }
+
     private void RestoreHealth()
     {
         currentHealth = maxHealth;
