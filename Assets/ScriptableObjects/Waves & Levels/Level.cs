@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 public class Level : ScriptableObject
 {
     public List<Wave> waves = new List<Wave>();
-    public GameObject levelDoor;
     [SerializeField] private AudioClip spawnSound;
     private bool _isCompleted;
 
@@ -20,11 +19,6 @@ public class Level : ScriptableObject
     public void StartLevel(Wave wave, GameObject spawnArea)
     {
         wave.GenerateEnemies(spawnArea);
-    }
-
-    public void SetLevelDoor(bool set)
-    {
-        levelDoor.SetActive(set);
     }
 
     public void SetLevelCompletion(bool set)

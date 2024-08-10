@@ -169,9 +169,17 @@ public class WeaponSinglePlayer : MonoBehaviour
         RpcFire(direction);
     }
 
+    BPMManager bpmManager;
     private bool CheckBPM()
     {
-        if (BPMManager.instance.CanClick())
+        if(!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
+        /*if (BPMManager.Instance.CanClick())
+        {
+            onBeat = true;
+            return true;
+        }*/
+
+        if (bpmManager.CanClick())
         {
             onBeat = true;
             return true;
