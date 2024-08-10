@@ -287,10 +287,14 @@ public class WeaponSinglePlayer : MonoBehaviour
             //some camera shake stuff (unoptimized)
             //camera shake
             StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.1f, 0.2f));
+            if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(weaponSpecs.shootOnBeatSound, transform, 0.2f);
+        }
+        else
+        {
+            if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(weaponSpecs.shootSound, transform, 0.1f);
         }
 
         trailRender.SetTargetPosition(collisionPoint);
-        if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(weaponSpecs.shootSound, transform, 0.15f);
         //Debug.Log("Bullet Fired Client " + collisionPoint + " direction " + spreadDirection);
     }
 

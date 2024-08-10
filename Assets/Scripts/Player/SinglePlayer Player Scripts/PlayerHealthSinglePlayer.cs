@@ -62,6 +62,11 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
         currentHealth = maxHealth;
     }
 
+    private void Start()
+    {
+        PlaySound(spawnAudio, 0.4f);
+    }
+
     public void AddHealth(float amount)
     {
         if (currentHealth + amount > maxHealth)
@@ -97,7 +102,7 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
         Invoke(nameof(SetCanHitTrue), iFrames);
 
         //camera shake
-        StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.1f, 0.5f));
+        StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.1f, 0.35f));
 
         SetFlashColor(flashColor);
         float currentFlashAmt = 0f;

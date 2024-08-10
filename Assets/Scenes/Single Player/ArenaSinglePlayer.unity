@@ -1305,7 +1305,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentLevel: 0
-  defeatSound: {fileID: 0}
 --- !u!114 &1397416014
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1322,6 +1321,8 @@ MonoBehaviour:
   pointsDisplay: {fileID: 32184434}
   victoryScreen: {fileID: 1470474906}
   defeatScreen: {fileID: 42477846}
+  defeatSound: {fileID: 8300000, guid: 49191071449c1324fa8bf62bd9ebdb05, type: 3}
+  victorySound: {fileID: 8300000, guid: db6d136f2edd9a34b86e9894645fe7f3, type: 3}
   points: 0
   waveFlashes: 4
   waveFlashLength: 0.3
@@ -2388,7 +2389,7 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1397416014}
     - target: {fileID: 6792028653403643439, guid: a231c0a9609a55242a2aaac5efef2eda, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
       objectReference: {fileID: 1397416014}
     - target: {fileID: 9129029303077794572, guid: a231c0a9609a55242a2aaac5efef2eda, type: 3}
@@ -2488,7 +2489,7 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1397416014}
     - target: {fileID: 9129029304175451275, guid: a231c0a9609a55242a2aaac5efef2eda, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
       objectReference: {fileID: 1397416014}
     m_RemovedComponents: []

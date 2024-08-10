@@ -11,6 +11,8 @@ public class UIManager : Singleton<UIManager>
     public TextMeshProUGUI pointsDisplay;
     public GameObject victoryScreen;
     public GameObject defeatScreen;
+    public AudioClip defeatSound;
+    public AudioClip victorySound;
 
     public float points;
 
@@ -71,17 +73,27 @@ public class UIManager : Singleton<UIManager>
         pointsDisplay.text = points.ToString();
     }
 
+    BPMManager bpmManager;
     public void ShowDefeat()
     {
         //if (WaveManager.Instance != null)
         //    WaveManager.Instance.ResetWaveData();
+        if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
+        bpmManager.audioSource.Stop();
 
         Cursor.visible = true;
         SetPoints(0);
-
+        if (BPMManager.Instance) BPMManager.Instance.audioSource.Stop();
+        PlaySound(defeatSound, 0.3f);
         defeatScreen.SetActive(true);
         StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.0f, 0.0f));
         Time.timeScale = 0.0f;
+    }
+
+    private void PlaySound(AudioClip sound, float volume = 1f)
+    {
+        if (!SoundFXManager.Instance || !sound) return;
+        SoundFXManager.Instance.PlaySoundFXClip(sound, transform, volume);
     }
 
     public void ShowVictory()
@@ -92,9 +104,12 @@ public class UIManager : Singleton<UIManager>
     
         }*/
 
+        if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
+        bpmManager.audioSource.Stop();
+
         Cursor.visible = true;
         SetPoints(0);
-
+        PlaySound(victorySound, 0.3f);
         victoryScreen.SetActive(true);
         StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.0f, 0.0f));
         Time.timeScale = 0.0f;
@@ -120,12 +135,18 @@ public class UIManager : Singleton<UIManager>
         if (PlayerScriptSinglePlayer.Instance != null)
             Destroy(PlayerScriptSinglePlayer.Instance.gameObject);
 
+        if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
+        if(bpmManager) Destroy(bpmManager.gameObject);
+
         if (this.gameObject != null)
             Destroy(this.gameObject);
     }
 
     public void ReturnToMainMenu()
     {
+        if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
+        if(bpmManager) bpmManager.audioSource.Play();
+
         Time.timeScale = 1.0f;
         foreach (Scene sceneLoaded in SceneManager.GetAllScenes())
             SceneManager.UnloadSceneAsync(sceneLoaded);
@@ -139,6 +160,8 @@ public class UIManager : Singleton<UIManager>
 
     public void ResetScene()
     {
+        if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
+        if (bpmManager) bpmManager.audioSource.Play();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

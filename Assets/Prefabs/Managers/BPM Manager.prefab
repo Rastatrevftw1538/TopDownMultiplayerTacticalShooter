@@ -51,7 +51,7 @@ MonoBehaviour:
   BPMIndicatorToHit: {fileID: 0}
   gameSongs:
   - {fileID: 8300000, guid: 4c5681dd823552648a71683c16af6dea, type: 3}
-  - {fileID: 8300000, guid: 4c5681dd823552648a71683c16af6dea, type: 3}
+  - {fileID: 8300000, guid: 26364aaf1f64b40c1a047b0bacfbd10e, type: 3}
   BPM: 0
   errorWindow: 0.15
   canClick: {r: 1, g: 0, b: 0, a: 1}

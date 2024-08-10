@@ -10,7 +10,7 @@ public class BPMManager : Singleton<BPMManager>
     public GameObject BPMIndicatorProgress;
     public GameObject BPMIndicatorToHit;
     public List<AudioClip> gameSongs = new List<AudioClip>();
-    private AudioSource audioSource;
+    [HideInInspector] public AudioSource audioSource;
 
     private const float c_MINUTE = 60f;
     private float m_MIN = 0f;

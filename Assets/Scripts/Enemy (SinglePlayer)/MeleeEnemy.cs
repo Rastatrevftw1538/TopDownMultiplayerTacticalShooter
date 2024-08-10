@@ -134,7 +134,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
 
     public IEnumerator GotHit()
     {
-        PlaySound(hitSound, 0.2f);
+        PlaySound(hitSound, 0.15f);
         anim.SetBool("GotHit", true);
         yield return new WaitForSeconds(1f);
         anim.SetBool("GotHit", false);
@@ -216,7 +216,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     {
         DropOnDeath();
 
-        PlaySound(defeatSound, 0.4f);
+        PlaySound(defeatSound, 0.1f);
         isAlive = false;
         //this.transform.parent.gameObject.SetActive(false);
         //Respawn(respawnTime);

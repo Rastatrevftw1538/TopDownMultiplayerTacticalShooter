@@ -8,6 +8,7 @@ public class WeaponDataSP : ScriptableObject
     //public float[] shootSound;
     //public float[] reloadSound;
     public AudioClip shootSound;
+    public AudioClip shootOnBeatSound;
     public AudioClip reloadSound;
     public int damagePerBullet;
     public float fireRate;

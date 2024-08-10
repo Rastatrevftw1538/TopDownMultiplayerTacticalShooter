@@ -18,7 +18,7 @@ public class EnemyProjectile : MonoBehaviour
     void Start()
     {
         int rand = Random.Range(0, shootSounds.Count);
-        if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(shootSounds[rand], transform, 0.1f);
+        if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(shootSounds[rand], transform, 0.05f);
         //particleSystem = GetComponent<ParticleSystem>();
     }
 

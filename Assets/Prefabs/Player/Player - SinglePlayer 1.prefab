@@ -310,7 +310,7 @@ MonoBehaviour:
   flashTime: 0.25
   gotHitAudio: {fileID: 8300000, guid: ef27c471c3639284c8d082a1e5bddd89, type: 3}
   diedAudio: {fileID: 8300000, guid: 5193af29c3ecb364bb1f4106ce22d24e, type: 3}
-  spawnAudio: {fileID: 0}
+  spawnAudio: {fileID: 8300000, guid: e7e033f3b37103e4e9ad2310bb9a9c17, type: 3}
 --- !u!114 &1394335429370971273
 MonoBehaviour:
   m_ObjectHideFlags: 0
