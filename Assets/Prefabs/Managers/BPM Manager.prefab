@@ -49,6 +49,9 @@ MonoBehaviour:
   BPMIndicatorBar: {fileID: 0}
   BPMIndicatorProgress: {fileID: 0}
   BPMIndicatorToHit: {fileID: 0}
+  gameSongs:
+  - {fileID: 8300000, guid: 4c5681dd823552648a71683c16af6dea, type: 3}
+  - {fileID: 8300000, guid: 34dfa87a85550264288badb4ea7fe639, type: 3}
   BPM: 0
   errorWindow: 0.15
   canClick: {r: 1, g: 0, b: 0, a: 1}
@@ -62,16 +65,16 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 4c5681dd823552648a71683c16af6dea, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.075
+  m_Volume: 0.326
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
-  DopplerLevel: 1
+  DopplerLevel: 1.31
   MinDistance: 1
   MaxDistance: 500
   Pan2D: 0

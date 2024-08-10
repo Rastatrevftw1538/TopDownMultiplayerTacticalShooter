@@ -15,7 +15,7 @@ public class SPGameManager : Singleton<SPGameManager>
     }
     private void Start()
     {
-
+        
     }
     private void StartLevel()
     {

@@ -9,6 +9,7 @@ public class WaveManager : Singleton<WaveManager>
     [Header("Levels")]
     public List<Level> levels = new List<Level>();
     public GameObject currentSpawnArea;
+    public GameObject currentLevelDoor;
 
     [Header("Wave Statistics")]
     public int currentWave;
@@ -64,9 +65,15 @@ public class WaveManager : Singleton<WaveManager>
 
         if (firstWave)
         {
-            StartWave(levels[currentLevel].waves[currentWave]);
-            //Debug.LogError("first wave spawned.");
-            firstWave = false;
+            //COMMENT OUT THIS IF STATEMENT IF THIS BUGS OUT
+            if (currentLevel <= levels.Count - 1)
+            {
+                StartWave(levels[currentLevel].waves[currentWave]);
+                //Debug.LogError("first wave spawned.");
+                firstWave = false;
+                GetLevelDoor(GameObject.FindGameObjectsWithTag("LevelDoor")[GameObject.FindGameObjectsWithTag("LevelDoor").Length - 1]);
+            }
+            //GetLevelDoor(GameObject.FindGameObjectsWithTag("LevelDoor")[GameObject.FindGameObjectsWithTag("LevelDoor").Length - 1]);
         }
 
         //Debug.LogError(levels[currentLevel].waves.Count);
@@ -105,16 +112,15 @@ public class WaveManager : Singleton<WaveManager>
             currentLevel++;
             currentWave = 0;
             Debug.LogError("Completed this level...");
-            firstWave = true;
             SetLevelDoor(false);
+            firstWave = true;
             //SPGameManager.Instance.EndedLevel();
         }
     }
 
     public void SetLevelDoor(bool set)
     {
-        if(levels[currentLevel].levelDoor != null)
-            levels[currentLevel].levelDoor.SetActive(set);
+         currentLevelDoor.SetActive(set);
     }
 
     public void StartWave(Wave wave)
@@ -141,7 +147,9 @@ public class WaveManager : Singleton<WaveManager>
 
     public void GetLevelDoor(GameObject levelDoor)
     {
-        levels[currentLevel].levelDoor = levelDoor;
+        //levels[currentLevel].levelDoor = levelDoor;
+        if(GameObject.FindGameObjectsWithTag("LevelDoor")[GameObject.FindGameObjectsWithTag("LevelDoor").Length - 1] != null)
+            currentLevelDoor = GameObject.FindGameObjectsWithTag("LevelDoor")[GameObject.FindGameObjectsWithTag("LevelDoor").Length - 1];
     }
 
     public void ResetWaveData()

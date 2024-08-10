@@ -3,26 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sanford.Multimedia.Midi;
 
-public class BPMManager : MonoBehaviour
+public class BPMManager : Singleton<BPMManager>
 {
     [Header("BPM Indicator")]
     public GameObject BPMIndicatorBar;
     public GameObject BPMIndicatorProgress;
     public GameObject BPMIndicatorToHit;
-    private AudioClip gameSong;
-    private static BPMManager _instance;
-
-    public static BPMManager instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                Debug.LogError("No Instance of BPM Manager");
-            }
-            return _instance;
-        }
-    }
+    public List<AudioClip> gameSongs = new List<AudioClip>();
+    private AudioSource audioSource;
 
     private const float c_MINUTE = 60f;
     private float m_MIN = 0f;
@@ -37,10 +25,14 @@ public class BPMManager : MonoBehaviour
 
     private void Awake()
     {
-        _instance = this;
-       // gameSong = GameObject.Find("Audio Manager").GetComponent<AudioSource>().clip;
-        gameSong = GetComponent<AudioSource>().clip;
-        BPM = UniBpmAnalyzer.AnalyzeBpm(gameSong);
+        // gameSong = GameObject.Find("Audio Manager").GetComponent<AudioSource>().clip;
+        AudioClip randSong = gameSongs[Random.Range(0, gameSongs.Count)];
+
+        audioSource = GetComponent<AudioSource>();
+        audioSource.clip = randSong;
+        audioSource.Play();
+
+        BPM = UniBpmAnalyzer.AnalyzeBpm(randSong);
         BPM = BPM/2; //FIXING THE BPM (SOME SONGS WILL BE DIFFERENT)
     }
 

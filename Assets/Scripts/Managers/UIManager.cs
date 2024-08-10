@@ -76,7 +76,12 @@ public class UIManager : Singleton<UIManager>
         //if (WaveManager.Instance != null)
         //    WaveManager.Instance.ResetWaveData();
 
+        Cursor.visible = true;
+        SetPoints(0);
+
         defeatScreen.SetActive(true);
+        StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.0f, 0.0f));
+        Time.timeScale = 0.0f;
     }
 
     public void ShowVictory()
@@ -86,9 +91,13 @@ public class UIManager : Singleton<UIManager>
             WaveManager.Instance.ResetWaveData();
     
         }*/
+
+        Cursor.visible = true;
         SetPoints(0);
 
         victoryScreen.SetActive(true);
+        StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.0f, 0.0f));
+        Time.timeScale = 0.0f;
     }
 
     public void SetWaveDisplay(bool set)
@@ -98,6 +107,7 @@ public class UIManager : Singleton<UIManager>
 
     public void ResetSingletons()
     {
+        Time.timeScale = 1.0f;
         if (SPGameManager.Instance != null)
             Destroy(SPGameManager.Instance.gameObject);
 
@@ -116,7 +126,8 @@ public class UIManager : Singleton<UIManager>
 
     public void ReturnToMainMenu()
     {
-        foreach(Scene sceneLoaded in SceneManager.GetAllScenes())
+        Time.timeScale = 1.0f;
+        foreach (Scene sceneLoaded in SceneManager.GetAllScenes())
             SceneManager.UnloadSceneAsync(sceneLoaded);
 
         SceneManager.LoadSceneAsync("MainMenuSP", LoadSceneMode.Single);
