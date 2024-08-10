@@ -9,7 +9,8 @@ public class BPMManager : MonoBehaviour
     public GameObject BPMIndicatorBar;
     public GameObject BPMIndicatorProgress;
     public GameObject BPMIndicatorToHit;
-    private AudioClip gameSong;
+    public List<AudioClip> gameSongs = new List<AudioClip>();
+    private AudioSource audioSource;
     private static BPMManager _instance;
 
     public static BPMManager instance
@@ -38,9 +39,14 @@ public class BPMManager : MonoBehaviour
     private void Awake()
     {
         _instance = this;
-       // gameSong = GameObject.Find("Audio Manager").GetComponent<AudioSource>().clip;
-        gameSong = GetComponent<AudioSource>().clip;
-        BPM = UniBpmAnalyzer.AnalyzeBpm(gameSong);
+        // gameSong = GameObject.Find("Audio Manager").GetComponent<AudioSource>().clip;
+        AudioClip randSong = gameSongs[Random.Range(0, gameSongs.Count)];
+
+        audioSource = GetComponent<AudioSource>();
+        audioSource.clip = randSong;
+        audioSource.Play();
+
+        BPM = UniBpmAnalyzer.AnalyzeBpm(randSong);
         BPM = BPM/2; //FIXING THE BPM (SOME SONGS WILL BE DIFFERENT)
     }
 

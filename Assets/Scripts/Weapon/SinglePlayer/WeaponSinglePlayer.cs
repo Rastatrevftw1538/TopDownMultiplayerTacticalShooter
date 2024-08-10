@@ -195,7 +195,7 @@ public class WeaponSinglePlayer : MonoBehaviour
         //IF THE BULLET DOESN'T HIT ANYTHING...
         if (hits.Length <= 0)
         {
-            Debug.LogError("hit nothing...");
+            //Debug.LogError("hit nothing...");
             endPoint = firePoint.position + (spreadDirection * fireRange);
             RpcOnFire(hit, spreadDirection, endPoint, whatWasHit, onBeat);
             return;
