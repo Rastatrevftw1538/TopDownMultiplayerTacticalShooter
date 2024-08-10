@@ -15,7 +15,7 @@ MonoBehaviour:
   shootSound: {fileID: 8300000, guid: a50a36523fd9bae438e65811e5fbba59, type: 3}
   reloadSound: {fileID: 0}
   damagePerBullet: 20
-  fireRate: 0.1
+  fireRate: 0.2
   semiAuto: 1
   fireRange: 20
   numOfBulletsPerShot: 1
