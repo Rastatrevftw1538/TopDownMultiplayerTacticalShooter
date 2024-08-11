@@ -173,7 +173,7 @@ MonoBehaviour:
   respawnTime: 2
   <pointsPerHit>k__BackingField: 30
   healthbarExternal: {fileID: 8616342454603650037}
-  <dropChance>k__BackingField: 20
+  <dropChance>k__BackingField: 5
   <dropObject>k__BackingField: {fileID: 6384325973079197979, guid: ccb46c434963ac649a3a180fece6995a, type: 3}
   _damageTaken: 0
   isAlive: 1
@@ -341,7 +341,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.7216981, g: 0.84065855, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -836,7 +836,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.299, y: 0.837}
+  m_AnchoredPosition: {x: 0.327, y: 0.813}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &8616342455040236670
