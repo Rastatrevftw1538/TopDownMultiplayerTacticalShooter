@@ -3541,26 +3541,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 658205261}
     - target: {fileID: 1689190612204667492, guid: f5277543a39370447b60963d8daa1e7d, type: 3}
-      propertyPath: gameSongs.Array.size
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1689190612204667492, guid: f5277543a39370447b60963d8daa1e7d, type: 3}
-      propertyPath: gameSongs.Array.data[1]
-      value: 
-      objectReference: {fileID: 8300000, guid: bb40ad684d0aa0942a568c413fb71da5, type: 3}
-    - target: {fileID: 1689190612204667492, guid: f5277543a39370447b60963d8daa1e7d, type: 3}
-      propertyPath: gameSongs.Array.data[2]
-      value: 
-      objectReference: {fileID: 8300000, guid: 944d39949e2b6984eb5698155427f58d, type: 3}
-    - target: {fileID: 1689190612204667492, guid: f5277543a39370447b60963d8daa1e7d, type: 3}
-      propertyPath: gameSongs.Array.data[3]
-      value: 
-      objectReference: {fileID: 8300000, guid: b91bb1fbb07977b44a0594440611fbc8, type: 3}
-    - target: {fileID: 1689190612204667492, guid: f5277543a39370447b60963d8daa1e7d, type: 3}
-      propertyPath: gameSongs.Array.data[4]
-      value: 
-      objectReference: {fileID: 8300000, guid: 26364aaf1f64b40c1a047b0bacfbd10e, type: 3}
-    - target: {fileID: 1689190612204667492, guid: f5277543a39370447b60963d8daa1e7d, type: 3}
       propertyPath: gameSongs.Array.data[5]
       value: 
       objectReference: {fileID: 8300000, guid: 34dfa87a85550264288badb4ea7fe639, type: 3}
