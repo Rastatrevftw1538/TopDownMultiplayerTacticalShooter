@@ -91,7 +91,7 @@ public class Wave : ScriptableObject
 
     public void MarkComplete(bool set)
     {
-        Debug.LogError(this.name + " has been set to: " + set);
+        //Debug.LogError(this.name + " has been set to: " + set);
         isComplete = set;
     }
 

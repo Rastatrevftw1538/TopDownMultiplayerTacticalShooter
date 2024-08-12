@@ -285,7 +285,7 @@ public class WeaponSinglePlayer : MonoBehaviour
 
             //some camera shake stuff (unoptimized)
             //camera shake
-            StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.1f, 0.2f));
+            StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.1f, 0.1f));
             if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(weaponSpecs.shootOnBeatSound, transform, 0.2f);
         }
         else

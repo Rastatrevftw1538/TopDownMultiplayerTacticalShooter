@@ -106,12 +106,11 @@ public class UIManager : Singleton<UIManager>
 
         if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
         bpmManager.audioSource.Stop();
-
+        StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.0f, 0.0f));
         Cursor.visible = true;
         SetPoints(0);
         PlaySound(victorySound, 0.3f);
         victoryScreen.SetActive(true);
-        StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.0f, 0.0f));
         Time.timeScale = 0.0f;
     }
 
