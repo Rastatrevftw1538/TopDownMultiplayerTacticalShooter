@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -14,6 +16,7 @@ public class UIManager : Singleton<UIManager>
     public GameObject defeatScreen;
     public AudioClip defeatSound;
     public AudioClip victorySound;
+    public Volume postProcessing;
 
     public float points;
 
@@ -25,6 +28,8 @@ public class UIManager : Singleton<UIManager>
     void Start()
     {
         SetPoints(0f);
+        postProcessing = GetComponent<Volume>();
+        
     }
 
     void FixedUpdate()

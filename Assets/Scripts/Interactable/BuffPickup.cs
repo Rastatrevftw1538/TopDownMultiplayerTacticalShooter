@@ -2,30 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealthPickup : MonoBehaviour, IInteractable
+public class BuffPickup : MonoBehaviour, IInteractable
 {
-    [Header("Health Stats")]
-    public float addHealth;
-    public float points;
+    [Header("Pickup Components & Stats")]
+    public StatusEffectData statusEffect;
     public AudioClip pickupSound;
+    public float points;
 
     [Header("Float Speed & Height")]
     public float floatSpeed;
     public float floatHeight;
+    public void Interact()
+    {
+        if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(pickupSound, transform);
+        player.ApplyEffect(statusEffect);
+        Debug.LogError("Picked up powerup of type: " + statusEffect.Name);
+        if (UIManager.Instance) UIManager.Instance.AddPoints(points);
+        Destroy(gameObject);
+    }
 
     float initialY;
     void Start()
     {
         initialY = transform.position.y;
-    }
-
-    public void Interact()
-    {
-        if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(pickupSound, transform);
-        player.AddHealth(addHealth);
-        //Debug.LogError("Picked up health.");
-        if(UIManager.Instance) UIManager.Instance.AddPoints(points);
-        Destroy(gameObject);
     }
 
     void Update()
@@ -35,12 +34,12 @@ public class HealthPickup : MonoBehaviour, IInteractable
         transform.position = new Vector3(pos.x, newY, pos.z);
     }
 
-    static PlayerHealthSinglePlayer player;
+    static PlayerScriptSinglePlayer player;
     public void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Player")
         {
-            if(!player) player = collision.gameObject.GetComponent<PlayerHealthSinglePlayer>();
+            if (!player) player = collision.gameObject.GetComponent<PlayerScriptSinglePlayer>();
             Interact();
         }
     }

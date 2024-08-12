@@ -412,8 +412,8 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
 
     }
 
-    PlayerHealth playerHealth;
-    Weapon weapon;
+    PlayerHealthSinglePlayer playerHealth;
+    WeaponSinglePlayer weapon;
     public void HandleEffect()
     {
         _currentEffectTime += Time.deltaTime;
@@ -440,7 +440,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
                         Debug.LogError("DOT Effect");
 
                         if (playerHealth == null)
-                            playerHealth = GetComponent<PlayerHealth>();
+                            playerHealth = GetComponent<PlayerHealthSinglePlayer>();
 
                         ApplyDOT(playerHealth);
                     }
@@ -449,7 +449,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
                         Debug.LogError("Weapon Buff");
 
                         if(weapon == null)
-                            weapon = GetComponent<Weapon>();
+                            weapon = GetComponent<WeaponSinglePlayer>();
 
 
                         //SUPER HARD CODED FOR NOWWW, IT'S OKAY
@@ -507,7 +507,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
         }
     }
 
-    public void ApplyDOT(PlayerHealth playerHealthScript)
+    public void ApplyDOT(PlayerHealthSinglePlayer playerHealthScript)
     {
         //CHECK IF YOU WERE TRYING TO HEAL, OR TO DAMAGE
         int posOrNeg = _statusEffectData.isDOT ? -1 : 1;
@@ -516,37 +516,37 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
     }
 
     bool hasApplied;
-    public void ApplyDamageBuff(Weapon weaponScript)
+    public void ApplyDamageBuff(WeaponSinglePlayer weaponScript)
     {
         hasApplied = true;
         weaponScript.damageMultiplier = _statusEffectData.damageBuff;
     }
-    public void ReloadBuff(Weapon weaponScript)
+    public void ReloadBuff(WeaponSinglePlayer weaponScript)
     {
         hasApplied = true;
         weaponScript.reloadTime *= (1 - _statusEffectData.reloadTime);
     }
-    public void FireRateBuff(Weapon weaponScript)
+    public void FireRateBuff(WeaponSinglePlayer weaponScript)
     {
         hasApplied = true;
         weaponScript.fireRate /= _statusEffectData.fireRate;
     }
-    public void FireRangeBuff(Weapon weaponScript)
+    public void FireRangeBuff(WeaponSinglePlayer weaponScript)
     {
         hasApplied = true;
         weaponScript.fireRange *= _statusEffectData.fireRange;
     }
-    public void BulletCountBuff(Weapon weaponScript)
+    public void BulletCountBuff(WeaponSinglePlayer weaponScript)
     {
         hasApplied = true;
         weaponScript.magSize += _statusEffectData.magSize;
     }
-    public void NumOfShotsBuff(Weapon weaponScript)
+    public void NumOfShotsBuff(WeaponSinglePlayer weaponScript)
     {
         hasApplied = true;
         weaponScript.numOfBulletsPerShot = _statusEffectData.numOfBulletsPerShot;
     }
-    public void BonusPointsBuff(Weapon weaponScript)
+    public void BonusPointsBuff(WeaponSinglePlayer weaponScript)
     {
         hasApplied = true;
         weaponScript.bonusPointsPerShot = _statusEffectData.bonusPointsPerShot;
