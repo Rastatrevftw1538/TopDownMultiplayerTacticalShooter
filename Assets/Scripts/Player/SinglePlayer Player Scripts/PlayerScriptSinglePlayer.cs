@@ -388,7 +388,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
     //CALLS IT MULTIPLE TIMES
     private void CmdHandleEffect()
     {
-        Debug.LogError("Calls effect handling");
+        //Debug.LogError("Calls effect handling");
         if(_statusEffectData != null)
             HandleEffect();
     }
@@ -437,18 +437,18 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
 
                     if (_statusEffectData.statusEffectType == StatusEffectTypes.DOT)
                     {
-                        Debug.LogError("DOT Effect");
+                        //Debug.LogError("DOT Effect");
 
                         if (playerHealth == null)
                             playerHealth = GetComponent<PlayerHealthSinglePlayer>();
 
                         ApplyDOT(playerHealth);
                     }
-                    else if(_statusEffectData.statusEffectType == StatusEffectTypes.STRENGTH_BUFF)
+                    else if (_statusEffectData.statusEffectType == StatusEffectTypes.STRENGTH_BUFF)
                     {
-                        Debug.LogError("Weapon Buff");
+                        //Debug.LogError("Weapon Buff");
 
-                        if(weapon == null)
+                        if (weapon == null)
                             weapon = GetComponent<WeaponSinglePlayer>();
 
 
@@ -461,45 +461,47 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
                             {
                                 case "Damage Buff":
                                     ApplyDamageBuff(weapon);
-                                    Debug.LogError("dmg");
+                                    //Debug.LogError("dmg");
                                     break;
                                 case "Bonus Points":
                                     BonusPointsBuff(weapon);
-                                    Debug.LogError("bonus");
+                                    //Debug.LogError("bonus");
                                     break;
                                 case "Bullet Count":
                                     BulletCountBuff(weapon);
-                                    Debug.LogError("BC");
+                                    //Debug.LogError("BC");
                                     break;
                                 case "Fire Range":
                                     FireRangeBuff(weapon);
-                                    Debug.LogError("FRange");
+                                    //Debug.LogError("FRange");
                                     break;
                                 case "Fire Rate":
                                     FireRateBuff(weapon);
-                                    Debug.LogError("Frate");
+                                    //Debug.LogError("Frate");
                                     break;
                                 case "Num of Shots":
                                     NumOfShotsBuff(weapon);
-                                    Debug.LogError("numOf");
+                                    //Debug.LogError("numOf");
                                     break;
                                 case "Reload":
                                     ReloadBuff(weapon);
-                                    Debug.LogError("reload");
+                                    //Debug.LogError("reload");
                                     break;
                                 default:
                                     ApplyDamageBuff(weapon);
-                                    Debug.LogError("DEFAULT");
+                                    //Debug.LogError("DEFAULT");
                                     break;
                             }
                         }
                     }
-                    else if(_statusEffectData.statusEffectType == StatusEffectTypes.MOVEMENT)
+                    else if (_statusEffectData.statusEffectType == StatusEffectTypes.MOVEMENT)
                     {
-                        Debug.LogError("Movement Buff");
+                        //Debug.LogError("Movement Buff");
                     }
                     else
-                        Debug.LogError("nothing?");
+                    {
+                        
+                    }
                 }
 
                 //EvtSystem.EventDispatcher.AddListener<ApplyStatusEffects>(SetStatusEffectData);
@@ -576,7 +578,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
         if (weapon != null)
             weapon.damageMultiplier = 1;
 
-        Debug.LogError("Removed all ongoing status effects on Player: " + gameObject.name);
+        //Debug.LogError("Removed all ongoing status effects on Player: " + gameObject.name);
     }
     private void ClearStatusEffects()
     {
@@ -585,10 +587,10 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
         if (weapon != null)
         {
             weapon.damageMultiplier = 1;
-            Debug.LogError("SET WEAPON DAMAGE BACK TO 1X");
+            //Debug.LogError("SET WEAPON DAMAGE BACK TO 1X");
         }
 
-        Debug.LogError("Removed all ongoing status effects on Player: " + gameObject.name);
+        //Debug.LogError("Removed all ongoing status effects on Player: " + gameObject.name);
     }
     #endregion
 }

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1502816407527625269}
   - component: {fileID: 1502816407527625268}
   - component: {fileID: 1502816407527625271}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: AtkDmg Buff
   m_TagString: Untagged
   m_Icon: {fileID: 0}

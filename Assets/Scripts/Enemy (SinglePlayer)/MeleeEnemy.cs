@@ -23,7 +23,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     [Header("Enemy Components")]
     [SerializeField] private Image healthbarExternal;
     [field: SerializeField] public float dropChance { get; set; }
-    [field: SerializeField] public GameObject dropObject { get; set; }
+    [field: SerializeField] public List<GameObject> dropObjects { get; set; }
 
     [Header("Debug")]
     [SerializeField] private float _damageTaken = 0;
@@ -40,7 +40,8 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     [Header("Flash Color")]
     public Color flashColor = Color.red;
     public float flashTime = 0.25f;
-    private SpriteRenderer[] sprites;
+    private SpriteRenderer sprite;
+    public GameObject healthBar;
     public GameObject defeatParticles;
     public GameObject onBeatDefeatParticles;
     static BPMManager bpmManager;
@@ -59,7 +60,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         //agent = GetComponent<NavMashAgent>();
         anim = GetComponent<Animator>();
         agent = GetComponentInParent<NavMeshAgent>();
-        sprites = GetComponentsInChildren<SpriteRenderer>();
+        sprite = GetComponent<SpriteRenderer>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
 
@@ -96,11 +97,19 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         //transform.up = direction; //ROTATES THE ENEMY TO THE PLAYER 
 
         //attack
-
         if (agent.velocity.magnitude > 0)
         {
             PlaySound(movementSound, 0.5f);
         }
+        CheckFlip(agent.velocity.x);
+    }
+
+    void CheckFlip(float velocity)
+    {
+        if (velocity > 0)
+            sprite.flipX = false;
+        else
+            sprite.flipX = true;
     }
 
     private IEnumerator DamageFlash()
@@ -123,17 +132,14 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
 
     private void SetFlashColor(Color color)
     {
-        foreach (SpriteRenderer spriteRenderer in sprites)
-        {
-            if (spriteRenderer.gameObject.name != "Pointer")
-                spriteRenderer.color = color;
-        }
+        sprite.color = color;
     }
 
     static PlayerHealthSinglePlayer player;
-    void OnTriggerEnter2D(Collider2D other)
+    bool isAttacking;
+    void OnTriggerStay2D(Collider2D other)
     {
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player" && !isAttacking)
         {
             //player.TakeDamage(damage);
             StartCoroutine(nameof(Attack));
@@ -147,11 +153,12 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
 
     private IEnumerator Attack()
     {
+        isAttacking = true;
         anim.SetBool("IsAttacking", true);
         player.TakeDamage(damage);
         yield return new WaitForSeconds(1f);
         anim.SetBool("IsAttacking", false);
-
+        isAttacking = false;
     }
 
     [HideInInspector] public bool dropOnDeath { get; set; }
@@ -250,9 +257,9 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     public void DropOnDeath()
     {
         int randDropProb = Random.Range(0, 100);
-
-        if (randDropProb <= dropChance)
-            Instantiate(dropObject, transform.position, Quaternion.identity);
+        int randDropIdx = Random.Range(0, dropObjects.Count);
+        if (randDropProb <= dropChance && dropObjects[randDropIdx])
+            Instantiate(dropObjects[randDropIdx], transform.position, Quaternion.identity);
     }
 
     void RpcDie()

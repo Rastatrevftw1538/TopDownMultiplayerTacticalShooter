@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6356963789510888940}
   - component: {fileID: 6356963789510888941}
   - component: {fileID: 6356963789510888942}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: AtkSpeed Buff
   m_TagString: Untagged
   m_Icon: {fileID: 0}

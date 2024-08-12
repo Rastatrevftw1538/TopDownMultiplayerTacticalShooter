@@ -17,7 +17,7 @@ MonoBehaviour:
   valueOverTime: 1
   movementPenalty: 0
   tickSpeed: 1
-  activeTime: 10
+  activeTime: 5
   isDOT: 0
   isSlow: 0
   fireRate: 0
