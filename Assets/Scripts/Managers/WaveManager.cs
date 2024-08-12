@@ -163,6 +163,16 @@ public class WaveManager : Singleton<WaveManager>
         return;
     }
 
+    public float GetAmtEnemies()
+    {
+        return levels[currentLevel].waves[currentWave].AmtEnemies();
+    }
+
+    public void UpdateEnemiesLeft()
+    {
+        if (UIManager.Instance) UIManager.Instance.UpdateEnemiesLeft(GetAmtEnemies() - enemiesKilled);
+    }
+
     public IEnumerator StartWaveCO()
     {
         toBuffer = true;
@@ -171,6 +181,7 @@ public class WaveManager : Singleton<WaveManager>
         //wave = levels[currentLevel - 1].waves[currentWave - 1];
         Debug.LogError("Starting Level " + (currentLevel + 1) + ", Wave " + (currentWave + 1));
         UIManager.Instance.ChangeWaveNumber(currentWave + 1);
+        UpdateEnemiesLeft();
 
         levels[currentLevel].PlaySpawnSound(currentSpawnArea.transform);
         levels[currentLevel].waves[currentWave].GenerateEnemies(currentSpawnArea);

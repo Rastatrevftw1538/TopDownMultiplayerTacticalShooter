@@ -239,8 +239,13 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         //Respawn(respawnTime);
         PlaySound(defeatSound, 0.1f);
         Destroy(this.transform.parent.gameObject);
-
-       if(WaveManager.Instance) WaveManager.Instance.enemiesKilled++;
+        UpdateEnemiesKilled();
+    }
+    void UpdateEnemiesKilled()
+    {
+        if (!WaveManager.Instance) return;
+        WaveManager.Instance.enemiesKilled++;
+        WaveManager.Instance.UpdateEnemiesLeft();
     }
 
     private void CheckHealth()

@@ -8,6 +8,7 @@ public class UIManager : Singleton<UIManager>
 {
     [Header("Display/UI")]
     public TextMeshProUGUI waveDisplay;
+    public TextMeshProUGUI enemiesLeftDisplay;
     public TextMeshProUGUI pointsDisplay;
     public GameObject victoryScreen;
     public GameObject defeatScreen;
@@ -37,6 +38,13 @@ public class UIManager : Singleton<UIManager>
 
         waveDisplay.text = "WAVE " + num;
         StartCoroutine(FlashWaveNumber());
+    }
+
+    public void UpdateEnemiesLeft(float num)
+    {
+        if(!enemiesLeftDisplay) return;
+
+        enemiesLeftDisplay.text = "ENEMIES REMAINING: " + num;
     }
 
     IEnumerator FlashWaveNumber()

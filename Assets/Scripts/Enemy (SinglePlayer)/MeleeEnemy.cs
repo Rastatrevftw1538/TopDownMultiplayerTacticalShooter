@@ -257,7 +257,14 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         Destroy(this.transform.parent.gameObject);
 
         //IDEALLY, we move this to the interface
-        if (WaveManager.Instance) WaveManager.Instance.enemiesKilled++;
+        UpdateEnemiesKilled();
+    }
+
+    void UpdateEnemiesKilled()
+    {
+        if (!WaveManager.Instance) return;
+        WaveManager.Instance.enemiesKilled++;
+        WaveManager.Instance.UpdateEnemiesLeft();
     }
 
     private void CheckHealth()
