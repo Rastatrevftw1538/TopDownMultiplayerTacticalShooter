@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 100517533}
   - component: {fileID: 100517534}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 3504161299403921138}
   - component: {fileID: 3301472097780708733}
   - component: {fileID: 3301472097780708732}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: Player Body Skel Rig
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,7 +139,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 2e3360abe99ef004a98e8007f5db0833, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -236,7 +236,7 @@ GameObject:
   - component: {fileID: 5846226510110194707}
   - component: {fileID: 441773623067908071}
   - component: {fileID: 6987677917951702654}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: Player - SinglePlayer 1
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -640,7 +640,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6202192085066518419}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: ShoulderL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -672,7 +672,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6772968614194946542}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: ForearmL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -703,7 +703,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4457268746360605335}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: PlayerBody - Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -738,7 +738,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5487036866552443501}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: PlayerBody - Arms
   m_TagString: PlayerObject
   m_Icon: {fileID: 0}
@@ -772,7 +772,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5757488870445440909}
   - component: {fileID: 8047143506606203623}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: Pointer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -787,7 +787,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2178359208872540517}
   m_LocalRotation: {x: 0, y: 0, z: -1, w: 0}
-  m_LocalPosition: {x: -2.25, y: -2.72, z: 0.21}
+  m_LocalPosition: {x: -2.05, y: -2.72, z: 0.21}
   m_LocalScale: {x: -10.71, y: 3.33, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -855,7 +855,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1506203751415622334}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: ShoulderR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -888,7 +888,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3002991440829592911}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: bone_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -919,7 +919,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3301472097841526400}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: R Calf
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -950,7 +950,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3301472098207762054}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: L Thigh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -982,7 +982,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3301472098694513783}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: Torso
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1016,7 +1016,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3301472099357086013}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: L Calf
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1047,7 +1047,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3301472099463518113}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: Hair
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1078,7 +1078,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3301472099585583644}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: R Thigh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1112,7 +1112,7 @@ GameObject:
   - component: {fileID: 1870727120858981358}
   - component: {fileID: 5451148742923766489}
   - component: {fileID: 6831654324770439277}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1218,7 +1218,7 @@ GameObject:
   m_Component:
   - component: {fileID: 451459844925303329}
   - component: {fileID: 147293653777518440}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: Bullseye!
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1276,7 +1276,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1395519016849471941}
   - component: {fileID: 2227689720742459751}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: AbilityHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1324,7 +1324,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2404376782560623029}
   - component: {fileID: 8051832371979342696}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: HitBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1383,7 +1383,7 @@ GameObject:
   - component: {fileID: 9193829646067266954}
   - component: {fileID: 7591629965137431334}
   - component: {fileID: 3654745219866619404}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: View Visualization
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1466,7 +1466,7 @@ GameObject:
   - component: {fileID: 1003203560322752734}
   - component: {fileID: 4191842508402268720}
   - component: {fileID: 8473200338185416148}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: Player Arm Skel Rig
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1514,7 +1514,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 2e3360abe99ef004a98e8007f5db0833, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1576,7 +1576,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2106101045170016291}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: endOfBarrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1591,7 +1591,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7899599047056028720}
   m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
-  m_LocalPosition: {x: -2.33, y: -1.81, z: 0}
+  m_LocalPosition: {x: -2.13, y: 0.58, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1607,7 +1607,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6872274921789134054}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: ForearmR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1639,7 +1639,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4649625613484993297}
   - component: {fileID: 1516326830}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: Arms and Gun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1722,7 +1722,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3187969038293867604}
-  m_Layer: 2
+  m_Layer: 6
   m_Name: GunBone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1754,6 +1754,10 @@ PrefabInstance:
     - target: {fileID: 1459849101563045517, guid: a73d3a46bd2401943bd49a7f657bf145, type: 3}
       propertyPath: m_Name
       value: Crosshair
+      objectReference: {fileID: 0}
+    - target: {fileID: 1459849101563045517, guid: a73d3a46bd2401943bd49a7f657bf145, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1459849101563045518, guid: a73d3a46bd2401943bd49a7f657bf145, type: 3}
       propertyPath: m_RootOrder

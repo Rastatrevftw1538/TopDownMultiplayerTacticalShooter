@@ -52,7 +52,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 2e3360abe99ef004a98e8007f5db0833, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -145,6 +145,7 @@ MonoBehaviour:
   - {fileID: 6384325973079197979, guid: ccb46c434963ac649a3a180fece6995a, type: 3}
   - {fileID: 1502816407527625270, guid: 5a538fcb1bd30f3449302f3ac057dbd0, type: 3}
   - {fileID: 6356963789510888943, guid: 453a761dda8d1b048bcc2ddb5dc3c711, type: 3}
+  - {fileID: 731148143281714143, guid: 3b15ee1e7356b2e40bbb06154f614236, type: 3}
   targetLayers:
     serializedVersion: 2
     m_Bits: 576

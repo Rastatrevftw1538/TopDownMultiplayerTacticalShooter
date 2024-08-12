@@ -33,7 +33,7 @@ public class PauseMenu : Singleton<PauseMenu>
     {
         //if (!bpmManager) bpmManager = FindObjectOfType<BPMManager>();
         //bpmManager.audioSource.Stop();
-
+        StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.0f, 0.0f));
         PauseMusicEffect(true);
         _isPaused = true;
         pauseMenu.SetActive(true);
@@ -51,6 +51,7 @@ public class PauseMenu : Singleton<PauseMenu>
     {
         Time.timeScale = 1.0f;
         SceneManager.LoadScene("MainMenuSP");
+        if(UIManager.Instance)UIManager.Instance.ResetSingletons();
     }
 
     private void PauseMusicEffect(bool set)
