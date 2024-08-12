@@ -41,6 +41,10 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     public Color flashColor = Color.red;
     public float flashTime = 0.25f;
     private SpriteRenderer[] sprites;
+    public GameObject defeatParticles;
+    public GameObject onBeatDefeatParticles;
+    static BPMManager bpmManager;
+
 
     private void Awake()
     {
@@ -73,6 +77,11 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         if (!target)
         {
             target = GameObject.FindWithTag("Player").transform;
+        }
+
+        if (!bpmManager)
+        {
+            bpmManager = FindObjectOfType<BPMManager>();
         }
     }
 
@@ -249,7 +258,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     void RpcDie()
     {
         DropOnDeath();
-
+        PlayParticleDefeat();
         PlaySound(defeatSound, 0.1f);
         isAlive = false;
         //this.transform.parent.gameObject.SetActive(false);
@@ -258,6 +267,30 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
 
         //IDEALLY, we move this to the interface
         UpdateEnemiesKilled();
+    }
+
+    void PlayParticleDefeat()
+    {
+        GameObject temp;
+        if (CheckBPM())
+        {
+            temp = Instantiate(onBeatDefeatParticles, transform.position, Quaternion.identity);
+        }
+        else
+        {
+            temp = Instantiate(defeatParticles, transform.position, Quaternion.identity);
+        }
+        Destroy(temp, 0.4f);
+    }
+
+    bool CheckBPM()
+    {
+        if (!bpmManager) FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
+        if (bpmManager.CanClick())
+        {
+            return true;
+        }
+        return false;
     }
 
     void UpdateEnemiesKilled()

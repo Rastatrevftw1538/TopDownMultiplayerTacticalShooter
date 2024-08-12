@@ -183,6 +183,10 @@ MonoBehaviour:
   <movementSound>k__BackingField: {fileID: 0}
   <firingSound>k__BackingField: {fileID: 0}
   <defeatSound>k__BackingField: {fileID: 8300000, guid: bcdaf08509ea36d4cbd1435cdb1e11b3, type: 3}
+  flashColor: {r: 1, g: 0, b: 0, a: 1}
+  flashTime: 0.25
+  defeatParticles: {fileID: 195900, guid: ec61825cb06be72419bb09eee03af08c, type: 3}
+  onBeatDefeatParticles: {fileID: 149926, guid: ad487a21ffb7f334b914ec85242b5c7e, type: 3}
   hitDisplays: []
 --- !u!61 &5221447582837671121
 BoxCollider2D:

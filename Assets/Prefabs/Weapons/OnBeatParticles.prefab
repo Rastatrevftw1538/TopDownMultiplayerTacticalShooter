@@ -9631,8 +9631,9 @@ GameObject:
   - component: {fileID: 457170}
   - component: {fileID: 19824692}
   - component: {fileID: 19931252}
+  - component: {fileID: 3670951606338286752}
   m_Layer: 0
-  m_Name: SoftPunchMedium
+  m_Name: OnBeatParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14487,6 +14488,22 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!58 &3670951606338286752
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 183216}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 1
 --- !u!1 &198558
 GameObject:
   m_ObjectHideFlags: 0

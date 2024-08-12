@@ -234,17 +234,16 @@ public class WeaponSinglePlayer : MonoBehaviour
                     hitWall = true;
                     break;
                 default:
-
+                    endPoint = firePoint.position + (spreadDirection * fireRange);
                     break;
             }
         }
-
         endPoint = hit.point;
         RpcOnFire(hit, spreadDirection, endPoint, whatWasHit, onBeat);
     }
 
     //[ClientRpc]
-    BulletScript trailRender;
+    BulletScriptSP trailRender;
     GameObject particleEffect;
     ParticleSystem particleSystemIns;
     GameObject tempParticle;
@@ -267,11 +266,10 @@ public class WeaponSinglePlayer : MonoBehaviour
         
         var bulletInstance = Instantiate(bulletPrefab, firePoint.position, new Quaternion(0, 0, 0, 0));
 
-        if(!trailRender) trailRender = bulletInstance.GetComponent<BulletScript>();
+        if(!trailRender) trailRender = bulletInstance.GetComponent<BulletScriptSP>();
         if(!particleEffect) particleEffect = trailRender.effectPrefab;
         if(!particleSystemIns) particleSystemIns = particleEffect.GetComponent<ParticleSystem>();
 
-        tempParticle = Instantiate(particleEffect, collisionPoint, new Quaternion(0, 0, 0, 0));
         Destroy(tempParticle, 0.5f);
 
         //IF ON BEAT, MAKE THE TRAIL RENDER DIFFERENT COLOR
@@ -287,9 +285,13 @@ public class WeaponSinglePlayer : MonoBehaviour
             //camera shake
             StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.1f, 0.1f));
             if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(weaponSpecs.shootOnBeatSound, transform, 0.2f);
+
+            //ALSO MAKE THE PARTICLES DIFFERENT;
+            tempParticle = Instantiate(trailRender.onBeatEffectPrefab, collisionPoint, new Quaternion(0, 0, 0, 0));
         }
         else
         {
+            tempParticle = Instantiate(particleEffect, collisionPoint, new Quaternion(0, 0, 0, 0));
             if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(weaponSpecs.shootSound, transform, 0.1f);
         }
 
