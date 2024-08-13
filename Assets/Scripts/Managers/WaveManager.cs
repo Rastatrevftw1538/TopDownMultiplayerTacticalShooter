@@ -124,7 +124,7 @@ public class WaveManager : Singleton<WaveManager>
         //if you have reached the amount of enemies killed for this wave
         if (!beatEnoughEnemies) return;
 
-        Debug.LogError("made it thru bc level " + currentLevel + ", wave " + currentWave + " only has to kill " + levels[currentLevel].waves[currentWave].AmtEnemies() + " enemies.");
+        //Debug.LogError("made it thru bc level " + currentLevel + ", wave " + currentWave + " only has to kill " + levels[currentLevel].waves[currentWave].AmtEnemies() + " enemies.");
         enemiesKilled = 0;
         //if increasing the index by 1 wont be out of bounds...
         int idxCheckW = currentWave + 1;
