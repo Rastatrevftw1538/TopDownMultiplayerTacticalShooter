@@ -11,6 +11,7 @@ public class TalkableMeleeEnemy : Sentient, ITalkable
     public float talkDistance;
     public bool canInteract;
     [field:SerializeField] public KeyCode Key { get; set; }
+    [field:SerializeField] public Sprite CharacterTalkSprite { get; set; }
 
     void Start()
     {
@@ -74,7 +75,7 @@ public class TalkableMeleeEnemy : Sentient, ITalkable
     public void Talk(DialogueText dialogueText)
     {
         //start conversation
-        dialogueController.DisplayNextParagraph(dialogueText, this);
+        dialogueController.DisplayNextParagraph(dialogueText, this, CharacterTalkSprite);
     }
 }
 

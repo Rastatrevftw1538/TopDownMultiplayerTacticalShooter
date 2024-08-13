@@ -3,21 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEditor.Rendering;
+using UnityEngine.UI;
 
 public class DialogueController : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI NPCNameText;
     [SerializeField] private TextMeshProUGUI NPCDialogueText;
     [SerializeField] private GameObject dialogueHolder;
+    [SerializeField] private Image characterSprite;
+    [SerializeField] private Image backgroundDim;
 
     private Queue<string> paragraphs = new Queue<string> ();
 
     private bool conversationEnded;
 
-    public void DisplayNextParagraph(DialogueText dialogueText, ITalkable NPC)
+    public void DisplayNextParagraph(DialogueText dialogueText, ITalkable NPC, Sprite charSprite)
     {
+        Cursor.visible = true;
+        characterSprite.sprite = charSprite;
+        SetSelf(true);
         //if there's nothing in the paragraph queue
-        if(paragraphs.Count == 0)
+        if (paragraphs.Count == 0)
         {
             if (!conversationEnded)
             {
@@ -50,6 +56,7 @@ public class DialogueController : MonoBehaviour
     static int idx;
     public void DisplayNextParagraph()
     {
+        Cursor.visible = true;
         /*NPCDialogueText.text = paragraphs.Dequeue();
         if (paragraphs.Count == 0)
         {
@@ -57,7 +64,7 @@ public class DialogueController : MonoBehaviour
             EndConversation();
         }*/
 
-        while(idx <= latestParagraphs.Count)
+        while (idx <= latestParagraphs.Count)
         {
             NPCDialogueText.text = latestConvo.paragraphs[idx];
             idx++;
@@ -70,15 +77,14 @@ public class DialogueController : MonoBehaviour
 
     private void StartConversation(DialogueText dialogueText)
     {
+        Cursor.visible = true;
         //activate a DialogueText game object
         if (!gameObject.activeSelf)
         {
             gameObject.SetActive(true);
         }
-        if (!dialogueHolder.activeSelf)
-        {
-            dialogueHolder.SetActive(true);
-        }
+
+        SetSelf(true);
 
         //GET CONVO DETAILS
         latestConvo = dialogueText;
@@ -97,6 +103,7 @@ public class DialogueController : MonoBehaviour
 
     IEnumerator EndConversation()
     {
+        Cursor.visible = false;
         //clear the queue
         paragraphs.Clear();
 
@@ -104,7 +111,7 @@ public class DialogueController : MonoBehaviour
         conversationEnded = false;
 
         //buffer so that the player cant get stuck in a dialogue loop
-        dialogueHolder.SetActive(false);
+        SetSelf(false);
         yield return new WaitForSeconds(1.5f);
         idx = 0;
         if (lastNPC != null) lastNPC.StartedConvo = false;
@@ -114,17 +121,24 @@ public class DialogueController : MonoBehaviour
         {
             gameObject.SetActive(false);
         }
+    }
 
+    void SetSelf(bool set)
+    {
+        dialogueHolder.SetActive(set);
+        characterSprite.enabled = set;
+        backgroundDim.enabled = set;
     }
 
     private void EndConversation(DialogueText dialogueText)
     {
+        Cursor.visible = false;
         //clear the queue
         paragraphs.Clear();
 
         //set the bool to true
         conversationEnded = false;
-        dialogueHolder.SetActive(false);
+        SetSelf(false);
         idx = 0;
         if (lastNPC != null) lastNPC.StartedConvo = false;
 
