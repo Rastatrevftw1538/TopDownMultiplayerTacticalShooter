@@ -3418,7 +3418,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levels:
-  - {fileID: 11400000, guid: 4ca8613de84dc39449478303253b93f4, type: 2}
+  - {fileID: 11400000, guid: 522ec6d3d53b112498ee0e2929c14121, type: 2}
   - {fileID: 11400000, guid: 4ca8613de84dc39449478303253b93f4, type: 2}
   - {fileID: 11400000, guid: 4ca8613de84dc39449478303253b93f4, type: 2}
   currentSpawnArea: {fileID: 0}
@@ -3429,6 +3429,7 @@ MonoBehaviour:
   currentLevel: 0
   pauseWaves: 0
   toBuffer: 1
+  startedRoutine: 0
 --- !u!4 &1622067068
 Transform:
   m_ObjectHideFlags: 0
