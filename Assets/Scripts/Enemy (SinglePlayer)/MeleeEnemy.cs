@@ -158,7 +158,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         isAttacking = true;
         anim.SetBool("IsAttacking", true);
         player.TakeDamage(damage);
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(attackSpd);
         anim.SetBool("IsAttacking", false);
         isAttacking = false;
     }

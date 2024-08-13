@@ -169,7 +169,7 @@ MonoBehaviour:
   currentHealth: 0
   <maxHealth>k__BackingField: 100
   damage: 10
-  attackSpd: 0
+  attackSpd: 0.5
   respawnTime: 2
   <pointsPerHit>k__BackingField: 30
   healthbarExternal: {fileID: 8616342454603650037}
