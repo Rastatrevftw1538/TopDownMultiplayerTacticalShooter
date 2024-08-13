@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
-using UnityEditor.Build.Reporting;
 
 public enum CheckMethod
 {

@@ -109,6 +109,7 @@ public class DialogueController : MonoBehaviour
     {
         Cursor.visible = false;
         Time.timeScale = 1f;
+        if (lastNPC.CompleteToCont) WaveManager.Instance.pauseWaves = false; //unpause waves if that was the desired result
         //clear the queue
         paragraphs.Clear();
 
@@ -139,6 +140,7 @@ public class DialogueController : MonoBehaviour
     {
         Cursor.visible = false;
         Time.timeScale = 1f;
+        if (lastNPC.CompleteToCont) WaveManager.Instance.pauseWaves = false; //unpause waves if that was the desired result
         //clear the queue
         paragraphs.Clear();
 

@@ -8,4 +8,5 @@ public interface ITalkable
     public KeyCode Key {  get; set; }
     public bool StartedConvo {  get; set; }
     public Sprite CharacterTalkSprite { get; set; }
+    public bool CompleteToCont {  get; set; }
 }

@@ -12,9 +12,12 @@ public class TalkableMeleeEnemy : Sentient, ITalkable
     public bool canInteract;
     [field:SerializeField] public KeyCode Key { get; set; }
     [field:SerializeField] public Sprite CharacterTalkSprite { get; set; }
+    [field:SerializeField] public bool CompleteToCont { get; set; }
+    WaveManager waveManager;
 
     void Start()
     {
+        if(WaveManager.Instance) waveManager = WaveManager.Instance;
         TryCircle();
     }
 
@@ -26,7 +29,7 @@ public class TalkableMeleeEnemy : Sentient, ITalkable
         interactCircle.isTrigger = true;
 
         if (talkDistance <= 0)
-            talkDistance = 3f;
+            talkDistance = 3f; //default talk dist
         interactCircle.radius = talkDistance;
     }
 
@@ -45,6 +48,11 @@ public class TalkableMeleeEnemy : Sentient, ITalkable
     Vector2 press;
     private void Update()
     {
+        if(!waveManager)
+        {
+            waveManager = WaveManager.Instance;
+        }
+
         press = new UnityEngine.Vector2
         {
             x = Input.GetAxisRaw("Talk"),
@@ -56,6 +64,15 @@ public class TalkableMeleeEnemy : Sentient, ITalkable
         else
         {
             isConvoKeyPressed = false;
+        }
+
+        if (waveToTalk-1 == waveManager.currentWave && !StartedConvo)
+        {
+            if (CompleteToCont)
+            {
+                Debug.LogError("must talk to NPC to continue");
+                waveManager.pauseWaves = true;
+            }
         }
     }
 
