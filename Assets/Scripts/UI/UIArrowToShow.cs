@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class UIArrowToShow : MonoBehaviour
 {
     public RectTransform pointerRectTransform; //the sprite/model that points to something
-    public Vector3 target; //what the arrow actually points to
+    public Transform target; //what the arrow actually points to
     [SerializeField] private Camera uiCamera;
     [SerializeField] private Sprite arrowSprite;
     [SerializeField] private Sprite reachedSprite;
@@ -19,15 +19,20 @@ public class UIArrowToShow : MonoBehaviour
     {
         //pointerRectTransform = GetComponentInChildren<RectTransform>();
         pointerImage = GetComponentInChildren<Image>();
-
-        Hide();
+        target = GameObject.Find("Player - SinglePlayer").transform;
+        //Hide();
     }
 
     // Update is called once per frame
     float borderSize = 100f;
     void Update()
     {
-        Vector3 targetPositionScreenPoint = uiCamera.WorldToScreenPoint(target);
+        if (!uiCamera)
+        {
+            uiCamera = GameObject.FindWithTag("UI Camera").GetComponent<Camera>();
+        }
+
+        Vector3 targetPositionScreenPoint = uiCamera.WorldToScreenPoint(target.position);
         bool isOffScreen = targetPositionScreenPoint.x <= borderSize || targetPositionScreenPoint.x >= Screen.width - borderSize || targetPositionScreenPoint.y <= borderSize || targetPositionScreenPoint.y >= Screen.height - borderSize;
 
         if (isOffScreen)
@@ -58,7 +63,7 @@ public class UIArrowToShow : MonoBehaviour
 
     private void RotatePointerTowardsTargetPosition()
     {
-        Vector3 toPosition = target;
+        Vector3 toPosition = target.position;
         Vector3 fromPosition = uiCamera.gameObject.transform.position;
         fromPosition.z = 0f;
         Vector3 dir = (toPosition - fromPosition).normalized;
@@ -73,9 +78,9 @@ public class UIArrowToShow : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void Show(Vector3 targetPosition)
+    public void Show(Transform targetTransform)
     {
         gameObject.SetActive(true);
-        this.target = targetPosition;
+        this.target = targetTransform;
     }
 }

@@ -20,6 +20,8 @@ public class UIManager : Singleton<UIManager>
     public AudioClip victorySound;
     public Volume postProcessing;
     public CinemachineImpulseListener impulseListener;
+    private CinemachineVirtualCamera cinemachineCam;
+    public bool shouldStartZoomed;
     //public UIArrowToShow arrowToPoint;
 
     public float points;
@@ -34,11 +36,21 @@ public class UIManager : Singleton<UIManager>
         SetPoints(0f);
         postProcessing = GetComponent<Volume>();
         //arrowToPoint = GetComponent<UIArrowToShow>();
+        StartCoroutine(nameof(WorldZoomStart));
     }
 
-    void FixedUpdate()
+    void Update()
     {
-        
+        if (!didZoom && shouldStartZoomed)
+        {
+            if (cinemachineCam.m_Lens.OrthographicSize >= initialOrtho)
+                cinemachineCam.m_Lens.OrthographicSize -= zoomSpeed * Time.fixedDeltaTime * Time.timeScale;
+            else
+            {
+                cinemachineCam.m_Lens.OrthographicSize = initialOrtho;
+                didZoom = true;
+            }
+        }
     }
 
     /*public void SetArrowTarget(GameObject arrowTrgt)
@@ -46,6 +58,22 @@ public class UIManager : Singleton<UIManager>
         arrowToPoint.enabled = true;
         arrowToPoint.SetArrowTarget(arrowTrgt);
     }*/
+
+    bool didZoom = false;
+    float zoomSpeed = 3f;
+    float initialOrtho;
+    public IEnumerator WorldZoomStart()
+    {
+        didZoom = true;
+        if (!cinemachineCam) cinemachineCam = GameObject.FindGameObjectWithTag("Cinemachine Camera").GetComponent<CinemachineVirtualCamera>();
+        initialOrtho = cinemachineCam.m_Lens.OrthographicSize;
+        cinemachineCam.m_Lens.OrthographicSize = 50f;
+
+        if (WaveManager.Instance) WaveManager.Instance.toBuffer = true;
+        yield return new WaitForSeconds(1f);
+        if (WaveManager.Instance) WaveManager.Instance.toBuffer = false;
+        didZoom = false;
+    }
 
     public void ChangeWaveNumber(float num)
     {
@@ -197,9 +225,9 @@ public class UIManager : Singleton<UIManager>
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    public void ShowUIArrow(Vector3 targetPos)
+    public void ShowUIArrow(Transform targetTransform)
     {
-        uiArrowToTarget.Show(targetPos);
+        uiArrowToTarget.Show(targetTransform);
     }
 
     public void HideUIArrow()

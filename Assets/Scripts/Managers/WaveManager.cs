@@ -92,8 +92,10 @@ public class WaveManager : Singleton<WaveManager>
             //COMPLETED LEVEL
             toBuffer = true;
 
-            if(currentLevel+1 < levels.Count)
+            if (currentLevel + 1 <= levels.Count)
                 currentLevel++;
+            else
+                return;
             currentWave = 0;
 
             Debug.LogError("Completed this level...");
@@ -107,12 +109,15 @@ public class WaveManager : Singleton<WaveManager>
     void ShowArrow()
     {
         Debug.LogError("pointing to " + currentLevelDoor.name);
-        if (UIManager.Instance) UIManager.Instance.ShowUIArrow(currentLevelDoor.transform.position); //UI ARROW POINTING TO THE NEXT LEVEL
+        if (UIManager.Instance) UIManager.Instance.ShowUIArrow(currentLevelDoor.transform); //UI ARROW POINTING TO THE NEXT LEVEL
     }
 
     private IEnumerator CheckWave()
     {
         yield return new WaitForEndOfFrame();
+
+        //check if you are on the last enemy
+
         if (enemiesKilled >= levels[currentLevel].waves[currentWave].AmtEnemies() && (currentWave + 1 <= (levels[currentLevel].waves.Count)))
         {
             endedPreviousWave = true;
