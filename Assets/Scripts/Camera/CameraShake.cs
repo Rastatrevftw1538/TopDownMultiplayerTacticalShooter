@@ -2,13 +2,11 @@ using UnityEngine;
 using System.Collections;
 using Cinemachine;
 
-public class CameraShake : MonoBehaviour
+public class CameraShake : Singleton<CameraShake>
 {
 	// Transform of the camera to shake. Grabs the gameObject's transform
 	// if null.
 	public Transform camTransform;
-	private CinemachineVirtualCamera cinemachine;
-	private NoiseSettings noiseSettings;
 
 	// How long the object should shake for.
 	public float shakeDuration = 0.8f;
@@ -19,13 +17,9 @@ public class CameraShake : MonoBehaviour
 
 	Vector3 originalPos;
 
-	void Awake()
+	public void CustomCameraShake(CinemachineImpulseSource source)
 	{
-		if (camTransform == null)
-		{
-			camTransform = GetComponent(typeof(Transform)) as Transform;
-			cinemachine = GetComponentInChildren<CinemachineVirtualCamera>();
-		}
+        source.GenerateImpulseWithForce(shakeAmount);
 	}
 
 	void OnEnable()
@@ -60,13 +54,12 @@ public class CameraShake : MonoBehaviour
 	float tempDur;
 	public IEnumerator CustomCameraShake(float _shakeDuration, float _shakeAmount)
     {
-		tempAmt = shakeAmount;
+        tempAmt = shakeAmount;
 		tempDur = shakeDuration;
 
 		shakeAmount = _shakeAmount;
 		shakeDuration = _shakeDuration;
 
-		this.enabled = true;
 		Invoke(nameof(RevertValues), shakeDuration);
 		yield return new WaitForSeconds(_shakeDuration);
     }

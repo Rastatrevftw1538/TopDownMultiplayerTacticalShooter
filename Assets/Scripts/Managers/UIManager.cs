@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 using TMPro;
 using UnityEngine.Rendering;
+using Cinemachine;
 using UnityEngine.Rendering.Universal;
 
 public class UIManager : Singleton<UIManager>
@@ -18,7 +19,7 @@ public class UIManager : Singleton<UIManager>
     public AudioClip defeatSound;
     public AudioClip victorySound;
     public Volume postProcessing;
-    private CameraShake cameraShake;
+    public CinemachineImpulseListener impulseListener;
     //public UIArrowToShow arrowToPoint;
 
     public float points;
@@ -33,7 +34,6 @@ public class UIManager : Singleton<UIManager>
         SetPoints(0f);
         postProcessing = GetComponent<Volume>();
         //arrowToPoint = GetComponent<UIArrowToShow>();
-        cameraShake = Camera.main.transform.GetComponent<CameraShake>();
     }
 
     void FixedUpdate()
@@ -109,8 +109,14 @@ public class UIManager : Singleton<UIManager>
         if (BPMManager.Instance) BPMManager.Instance.audioSource.Stop();
         PlaySound(defeatSound, 0.3f);
         defeatScreen.SetActive(true);
-        StartCoroutine(cameraShake.CustomCameraShake(0.0f, 0.0f));
+        SetCameraShakeListener(false);
         Time.timeScale = 0.0f;
+    }
+
+    private void SetCameraShakeListener(bool set)
+    {
+        if (!impulseListener) return;
+            impulseListener.enabled = set;
     }
 
     private void PlaySound(AudioClip sound, float volume = 1f)
@@ -129,7 +135,7 @@ public class UIManager : Singleton<UIManager>
 
         if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
         bpmManager.audioSource.Stop();
-        StartCoroutine(cameraShake.CustomCameraShake(0.0f, 0.0f));
+        SetCameraShakeListener(false);
         Cursor.visible = true;
         SetPoints(0);
         PlaySound(victorySound, 0.3f);
@@ -162,10 +168,13 @@ public class UIManager : Singleton<UIManager>
 
         if (this.gameObject != null)
             Destroy(this.gameObject);
+
+        SetCameraShakeListener(true);
     }
 
     public void ReturnToMainMenu()
     {
+        SetCameraShakeListener(true);
         if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
         if(bpmManager) bpmManager.audioSource.Play();
 
@@ -182,6 +191,7 @@ public class UIManager : Singleton<UIManager>
 
     public void ResetScene()
     {
+        SetCameraShakeListener(true);
         if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
         if (bpmManager) bpmManager.audioSource.Play();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);

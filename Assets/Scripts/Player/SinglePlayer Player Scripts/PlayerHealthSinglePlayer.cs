@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Cinemachine;
 using static PlayerScriptSinglePlayer;
+using System.Net;
 
 [RequireComponent(typeof(PlayerScriptSinglePlayer))]
 public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
@@ -28,6 +30,7 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
     [Header("Flash Color")]
     public Color flashColor = Color.red;
     public float flashTime = 0.25f;
+    private CinemachineImpulseSource impulseSource;
 
     [Header("Player Sounds")]
     [SerializeField] private AudioClip gotHitAudio;
@@ -58,6 +61,7 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
         sprites = GetComponentsInChildren<SpriteRenderer>();
         healthbarInternal = GetComponentInChildren<Slider>();
         Anim = GetComponentInChildren<Animator>();
+        impulseSource = GetComponent<CinemachineImpulseSource>();
 
         currentHealth = maxHealth;
     }
@@ -95,16 +99,13 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
         StartCoroutine(nameof(DamageFlash));
     }
 
-    CameraShake cameraShake;
-
     private IEnumerator DamageFlash()
     {
-        if(!cameraShake) cameraShake = Camera.main.transform.GetComponent<CameraShake>();
         //iframes
         Invoke(nameof(SetCanHitTrue), iFrames);
 
         //camera shake
-        StartCoroutine(cameraShake.CustomCameraShake(0.1f, 0.2f));
+        CameraShake.Instance.CustomCameraShake(impulseSource);
 
         SetFlashColor(flashColor);
         float currentFlashAmt = 0f;

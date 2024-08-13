@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Diagnostics;
+using Cinemachine;
 using Debug = UnityEngine.Debug;
 
 public class WeaponSinglePlayer : MonoBehaviour
@@ -54,9 +55,10 @@ public class WeaponSinglePlayer : MonoBehaviour
 
 
     PlayerScriptSinglePlayer player;
+    CinemachineImpulseSource impulseSource;
     private void Awake() {
         player = this.transform.GetComponent<PlayerScriptSinglePlayer>();
-        //playerAudioSource = GetComponent<AudioSource>();
+        impulseSource = this.GetComponentInParent<CinemachineImpulseSource>();
 
         if (weaponSpecs != null){
             damage = weaponSpecs.damagePerBullet;
@@ -270,7 +272,7 @@ public class WeaponSinglePlayer : MonoBehaviour
         if(!trailRender) trailRender = bulletInstance.GetComponent<BulletScriptSP>();
         if(!particleEffect) particleEffect = trailRender.effectPrefab;
         if(!particleSystemIns) particleSystemIns = particleEffect.GetComponent<ParticleSystem>();
-        if (!cameraShake) cameraShake = Camera.main.transform.GetComponent<CameraShake>();
+        if(!cameraShake) cameraShake = CameraShake.Instance;
 
         Destroy(tempParticle, 0.5f);
 
@@ -285,7 +287,8 @@ public class WeaponSinglePlayer : MonoBehaviour
 
             //some camera shake stuff (unoptimized)
             //camera shake
-            StartCoroutine(cameraShake.CustomCameraShake(0.1f, 0.1f));
+            //StartCoroutine(cameraShake.CustomCameraShake(0.1f, 0.1f));
+            cameraShake.CustomCameraShake(impulseSource);
             if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(weaponSpecs.shootOnBeatSound, transform, 0.2f);
 
             //ALSO MAKE THE PARTICLES DIFFERENT;
