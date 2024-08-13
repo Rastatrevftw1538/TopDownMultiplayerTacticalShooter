@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.AI;
 using System.Threading.Tasks;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
+using UnityEditor;
 
 public class RangedEnemy : MonoBehaviour, IEnemy
 {
@@ -24,7 +25,8 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     [SerializeField] private Image healthbarExternal;
     [SerializeField] private GameObject projectile;
     [field: SerializeField] public float dropChance { get; set; }
-    [field: SerializeField] public GameObject dropObject { get; set; }
+    [field: SerializeField] public List<GameObject> dropObjects { get; set; }
+    [SerializeField] private LayerMask targetLayers;
 
     [Header("Debug")]
     [SerializeField] private float _damageTaken = 0;
@@ -60,6 +62,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         agent = GetComponentInParent<NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
+        initColor = spriteRenderer.color;
 
         shotCooldown = startShotCooldown;
 
@@ -94,9 +97,15 @@ public class RangedEnemy : MonoBehaviour, IEnemy
             agent.isStopped = false;
         }
 
-        if (shotCooldown <= 0)
+        if (shotCooldown <= 0 && (agent.remainingDistance*1.5f >= stoppingDistance || agent.remainingDistance <= stoppingDistance))
         {
-            Attack();
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, target.position - transform.position, stoppingDistance*1.5f, targetLayers);
+            if (hit.collider)
+                if (hit.collider.CompareTag("Player"))
+                {
+                    shotCooldown = 0f;
+                    Attack();
+                }
         }
         else
         {
@@ -105,7 +114,6 @@ public class RangedEnemy : MonoBehaviour, IEnemy
 
         Vector2 direction = new Vector2(target.position.x - transform.position.x, target.position.y - transform.position.y); //FIND DIRECTION OF PLAYER
         transform.up = direction; //ROTATES THE ENEMY TO THE PLAYER 
-
         //attack
     }
 
@@ -119,6 +127,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         }
     }
 
+    Color initColor;
     private IEnumerator DamageFlash()
     {
         SetFlashColor(flashColor);
@@ -133,7 +142,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
 
             yield return new WaitForSeconds(0.5f);
 
-            SetFlashColor(Color.white);
+            SetFlashColor(initColor);
         }
     }
 
@@ -145,7 +154,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     private void Attack()
     {
         //PlaySound(firingSound);
-        Instantiate(projectile, transform.position, transform.rotation);
+        Instantiate(projectile, spriteRenderer.gameObject.transform.position, transform.rotation);
         shotCooldown = startShotCooldown;
     }
 
@@ -232,9 +241,9 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     public void DropOnDeath()
     {
         int randDropProb = Random.Range(0, 100);
-
-        if(randDropProb <= dropChance)
-        Instantiate(dropObject, transform.position, Quaternion.identity);
+        int randDropIdx = Random.Range(0, dropObjects.Count);
+        if (randDropProb <= dropChance && dropObjects[randDropIdx])
+            Instantiate(dropObjects[randDropIdx], transform.position, Quaternion.identity);
     }
 
     void RpcDie()

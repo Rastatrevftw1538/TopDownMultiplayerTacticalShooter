@@ -15,6 +15,7 @@ public class BulletScriptSP : MonoBehaviour
     void Start()
     {
         _startPosition = transform.position = new Vector3(transform.position.x,transform.position.y,-1);
+        Invoke(nameof(DestroySelf), 0.5f);
     }
 
     // Update is called once per frame
@@ -55,5 +56,10 @@ public class BulletScriptSP : MonoBehaviour
         trail.colorGradient.SetKeys(colors, alphas);
 
         Debug.LogError("doin a thang");
+    }
+
+    void DestroySelf()
+    {
+        Destroy(gameObject);
     }
 }

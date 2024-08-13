@@ -28,7 +28,7 @@ public class EnemyProjectile : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector2.up * speed * Time.fixedDeltaTime * Time.timeScale);
+        transform.Translate(speed * Vector2.up * Time.fixedDeltaTime * Time.timeScale);
         lifeTime += Time.deltaTime;
 
         if (lifeTime >= projectileLifeTime)

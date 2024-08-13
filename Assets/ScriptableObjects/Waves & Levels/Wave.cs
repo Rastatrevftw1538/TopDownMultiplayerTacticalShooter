@@ -65,6 +65,7 @@ public class Wave : ScriptableObject
 
     public void SpawnEnemies(GameObject spawnArea)
     {
+        isComplete = false;
         foreach(GameObject enemy in enemiesToSpawn)
         {
             //this ensures enemies dont spawn pixel perfectly on top of each other

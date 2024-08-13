@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
 using System;
+using System.Diagnostics.Eventing.Reader;
 
 public class WaveManager : Singleton<WaveManager>
 {
@@ -11,12 +12,16 @@ public class WaveManager : Singleton<WaveManager>
     public List<Level> levels = new List<Level>();
     public GameObject currentSpawnArea;
     public GameObject currentLevelDoor;
+    //LOADING THE CURRENT SPAWN AREA IN ScenePartLoader.cs
+    //STARTING THE CURRENT LEVEL IN ScenePartLoader.cs
 
-    [Header("Wave Statistics")]
+    [Header("Debug")]
     public int currentWave;
     public float spawnInterval;
     public float enemiesKilled;
     public int currentLevel;
+    public bool pauseWaves;
+
 
     //CAMERA STUFF
     private GameObject clientCamera;
@@ -24,80 +29,45 @@ public class WaveManager : Singleton<WaveManager>
 
     private GameObject player;
 
-    // Start is called before the first frame update
     void Start()
     {
-        //find player
         player = GameObject.FindWithTag("Player");
-        //Camera stuff
-        //clientCamera = ClientCamera.Instance.gameObject;
-        //cameraShake  = ClientCamera.Instance.cameraShake;
 
-        //START THE FIRST WAVE
-        currentWave = 0; //always start on wave 1, i.e INDEX 0 of the levels list
+        //START THE FIRST WAVE, FIRST LEVEL
+        currentWave = 0;
         currentLevel = 0;
-        //GetLevelDoor(null);
-        //StartWave(levels[currentLevel].waves[currentWave]);
-    }
-    //LOADING THE CURRENT SPAWN AREA IN ScenePartLoader.cs
-    //STARTING THE CURRENT LEVEL IN ScenePartLoader.cs
 
-    // Update is called once per frame
-    bool endedPreviousWave = false;
-    bool firstWave = true;
+        /*Invoke(nameof(StartWaveCO), 0f);*/
+        //StartCoroutine(nameof(StartWaveCO));
+    }
+
     public bool toBuffer = true;
+    public bool startedRoutine = false;
     void Update()
     {
-        if(currentLevel >= levels.Count)
-        {
-            UIManager.Instance.ShowVictory();
-            Destroy(this.gameObject);
-            return;
-        }
-        if (toBuffer)
+        if (toBuffer || pauseWaves)
         {
             return;
         }
-        if (currentSpawnArea == null)
-        {
-            //Debug.LogError("currentSpawnArea is null");
-            return;
-        }
 
-        if (firstWave)
+        beatEnoughEnemies = (enemiesKilled >= levels[currentLevel].waves[currentWave].AmtEnemies());
+        if (beatEnoughEnemies)
         {
-            //COMMENT OUT THIS IF STATEMENT IF THIS BUGS OUT
-            if (currentLevel <= levels.Count)
-            {
-                //StartWave(levels[currentLevel].waves[currentWave]);
-                //StartCoroutine(nameof(WaveBuffer));
-                //Debug.LogError("first wave spawned.");
-                firstWave = false;
-
-                StartCoroutine(nameof(StartWaveCO));
-            }
-            //GetLevelDoor(GameObject.FindGameObjectsWithTag("LevelDoor")[GameObject.FindGameObjectsWithTag("LevelDoor").Length - 1]);
-        }
-
-        //Debug.LogError(levels[currentLevel].waves.Count);
-        //Debug.LogError("You need to kill: " + levels[currentLevel].waves[currentWave].AmtEnemies() + " enemies to advance to the next wave.");
-        StartCoroutine(nameof(CheckWave));
- 
-        if(!toBuffer && CheckLevelCompletion())
-        {
-            toBuffer = true;
-            currentLevel++;
-            currentWave = 0;
-            Debug.LogError("Completed this level...");
-            SetLevelDoor(false);
-            firstWave = true;
-            //SPGameManager.Instance.EndedLevel();
+            CheckWave();
         }
     }
 
-    private IEnumerator CheckWave()
+    void ShowArrow()
+    {
+        Debug.LogError("pointing to " + currentLevelDoor.name);
+        if (UIManager.Instance) UIManager.Instance.ShowUIArrow(currentLevelDoor.transform); //UI ARROW POINTING TO THE NEXT LEVEL
+    }
+
+    /*private IEnumerator CheckWave()
     {
         yield return new WaitForEndOfFrame();
+        //check if you are on the last enemy
+
         if (enemiesKilled >= levels[currentLevel].waves[currentWave].AmtEnemies() && (currentWave + 1 <= (levels[currentLevel].waves.Count)))
         {
             endedPreviousWave = true;
@@ -128,8 +98,67 @@ public class WaveManager : Singleton<WaveManager>
                 }
             }
         }
-    }
 
+        if (!toBuffer && CheckLevelCompletion())
+        {
+            //COMPLETED LEVEL
+            toBuffer = true;
+
+            if (currentLevel <= levels.Count)
+                currentLevel++;
+            else
+                yield return null;
+            currentWave = 0;
+
+            Debug.LogError("Completed this level...");
+            ShowArrow(); //UI ARROW POINTING TO THE NEXT LEVEL
+            SetLevelDoor(false);
+            firstWave = true;
+            //SPGameManager.Instance.EndedLevel();
+        }
+    }*/
+
+    bool beatEnoughEnemies;
+    private void CheckWave()
+    {
+        //if you have reached the amount of enemies killed for this wave
+        if (!beatEnoughEnemies) return;
+
+        //Debug.LogError("made it thru bc level " + currentLevel + ", wave " + currentWave + " only has to kill " + levels[currentLevel].waves[currentWave].AmtEnemies() + " enemies.");
+        enemiesKilled = 0;
+        //if increasing the index by 1 wont be out of bounds...
+        int idxCheckW = currentWave + 1;
+        int idxCheckL = currentLevel + 1;
+        if(!(idxCheckW >= levels[currentLevel].waves.Count))
+        {
+            //then increase the wave count and start the next wave
+            currentWave++;
+
+            StartCoroutine(nameof(StartWaveCO));
+        }
+        //if increasing the index by 1 wont be out of bounds...
+        else if (!(idxCheckL >= levels.Count))
+        {
+            //that must mean you beat all the waves in the level, so increase the level count and reset the wave count
+            currentWave = 0;
+            currentLevel++;
+            startedRoutine = false;
+            toBuffer = true;
+
+            SetLevelDoor(false);
+            //NEXT LEVEL WILL BE CALLED THROUGH THE ScenePartLoader.cs
+        }
+        else
+        {
+            //if it will be out of bounds, then that means you just beat the game
+            currentLevel = 0;
+            currentWave = 0;
+            UIManager.Instance.ShowVictory();
+            Destroy(this);
+            Destroy(this.gameObject);
+            return;
+        }
+    }
     public void SetLevelDoor(bool set)
     {
          currentLevelDoor.SetActive(set);
@@ -152,15 +181,9 @@ public class WaveManager : Singleton<WaveManager>
         currentAnim.enabled = false;
     }
 
-    public void StartWave(Wave wave)
+    public void StartWave()
     {
-        //wave = levels[currentLevel - 1].waves[currentWave - 1];
-        Debug.LogError("Starting Level " + (currentLevel + 1) + ", Wave " + (currentWave + 1));
-        UIManager.Instance.ChangeWaveNumber(currentWave + 1);
-
-        levels[currentLevel].PlaySpawnSound(currentSpawnArea.transform);
-        wave.GenerateEnemies(currentSpawnArea);
-        return;
+        StartCoroutine(nameof(StartWaveCO));
     }
 
     public float GetAmtEnemies()
@@ -175,32 +198,25 @@ public class WaveManager : Singleton<WaveManager>
 
     public IEnumerator StartWaveCO()
     {
+        startedRoutine = true;
         toBuffer = true;
         yield return new WaitForSeconds(spawnInterval);
         toBuffer = false;
+
         //wave = levels[currentLevel - 1].waves[currentWave - 1];
         Debug.LogError("Starting Level " + (currentLevel + 1) + ", Wave " + (currentWave + 1));
         UIManager.Instance.ChangeWaveNumber(currentWave + 1);
         UpdateEnemiesLeft();
 
-        levels[currentLevel].PlaySpawnSound(currentSpawnArea.transform);
-        levels[currentLevel].waves[currentWave].GenerateEnemies(currentSpawnArea);
-    }
-
-    private bool CheckLevelCompletion()
-    {
-        //Debug.LogError("Checking level completion...");
-        bool complete = true;
-        foreach(Wave wave in levels[currentLevel].waves)
+        if (currentSpawnArea)
         {
-            if (!wave.IsComplete()) return false;
+            levels[currentLevel].PlaySpawnSound(currentSpawnArea.transform);
+            levels[currentLevel].waves[currentWave].GenerateEnemies(currentSpawnArea);
         }
-        return complete;
     }
 
     public void GetLevelDoor(GameObject levelDoor)
     {
-        //levels[currentLevel].levelDoor = levelDoor;
         try
         {
             currentLevelDoor = GameObject.FindGameObjectsWithTag("LevelDoor")[GameObject.FindGameObjectsWithTag("LevelDoor").Length - 1];
@@ -208,14 +224,6 @@ public class WaveManager : Singleton<WaveManager>
         catch (Exception ex)
         {
             Debug.LogException(ex, this);
-        }
-    }
-
-    public void ResetWaveData()
-    {
-        foreach(Wave wave in levels[currentLevel].waves)
-        {
-            wave.ResetData();
         }
     }
 }

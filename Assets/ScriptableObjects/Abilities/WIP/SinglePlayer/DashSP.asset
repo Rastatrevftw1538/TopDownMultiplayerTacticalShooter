@@ -29,5 +29,6 @@ MonoBehaviour:
   bulletColor: {r: 0, g: 0, b: 0, a: 0}
   applicationType: 1
   dashVelocity: 0
-  speedMultiplier: 5
-  dashAudio: {fileID: 8300000, guid: a0a5b63f85bc7af40ba723b8fba7d16d, type: 3}
+  speedMultiplier: 2
+  dashParticles: {fileID: 187952, guid: c05e92eaee7a00844867e5edc8e0dde1, type: 3}
+  dashAudio: {fileID: 8300000, guid: 385760718e47b0b42b0f9f54daf471c5, type: 3}

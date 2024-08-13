@@ -35,7 +35,7 @@ public class HealthPickup : MonoBehaviour, IInteractable
         transform.position = new Vector3(pos.x, newY, pos.z);
     }
 
-    PlayerHealthSinglePlayer player;
+    static PlayerHealthSinglePlayer player;
     public void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Player")

@@ -14,6 +14,8 @@ TagManager:
   - LevelDoor
   - SpawnHolder
   - NPC
+  - Cinemachine Camera
+  - UI Camera
   layers:
   - Default
   - TransparentFX

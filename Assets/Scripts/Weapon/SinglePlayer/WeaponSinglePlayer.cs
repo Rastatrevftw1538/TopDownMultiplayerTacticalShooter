@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Diagnostics;
+using Cinemachine;
 using Debug = UnityEngine.Debug;
 
 public class WeaponSinglePlayer : MonoBehaviour
@@ -54,9 +55,10 @@ public class WeaponSinglePlayer : MonoBehaviour
 
 
     PlayerScriptSinglePlayer player;
+    CinemachineImpulseSource impulseSource;
     private void Awake() {
         player = this.transform.GetComponent<PlayerScriptSinglePlayer>();
-        //playerAudioSource = GetComponent<AudioSource>();
+        impulseSource = this.GetComponentInParent<CinemachineImpulseSource>();
 
         if (weaponSpecs != null){
             damage = weaponSpecs.damagePerBullet;
@@ -218,8 +220,8 @@ public class WeaponSinglePlayer : MonoBehaviour
                     if (objectOrigin != null)
                     {
                         IEnemy enemy = objectOrigin.GetComponent<IEnemy>();
-                        float dmg = damage;
-                        float points = enemy.pointsPerHit;
+                        float dmg = damage * damageMultiplier;
+                        float points = enemy.pointsPerHit + bonusPointsPerShot;
                         if (CheckBPM() && enemy != null)
                         {
                             dmg *= damageMultiplierBPM;
@@ -236,7 +238,7 @@ public class WeaponSinglePlayer : MonoBehaviour
                 default:
                     endPoint = firePoint.position + (spreadDirection * fireRange);
                     break;
-            }
+            }  
         }
         endPoint = hit.point;
         RpcOnFire(hit, spreadDirection, endPoint, whatWasHit, onBeat);
@@ -248,6 +250,7 @@ public class WeaponSinglePlayer : MonoBehaviour
     ParticleSystem particleSystemIns;
     GameObject tempParticle;
     TrailRenderer trailRenderer;
+    CameraShake cameraShake;
     void RpcOnFire(RaycastHit2D hit, Vector3 spreadDirection, Vector3 collisionPoint, String whatWasHit, bool onBeat)
     {
         //Debug.Log("Collision Point: " + collisionPoint);
@@ -269,6 +272,7 @@ public class WeaponSinglePlayer : MonoBehaviour
         if(!trailRender) trailRender = bulletInstance.GetComponent<BulletScriptSP>();
         if(!particleEffect) particleEffect = trailRender.effectPrefab;
         if(!particleSystemIns) particleSystemIns = particleEffect.GetComponent<ParticleSystem>();
+        if(!cameraShake) cameraShake = CameraShake.Instance;
 
         Destroy(tempParticle, 0.5f);
 
@@ -283,7 +287,8 @@ public class WeaponSinglePlayer : MonoBehaviour
 
             //some camera shake stuff (unoptimized)
             //camera shake
-            StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.1f, 0.1f));
+            //StartCoroutine(cameraShake.CustomCameraShake(0.1f, 0.1f));
+            cameraShake.CustomCameraShake(impulseSource);
             if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(weaponSpecs.shootOnBeatSound, transform, 0.2f);
 
             //ALSO MAKE THE PARTICLES DIFFERENT;

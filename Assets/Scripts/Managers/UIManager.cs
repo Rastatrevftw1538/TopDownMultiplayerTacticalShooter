@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Rendering;
+using Cinemachine;
+using UnityEngine.Rendering.Universal;
+using System;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -12,8 +16,14 @@ public class UIManager : Singleton<UIManager>
     public TextMeshProUGUI pointsDisplay;
     public GameObject victoryScreen;
     public GameObject defeatScreen;
+    public UIArrowToShow uiArrowToTarget;
     public AudioClip defeatSound;
     public AudioClip victorySound;
+    public Volume postProcessing;
+    public CinemachineImpulseListener impulseListener;
+    private CinemachineVirtualCamera cinemachineCam;
+    public bool shouldStartZoomed;
+    //public UIArrowToShow arrowToPoint;
 
     public float points;
 
@@ -25,11 +35,45 @@ public class UIManager : Singleton<UIManager>
     void Start()
     {
         SetPoints(0f);
+        postProcessing = GetComponent<Volume>();
+        //arrowToPoint = GetComponent<UIArrowToShow>();
+        StartCoroutine(nameof(WorldZoomStart));
     }
 
-    void FixedUpdate()
+    void Update()
     {
+        if (!didZoom && shouldStartZoomed)
+        {
+            if (cinemachineCam.m_Lens.OrthographicSize >= initialOrtho)
+                cinemachineCam.m_Lens.OrthographicSize -= zoomSpeed * Time.fixedDeltaTime * Time.timeScale;
+            else
+            {
+                cinemachineCam.m_Lens.OrthographicSize = initialOrtho;
+                didZoom = true;
+            }
+        }
+    }
 
+    /*public void SetArrowTarget(GameObject arrowTrgt)
+    {
+        arrowToPoint.enabled = true;
+        arrowToPoint.SetArrowTarget(arrowTrgt);
+    }*/
+
+    bool didZoom = false;
+    float zoomSpeed = 3f;
+    float initialOrtho;
+    public IEnumerator WorldZoomStart()
+    {
+        didZoom = true;
+        if (!cinemachineCam) cinemachineCam = GameObject.FindGameObjectWithTag("Cinemachine Camera").GetComponent<CinemachineVirtualCamera>();
+        initialOrtho = cinemachineCam.m_Lens.OrthographicSize;
+        cinemachineCam.m_Lens.OrthographicSize = 50f;
+
+        if (WaveManager.Instance) WaveManager.Instance.toBuffer = true;
+        yield return new WaitForSeconds(1f);
+        if (WaveManager.Instance) WaveManager.Instance.toBuffer = false;
+        didZoom = false;
     }
 
     public void ChangeWaveNumber(float num)
@@ -40,16 +84,29 @@ public class UIManager : Singleton<UIManager>
         StartCoroutine(FlashWaveNumber());
     }
 
+    float enemiesLeft;
     public void UpdateEnemiesLeft(float num)
     {
         if(!enemiesLeftDisplay) return;
-
-        enemiesLeftDisplay.text = "ENEMIES REMAINING: " + num;
+        enemiesLeft = num;
+        StartCoroutine(nameof(FlashEnemyRemaining));
     }
 
     IEnumerator FlashWaveNumber()
     {
         Color tempColor = waveDisplay.color;
+        for (int i = 0; i < waveFlashes; i++)
+        {
+            waveDisplay.color = waveFlashColor;
+            yield return new WaitForSeconds(waveFlashLength);
+        }
+        waveDisplay.color = tempColor;
+    }
+
+    IEnumerator FlashEnemyRemaining()
+    {
+        Color tempColor = waveDisplay.color;
+        enemiesLeftDisplay.text = "ENEMIES REMAINING: " + enemiesLeft;
         for (int i = 0; i < waveFlashes; i++)
         {
             waveDisplay.color = waveFlashColor;
@@ -94,8 +151,14 @@ public class UIManager : Singleton<UIManager>
         if (BPMManager.Instance) BPMManager.Instance.audioSource.Stop();
         PlaySound(defeatSound, 0.3f);
         defeatScreen.SetActive(true);
-        StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.0f, 0.0f));
+        SetCameraShakeListener(false);
         Time.timeScale = 0.0f;
+    }
+
+    private void SetCameraShakeListener(bool set)
+    {
+        if (!impulseListener) return;
+            impulseListener.enabled = set;
     }
 
     private void PlaySound(AudioClip sound, float volume = 1f)
@@ -114,7 +177,7 @@ public class UIManager : Singleton<UIManager>
 
         if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
         bpmManager.audioSource.Stop();
-        StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.0f, 0.0f));
+        SetCameraShakeListener(false);
         Cursor.visible = true;
         SetPoints(0);
         PlaySound(victorySound, 0.3f);
@@ -147,10 +210,13 @@ public class UIManager : Singleton<UIManager>
 
         if (this.gameObject != null)
             Destroy(this.gameObject);
+
+        SetCameraShakeListener(true);
     }
 
     public void ReturnToMainMenu()
     {
+        SetCameraShakeListener(true);
         if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
         if(bpmManager) bpmManager.audioSource.Play();
 
@@ -167,9 +233,20 @@ public class UIManager : Singleton<UIManager>
 
     public void ResetScene()
     {
+        SetCameraShakeListener(true);
         if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
         if (bpmManager) bpmManager.audioSource.Play();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void ShowUIArrow(Transform targetTransform)
+    {
+        uiArrowToTarget.Show(targetTransform);
+    }
+
+    public void HideUIArrow()
+    {
+        uiArrowToTarget.Hide();
     }
 }
 
