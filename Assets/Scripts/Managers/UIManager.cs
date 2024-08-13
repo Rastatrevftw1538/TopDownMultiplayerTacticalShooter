@@ -14,6 +14,7 @@ public class UIManager : Singleton<UIManager>
     public TextMeshProUGUI pointsDisplay;
     public GameObject victoryScreen;
     public GameObject defeatScreen;
+    public UIArrowToShow uiArrowToTarget;
     public AudioClip defeatSound;
     public AudioClip victorySound;
     public Volume postProcessing;
@@ -182,6 +183,16 @@ public class UIManager : Singleton<UIManager>
         if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
         if (bpmManager) bpmManager.audioSource.Play();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void ShowUIArrow(Vector3 targetPos)
+    {
+        uiArrowToTarget.Show(targetPos);
+    }
+
+    public void HideUIArrow()
+    {
+        uiArrowToTarget.Hide();
     }
 }
 

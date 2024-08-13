@@ -89,14 +89,23 @@ public class WaveManager : Singleton<WaveManager>
  
         if(!toBuffer && CheckLevelCompletion())
         {
+            //COMPLETED LEVEL
             toBuffer = true;
             currentLevel++;
             currentWave = 0;
+
             Debug.LogError("Completed this level...");
+            ShowArrow(); //UI ARROW POINTING TO THE NEXT LEVEL
             SetLevelDoor(false);
             firstWave = true;
             //SPGameManager.Instance.EndedLevel();
         }
+    }
+
+    void ShowArrow()
+    {
+        Debug.LogError("pointing to " + currentLevelDoor.name);
+        if (UIManager.Instance) UIManager.Instance.ShowUIArrow(currentLevelDoor.transform.position); //UI ARROW POINTING TO THE NEXT LEVEL
     }
 
     private IEnumerator CheckWave()
@@ -214,6 +223,8 @@ public class WaveManager : Singleton<WaveManager>
             Debug.LogException(ex, this);
         }
     }
+
+    public GameObject LevelDoor() => currentLevelDoor;
 
     public void ResetWaveData()
     {
