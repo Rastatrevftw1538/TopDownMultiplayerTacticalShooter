@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine.Rendering;
 using Cinemachine;
 using UnityEngine.Rendering.Universal;
+using System;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -83,16 +84,29 @@ public class UIManager : Singleton<UIManager>
         StartCoroutine(FlashWaveNumber());
     }
 
+    float enemiesLeft;
     public void UpdateEnemiesLeft(float num)
     {
         if(!enemiesLeftDisplay) return;
-
-        enemiesLeftDisplay.text = "ENEMIES REMAINING: " + num;
+        enemiesLeft = num;
+        StartCoroutine(nameof(FlashEnemyRemaining));
     }
 
     IEnumerator FlashWaveNumber()
     {
         Color tempColor = waveDisplay.color;
+        for (int i = 0; i < waveFlashes; i++)
+        {
+            waveDisplay.color = waveFlashColor;
+            yield return new WaitForSeconds(waveFlashLength);
+        }
+        waveDisplay.color = tempColor;
+    }
+
+    IEnumerator FlashEnemyRemaining()
+    {
+        Color tempColor = waveDisplay.color;
+        enemiesLeftDisplay.text = "ENEMIES REMAINING: " + enemiesLeft;
         for (int i = 0; i < waveFlashes; i++)
         {
             waveDisplay.color = waveFlashColor;

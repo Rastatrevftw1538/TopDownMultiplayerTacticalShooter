@@ -3,30 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.AI;
-using System.Threading.Tasks;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
-using UnityEditor;
 
-public class RangedEnemy : MonoBehaviour, IEnemy
+public class MeleeChargerEnemy : MonoBehaviour, IEnemy
 {
     [Header("Enemy Stats")]
     [SerializeField] private float currentHealth;
     [field: SerializeField] public float maxHealth { get; set; }
+    public float damage;
+    public float attackSpd;
+    //public float attackRange;
     public float respawnTime = 2f;
-    [SerializeField] private Transform target;
-    private NavMeshAgent agent; 
-    public float stoppingDistance;
-    public float startShotCooldown;
-    public float touchDamage;
+    //private
     [field: SerializeField] public float pointsPerHit { get; set; }
-    private float shotCooldown;
+    [SerializeField] static Transform target;
+    private NavMeshAgent agent;
+    private Animator anim;
 
     [Header("Enemy Components")]
     [SerializeField] private Image healthbarExternal;
-    [SerializeField] private GameObject projectile;
     [field: SerializeField] public float dropChance { get; set; }
     [field: SerializeField] public List<GameObject> dropObjects { get; set; }
-    [SerializeField] private LayerMask targetLayers;
 
     [Header("Debug")]
     [SerializeField] private float _damageTaken = 0;
@@ -43,10 +40,12 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     [Header("Flash Color")]
     public Color flashColor = Color.red;
     public float flashTime = 0.25f;
-    public SpriteRenderer spriteRenderer;
+    private SpriteRenderer sprite;
+    public GameObject healthBar;
     public GameObject defeatParticles;
     public GameObject onBeatDefeatParticles;
     static BPMManager bpmManager;
+
 
     private void Awake()
     {
@@ -59,19 +58,28 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
 
         //agent = GetComponent<NavMashAgent>();
+        anim = GetComponent<Animator>();
         agent = GetComponentInParent<NavMeshAgent>();
+        sprite = GetComponent<SpriteRenderer>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
-        initColor = spriteRenderer.color;
 
-        shotCooldown = startShotCooldown;
+        /*if (target == null && player != null)
+        {
+            target = player.gameObject.transform;
+        } else if (target == null && player == null){
+            target = GameObject.Find("Player - SinglePlayer").transform;
+            player = target.GetComponent<PlayerHealthSinglePlayer>();
+        }*/
 
-        if(!player)
+        if (!player)
             player = GameObject.FindWithTag("Player").GetComponent<PlayerHealthSinglePlayer>();
+
         if (!target)
         {
             target = GameObject.FindWithTag("Player").transform;
         }
+
         if (!bpmManager)
         {
             bpmManager = FindObjectOfType<BPMManager>();
@@ -82,52 +90,28 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     {
         //healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
         agent.SetDestination(target.position);
-        if(agent.velocity.magnitude > 0)
+
+        //move to state machine
+        anim.SetFloat("IsMoving", 1);
+        //Vector2 direction = new Vector2(target.position.x - transform.position.x, target.position.y - transform.position.y); //FIND DIRECTION OF PLAYER
+        //transform.up = direction; //ROTATES THE ENEMY TO THE PLAYER 
+
+        //attack
+        if (agent.velocity.magnitude > 0)
         {
             PlaySound(movementSound, 0.5f);
         }
-
-        //DISTANCE BEFORE STOPPING
-        if(agent.remainingDistance <= stoppingDistance)
-        {
-            agent.isStopped = true;
-        }
-        else
-        {
-            agent.isStopped = false;
-        }
-
-        if (shotCooldown <= 0 && (agent.remainingDistance*1.5f >= stoppingDistance || agent.remainingDistance <= stoppingDistance))
-        {
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, target.position - transform.position, stoppingDistance*1.5f, targetLayers);
-            if (hit.collider)
-                if (hit.collider.CompareTag("Player"))
-                {
-                    shotCooldown = 0f;
-                    Attack();
-                }
-        }
-        else
-        {
-            shotCooldown -= Time.deltaTime;
-        }
-
-        Vector2 direction = new Vector2(target.position.x - transform.position.x, target.position.y - transform.position.y); //FIND DIRECTION OF PLAYER
-        transform.up = direction; //ROTATES THE ENEMY TO THE PLAYER 
-        //attack
+        CheckFlip(agent.velocity.x);
     }
 
-    static PlayerHealthSinglePlayer player;
-    public void OnTriggerEnter2D(Collider2D other)
+    void CheckFlip(float velocity)
     {
-        //attack
-        if (other.gameObject.tag == "Player")
-        { 
-            player.TakeDamage(touchDamage);
-        }
+        if (velocity > 0)
+            sprite.flipX = false;
+        else
+            sprite.flipX = true;
     }
 
-    Color initColor;
     private IEnumerator DamageFlash()
     {
         SetFlashColor(flashColor);
@@ -142,20 +126,45 @@ public class RangedEnemy : MonoBehaviour, IEnemy
 
             yield return new WaitForSeconds(0.5f);
 
-            SetFlashColor(initColor);
+            SetFlashColor(Color.white);
         }
     }
 
     private void SetFlashColor(Color color)
     {
-        spriteRenderer.color = color;
+        sprite.color = color;
     }
 
-    private void Attack()
+    static PlayerHealthSinglePlayer player;
+    bool isAttacking;
+    void OnTriggerStay2D(Collider2D other)
     {
-        //PlaySound(firingSound);
-        Instantiate(projectile, spriteRenderer.gameObject.transform.position, transform.rotation);
-        shotCooldown = startShotCooldown;
+        if (other.gameObject.tag == "Player" && !isAttacking)
+        {
+            //player.TakeDamage(damage);
+            StartCoroutine(nameof(Attack));
+        }
+    }
+
+    private void SetAttackingTrue()
+    {
+
+    }
+
+    private IEnumerator Attack()
+    {
+        isAttacking = true;
+        anim.SetBool("IsAttacking", true);
+        player.TakeDamage(damage);
+        yield return new WaitForSeconds(1f);
+        anim.SetBool("IsAttacking", false);
+        isAttacking = false;
+    }
+
+    [HideInInspector] public bool dropOnDeath { get; set; }
+    public void DropOnDeath(OnDeathDrop evtData)
+    {
+        Instantiate(evtData.drop, transform.position, Quaternion.identity);
     }
 
     public bool checkIfAlive
@@ -172,11 +181,25 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         this.currentHealth = healthValue;
     }
 
-    private float timeSinceLastShot;
+    public IEnumerator GotHit()
+    {
+        StartCoroutine(nameof(DamageFlash));
+        PlaySound(hitSound, 0.15f);
+        anim.SetBool("GotHit", true);
+        yield return new WaitForSeconds(1f);
+        anim.SetBool("GotHit", false);
+        //Debug.Log("Set to false");
+    }
+
+    private void PlaySound(AudioClip sound, float volume = 1f)
+    {
+        if (!SoundFXManager.Instance) return;
+        SoundFXManager.Instance.PlaySoundFXClip(sound, transform, volume);
+    }
+
     public void TakeDamage(float amount)
     {
-        PlaySound(hitSound, 0.15f);
-        StartCoroutine(nameof(DamageFlash));
+        StartCoroutine(nameof(GotHit));
         //FIRST CHECK IF THE BASE'S HEALTH IS BELOW 0
         if (currentHealth > 0)
             currentHealth -= amount;
@@ -186,19 +209,12 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         //THEN CHECK FOR ALL THE OTHER DAMAGE CONDITIONS
         _damageTaken += amount;
 
-        timeSinceLastShot = Time.deltaTime;
-
         DisplayHit(amount);
         healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
 
         //SLOW ENEMY
 
-    }
-
-    private void PlaySound(AudioClip sound, float volume = 1f)
-    {
-        if (!SoundFXManager.Instance) return;
-            SoundFXManager.Instance.PlaySoundFXClip(sound, transform, volume);
+        //FLASH COLOR ENEMY
     }
 
     public List<GameObject> hitDisplays = new List<GameObject>();
@@ -250,11 +266,13 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     {
         DropOnDeath();
         PlayParticleDefeat();
+        PlaySound(defeatSound, 0.1f);
         isAlive = false;
         //this.transform.parent.gameObject.SetActive(false);
         //Respawn(respawnTime);
-        PlaySound(defeatSound, 0.1f);
         Destroy(this.transform.parent.gameObject);
+
+        //IDEALLY, we move this to the interface
         UpdateEnemiesKilled();
     }
 

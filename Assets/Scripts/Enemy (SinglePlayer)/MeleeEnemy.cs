@@ -61,6 +61,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         anim = GetComponent<Animator>();
         agent = GetComponentInParent<NavMeshAgent>();
         sprite = GetComponent<SpriteRenderer>();
+        initColor = sprite.color;
         agent.updateRotation = false;
         agent.updateUpAxis = false;
 
@@ -112,6 +113,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
             sprite.flipX = true;
     }
 
+    Color initColor;
     private IEnumerator DamageFlash()
     {
         SetFlashColor(flashColor);
@@ -126,7 +128,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
 
             yield return new WaitForSeconds(0.5f);
 
-            SetFlashColor(Color.white);
+            SetFlashColor(initColor);
         }
     }
 
