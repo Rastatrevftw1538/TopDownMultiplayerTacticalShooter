@@ -236,7 +236,7 @@ public class WeaponSinglePlayer : MonoBehaviour
                 default:
                     endPoint = firePoint.position + (spreadDirection * fireRange);
                     break;
-            }
+            }  
         }
         endPoint = hit.point;
         RpcOnFire(hit, spreadDirection, endPoint, whatWasHit, onBeat);

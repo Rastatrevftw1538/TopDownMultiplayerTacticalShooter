@@ -12,11 +12,13 @@ public class WaveManager : Singleton<WaveManager>
     public GameObject currentSpawnArea;
     public GameObject currentLevelDoor;
 
-    [Header("Wave Statistics")]
+    [Header("Debug")]
     public int currentWave;
     public float spawnInterval;
     public float enemiesKilled;
     public int currentLevel;
+    public bool pauseWaves;
+
 
     //CAMERA STUFF
     private GameObject clientCamera;
@@ -48,6 +50,8 @@ public class WaveManager : Singleton<WaveManager>
     public bool toBuffer = true;
     void Update()
     {
+        if (pauseWaves) { return; }
+
         if(currentLevel >= levels.Count)
         {
             UIManager.Instance.ShowVictory();
