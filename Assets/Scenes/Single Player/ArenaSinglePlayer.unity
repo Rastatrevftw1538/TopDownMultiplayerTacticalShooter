@@ -746,10 +746,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1622067067}
     - target: {fileID: 182548884, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
-      propertyPath: waveToTalk
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 182548884, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
       propertyPath: completeToCont
       value: 1
       objectReference: {fileID: 0}
@@ -761,10 +757,6 @@ PrefabInstance:
       propertyPath: dialogueController
       value: 
       objectReference: {fileID: 1591792823}
-    - target: {fileID: 182548884, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
-      propertyPath: <CompleteToCont>k__BackingField
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8616342455689032812, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
       propertyPath: m_RootOrder
       value: 16
@@ -4001,6 +3993,14 @@ PrefabInstance:
       propertyPath: gameSongs.Array.data[5]
       value: 
       objectReference: {fileID: 8300000, guid: 34dfa87a85550264288badb4ea7fe639, type: 3}
+    - target: {fileID: 2018068236926679293, guid: f5277543a39370447b60963d8daa1e7d, type: 3}
+      propertyPath: lowPitchRng
+      value: -1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2018068236926679293, guid: f5277543a39370447b60963d8daa1e7d, type: 3}
+      propertyPath: highPitchRng
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3513524578336109779, guid: f5277543a39370447b60963d8daa1e7d, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -4047,6 +4047,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3513524578336109788, guid: f5277543a39370447b60963d8daa1e7d, type: 3}
       propertyPath: Loop
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3513524578336109788, guid: f5277543a39370447b60963d8daa1e7d, type: 3}
+      propertyPath: m_Pitch
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3513524578336109790, guid: f5277543a39370447b60963d8daa1e7d, type: 3}

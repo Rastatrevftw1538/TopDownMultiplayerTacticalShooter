@@ -898,13 +898,14 @@ MonoBehaviour:
   _interactSprite: {fileID: 3994505487010415125}
   _playerTransform: {fileID: 0}
   waveCheck: {fileID: 0}
-  waveToTalk: 0
+  waveToTalk: 1
   dialogueText: {fileID: 11400000, guid: 9ad6687ead43bf948a7f1cc60118abbc, type: 2}
   dialogueController: {fileID: 0}
   talkDistance: 5
   canInteract: 1
   <Key>k__BackingField: 32
   <CharacterTalkSprite>k__BackingField: {fileID: 21300000, guid: e97c281c2b86a43acae125a1afe8c7fb, type: 3}
+  <CompleteToCont>k__BackingField: 1
 --- !u!58 &7345013904348664103
 CircleCollider2D:
   m_ObjectHideFlags: 0
