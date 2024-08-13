@@ -67,7 +67,7 @@ public class TalkableMeleeEnemy : Sentient, ITalkable
     public override void Interact()
     {
         StartedConvo = true;
-        Debug.LogError("interacting...");
+        //Debug.LogError("interacting...");
         Talk(dialogueText);
     }
 
