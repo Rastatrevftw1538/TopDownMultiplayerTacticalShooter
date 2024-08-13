@@ -17,6 +17,7 @@ public class UIManager : Singleton<UIManager>
     public AudioClip defeatSound;
     public AudioClip victorySound;
     public Volume postProcessing;
+    //public UIArrowToShow arrowToPoint;
 
     public float points;
 
@@ -29,13 +30,19 @@ public class UIManager : Singleton<UIManager>
     {
         SetPoints(0f);
         postProcessing = GetComponent<Volume>();
-        
+        //arrowToPoint = GetComponent<UIArrowToShow>();
     }
 
     void FixedUpdate()
     {
 
     }
+
+    /*public void SetArrowTarget(GameObject arrowTrgt)
+    {
+        arrowToPoint.enabled = true;
+        arrowToPoint.SetArrowTarget(arrowTrgt);
+    }*/
 
     public void ChangeWaveNumber(float num)
     {
