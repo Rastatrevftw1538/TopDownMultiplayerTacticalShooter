@@ -309,7 +309,9 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
     private void CmdMove(UnityEngine.Vector2 movement)
     {
         //RpcMove(movement);
-        transform.Translate(movement * Time.fixedDeltaTime);
+        //transform.Translate(movement * Time.fixedDeltaTime);
+        UnityEngine.Vector3 moveVector = runSpeed * Time.fixedDeltaTime * Time.timeScale * transform.TransformDirection(movement);
+        rb.velocity = new UnityEngine.Vector2(moveVector.x, moveVector.y);
     }
     private void CmdRotate(UnityEngine.Quaternion rotation)
     {
@@ -319,7 +321,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
 
     private void RpcMove(UnityEngine.Vector2 movement)
     {
-        transform.Translate(movement * Time.fixedDeltaTime);
+        transform.Translate(movement * Time.fixedDeltaTime * Time.timeScale);
         //transform.Translate(movement * Time.deltaTime);
     }
 

@@ -91,7 +91,9 @@ public class WaveManager : Singleton<WaveManager>
         {
             //COMPLETED LEVEL
             toBuffer = true;
-            currentLevel++;
+
+            if(currentLevel+1 < levels.Count)
+                currentLevel++;
             currentWave = 0;
 
             Debug.LogError("Completed this level...");
@@ -196,8 +198,11 @@ public class WaveManager : Singleton<WaveManager>
         UIManager.Instance.ChangeWaveNumber(currentWave + 1);
         UpdateEnemiesLeft();
 
-        levels[currentLevel].PlaySpawnSound(currentSpawnArea.transform);
-        levels[currentLevel].waves[currentWave].GenerateEnemies(currentSpawnArea);
+        if (currentSpawnArea)
+        {
+            levels[currentLevel].PlaySpawnSound(currentSpawnArea.transform);
+            levels[currentLevel].waves[currentWave].GenerateEnemies(currentSpawnArea);
+        }
     }
 
     private bool CheckLevelCompletion()

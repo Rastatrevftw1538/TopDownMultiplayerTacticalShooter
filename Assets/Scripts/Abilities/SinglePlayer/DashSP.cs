@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Mirror;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 
 [CreateAssetMenu(menuName = "Player Abilities/Movement/DashSP")]
 public class DashSP : MovementAbility
@@ -17,18 +17,21 @@ public class DashSP : MovementAbility
     [Header("Ability Stats")]
     public float dashVelocity;
     public float speedMultiplier;
+    public GameObject dashParticles;
     public AudioClip dashAudio;
 
     private CircleCollider2D aura;
+    PlayerScriptSinglePlayer player;
 
     public override void Activate(GameObject parent){
-        PlayerScriptSinglePlayer player = parent.GetComponent<PlayerScriptSinglePlayer>();
+        if(!player) player = parent.GetComponent<PlayerScriptSinglePlayer>();
         StartDash(parent);
         if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(dashAudio, player.gameObject.transform);
+        if (!dashParticles) return;
         //SpawnAura(player, true);
     }
 
-    public override void BeginCooldown(GameObject parent){
+    public override void BeginCooldown(GameObject parent){ 
         PlayerScriptSinglePlayer PlayerScriptSinglePlayer = parent.GetComponent<PlayerScriptSinglePlayer>();
         //SpawnAura(player, false);
         EndDash(parent);
@@ -37,7 +40,14 @@ public class DashSP : MovementAbility
     #region PLAYER-ABILITIES
     public void StartDash(GameObject parent)
     {
-        PlayerScriptSinglePlayer player = parent.GetComponent<PlayerScriptSinglePlayer>(); //REFERENCE TO THE PLAYER SCRIPT ACTIVE IN THE SCENE
+        if (!player) player = parent.GetComponent<PlayerScriptSinglePlayer>();
+
+        //if the player did not move while pressing the dash, dash in the direction they are looking
+        if (player.movement.magnitude <= 0)
+        {
+            UnityEngine.Vector3 moveVector = speedMultiplier * player.runSpeed * Time.fixedDeltaTime * Time.timeScale * player.transform.TransformDirection(player.transform.forward);
+            player.rb.AddForce(new UnityEngine.Vector2(moveVector.x, moveVector.y));
+        }
 
         //DETERMINE WHICH APPLICATION TYPE TO USE
         if(applicationType == ApplicationType.SET_SPEED) //SET SPEED
@@ -55,18 +65,21 @@ public class DashSP : MovementAbility
         
     }
     //[ClientRpc]
+    GameObject particlesTemp = null;
     void DoPretty(GameObject player)
     {
+        if(dashParticles != null) particlesTemp = Instantiate(dashParticles, player.transform.position, Quaternion.identity);
         TrailRenderer tr = player.GetComponent<TrailRenderer>();
         tr.emitting = true;
     }
 
     public void EndDash(GameObject parent)
     {
-        PlayerScriptSinglePlayer player = parent.GetComponent<PlayerScriptSinglePlayer>(); //REFERENCE TO THE PLAYER SCRIPT ACTIVE IN THE SCENE
+        if (!player) player = parent.GetComponent<PlayerScriptSinglePlayer>();
         player.runSpeed = player.runSpeedNormal;
         player.walkSpeed = player.walkSpeedNormal;
 
+        if (particlesTemp != null) Destroy(particlesTemp, 0.3f);
         TrailRenderer tr = parent.GetComponent<TrailRenderer>();
         tr.emitting = false;
     }
