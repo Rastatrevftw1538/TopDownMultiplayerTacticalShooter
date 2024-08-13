@@ -31,6 +31,7 @@ public class UIArrowToShow : MonoBehaviour
         {
             uiCamera = GameObject.FindWithTag("UI Camera").GetComponent<Camera>();
         }
+        if (!target) this.enabled = false;
 
         Vector3 targetPositionScreenPoint = uiCamera.WorldToScreenPoint(target.position);
         bool isOffScreen = targetPositionScreenPoint.x <= borderSize || targetPositionScreenPoint.x >= Screen.width - borderSize || targetPositionScreenPoint.y <= borderSize || targetPositionScreenPoint.y >= Screen.height - borderSize;

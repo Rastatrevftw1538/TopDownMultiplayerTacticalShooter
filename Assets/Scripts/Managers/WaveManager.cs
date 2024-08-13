@@ -54,10 +54,15 @@ public class WaveManager : Singleton<WaveManager>
 
         if(currentLevel >= levels.Count)
         {
+            currentLevel = 0;
+            currentWave = 0;
+            toBuffer = true;
             UIManager.Instance.ShowVictory();
+            Destroy(this);
             Destroy(this.gameObject);
             return;
         }
+
         if (toBuffer)
         {
             return;
@@ -86,24 +91,6 @@ public class WaveManager : Singleton<WaveManager>
         //Debug.LogError(levels[currentLevel].waves.Count);
         //Debug.LogError("You need to kill: " + levels[currentLevel].waves[currentWave].AmtEnemies() + " enemies to advance to the next wave.");
         StartCoroutine(nameof(CheckWave));
- 
-        if(!toBuffer && CheckLevelCompletion())
-        {
-            //COMPLETED LEVEL
-            toBuffer = true;
-
-            if (currentLevel + 1 <= levels.Count)
-                currentLevel++;
-            else
-                return;
-            currentWave = 0;
-
-            Debug.LogError("Completed this level...");
-            ShowArrow(); //UI ARROW POINTING TO THE NEXT LEVEL
-            SetLevelDoor(false);
-            firstWave = true;
-            //SPGameManager.Instance.EndedLevel();
-        }
     }
 
     void ShowArrow()
@@ -115,7 +102,6 @@ public class WaveManager : Singleton<WaveManager>
     private IEnumerator CheckWave()
     {
         yield return new WaitForEndOfFrame();
-
         //check if you are on the last enemy
 
         if (enemiesKilled >= levels[currentLevel].waves[currentWave].AmtEnemies() && (currentWave + 1 <= (levels[currentLevel].waves.Count)))
@@ -147,6 +133,24 @@ public class WaveManager : Singleton<WaveManager>
                     StartCoroutine(nameof(StartWaveCO));
                 }
             }
+        }
+
+        if (!toBuffer && CheckLevelCompletion())
+        {
+            //COMPLETED LEVEL
+            toBuffer = true;
+
+            if (currentLevel <= levels.Count)
+                currentLevel++;
+            else
+                yield return null;
+            currentWave = 0;
+
+            Debug.LogError("Completed this level...");
+            ShowArrow(); //UI ARROW POINTING TO THE NEXT LEVEL
+            SetLevelDoor(false);
+            firstWave = true;
+            //SPGameManager.Instance.EndedLevel();
         }
     }
 
@@ -213,6 +217,7 @@ public class WaveManager : Singleton<WaveManager>
     private bool CheckLevelCompletion()
     {
         //Debug.LogError("Checking level completion...");
+        if(levels.Count == 0) return false;
         bool complete = true;
         foreach(Wave wave in levels[currentLevel].waves)
         {

@@ -20,8 +20,10 @@ public class DialogueController : MonoBehaviour
     public void DisplayNextParagraph(DialogueText dialogueText, ITalkable NPC, Sprite charSprite)
     {
         Cursor.visible = true;
+        Time.timeScale = 0f;
         characterSprite.sprite = charSprite;
         SetSelf(true);
+
         //if there's nothing in the paragraph queue
         if (paragraphs.Count == 0)
         {
@@ -57,6 +59,7 @@ public class DialogueController : MonoBehaviour
     public void DisplayNextParagraph()
     {
         Cursor.visible = true;
+        Time.timeScale = 0f;
         /*NPCDialogueText.text = paragraphs.Dequeue();
         if (paragraphs.Count == 0)
         {
@@ -78,6 +81,7 @@ public class DialogueController : MonoBehaviour
     private void StartConversation(DialogueText dialogueText)
     {
         Cursor.visible = true;
+        Time.timeScale = 0f;
         //activate a DialogueText game object
         if (!gameObject.activeSelf)
         {
@@ -104,6 +108,7 @@ public class DialogueController : MonoBehaviour
     IEnumerator EndConversation()
     {
         Cursor.visible = false;
+        Time.timeScale = 1f;
         //clear the queue
         paragraphs.Clear();
 
@@ -133,6 +138,7 @@ public class DialogueController : MonoBehaviour
     private void EndConversation(DialogueText dialogueText)
     {
         Cursor.visible = false;
+        Time.timeScale = 1f;
         //clear the queue
         paragraphs.Clear();
 
