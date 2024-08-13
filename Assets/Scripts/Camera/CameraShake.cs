@@ -1,11 +1,14 @@
 using UnityEngine;
 using System.Collections;
+using Cinemachine;
 
 public class CameraShake : MonoBehaviour
 {
 	// Transform of the camera to shake. Grabs the gameObject's transform
 	// if null.
 	public Transform camTransform;
+	private CinemachineVirtualCamera cinemachine;
+	private NoiseSettings noiseSettings;
 
 	// How long the object should shake for.
 	public float shakeDuration = 0.8f;
@@ -21,11 +24,13 @@ public class CameraShake : MonoBehaviour
 		if (camTransform == null)
 		{
 			camTransform = GetComponent(typeof(Transform)) as Transform;
+			cinemachine = GetComponentInChildren<CinemachineVirtualCamera>();
 		}
 	}
 
 	void OnEnable()
 	{
+		//noiseSettings = cinemachine.AddExtension<NoiseSettings>();
 		originalPos = camTransform.localPosition;
 		StartCoroutine(QuickEnable());
 	}

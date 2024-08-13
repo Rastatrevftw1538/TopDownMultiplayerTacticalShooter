@@ -12,12 +12,18 @@ public class PauseMenu : Singleton<PauseMenu>
     private bool _isPaused;
     private AudioSource _audioSource;
     private AudioLowPassFilter _audioLowPassFilter;
+    private CameraShake cameraShake;
     void Awake()
     {
         //_audioSource = GetComponent<AudioSource>();
         //_audioLowPassFilter = GetComponent<AudioLowPassFilter>();
         _isPaused = false;
         pauseMenu.SetActive(false);
+    }
+
+    private void Start()
+    {
+        cameraShake = Camera.main.transform.GetComponent<CameraShake>();
     }
 
     private void Update()
@@ -33,7 +39,7 @@ public class PauseMenu : Singleton<PauseMenu>
     {
         //if (!bpmManager) bpmManager = FindObjectOfType<BPMManager>();
         //bpmManager.audioSource.Stop();
-        StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.0f, 0.0f));
+        StartCoroutine(cameraShake.CustomCameraShake(0.0f, 0.0f));
         PauseMusicEffect(true);
         _isPaused = true;
         pauseMenu.SetActive(true);

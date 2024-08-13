@@ -18,6 +18,7 @@ public class UIManager : Singleton<UIManager>
     public AudioClip defeatSound;
     public AudioClip victorySound;
     public Volume postProcessing;
+    private CameraShake cameraShake;
     //public UIArrowToShow arrowToPoint;
 
     public float points;
@@ -32,11 +33,12 @@ public class UIManager : Singleton<UIManager>
         SetPoints(0f);
         postProcessing = GetComponent<Volume>();
         //arrowToPoint = GetComponent<UIArrowToShow>();
+        cameraShake = Camera.main.transform.GetComponent<CameraShake>();
     }
 
     void FixedUpdate()
     {
-
+        
     }
 
     /*public void SetArrowTarget(GameObject arrowTrgt)
@@ -107,7 +109,7 @@ public class UIManager : Singleton<UIManager>
         if (BPMManager.Instance) BPMManager.Instance.audioSource.Stop();
         PlaySound(defeatSound, 0.3f);
         defeatScreen.SetActive(true);
-        StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.0f, 0.0f));
+        StartCoroutine(cameraShake.CustomCameraShake(0.0f, 0.0f));
         Time.timeScale = 0.0f;
     }
 
@@ -127,7 +129,7 @@ public class UIManager : Singleton<UIManager>
 
         if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
         bpmManager.audioSource.Stop();
-        StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.0f, 0.0f));
+        StartCoroutine(cameraShake.CustomCameraShake(0.0f, 0.0f));
         Cursor.visible = true;
         SetPoints(0);
         PlaySound(victorySound, 0.3f);

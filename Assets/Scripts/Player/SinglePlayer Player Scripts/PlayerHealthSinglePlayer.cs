@@ -95,14 +95,16 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
         StartCoroutine(nameof(DamageFlash));
     }
 
+    CameraShake cameraShake;
 
     private IEnumerator DamageFlash()
     {
+        if(!cameraShake) cameraShake = Camera.main.transform.GetComponent<CameraShake>();
         //iframes
         Invoke(nameof(SetCanHitTrue), iFrames);
 
         //camera shake
-        StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.1f, 0.2f));
+        StartCoroutine(cameraShake.CustomCameraShake(0.1f, 0.2f));
 
         SetFlashColor(flashColor);
         float currentFlashAmt = 0f;

@@ -180,12 +180,12 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
         #region PC MOVEMENT
         if (deviceType == SetDeviceType.PC)
         {
-            if (!playerCamera)
-            {
-                playerCamera = GameObject.Find("ClientCamera").GetComponent<Camera>();
-                print("Camera Set");
+            //if (!playerCamera)
+            //{
+                //playerCamera = GameObject.Find("ClientCamera").GetComponent<Camera>();
+                //print("Camera Set");
                 //playerCamera.cullingMask += LayerMask.GetMask("Objects");
-            }
+            //}
             if (Input.GetKey(KeyCode.LeftShift))
             {
                 isRunning = true;
@@ -231,8 +231,8 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
             }
 
             UnityEngine.Vector3 mousePosition = Input.mousePosition;
-            mousePosition.z = (playerCamera.transform.position.z);
-            UnityEngine.Vector3 mouseWorldPosition = playerCamera.ScreenToWorldPoint(mousePosition);
+            mousePosition.z = (Camera.main.transform.position.z);
+            UnityEngine.Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
             UnityEngine.Vector3 aimDirection = mouseWorldPosition - transform.position;
             rotation = UnityEngine.Quaternion.LookRotation(UnityEngine.Vector3.forward, aimDirection);
             //print(rotation);

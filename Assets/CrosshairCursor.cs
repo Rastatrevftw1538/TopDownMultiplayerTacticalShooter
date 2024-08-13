@@ -7,7 +7,7 @@ public class CrosshairCursor : MonoBehaviour
 {
     // Start is called before the first frame update
     //public Sprite mouseSprite;
-    private Camera playerCamera;
+    //private Camera playerCamera;
     void Start()
     {
         Cursor.visible = false;
@@ -20,10 +20,10 @@ public class CrosshairCursor : MonoBehaviour
     void Update()
     {
         //terrible i know
-        if(!playerCamera) playerCamera = GameObject.Find("ClientCamera").GetComponent<Camera>();
+        //if(!playerCamera) playerCamera = GameObject.Find("ClientCamera").GetComponent<Camera>();
 
-        Vector3 mouseCursorPos = playerCamera.ScreenToWorldPoint(Input.mousePosition );
-        mouseCursorPos.z = playerCamera.transform.position.z + Camera.main.nearClipPlane;
+        Vector3 mouseCursorPos = Camera.main.ScreenToWorldPoint(Input.mousePosition );
+        mouseCursorPos.z = Camera.main.transform.position.z + Camera.main.nearClipPlane;
         //transform.position = new Vector3(mouseCursorPos.x, mouseCursorPos.y, 0);
         transform.position = mouseCursorPos;
     }
