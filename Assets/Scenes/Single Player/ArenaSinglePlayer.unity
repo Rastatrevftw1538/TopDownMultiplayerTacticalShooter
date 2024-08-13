@@ -3993,14 +3993,6 @@ PrefabInstance:
       propertyPath: gameSongs.Array.data[5]
       value: 
       objectReference: {fileID: 8300000, guid: 34dfa87a85550264288badb4ea7fe639, type: 3}
-    - target: {fileID: 2018068236926679293, guid: f5277543a39370447b60963d8daa1e7d, type: 3}
-      propertyPath: lowPitchRng
-      value: -1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2018068236926679293, guid: f5277543a39370447b60963d8daa1e7d, type: 3}
-      propertyPath: highPitchRng
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 3513524578336109779, guid: f5277543a39370447b60963d8daa1e7d, type: 3}
       propertyPath: m_RootOrder
       value: 3
