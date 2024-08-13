@@ -27,7 +27,7 @@ public class UIArrowToShow : MonoBehaviour
     float borderSize = 100f;
     void Update()
     {
-        Vector3 targetPositionScreenPoint = Camera.main.WorldToScreenPoint(target);
+        Vector3 targetPositionScreenPoint = uiCamera.WorldToScreenPoint(target);
         bool isOffScreen = targetPositionScreenPoint.x <= borderSize || targetPositionScreenPoint.x >= Screen.width - borderSize || targetPositionScreenPoint.y <= borderSize || targetPositionScreenPoint.y >= Screen.height - borderSize;
 
         if (isOffScreen)
@@ -41,14 +41,14 @@ public class UIArrowToShow : MonoBehaviour
             if (cappedTargetScreenPosition.y <= borderSize) cappedTargetScreenPosition.y = borderSize;
             if (cappedTargetScreenPosition.y >= Screen.height - borderSize) cappedTargetScreenPosition.y = Screen.height - borderSize;
 
-            Vector3 pointerWorldPosition = Camera.main.ScreenToWorldPoint(cappedTargetScreenPosition);
+            Vector3 pointerWorldPosition = uiCamera.ScreenToWorldPoint(cappedTargetScreenPosition);
             pointerRectTransform.position = pointerWorldPosition;
             pointerRectTransform.localPosition = new Vector3(pointerRectTransform.localPosition.x, pointerRectTransform.localPosition.y, 0f);
         }
         else
         {
             pointerImage.sprite = reachedSprite;
-            Vector3 pointerWorldPosition = Camera.main.ScreenToWorldPoint(targetPositionScreenPoint);
+            Vector3 pointerWorldPosition = uiCamera.ScreenToWorldPoint(targetPositionScreenPoint);
             pointerRectTransform.position = pointerWorldPosition;
             pointerRectTransform.localPosition = new Vector3(pointerRectTransform.localPosition.x, pointerRectTransform.localPosition.y, 0f);
 
@@ -59,7 +59,7 @@ public class UIArrowToShow : MonoBehaviour
     private void RotatePointerTowardsTargetPosition()
     {
         Vector3 toPosition = target;
-        Vector3 fromPosition = Camera.main.gameObject.transform.position;
+        Vector3 fromPosition = uiCamera.gameObject.transform.position;
         fromPosition.z = 0f;
         Vector3 dir = (toPosition - fromPosition).normalized;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
