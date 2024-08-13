@@ -94,10 +94,10 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
 
         playerBodyArms = GameObject.Find("PlayerBody - Arms").gameObject;
         //playerBodyArmsSkelSprite = playerBodyArms.transform.GetChild(0).GetComponent<SpriteRenderer>();
-        playerBodyArmsSkelSprite = GameObject.Find("Arms and Gun").GetComponent<SpriteRenderer>();
+        playerBodyArmsSkelSprite = playerBodyArms.transform.GetChild(0).Find("Arms and Gun").GetComponent<SpriteRenderer>();
         playerBodyBody = GameObject.Find("PlayerBody - Body").gameObject;
         playerBodyBodySkelSprite = playerBodyBody.transform.GetChild(0).GetComponent<SpriteRenderer>();
-        playerBodyHeadSprite = GameObject.Find("Head").gameObject.GetComponent<SpriteRenderer>();
+        playerBodyHeadSprite = playerBodyArms.transform.GetChild(0).Find("Head").gameObject.GetComponent<SpriteRenderer>();
 
         audioSource = GetComponent<AudioSource>();
     }
