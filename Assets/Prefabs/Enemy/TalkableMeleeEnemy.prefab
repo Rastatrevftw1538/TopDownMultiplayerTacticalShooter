@@ -864,7 +864,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8616342455689032812
 Transform:
   m_ObjectHideFlags: 0
@@ -905,7 +905,7 @@ MonoBehaviour:
   canInteract: 1
   <Key>k__BackingField: 32
   <CharacterTalkSprite>k__BackingField: {fileID: 21300000, guid: e97c281c2b86a43acae125a1afe8c7fb, type: 3}
-  <CompleteToCont>k__BackingField: 1
+  <CompleteToCont>k__BackingField: 0
 --- !u!58 &7345013904348664103
 CircleCollider2D:
   m_ObjectHideFlags: 0
