@@ -16,5 +16,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 032c3c3921e40764db18380ffa7d7970, type: 2}
   - {fileID: 11400000, guid: 376f19b2edbea844aaf11ac467eea1b9, type: 2}
   - {fileID: 11400000, guid: 5b68b8e7ff2ca044fa91b8214dfce22c, type: 2}
-  levelDoor: {fileID: 0}
+  - {fileID: 11400000, guid: bc99522c5c2f85348a70a5abb97d8641, type: 2}
   spawnSound: {fileID: 0}
