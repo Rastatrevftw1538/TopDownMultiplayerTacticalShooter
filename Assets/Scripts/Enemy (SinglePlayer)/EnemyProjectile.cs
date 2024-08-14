@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class EnemyProjectile : MonoBehaviour
 {
     [Header("Projectile Stats")]
@@ -10,6 +11,7 @@ public class EnemyProjectile : MonoBehaviour
     public float projectileLifeTime;
     private TrailRenderer trailRenderer;
     public List<AudioClip> shootSounds;
+    private Rigidbody2D rb;
 
     public GameObject particles;
 
@@ -22,13 +24,16 @@ public class EnemyProjectile : MonoBehaviour
         if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(shootSounds[rand], transform, 0.05f);
         trailRenderer = GetComponent<TrailRenderer>();
         trailRenderer.emitting = true;
+        rb = GetComponent<Rigidbody2D>();
         //particleSystem = GetComponent<ParticleSystem>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(speed * Vector2.up * Time.fixedDeltaTime * Time.timeScale);
+        //transform.Translate(speed * Vector2.up * Time.fixedDeltaTime * Time.timeScale);
+        UnityEngine.Vector3 moveVector = speed * Time.fixedDeltaTime * Time.timeScale * transform.TransformDirection(Vector2.up);
+        rb.velocity = new UnityEngine.Vector2(moveVector.x, moveVector.y);
         lifeTime += Time.deltaTime;
 
         if (lifeTime >= projectileLifeTime)

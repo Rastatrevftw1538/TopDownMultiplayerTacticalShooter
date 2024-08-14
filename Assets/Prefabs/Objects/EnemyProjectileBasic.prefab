@@ -101,7 +101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 518612a079159fd4fb819107c1dc1a80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1.8
+  speed: 450
   damage: 10
   projectileLifeTime: 2
   shootSounds:

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 731148143281714141}
   - component: {fileID: 731148143281714142}
   - component: {fileID: 4510372980745180515}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Points Buff
   m_TagString: Untagged
   m_Icon: {fileID: 0}
