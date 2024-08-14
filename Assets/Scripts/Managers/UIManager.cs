@@ -133,6 +133,7 @@ public class UIManager : Singleton<UIManager>
         {
             if (icon != null)
                 powerupUIIcon.sprite = icon;
+            powerupUIIcon.gameObject.SetActive(true);
 
             powerupCd = cdTime;
             powerupUICd.fillAmount = 1f;
@@ -145,7 +146,7 @@ public class UIManager : Singleton<UIManager>
     {
         if (lastType == CooldownType.Powerup)
         {
-            powerupUIIcon = null;
+            powerupUIIcon.gameObject.SetActive(false);
         }
     }
 
