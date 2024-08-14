@@ -660,10 +660,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1622067067}
     - target: {fileID: 182548884, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
-      propertyPath: completeToCont
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 182548884, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
       propertyPath: _playerTransform
       value: 
       objectReference: {fileID: 1254052292}
@@ -671,10 +667,6 @@ PrefabInstance:
       propertyPath: dialogueController
       value: 
       objectReference: {fileID: 1591792823}
-    - target: {fileID: 182548884, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
-      propertyPath: <CompleteToCont>k__BackingField
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8616342455689032812, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
       propertyPath: m_RootOrder
       value: 18
@@ -1915,7 +1907,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levels:
-  - {fileID: 11400000, guid: 67eafc6c3abbbe340b784205e0d8ba53, type: 2}
+  - {fileID: 11400000, guid: 4ca8613de84dc39449478303253b93f4, type: 2}
   - {fileID: 11400000, guid: 4ca8613de84dc39449478303253b93f4, type: 2}
   - {fileID: 11400000, guid: 4ca8613de84dc39449478303253b93f4, type: 2}
   currentSpawnArea: {fileID: 0}
@@ -2445,7 +2437,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2394459709698638205, guid: 0bcd236de2efac7489fc9be0082c975f, type: 3}
       propertyPath: m_SizeDelta.x
-      value: -113.883
+      value: -53.867
       objectReference: {fileID: 0}
     - target: {fileID: 2394459709698638205, guid: 0bcd236de2efac7489fc9be0082c975f, type: 3}
       propertyPath: m_SizeDelta.y
@@ -2453,11 +2445,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2394459709698638205, guid: 0bcd236de2efac7489fc9be0082c975f, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -21.702
+      value: 6.192993
       objectReference: {fileID: 0}
     - target: {fileID: 2394459709698638205, guid: 0bcd236de2efac7489fc9be0082c975f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000005722
+      value: 0.000005722046
       objectReference: {fileID: 0}
     - target: {fileID: 2394459709751441803, guid: 0bcd236de2efac7489fc9be0082c975f, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target

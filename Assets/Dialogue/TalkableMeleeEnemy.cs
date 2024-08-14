@@ -19,6 +19,7 @@ public class TalkableMeleeEnemy : Sentient, ITalkable
     {
         if(WaveManager.Instance) waveManager = WaveManager.Instance;
         TryCircle();
+        if(!dialogueController) dialogueController = FindObjectOfType<DialogueController>();
     }
 
     void TryCircle()
