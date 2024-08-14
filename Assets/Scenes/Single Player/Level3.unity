@@ -178,6 +178,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: Level 3 Holder
       objectReference: {fileID: 0}
+    - target: {fileID: 6764691266238914093, guid: 96ad03548ecfe04438241008192b08a9, type: 3}
+      propertyPath: m_SortingLayer
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6764691266238914093, guid: 96ad03548ecfe04438241008192b08a9, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1103779447
+      objectReference: {fileID: 0}
+    - target: {fileID: 6764691266695133196, guid: 96ad03548ecfe04438241008192b08a9, type: 3}
+      propertyPath: m_SortingLayer
+      value: -2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6764691266695133196, guid: 96ad03548ecfe04438241008192b08a9, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1133693717
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 96ad03548ecfe04438241008192b08a9, type: 3}
 --- !u!1 &6764691266300073054 stripped
