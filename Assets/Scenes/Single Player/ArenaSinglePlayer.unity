@@ -756,10 +756,10 @@ PrefabInstance:
     - target: {fileID: 182548884, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
       propertyPath: dialogueController
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1591792823}
     - target: {fileID: 182548884, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
       propertyPath: <CompleteToCont>k__BackingField
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8616342455689032812, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
       propertyPath: m_RootOrder
@@ -3385,6 +3385,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4689965918130982370, guid: 3866198bcdcce2a4092fd9de7adc6431, type: 3}
   m_PrefabInstance: {fileID: 4689965917076068692}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1591792823 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4689965918130982371, guid: 3866198bcdcce2a4092fd9de7adc6431, type: 3}
+  m_PrefabInstance: {fileID: 4689965917076068692}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6edc953df8845ca44bc91c2255252aaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1622067066
 GameObject:
   m_ObjectHideFlags: 0
@@ -3415,9 +3426,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levels:
-  - {fileID: 11400000, guid: 522ec6d3d53b112498ee0e2929c14121, type: 2}
-  - {fileID: 11400000, guid: 67eafc6c3abbbe340b784205e0d8ba53, type: 2}
-  - {fileID: 11400000, guid: b4c454c77fe8f9949b3e48e1b5e5065a, type: 2}
+  - {fileID: 11400000, guid: 4ca8613de84dc39449478303253b93f4, type: 2}
+  - {fileID: 11400000, guid: 4ca8613de84dc39449478303253b93f4, type: 2}
+  - {fileID: 11400000, guid: 4ca8613de84dc39449478303253b93f4, type: 2}
   currentSpawnArea: {fileID: 0}
   currentLevelDoor: {fileID: 0}
   currentWave: 0
@@ -4032,10 +4043,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3513524578336109788, guid: f5277543a39370447b60963d8daa1e7d, type: 3}
       propertyPath: Loop
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3513524578336109788, guid: f5277543a39370447b60963d8daa1e7d, type: 3}
-      propertyPath: m_Pitch
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3513524578336109790, guid: f5277543a39370447b60963d8daa1e7d, type: 3}
