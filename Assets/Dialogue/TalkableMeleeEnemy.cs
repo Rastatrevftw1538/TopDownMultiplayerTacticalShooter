@@ -66,7 +66,7 @@ public class TalkableMeleeEnemy : Sentient, ITalkable
             isConvoKeyPressed = false;
         }
 
-        if (waveToTalk-1 == waveManager.currentWave && !StartedConvo)
+        if (waveToTalk != -1  && (waveToTalk-1 == waveManager.currentWave) && !StartedConvo)
         {
             if (CompleteToCont)
             {

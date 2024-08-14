@@ -759,7 +759,7 @@ PrefabInstance:
       objectReference: {fileID: 1591792823}
     - target: {fileID: 182548884, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
       propertyPath: <CompleteToCont>k__BackingField
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8616342455689032812, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
       propertyPath: m_RootOrder
