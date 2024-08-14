@@ -14,6 +14,7 @@ public class StatusEffectData : ScriptableObject
     public float  activeTime;
     public bool isDOT;
     public bool isSlow;
+    public Sprite statusEffectSprite;
 
 
     //BASE EFFECT STUFF WE'LL MOVE LATER

@@ -5,6 +5,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.Rendering;
 using Cinemachine;
+using UnityEngine.UI;
 using UnityEngine.Rendering.Universal;
 using System;
 
@@ -19,7 +20,9 @@ public class UIManager : Singleton<UIManager>
     public UIArrowToShow uiArrowToTarget;
     public AudioClip defeatSound;
     public AudioClip victorySound;
-    public Volume postProcessing;
+    public GameObject powerupUI;
+    private Image powerupUICd;
+    private Image powerupUIIcon;
     public CinemachineImpulseListener impulseListener;
     private CinemachineVirtualCamera cinemachineCam;
     public bool shouldStartZoomed;
@@ -32,16 +35,28 @@ public class UIManager : Singleton<UIManager>
     public float waveFlashLength;
     public Color waveFlashColor;
 
+    [HideInInspector] public enum CooldownType
+    {
+        Powerup, Ability
+    }
+
     void Start()
     {
         SetPoints(0f);
-        postProcessing = GetComponent<Volume>();
+        //postProcessing = GetComponent<Volume>();
         //arrowToPoint = GetComponent<UIArrowToShow>();
+
+        powerupUIIcon = powerupUI.transform.GetChild(0).GetComponent<Image>();
+        powerupUICd = powerupUI.transform.GetChild(1).GetComponent<Image>();
+
         StartCoroutine(nameof(WorldZoomStart));
     }
 
+    float abilityCd;
+    float powerupCd;
     void Update()
     {
+        //camera start zoom
         if (!didZoom && shouldStartZoomed)
         {
             if (cinemachineCam.m_Lens.OrthographicSize >= initialOrtho)
@@ -51,6 +66,12 @@ public class UIManager : Singleton<UIManager>
                 cinemachineCam.m_Lens.OrthographicSize = initialOrtho;
                 didZoom = true;
             }
+        }
+
+        if(powerupCd >= 0)
+        {
+            powerupCd -= Time.deltaTime;
+            powerupUICd.fillAmount -= powerupCd * Time.deltaTime; 
         }
     }
 
@@ -101,6 +122,31 @@ public class UIManager : Singleton<UIManager>
             yield return new WaitForSeconds(waveFlashLength);
         }
         waveDisplay.color = tempColor;
+    }
+
+    CooldownType lastType;
+    public void StartCooldownUI(CooldownType type, Sprite icon, float cdTime)
+    {
+        lastType = type;
+        //SET THE SPRITE
+        if (type == CooldownType.Powerup)
+        {
+            if (icon != null)
+                powerupUIIcon.sprite = icon;
+
+            powerupCd = cdTime;
+            powerupUICd.fillAmount = 1f;
+        }
+
+        Invoke(nameof(ResetCooldownUI), cdTime);
+    }
+
+    private void ResetCooldownUI()
+    {
+        if (lastType == CooldownType.Powerup)
+        {
+            powerupUIIcon = null;
+        }
     }
 
     IEnumerator FlashEnemyRemaining()

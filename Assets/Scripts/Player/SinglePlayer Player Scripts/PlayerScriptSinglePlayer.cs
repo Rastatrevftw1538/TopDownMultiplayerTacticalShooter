@@ -4,6 +4,7 @@ using System.IO.Enumeration;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 [RequireComponent(typeof(PlayerHealthSinglePlayer))]
 public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEffectable
@@ -423,7 +424,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
         if (_statusEffectData != null)
         {
             if (_currentEffectTime >= _statusEffectData.activeTime) 
-            { 
+            {
                 RemoveEffect(); 
                 Debug.LogError("status effect expired"); 
                 ClearStatusEffects(); 
