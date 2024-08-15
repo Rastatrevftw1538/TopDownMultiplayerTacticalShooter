@@ -96,6 +96,10 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
     {
         //iframes
         Invoke(nameof(SetCanHitTrue), iFrames);
+
+        //camera shake
+        StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.1f, 0.5f));
+
         SetFlashColor(flashColor);
         float currentFlashAmt = 0f;
         float elapsedTime = 0f;

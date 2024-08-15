@@ -30,3 +30,4 @@ MonoBehaviour:
   applicationType: 1
   dashVelocity: 0
   speedMultiplier: 5
+  dashAudio: {fileID: 8300000, guid: a0a5b63f85bc7af40ba723b8fba7d16d, type: 3}
