@@ -14,7 +14,9 @@ TagManager:
   - LevelDoor
   - SpawnHolder
   - NPC
-  - DialogueBox
+  - Cinemachine Camera
+  - UI Camera
+  - Activator
   layers:
   - Default
   - TransparentFX
@@ -30,8 +32,8 @@ TagManager:
   - Grass
   - Metal
   - Concrete
-  - 
-  - 
+  - No Post
+  - Spotlights
   - 
   - 
   - 

@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99a1233420414ad4c883700797a49c8b, type: 3}
   m_Name: SinglePlayer Gun
   m_EditorClassIdentifier: 
-  shootSound: {fileID: 8300000, guid: de812cfb519929c4aad9d296f655c81d, type: 3}
+  shootSound: {fileID: 8300000, guid: 55ff7923f2fa8344c81294cb3dd2b58c, type: 3}
+  shootOnBeatSound: {fileID: 8300000, guid: d1cdea6b6732a5648a24483558b66103, type: 3}
   reloadSound: {fileID: 0}
   damagePerBullet: 20
-  fireRate: 0.1
+  fireRate: 0.2
   semiAuto: 1
   fireRange: 20
   numOfBulletsPerShot: 1

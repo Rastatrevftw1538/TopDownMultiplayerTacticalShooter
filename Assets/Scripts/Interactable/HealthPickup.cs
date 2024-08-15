@@ -6,6 +6,8 @@ public class HealthPickup : MonoBehaviour, IInteractable
 {
     [Header("Health Stats")]
     public float addHealth;
+    public float points;
+    public AudioClip pickupSound;
 
     [Header("Float Speed & Height")]
     public float floatSpeed;
@@ -19,8 +21,10 @@ public class HealthPickup : MonoBehaviour, IInteractable
 
     public void Interact()
     {
+        if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(pickupSound, transform);
         player.AddHealth(addHealth);
-        Debug.LogError("Picked up health.");
+        //Debug.LogError("Picked up health.");
+        if(UIManager.Instance) UIManager.Instance.AddPoints(points);
         Destroy(gameObject);
     }
 
@@ -31,7 +35,7 @@ public class HealthPickup : MonoBehaviour, IInteractable
         transform.position = new Vector3(pos.x, newY, pos.z);
     }
 
-    PlayerHealthSinglePlayer player;
+    static PlayerHealthSinglePlayer player;
     public void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Player")

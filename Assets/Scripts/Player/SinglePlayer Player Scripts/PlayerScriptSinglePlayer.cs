@@ -4,6 +4,7 @@ using System.IO.Enumeration;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 [RequireComponent(typeof(PlayerHealthSinglePlayer))]
 public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEffectable
@@ -94,10 +95,12 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
 
         playerBodyArms = GameObject.Find("PlayerBody - Arms").gameObject;
         //playerBodyArmsSkelSprite = playerBodyArms.transform.GetChild(0).GetComponent<SpriteRenderer>();
-        playerBodyArmsSkelSprite = GameObject.Find("Arms and Gun").GetComponent<SpriteRenderer>();
+        playerBodyArmsSkelSprite = playerBodyArms.transform.GetChild(0).Find("Arms and Gun").GetComponent<SpriteRenderer>();
         playerBodyBody = GameObject.Find("PlayerBody - Body").gameObject;
         playerBodyBodySkelSprite = playerBodyBody.transform.GetChild(0).GetComponent<SpriteRenderer>();
-        playerBodyHeadSprite = GameObject.Find("Head").gameObject.GetComponent<SpriteRenderer>();
+        playerBodyHeadSprite = playerBodyArms.transform.GetChild(0).Find("Head").gameObject.GetComponent<SpriteRenderer>();
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Start() {
@@ -178,12 +181,12 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
         #region PC MOVEMENT
         if (deviceType == SetDeviceType.PC)
         {
-            if (!playerCamera)
-            {
-                playerCamera = GameObject.Find("ClientCamera").GetComponent<Camera>();
-                print("Camera Set");
+            //if (!playerCamera)
+            //{
+                //playerCamera = GameObject.Find("ClientCamera").GetComponent<Camera>();
+                //print("Camera Set");
                 //playerCamera.cullingMask += LayerMask.GetMask("Objects");
-            }
+            //}
             if (Input.GetKey(KeyCode.LeftShift))
             {
                 isRunning = true;
@@ -212,7 +215,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
             if(movement.magnitude > 0)
             {
                 if (fxTimer >= fxCooldown) {
-                    CallSoundFXTerrain();
+                    //CallSoundFXTerrain();
                     fxTimer = 0;
                 }
                 else
@@ -229,8 +232,8 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
             }
 
             UnityEngine.Vector3 mousePosition = Input.mousePosition;
-            mousePosition.z = (playerCamera.transform.position.z);
-            UnityEngine.Vector3 mouseWorldPosition = playerCamera.ScreenToWorldPoint(mousePosition);
+            mousePosition.z = (Camera.main.transform.position.z);
+            UnityEngine.Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
             UnityEngine.Vector3 aimDirection = mouseWorldPosition - transform.position;
             rotation = UnityEngine.Quaternion.LookRotation(UnityEngine.Vector3.forward, aimDirection);
             //print(rotation);
@@ -289,9 +292,12 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
         //StateMachine.CurrentState.PhysicsUpdate();
     }
 
+    AudioSource audioSource;
     private void CallSoundFXTerrain()
     {
-        SoundFXManager.Instance.PlaySoundFXClip(GetFootStepAudio(), transform , 0.4f);
+        //SoundFXManager.Instance.PlaySoundFXClip(GetFootStepAudio(), transform);
+        if (!audioSource) return;
+            audioSource.PlayOneShot(GetFootStepAudio());
     }
 
     public void SetVelocity(float x, float y)
@@ -304,7 +310,9 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
     private void CmdMove(UnityEngine.Vector2 movement)
     {
         //RpcMove(movement);
-        transform.Translate(movement * Time.fixedDeltaTime);
+        //transform.Translate(movement * Time.fixedDeltaTime);
+        UnityEngine.Vector3 moveVector = runSpeed * Time.fixedDeltaTime * Time.timeScale * transform.TransformDirection(movement);
+        rb.velocity = new UnityEngine.Vector2(moveVector.x, moveVector.y);
     }
     private void CmdRotate(UnityEngine.Quaternion rotation)
     {
@@ -314,7 +322,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
 
     private void RpcMove(UnityEngine.Vector2 movement)
     {
-        transform.Translate(movement * Time.fixedDeltaTime);
+        transform.Translate(movement * Time.fixedDeltaTime * Time.timeScale);
         //transform.Translate(movement * Time.deltaTime);
     }
 
@@ -365,6 +373,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
 
     public void RemoveEffect()
     {
+        //Debug.LogError("Status effect expired...");
         _statusEffectData = null;
         _currentEffectTime = 0f;
         _nextTickTime = 0f;
@@ -383,7 +392,6 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
     //CALLS IT MULTIPLE TIMES
     private void CmdHandleEffect()
     {
-        Debug.LogError("Calls effect handling");
         if(_statusEffectData != null)
             HandleEffect();
     }
@@ -392,7 +400,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
     private void SetStatusEffectData(ApplyStatusEffects evtData)
     {
         //EvtSystem.EventDispatcher.RemoveListener<ApplyStatusEffects>(deleteListener);
-        Debug.LogError("Object recieved from event: " + evtData.player);
+        //Debug.LogError("Object recieved from event: " + evtData.player);
         RpcSetStatusEffectData(evtData);
     }
 
@@ -407,8 +415,8 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
 
     }
 
-    PlayerHealth playerHealth;
-    Weapon weapon;
+    PlayerHealthSinglePlayer playerHealth;
+    WeaponSinglePlayer weapon;
     public void HandleEffect()
     {
         _currentEffectTime += Time.deltaTime;
@@ -416,9 +424,9 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
         if (_statusEffectData != null)
         {
             if (_currentEffectTime >= _statusEffectData.activeTime) 
-            { 
+            {
                 RemoveEffect(); 
-                Debug.LogError("status effect expired"); 
+                //Debug.LogError("status effect expired"); 
                 ClearStatusEffects(); 
             }
 
@@ -432,23 +440,23 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
 
                     if (_statusEffectData.statusEffectType == StatusEffectTypes.DOT)
                     {
-                        Debug.LogError("DOT Effect");
+                        //Debug.LogError("DOT Effect");
 
                         if (playerHealth == null)
-                            playerHealth = GetComponent<PlayerHealth>();
+                            playerHealth = GetComponent<PlayerHealthSinglePlayer>();
 
                         ApplyDOT(playerHealth);
                     }
-                    else if(_statusEffectData.statusEffectType == StatusEffectTypes.STRENGTH_BUFF)
+                    else if (_statusEffectData.statusEffectType == StatusEffectTypes.STRENGTH_BUFF)
                     {
-                        Debug.LogError("Weapon Buff");
+                        //Debug.LogError("Weapon Buff");
 
-                        if(weapon == null)
-                            weapon = GetComponent<Weapon>();
+                        if (weapon == null)
+                            weapon = GetComponent<WeaponSinglePlayer>();
 
 
                         //SUPER HARD CODED FOR NOWWW, IT'S OKAY
-                        Debug.LogError("THE NAME OF THE EFFECT IS: " + _statusEffectData.Name);
+                        //Debug.LogError("THE NAME OF THE EFFECT IS: " + _statusEffectData.Name);
 
                         if (!hasApplied)
                         {
@@ -456,45 +464,47 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
                             {
                                 case "Damage Buff":
                                     ApplyDamageBuff(weapon);
-                                    Debug.LogError("dmg");
+                                    //Debug.LogError("dmg");
                                     break;
                                 case "Bonus Points":
                                     BonusPointsBuff(weapon);
-                                    Debug.LogError("bonus");
+                                    //Debug.LogError("bonus");
                                     break;
                                 case "Bullet Count":
                                     BulletCountBuff(weapon);
-                                    Debug.LogError("BC");
+                                    //Debug.LogError("BC");
                                     break;
                                 case "Fire Range":
                                     FireRangeBuff(weapon);
-                                    Debug.LogError("FRange");
+                                    //Debug.LogError("FRange");
                                     break;
                                 case "Fire Rate":
                                     FireRateBuff(weapon);
-                                    Debug.LogError("Frate");
+                                    //Debug.LogError("Frate");
                                     break;
                                 case "Num of Shots":
                                     NumOfShotsBuff(weapon);
-                                    Debug.LogError("numOf");
+                                    //Debug.LogError("numOf");
                                     break;
                                 case "Reload":
                                     ReloadBuff(weapon);
-                                    Debug.LogError("reload");
+                                    //Debug.LogError("reload");
                                     break;
                                 default:
                                     ApplyDamageBuff(weapon);
-                                    Debug.LogError("DEFAULT");
+                                    //Debug.LogError("DEFAULT");
                                     break;
                             }
                         }
                     }
-                    else if(_statusEffectData.statusEffectType == StatusEffectTypes.MOVEMENT)
+                    else if (_statusEffectData.statusEffectType == StatusEffectTypes.MOVEMENT)
                     {
-                        Debug.LogError("Movement Buff");
+                        //Debug.LogError("Movement Buff");
                     }
                     else
-                        Debug.LogError("nothing?");
+                    {
+                        
+                    }
                 }
 
                 //EvtSystem.EventDispatcher.AddListener<ApplyStatusEffects>(SetStatusEffectData);
@@ -502,7 +512,13 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
         }
     }
 
-    public void ApplyDOT(PlayerHealth playerHealthScript)
+    public string CurrentStatusEffect()
+    {
+        if (_statusEffectData == null) return "";
+        return _statusEffectData.Name;
+    }
+
+    public void ApplyDOT(PlayerHealthSinglePlayer playerHealthScript)
     {
         //CHECK IF YOU WERE TRYING TO HEAL, OR TO DAMAGE
         int posOrNeg = _statusEffectData.isDOT ? -1 : 1;
@@ -511,37 +527,37 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
     }
 
     bool hasApplied;
-    public void ApplyDamageBuff(Weapon weaponScript)
+    public void ApplyDamageBuff(WeaponSinglePlayer weaponScript)
     {
         hasApplied = true;
         weaponScript.damageMultiplier = _statusEffectData.damageBuff;
     }
-    public void ReloadBuff(Weapon weaponScript)
+    public void ReloadBuff(WeaponSinglePlayer weaponScript)
     {
         hasApplied = true;
         weaponScript.reloadTime *= (1 - _statusEffectData.reloadTime);
     }
-    public void FireRateBuff(Weapon weaponScript)
+    public void FireRateBuff(WeaponSinglePlayer weaponScript)
     {
         hasApplied = true;
         weaponScript.fireRate /= _statusEffectData.fireRate;
     }
-    public void FireRangeBuff(Weapon weaponScript)
+    public void FireRangeBuff(WeaponSinglePlayer weaponScript)
     {
         hasApplied = true;
         weaponScript.fireRange *= _statusEffectData.fireRange;
     }
-    public void BulletCountBuff(Weapon weaponScript)
+    public void BulletCountBuff(WeaponSinglePlayer weaponScript)
     {
         hasApplied = true;
         weaponScript.magSize += _statusEffectData.magSize;
     }
-    public void NumOfShotsBuff(Weapon weaponScript)
+    public void NumOfShotsBuff(WeaponSinglePlayer weaponScript)
     {
         hasApplied = true;
         weaponScript.numOfBulletsPerShot = _statusEffectData.numOfBulletsPerShot;
     }
-    public void BonusPointsBuff(Weapon weaponScript)
+    public void BonusPointsBuff(WeaponSinglePlayer weaponScript)
     {
         hasApplied = true;
         weaponScript.bonusPointsPerShot = _statusEffectData.bonusPointsPerShot;
@@ -571,7 +587,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
         if (weapon != null)
             weapon.damageMultiplier = 1;
 
-        Debug.LogError("Removed all ongoing status effects on Player: " + gameObject.name);
+        //Debug.LogError("Removed all ongoing status effects on Player: " + gameObject.name);
     }
     private void ClearStatusEffects()
     {
@@ -580,10 +596,10 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
         if (weapon != null)
         {
             weapon.damageMultiplier = 1;
-            Debug.LogError("SET WEAPON DAMAGE BACK TO 1X");
+            //Debug.LogError("SET WEAPON DAMAGE BACK TO 1X");
         }
 
-        Debug.LogError("Removed all ongoing status effects on Player: " + gameObject.name);
+        //Debug.LogError("Removed all ongoing status effects on Player: " + gameObject.name);
     }
     #endregion
 }

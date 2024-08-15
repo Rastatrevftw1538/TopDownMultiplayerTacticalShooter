@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Cinemachine;
 using static PlayerScriptSinglePlayer;
+using System.Net;
 
 [RequireComponent(typeof(PlayerScriptSinglePlayer))]
 public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
@@ -28,6 +30,7 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
     [Header("Flash Color")]
     public Color flashColor = Color.red;
     public float flashTime = 0.25f;
+    private CinemachineImpulseSource impulseSource;
 
     [Header("Player Sounds")]
     [SerializeField] private AudioClip gotHitAudio;
@@ -58,8 +61,14 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
         sprites = GetComponentsInChildren<SpriteRenderer>();
         healthbarInternal = GetComponentInChildren<Slider>();
         Anim = GetComponentInChildren<Animator>();
+        impulseSource = GetComponent<CinemachineImpulseSource>();
 
         currentHealth = maxHealth;
+    }
+
+    private void Start()
+    {
+        PlaySound(spawnAudio, 0.4f);
     }
 
     public void AddHealth(float amount)
@@ -75,9 +84,8 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
     public void TakeDamage(float amount)
     {
         if (!canHit) return;
-        //CHECK IF THE DAMAGE PASSED IN WAS NEGATIVE, IF IT WAS, THIS FUNCTION WILL ADD HEALTH INSTEAD
-        amount = 
-            amount > 0 ? amount : amount * -1;
+
+        PlaySound(gotHitAudio);
 
         //subtract health
         currentHealth -= amount;
@@ -91,14 +99,13 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
         StartCoroutine(nameof(DamageFlash));
     }
 
-
     private IEnumerator DamageFlash()
     {
         //iframes
         Invoke(nameof(SetCanHitTrue), iFrames);
 
         //camera shake
-        StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.1f, 0.5f));
+        CameraShake.Instance.CustomCameraShake(impulseSource);
 
         SetFlashColor(flashColor);
         float currentFlashAmt = 0f;
@@ -153,12 +160,20 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
     }
     void RpcDie()
     {
+        PlaySound(diedAudio);
         // Stop player movement
         SetPlayerWep(false);
         isAlive = false;
 
         if(UIManager.Instance) UIManager.Instance.ShowDefeat();
     }
+
+    private void PlaySound(AudioClip sound, float volume = 1f)
+    {
+        if (!SoundFXManager.Instance) return;
+        SoundFXManager.Instance.PlaySoundFXClip(sound, transform, volume);
+    }
+
     private void RestoreHealth()
     {
         currentHealth = maxHealth;

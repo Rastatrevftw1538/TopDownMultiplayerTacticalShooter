@@ -1,0 +1,223 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-9013577986866052776
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 899c54efeace73346a0a16faa3afe726, type: 3}
+  m_Name: Vignette
+  m_EditorClassIdentifier: 
+  active: 1
+  color:
+    m_OverrideState: 1
+    m_Value: {r: 0.465559, g: 0, b: 1, a: 1}
+  center:
+    m_OverrideState: 0
+    m_Value: {x: 0.5, y: 0.5}
+  intensity:
+    m_OverrideState: 1
+    m_Value: 0.212
+  smoothness:
+    m_OverrideState: 1
+    m_Value: 0.145
+  rounded:
+    m_OverrideState: 0
+    m_Value: 0
+--- !u!114 &-8785380618776600980
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5485954d14dfb9a4c8ead8edb0ded5b1, type: 3}
+  m_Name: LiftGammaGain
+  m_EditorClassIdentifier: 
+  active: 1
+  lift:
+    m_OverrideState: 1
+    m_Value: {x: 0.9220586, y: 1, z: 0.9783084, w: 0}
+  gamma:
+    m_OverrideState: 1
+    m_Value: {x: 0.87560445, y: 0.8612838, z: 1, w: 0}
+  gain:
+    m_OverrideState: 1
+    m_Value: {x: 0.97804064, y: 1, z: 0.7278161, w: 0}
+--- !u!114 &-7650052433179940120
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 221518ef91623a7438a71fef23660601, type: 3}
+  m_Name: WhiteBalance
+  m_EditorClassIdentifier: 
+  active: 1
+  temperature:
+    m_OverrideState: 1
+    m_Value: 71
+  tint:
+    m_OverrideState: 1
+    m_Value: 20
+--- !u!114 &-3710537261745858627
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70afe9e12c7a7ed47911bb608a23a8ff, type: 3}
+  m_Name: SplitToning
+  m_EditorClassIdentifier: 
+  active: 1
+  shadows:
+    m_OverrideState: 1
+    m_Value: {r: 0.8768539, g: 0.40970984, b: 0.9339623, a: 1}
+  highlights:
+    m_OverrideState: 1
+    m_Value: {r: 0.54254186, g: 0.8813059, b: 0.9056604, a: 1}
+  balance:
+    m_OverrideState: 1
+    m_Value: -1
+--- !u!114 &-3267463922397030087
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 558a8e2b6826cf840aae193990ba9f2e, type: 3}
+  m_Name: ShadowsMidtonesHighlights
+  m_EditorClassIdentifier: 
+  active: 1
+  shadows:
+    m_OverrideState: 1
+    m_Value: {x: 0.8062923, y: 0.9190185, z: 1, w: -0.47904193}
+  midtones:
+    m_OverrideState: 1
+    m_Value: {x: 0.5258882, y: 0.99287224, z: 1, w: 0.35928142}
+  highlights:
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 0, z: 0.7938404, w: 0.38579953}
+  shadowsStart:
+    m_OverrideState: 1
+    m_Value: 0
+  shadowsEnd:
+    m_OverrideState: 1
+    m_Value: 0.3
+  highlightsStart:
+    m_OverrideState: 1
+    m_Value: 0.55
+  highlightsEnd:
+    m_OverrideState: 1
+    m_Value: 1
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
+  m_Name: Main Menu Post Process Profile
+  m_EditorClassIdentifier: 
+  components:
+  - {fileID: -3267463922397030087}
+  - {fileID: 199208997117599909}
+  - {fileID: 1565067058984356650}
+  - {fileID: -3710537261745858627}
+  - {fileID: -9013577986866052776}
+  - {fileID: -7650052433179940120}
+  - {fileID: -8785380618776600980}
+  - {fileID: 5116081111102036523}
+--- !u!114 &199208997117599909
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b2db86121404754db890f4c8dfe81b2, type: 3}
+  m_Name: Bloom
+  m_EditorClassIdentifier: 
+  active: 1
+  threshold:
+    m_OverrideState: 1
+    m_Value: 0.73
+  intensity:
+    m_OverrideState: 1
+    m_Value: 11.32
+  scatter:
+    m_OverrideState: 1
+    m_Value: 0.872
+  clamp:
+    m_OverrideState: 1
+    m_Value: 65476.96
+  tint:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 0, b: 0.8768306, a: 1}
+  highQualityFiltering:
+    m_OverrideState: 1
+    m_Value: 1
+  skipIterations:
+    m_OverrideState: 0
+    m_Value: 0
+  dirtTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 2800000, guid: de1b95d3444c8b145ba0dc400c9860b8, type: 3}
+  dirtIntensity:
+    m_OverrideState: 1
+    m_Value: 292
+--- !u!114 &1565067058984356650
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81180773991d8724ab7f2d216912b564, type: 3}
+  m_Name: ChromaticAberration
+  m_EditorClassIdentifier: 
+  active: 1
+  intensity:
+    m_OverrideState: 1
+    m_Value: 0.294
+--- !u!114 &5116081111102036523
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb60a22f311433c4c962b888d1393f88, type: 3}
+  m_Name: PaniniProjection
+  m_EditorClassIdentifier: 
+  active: 1
+  distance:
+    m_OverrideState: 1
+    m_Value: 0.513
+  cropToFit:
+    m_OverrideState: 1
+    m_Value: 0.336

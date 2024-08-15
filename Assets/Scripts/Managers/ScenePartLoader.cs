@@ -19,7 +19,6 @@ public class ScenePartLoader : MonoBehaviour
     private bool shouldLoad;
     void Awake()
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
         //verify if the scene is already open to avoid opening a scene twice
         if (SceneManager.sceneCount > 0)
         {
@@ -32,6 +31,7 @@ public class ScenePartLoader : MonoBehaviour
                 }
             }
         }
+        SceneManager.sceneLoaded += OnSceneLoaded;
         player = GameObject.FindWithTag("Player").transform;
     }
 
@@ -84,23 +84,26 @@ public class ScenePartLoader : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "ArenaSinglePlayer") return;
+        if (!WaveManager.Instance) return;
+        if (scene.name == "ArenaSinglePlayer" || isLoaded || WaveManager.Instance.startedRoutine) return;
+        //Debug.LogError(scene.name);
 
         //Debug.LogError("loaded scene called from " + this.gameObject.name);
-        if(WaveManager.Instance != null && GameObject.FindGameObjectsWithTag("SpawnHolder").Length > 0)
+        if(GameObject.FindGameObjectsWithTag("SpawnHolder").Length > 0)
             WaveManager.Instance.currentSpawnArea = GameObject.FindGameObjectsWithTag("SpawnHolder")[GameObject.FindGameObjectsWithTag("SpawnHolder").Length-1];
 
         if (GameObject.FindGameObjectsWithTag("LevelDoor").Length > 0)
         {
             WaveManager.Instance.GetLevelDoor(GameObject.FindGameObjectsWithTag("LevelDoor")[GameObject.FindGameObjectsWithTag("LevelDoor").Length - 1]);
-            Debug.LogError("level door is object called: " + GameObject.FindGameObjectsWithTag("LevelDoor")[GameObject.FindGameObjectsWithTag("LevelDoor").Length - 1].name);
+            //Debug.LogError("level door is object called: " + GameObject.FindGameObjectsWithTag("LevelDoor")[GameObject.FindGameObjectsWithTag("LevelDoor").Length - 1].name);
         }
         else
         {
             //Debug.LogError("cannot find a level door...");
         }
         //WaveManager.Instance.StartWave(WaveManager.Instance.levels[WaveManager.Instance.currentLevel].waves[WaveManager.Instance.currentWave]);
-        if (WaveManager.Instance != null) WaveManager.Instance.toBuffer = false;
+         WaveManager.Instance.toBuffer = false;
+         WaveManager.Instance.StartWave();
         //Debug.LogError("buffer set to FALSE");
     }
 

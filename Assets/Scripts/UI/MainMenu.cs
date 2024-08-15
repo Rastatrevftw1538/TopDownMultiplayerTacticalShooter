@@ -8,9 +8,18 @@ public class MainMenu : MonoBehaviour
 {
     public GameObject menu;
     public GameObject loadingInterface;
+    public AudioClip clickSound;
+    public AudioClip clickPlaySound;
+    public AudioClip hoverSound;
     public Image loadingProgressBar;
+    private AudioSource audioSource;
     //List of the scenes to load from Main Menu
     List<AsyncOperation> scenesToLoad = new List<AsyncOperation>();
+
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
     public void StartGame()
     {
         HideMenu();
@@ -20,6 +29,21 @@ public class MainMenu : MonoBehaviour
         //Additive mode adds the Scene to the current loaded Scenes, in this case Gameplay scene
         //scenesToLoad.Add(SceneManager.LoadSceneAsync("Level1", LoadSceneMode.Additive));
         StartCoroutine(LoadingScreen());
+    }
+
+    public void PlayClickSound()
+    {
+        audioSource.PlayOneShot(clickSound, 0.8f);
+    }
+
+    public void PlayClickPlaySound()
+    {
+        audioSource.PlayOneShot(clickSound, 0.8f);
+    }
+
+    public void PlayHoverSound()
+    {
+        audioSource.PlayOneShot(hoverSound, 0.8f);
     }
 
     public void ReturnToMenu()

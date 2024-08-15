@@ -13,7 +13,7 @@ public interface IEnemy
     public AudioClip firingSound { get; set; }
     public AudioClip defeatSound { get; set; }
     public float dropChance { get; set; }
-    public GameObject dropObject {get;set;}
+    public List<GameObject> dropObjects {get;set;}
 
     void TakeDamage(float damage);
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.AI;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class MeleeEnemy : MonoBehaviour, IEnemy
 {
@@ -22,7 +23,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     [Header("Enemy Components")]
     [SerializeField] private Image healthbarExternal;
     [field: SerializeField] public float dropChance { get; set; }
-    [field: SerializeField] public GameObject dropObject { get; set; }
+    [field: SerializeField] public List<GameObject> dropObjects { get; set; }
 
     [Header("Debug")]
     [SerializeField] private float _damageTaken = 0;
@@ -36,6 +37,15 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     [field: SerializeField] public AudioClip movementSound { get; set; }
     [field: SerializeField] public AudioClip firingSound { get; set; }
     [field: SerializeField] public AudioClip defeatSound { get; set; }
+    [Header("Flash Color")]
+    public Color flashColor = Color.red;
+    public float flashTime = 0.25f;
+    private SpriteRenderer sprite;
+    public GameObject healthBar;
+    public GameObject defeatParticles;
+    public GameObject onBeatDefeatParticles;
+    static BPMManager bpmManager;
+
 
     private void Awake()
     {
@@ -50,6 +60,8 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         //agent = GetComponent<NavMashAgent>();
         anim = GetComponent<Animator>();
         agent = GetComponentInParent<NavMeshAgent>();
+        sprite = GetComponent<SpriteRenderer>();
+        initColor = sprite.color;
         agent.updateRotation = false;
         agent.updateUpAxis = false;
 
@@ -68,6 +80,11 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         {
             target = GameObject.FindWithTag("Player").transform;
         }
+
+        if (!bpmManager)
+        {
+            bpmManager = FindObjectOfType<BPMManager>();
+        }
     }
 
     private void Update()
@@ -81,17 +98,50 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         //transform.up = direction; //ROTATES THE ENEMY TO THE PLAYER 
 
         //attack
-
         if (agent.velocity.magnitude > 0)
         {
             PlaySound(movementSound, 0.5f);
         }
+        CheckFlip(agent.velocity.x);
+    }
+
+    void CheckFlip(float velocity)
+    {
+        if (velocity > 0)
+            sprite.flipX = false;
+        else
+            sprite.flipX = true;
+    }
+
+    Color initColor;
+    private IEnumerator DamageFlash()
+    {
+        SetFlashColor(flashColor);
+        float currentFlashAmt = 0f;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < flashTime)
+        {
+            elapsedTime += Time.deltaTime;
+
+            currentFlashAmt = Mathf.Lerp(1f, 0f, (elapsedTime / flashTime));
+
+            yield return new WaitForSeconds(0.5f);
+
+            SetFlashColor(initColor);
+        }
+    }
+
+    private void SetFlashColor(Color color)
+    {
+        sprite.color = color;
     }
 
     static PlayerHealthSinglePlayer player;
-    void OnTriggerEnter2D(Collider2D other)
+    bool isAttacking;
+    void OnTriggerStay2D(Collider2D other)
     {
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player" && !isAttacking)
         {
             //player.TakeDamage(damage);
             StartCoroutine(nameof(Attack));
@@ -105,11 +155,12 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
 
     private IEnumerator Attack()
     {
+        isAttacking = true;
         anim.SetBool("IsAttacking", true);
         player.TakeDamage(damage);
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(attackSpd);
         anim.SetBool("IsAttacking", false);
-
+        isAttacking = false;
     }
 
     [HideInInspector] public bool dropOnDeath { get; set; }
@@ -134,21 +185,22 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
 
     public IEnumerator GotHit()
     {
+        StartCoroutine(nameof(DamageFlash));
+        PlaySound(hitSound, 0.15f);
         anim.SetBool("GotHit", true);
         yield return new WaitForSeconds(1f);
         anim.SetBool("GotHit", false);
-        Debug.Log("Set to false");
+        //Debug.Log("Set to false");
     }
 
     private void PlaySound(AudioClip sound, float volume = 1f)
     {
         if (!SoundFXManager.Instance) return;
-        SoundFXManager.Instance.PlaySoundFXClip(sound, transform, 1f);
+        SoundFXManager.Instance.PlaySoundFXClip(sound, transform, volume);
     }
 
     public void TakeDamage(float amount)
     {
-        PlaySound(hitSound);
         StartCoroutine(nameof(GotHit));
         //FIRST CHECK IF THE BASE'S HEALTH IS BELOW 0
         if (currentHealth > 0)
@@ -165,10 +217,6 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         //SLOW ENEMY
 
         //FLASH COLOR ENEMY
-
-        //PLAY HIT SOUND
-        if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(hitSound, transform, 1f);
-
     }
 
     public List<GameObject> hitDisplays = new List<GameObject>();
@@ -211,24 +259,54 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     public void DropOnDeath()
     {
         int randDropProb = Random.Range(0, 100);
-
-        if (randDropProb <= dropChance)
-            Instantiate(dropObject, transform.position, Quaternion.identity);
+        int randDropIdx = Random.Range(0, dropObjects.Count);
+        if (randDropProb <= dropChance && dropObjects[randDropIdx])
+            Instantiate(dropObjects[randDropIdx], transform.position, Quaternion.identity);
     }
 
     void RpcDie()
     {
-
         DropOnDeath();
-
-        PlaySound(defeatSound);
+        PlayParticleDefeat();
+        PlaySound(defeatSound, 0.1f);
         isAlive = false;
         //this.transform.parent.gameObject.SetActive(false);
         //Respawn(respawnTime);
         Destroy(this.transform.parent.gameObject);
 
         //IDEALLY, we move this to the interface
-        if (WaveManager.Instance) WaveManager.Instance.enemiesKilled++;
+        UpdateEnemiesKilled();
+    }
+
+    void PlayParticleDefeat()
+    {
+        GameObject temp;
+        if (CheckBPM())
+        {
+            temp = Instantiate(onBeatDefeatParticles, transform.position, Quaternion.identity);
+        }
+        else
+        {
+            temp = Instantiate(defeatParticles, transform.position, Quaternion.identity);
+        }
+        Destroy(temp, 0.4f);
+    }
+
+    bool CheckBPM()
+    {
+        if (!bpmManager) FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
+        if (bpmManager.CanClick())
+        {
+            return true;
+        }
+        return false;
+    }
+
+    void UpdateEnemiesKilled()
+    {
+        if (!WaveManager.Instance) return;
+        WaveManager.Instance.enemiesKilled++;
+        WaveManager.Instance.UpdateEnemiesLeft();
     }
 
     private void CheckHealth()

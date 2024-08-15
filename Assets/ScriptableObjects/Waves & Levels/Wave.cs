@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 using UnityEngine.Assertions.Must;
-using System.Diagnostics.Eventing.Reader;
 
 [CreateAssetMenu(fileName = "Wave", menuName = "Levels and Waves/Wave")]
 public class Wave : ScriptableObject
@@ -37,6 +36,7 @@ public class Wave : ScriptableObject
             {
                 int rando = Random.Range(0, spawnAreas.transform.childCount);
                 GameObject currentSpawn = spawnAreas.transform.GetChild(rando).gameObject;
+                
                 //_spawnedEnemies.Add(Instantiate(_enemies[randEnemyId].enemyPrefab, currentSpawn.transform));
                 _generatedEnemies.Add(_enemies[randEnemyId].enemyPrefab);
                 //Debug.LogError("there are now" + _amtEnemies);
@@ -65,6 +65,7 @@ public class Wave : ScriptableObject
 
     public void SpawnEnemies(GameObject spawnArea)
     {
+        isComplete = false;
         foreach(GameObject enemy in enemiesToSpawn)
         {
             //this ensures enemies dont spawn pixel perfectly on top of each other
@@ -91,7 +92,7 @@ public class Wave : ScriptableObject
 
     public void MarkComplete(bool set)
     {
-        Debug.LogError(this.name + " has been set to: " + set);
+        //Debug.LogError(this.name + " has been set to: " + set);
         isComplete = set;
     }
 

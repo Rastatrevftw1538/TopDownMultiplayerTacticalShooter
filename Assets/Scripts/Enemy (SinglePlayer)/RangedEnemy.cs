@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.AI;
+using System.Threading.Tasks;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
+using UnityEditor;
 
 public class RangedEnemy : MonoBehaviour, IEnemy
 {
@@ -22,7 +25,8 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     [SerializeField] private Image healthbarExternal;
     [SerializeField] private GameObject projectile;
     [field: SerializeField] public float dropChance { get; set; }
-    [field: SerializeField] public GameObject dropObject { get; set; }
+    [field: SerializeField] public List<GameObject> dropObjects { get; set; }
+    [SerializeField] private LayerMask targetLayers;
 
     [Header("Debug")]
     [SerializeField] private float _damageTaken = 0;
@@ -36,6 +40,13 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     [field: SerializeField] public AudioClip movementSound { get; set; }
     [field: SerializeField] public AudioClip firingSound { get; set; }
     [field: SerializeField] public AudioClip defeatSound { get; set; }
+    [Header("Flash Color")]
+    public Color flashColor = Color.red;
+    public float flashTime = 0.25f;
+    public SpriteRenderer spriteRenderer;
+    public GameObject defeatParticles;
+    public GameObject onBeatDefeatParticles;
+    static BPMManager bpmManager;
 
     private void Awake()
     {
@@ -51,6 +62,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         agent = GetComponentInParent<NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
+        initColor = spriteRenderer.color;
 
         shotCooldown = startShotCooldown;
 
@@ -59,6 +71,10 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         if (!target)
         {
             target = GameObject.FindWithTag("Player").transform;
+        }
+        if (!bpmManager)
+        {
+            bpmManager = FindObjectOfType<BPMManager>();
         }
     }
 
@@ -81,9 +97,15 @@ public class RangedEnemy : MonoBehaviour, IEnemy
             agent.isStopped = false;
         }
 
-        if (shotCooldown <= 0)
+        if (shotCooldown <= 0 && (agent.remainingDistance*1.5f >= stoppingDistance || agent.remainingDistance <= stoppingDistance))
         {
-            Attack();
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, target.position - transform.position, stoppingDistance*1.5f, targetLayers);
+            if (hit.collider)
+                if (hit.collider.CompareTag("Player"))
+                {
+                    shotCooldown = 0f;
+                    Attack();
+                }
         }
         else
         {
@@ -92,7 +114,6 @@ public class RangedEnemy : MonoBehaviour, IEnemy
 
         Vector2 direction = new Vector2(target.position.x - transform.position.x, target.position.y - transform.position.y); //FIND DIRECTION OF PLAYER
         transform.up = direction; //ROTATES THE ENEMY TO THE PLAYER 
-
         //attack
     }
 
@@ -106,10 +127,34 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         }
     }
 
+    Color initColor;
+    private IEnumerator DamageFlash()
+    {
+        SetFlashColor(flashColor);
+        float currentFlashAmt = 0f;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < flashTime)
+        {
+            elapsedTime += Time.deltaTime;
+
+            currentFlashAmt = Mathf.Lerp(1f, 0f, (elapsedTime / flashTime));
+
+            yield return new WaitForSeconds(0.5f);
+
+            SetFlashColor(initColor);
+        }
+    }
+
+    private void SetFlashColor(Color color)
+    {
+        spriteRenderer.color = color;
+    }
+
     private void Attack()
     {
-        PlaySound(firingSound);
-        Instantiate(projectile, transform.position, transform.rotation);
+        //PlaySound(firingSound);
+        Instantiate(projectile, spriteRenderer.gameObject.transform.position, transform.rotation);
         shotCooldown = startShotCooldown;
     }
 
@@ -130,7 +175,8 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     private float timeSinceLastShot;
     public void TakeDamage(float amount)
     {
-        PlaySound(hitSound);
+        PlaySound(hitSound, 0.15f);
+        StartCoroutine(nameof(DamageFlash));
         //FIRST CHECK IF THE BASE'S HEALTH IS BELOW 0
         if (currentHealth > 0)
             currentHealth -= amount;
@@ -152,7 +198,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     private void PlaySound(AudioClip sound, float volume = 1f)
     {
         if (!SoundFXManager.Instance) return;
-            SoundFXManager.Instance.PlaySoundFXClip(sound, transform, 1f);
+            SoundFXManager.Instance.PlaySoundFXClip(sound, transform, volume);
     }
 
     public List<GameObject> hitDisplays = new List<GameObject>();
@@ -195,22 +241,52 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     public void DropOnDeath()
     {
         int randDropProb = Random.Range(0, 100);
-
-        if(randDropProb <= dropChance)
-        Instantiate(dropObject, transform.position, Quaternion.identity);
+        int randDropIdx = Random.Range(0, dropObjects.Count);
+        if (randDropProb <= dropChance && dropObjects[randDropIdx])
+            Instantiate(dropObjects[randDropIdx], transform.position, Quaternion.identity);
     }
 
     void RpcDie()
     {
         DropOnDeath();
-
+        PlayParticleDefeat();
         isAlive = false;
         //this.transform.parent.gameObject.SetActive(false);
         //Respawn(respawnTime);
-        PlaySound(defeatSound);
+        PlaySound(defeatSound, 0.1f);
         Destroy(this.transform.parent.gameObject);
+        UpdateEnemiesKilled();
+    }
 
-       if(WaveManager.Instance) WaveManager.Instance.enemiesKilled++;
+    void PlayParticleDefeat()
+    {
+        GameObject temp;
+        if (CheckBPM())
+        {
+            temp = Instantiate(onBeatDefeatParticles, transform.position, Quaternion.identity);
+        }
+        else
+        {
+            temp = Instantiate(defeatParticles, transform.position, Quaternion.identity);
+        }
+        Destroy(temp, 0.4f);
+    }
+
+    bool CheckBPM()
+    {
+        if (!bpmManager) FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
+        if (bpmManager.CanClick())
+        {
+            return true;
+        }
+        return false;
+    }
+
+    void UpdateEnemiesKilled()
+    {
+        if (!WaveManager.Instance) return;
+        WaveManager.Instance.enemiesKilled++;
+        WaveManager.Instance.UpdateEnemiesLeft();
     }
 
     private void CheckHealth()
