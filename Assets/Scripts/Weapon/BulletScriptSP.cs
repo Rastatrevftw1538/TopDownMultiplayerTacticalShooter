@@ -14,21 +14,26 @@ public class BulletScriptSP : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _startPosition = transform.position = new Vector3(transform.position.x,transform.position.y,-1);
+        _startPosition = transform.position;
         Invoke(nameof(DestroySelf), 0.5f);
+        //Debug.LogError("this bullet wants to go to: " + _targetPosition);
     }
 
     // Update is called once per frame
-    void Update()
+    [HideInInspector] public bool targetSet = false;
+    void FixedUpdate()
     {
-        _progress += Time.deltaTime * _bulletSpeed;
-        transform.position = Vector3.Lerp(_startPosition,_targetPosition,_progress);
-        //transform.position = Vector3.MoveTowards(_startPosition, _targetPosition, _progress);
+        if (!targetSet) return;
+        _progress += _bulletSpeed * Time.timeScale * Time.fixedDeltaTime;
+        //transform.position = Vector3.Lerp(_startPosition,_targetPosition,_progress);
+        transform.position = Vector3.MoveTowards(_startPosition, _targetPosition, _progress);
     }
 
     public void SetTargetPosition(Vector3 targetPosition){
-        _targetPosition = new Vector3(targetPosition.x,targetPosition.y,-1);
+        _targetPosition = targetPosition;
+        targetSet = true;
     }
+
     public void SetColor(Color color)
     {
         ParticleSystem particleSystem = effectPrefab.GetComponent<ParticleSystem>();

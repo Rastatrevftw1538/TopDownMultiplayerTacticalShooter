@@ -228,7 +228,7 @@ public class WeaponSinglePlayer : MonoBehaviour
         RaycastHit2D[] hits;
         hits = Physics2D.RaycastAll(firePoint.position, direction, fireRange, targetLayers);
 
-        Vector3 spreadDirection = direction;
+        Vector3 spreadDirection = direction.normalized;
         RaycastHit2D hit = new RaycastHit2D();
 
         string whatWasHit = "";
@@ -239,6 +239,7 @@ public class WeaponSinglePlayer : MonoBehaviour
             //Debug.LogError("hit nothing...");
             endPoint = firePoint.position + (spreadDirection * fireRange);
             RpcOnFire(hit, spreadDirection, endPoint, whatWasHit, onBeat);
+           // Debug.DrawRay(firePoint.position, spreadDirection * fireRange, Color.white);
             return;
         }
 
@@ -275,14 +276,14 @@ public class WeaponSinglePlayer : MonoBehaviour
         }
         endPoint = hit.point;
         RpcOnFire(hit, spreadDirection, endPoint, whatWasHit, onBeat);
+        //Debug.DrawRay(firePoint.position, spreadDirection * fireRange, Color.blue);
     }
 
     //[ClientRpc]
-    BulletScriptSP trailRender;
     GameObject particleEffect;
     ParticleSystem particleSystemIns;
     GameObject tempParticle;
-    TrailRenderer trailRenderer;
+    //TrailRenderer trailRenderer;
     CameraShake cameraShake;
     [HideInInspector] public TrailRenderer trailRendererToUse;
     void RpcOnFire(RaycastHit2D hit, Vector3 spreadDirection, Vector3 collisionPoint, String whatWasHit, bool onBeat)
@@ -290,7 +291,7 @@ public class WeaponSinglePlayer : MonoBehaviour
         //Debug.Log("Collision Point: " + collisionPoint);
         //Debug.Log("Hit: " + whatWasHit);
         //Debug.Log("HUh? Client: " + spreadDirection);
-        
+
         /*if (whatWasHit != "NOTHING")
         {
             Debug.Log("Hit " + collisionPoint);
@@ -300,11 +301,13 @@ public class WeaponSinglePlayer : MonoBehaviour
             //collisionPoint = spreadDirection;
             Debug.Log("Hit Nothing:"); 
         }*/
-        
-        var bulletInstance = Instantiate(bulletPrefab, firePoint.position, new Quaternion(0, 0, 0, 0));
 
-        if(!trailRender) trailRender = bulletInstance.GetComponent<BulletScriptSP>();
-        if(!particleEffect) particleEffect = trailRender.effectPrefab;
+
+        var bulletInstance = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+        BulletScriptSP trailRender = bulletInstance.GetComponent<BulletScriptSP>();
+        trailRender.SetTargetPosition(collisionPoint);
+        TrailRenderer trailRenderer = trailRender.GetComponent<TrailRenderer>();
+        if (!particleEffect) particleEffect = trailRender.effectPrefab;
         if(!particleSystemIns) particleSystemIns = particleEffect.GetComponent<ParticleSystem>();
         if(!cameraShake) cameraShake = CameraShake.Instance;
 
@@ -313,7 +316,6 @@ public class WeaponSinglePlayer : MonoBehaviour
         //IF ON BEAT, MAKE THE TRAIL RENDER DIFFERENT COLOR
         if (CheckBPM())
         {
-            if (!trailRenderer) trailRenderer = trailRender.GetComponent<TrailRenderer>();
             trailRendererToUse = BPMShotTrail;
 
             trailRenderer.widthMultiplier = trailRendererToUse.widthMultiplier;
@@ -338,11 +340,11 @@ public class WeaponSinglePlayer : MonoBehaviour
             if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(weaponSpecs.shootOnBeatSound, transform, 0.2f);
 
             //ALSO MAKE THE PARTICLES DIFFERENT;
-            tempParticle = Instantiate(trailRender.onBeatEffectPrefab, collisionPoint, new Quaternion(0, 0, 0, 0));
+            tempParticle = Instantiate(trailRender.onBeatEffectPrefab, collisionPoint, Quaternion.identity);
         }
         else
         {
-            tempParticle = Instantiate(particleEffect, collisionPoint, new Quaternion(0, 0, 0, 0));
+            tempParticle = Instantiate(particleEffect, collisionPoint, Quaternion.identity);
             if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(weaponSpecs.shootSound, transform, 0.1f);
         }
 
@@ -365,7 +367,7 @@ public class WeaponSinglePlayer : MonoBehaviour
             }
         }
 
-        trailRender.SetTargetPosition(collisionPoint);
+        //trailRender.SetTargetPosition(collisionPoint);
         //Debug.Log("Bullet Fired Client " + collisionPoint + " direction " + spreadDirection);
     }
 

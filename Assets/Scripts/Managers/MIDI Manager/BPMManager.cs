@@ -9,9 +9,15 @@ public class BPMManager : Singleton<BPMManager>
     public GameObject BPMIndicatorBar;
     public GameObject BPMIndicatorProgress;
     public GameObject BPMIndicatorToHit;
+    public Sprite defaultImg;
+    public Sprite pressedImg;
+
+    [Header("Songs")]
     public List<AudioClip> gameSongs = new List<AudioClip>();
     [HideInInspector] public AudioSource audioSource;
     [HideInInspector] public AudioLowPassFilter filter;
+
+    private SpriteRenderer spriteRenderer;
 
     private const float c_MINUTE = 60f;
     private float m_MIN = 0f;
@@ -72,6 +78,11 @@ public class BPMManager : Singleton<BPMManager>
         }
 
         MoveBPMIndicator();
+    }
+
+    public void Update()
+    {
+        
     }
 
     Transform BPMProgressTransform;

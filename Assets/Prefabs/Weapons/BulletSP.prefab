@@ -146,4 +146,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   effectPrefab: {fileID: 105608, guid: 9c6af9e56f998094e8a7ade8f0e2a0a9, type: 3}
   onBeatEffectPrefab: {fileID: 183216, guid: d02459bf4a092d144baeb3ac2591eb3b, type: 3}
-  _bulletSpeed: 50
+  _bulletSpeed: 200
+  targetSet: 0

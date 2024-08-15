@@ -8,6 +8,7 @@ using Cinemachine;
 using UnityEngine.UI;
 using UnityEngine.Rendering.Universal;
 using System;
+using System.Text;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -56,6 +57,15 @@ public class UIManager : Singleton<UIManager>
     float powerupCd;
     void Update()
     {
+        if(powerupCd >= 0)
+        {
+            powerupCd -= Time.deltaTime;
+            powerupUICd.fillAmount -= powerupCd; 
+        }
+    }
+
+    private void FixedUpdate()
+    {
         //camera start zoom
         if (!didZoom && shouldStartZoomed)
         {
@@ -67,12 +77,6 @@ public class UIManager : Singleton<UIManager>
                 didZoom = true;
             }
         }
-
-        if(powerupCd >= 0)
-        {
-            powerupCd -= Time.deltaTime;
-            powerupUICd.fillAmount -= powerupCd; 
-        }
     }
 
     /*public void SetArrowTarget(GameObject arrowTrgt)
@@ -82,7 +86,7 @@ public class UIManager : Singleton<UIManager>
     }*/
 
     bool didZoom = false;
-    float zoomSpeed = 3f;
+    public float zoomSpeed = 10f;
     float initialOrtho;
     public IEnumerator WorldZoomStart()
     {
@@ -101,7 +105,7 @@ public class UIManager : Singleton<UIManager>
     {
         if (!waveDisplay) return;
 
-        waveDisplay.text = "WAVE " + num;
+        waveDisplay.text = $"WAVE {num}";
         StartCoroutine(FlashWaveNumber());
     }
 
@@ -145,14 +149,17 @@ public class UIManager : Singleton<UIManager>
 
     private void ResetCooldownUI()
     {
-        Debug.LogError("called reset ui");
+        //Debug.LogError("called reset ui");
         powerupUIIcon.gameObject.SetActive(false);
     }
 
+    StringBuilder stringBuilder = new StringBuilder();
     IEnumerator FlashEnemyRemaining()
     {
+        stringBuilder.Clear();
         Color tempColor = waveDisplay.color;
-        enemiesLeftDisplay.text = "ENEMIES REMAINING: " + enemiesLeft;
+        stringBuilder.Append($"ENEMIES REMAINING: {enemiesLeft}");
+        enemiesLeftDisplay.text = stringBuilder.ToString();
         for (int i = 0; i < waveFlashes; i++)
         {
             waveDisplay.color = waveFlashColor;
