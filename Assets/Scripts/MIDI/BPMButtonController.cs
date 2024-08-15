@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class BPMButtonController : MonoBehaviour
 {
-    private Image imageRender;
+    private SpriteRenderer spriteRenderer;
     public Sprite defaultImg;
     public Sprite pressedImg;
 
@@ -13,11 +13,11 @@ public class BPMButtonController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (!imageRender) TryGetComponent<Image>(out imageRender);
+        if (!spriteRenderer) TryGetComponent<SpriteRenderer>(out spriteRenderer);
         if (defaultImg == pressedImg)
         {
             samePng = true;
-            initialColor = imageRender.color;
+            initialColor = spriteRenderer.color;
         }
     }
 
@@ -28,14 +28,14 @@ public class BPMButtonController : MonoBehaviour
     {
         if (Input.GetKeyDown(keyToPress))
         {
-            imageRender.sprite = pressedImg;
-            imageRender.color = Color.red;
+            spriteRenderer.sprite = pressedImg;
+            spriteRenderer.color = Color.red;
         }
 
         if (Input.GetKeyUp(keyToPress))
         {
-            imageRender.sprite = defaultImg;
-            imageRender.color = initialColor;
+            spriteRenderer.sprite = defaultImg;
+            spriteRenderer.color = initialColor;
         }
     }
 }

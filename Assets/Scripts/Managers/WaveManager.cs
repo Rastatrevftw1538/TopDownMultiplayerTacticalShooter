@@ -37,6 +37,7 @@ public class WaveManager : Singleton<WaveManager>
         currentWave = 0;
         currentLevel = 0;
 
+        pauseWaves = true;
         /*Invoke(nameof(StartWaveCO), 0f);*/
         //StartCoroutine(nameof(StartWaveCO));
     }
@@ -62,61 +63,6 @@ public class WaveManager : Singleton<WaveManager>
         Debug.LogError("pointing to " + currentLevelDoor.name);
         if (UIManager.Instance) UIManager.Instance.ShowUIArrow(currentLevelDoor.transform); //UI ARROW POINTING TO THE NEXT LEVEL
     }
-
-    /*private IEnumerator CheckWave()
-    {
-        yield return new WaitForEndOfFrame();
-        //check if you are on the last enemy
-
-        if (enemiesKilled >= levels[currentLevel].waves[currentWave].AmtEnemies() && (currentWave + 1 <= (levels[currentLevel].waves.Count)))
-        {
-            endedPreviousWave = true;
-            enemiesKilled = 0f;
-            if (endedPreviousWave)
-            {
-                levels[currentLevel].waves[currentWave].MarkComplete(true);
-                if ((currentWave + 1) == levels[currentLevel].waves.Count - 1)
-                {
-                    currentWave++;
-                    //Debug.LogError("calls last wave because " + (currentWave+1) + " and " + (currentWave + 1) + " is equal to " + levels[currentLevel].waves.Count);
-                    //StartWave(levels[currentLevel].waves[currentWave]);
-                    StartCoroutine(nameof(StartWaveCO));
-                    yield break;
-                }
-                else if (currentWave + 2 <= levels[currentLevel].waves.Count - 1)
-                {
-                    currentWave++;
-                    //Debug.LogError("calls next wave because the next wave would be" + (currentWave + 1) + " and " + (currentWave + 1) + "is less than or equal to " + (levels[currentLevel].waves.Count-1));
-                    endedPreviousWave = false;
-
-                    //camera shake for wave start
-                    if (cameraShake)
-                        cameraShake.enabled = true;
-
-                    //StartWave(levels[currentLevel].waves[currentWave]);
-                    StartCoroutine(nameof(StartWaveCO));
-                }
-            }
-        }
-
-        if (!toBuffer && CheckLevelCompletion())
-        {
-            //COMPLETED LEVEL
-            toBuffer = true;
-
-            if (currentLevel <= levels.Count)
-                currentLevel++;
-            else
-                yield return null;
-            currentWave = 0;
-
-            Debug.LogError("Completed this level...");
-            ShowArrow(); //UI ARROW POINTING TO THE NEXT LEVEL
-            SetLevelDoor(false);
-            firstWave = true;
-            //SPGameManager.Instance.EndedLevel();
-        }
-    }*/
 
     bool beatEnoughEnemies;
     private void CheckWave()

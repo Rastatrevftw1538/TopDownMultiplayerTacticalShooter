@@ -16,6 +16,7 @@ TagManager:
   - NPC
   - Cinemachine Camera
   - UI Camera
+  - Activator
   layers:
   - Default
   - TransparentFX
@@ -31,7 +32,7 @@ TagManager:
   - Grass
   - Metal
   - Concrete
-  - 
+  - No Post
   - 
   - 
   - 

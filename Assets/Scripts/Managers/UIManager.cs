@@ -153,10 +153,9 @@ public class UIManager : Singleton<UIManager>
         powerupUIIcon.gameObject.SetActive(false);
     }
 
-    StringBuilder stringBuilder = new StringBuilder();
     IEnumerator FlashEnemyRemaining()
     {
-        stringBuilder.Clear();
+        StringBuilder stringBuilder = new StringBuilder();
         Color tempColor = waveDisplay.color;
         stringBuilder.Append($"ENEMIES REMAINING: {enemiesLeft}");
         enemiesLeftDisplay.text = stringBuilder.ToString();
@@ -170,10 +169,27 @@ public class UIManager : Singleton<UIManager>
 
     public void AddPoints(float num)
     {
-        if (!pointsDisplay) return;
+        if (!pointsDisplay || num == 0) return;
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.Append(points + num);
 
-        points += num;
-        pointsDisplay.text = points.ToString();
+        pointsDisplay.text = stringBuilder.ToString();
+    }
+
+    public void DeductPoints(float num)
+    {
+        if (!pointsDisplay || num == 0) return;
+        if (points - num < 0)
+        {
+            int min = 0;
+            pointsDisplay.text = min.ToString(); 
+            return;
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.Append(points - num);
+
+        pointsDisplay.text = stringBuilder.ToString();
     }
 
     public void SetPoints(float num)
@@ -191,17 +207,17 @@ public class UIManager : Singleton<UIManager>
         pointsDisplay.text = points.ToString();
     }
 
-    BPMManager bpmManager;
+    //BPMManager bpmManager;
     public void ShowDefeat()
     {
         //if (WaveManager.Instance != null)
         //    WaveManager.Instance.ResetWaveData();
-        if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
-        bpmManager.audioSource.Stop();
+        //if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
+        BPMManager.instance.audioSource.Stop();
 
         Cursor.visible = true;
         SetPoints(0);
-        if (BPMManager.Instance) BPMManager.Instance.audioSource.Stop();
+        if (BPMManager.instance) BPMManager.instance.audioSource.Stop();
         PlaySound(defeatSound, 0.3f);
         defeatScreen.SetActive(true);
         SetCameraShakeListener(false);
@@ -228,8 +244,8 @@ public class UIManager : Singleton<UIManager>
     
         }*/
 
-        if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
-        bpmManager.audioSource.Stop();
+        //if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
+        BPMManager.instance.audioSource.Stop();
         SetCameraShakeListener(false);
         Cursor.visible = true;
         SetPoints(0);
@@ -258,8 +274,10 @@ public class UIManager : Singleton<UIManager>
         if (PlayerScriptSinglePlayer.Instance != null)
             Destroy(PlayerScriptSinglePlayer.Instance.gameObject);
 
-        if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
-        if(bpmManager) Destroy(bpmManager.gameObject);
+        /*if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
+        if(bpmManager) Destroy(bpmManager.gameObject);*/
+
+        Destroy(BPMManager.instance.gameObject);
 
         if (this.gameObject != null)
             Destroy(this.gameObject);
@@ -270,8 +288,9 @@ public class UIManager : Singleton<UIManager>
     public void ReturnToMainMenu()
     {
         SetCameraShakeListener(true);
-        if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
-        if(bpmManager) bpmManager.audioSource.Play();
+        //if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
+        //if(bpmManager) bpmManager.audioSource.Play();
+        BPMManager.instance.audioSource.Play();
 
         Time.timeScale = 1.0f;
         foreach (Scene sceneLoaded in SceneManager.GetAllScenes())
@@ -287,8 +306,9 @@ public class UIManager : Singleton<UIManager>
     public void ResetScene()
     {
         SetCameraShakeListener(true);
-        if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
-        if (bpmManager) bpmManager.audioSource.Play();
+        //if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
+        //if (bpmManager) bpmManager.audioSource.Play();
+        BPMManager.instance.audioSource.Play();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
