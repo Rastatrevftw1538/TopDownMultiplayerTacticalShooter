@@ -139,7 +139,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2e3360abe99ef004a98e8007f5db0833, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -343,6 +343,10 @@ MonoBehaviour:
   fireRate: 0.2
   reloadTime: 2
   bonusPointsPerShot: 0
+  BPMShotPrefab: {fileID: 7104469245715165804, guid: 06adf3d91df67454598026014d019eb4, type: 3}
+  DMGShotPrefab: {fileID: 6510951561365929970, guid: 7e7cd1d79f3d93b4d8719a19356b52b9, type: 3}
+  ATKSPDShotPrefab: {fileID: 2636580434940076663, guid: 928d12fe0dd34204eb725c8775f6a964, type: 3}
+  trailRendererToUse: {fileID: 0}
 --- !u!114 &2915367586468149327
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1593,6 +1597,7 @@ MonoBehaviour:
   statusEffectData: {fileID: 0}
   abilities:
   - {fileID: 11400000, guid: 396dad2db320741458415b40463c2caf, type: 2}
+  abilityUIHolder: {fileID: 0}
   debugKeys: 65000000
 --- !u!1 &4027563251936908940
 GameObject:

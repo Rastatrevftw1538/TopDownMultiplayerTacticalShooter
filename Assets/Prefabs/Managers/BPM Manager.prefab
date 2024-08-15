@@ -171,7 +171,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   soundFXObject: {fileID: 2294200199544277999, guid: 3b81ebaa073b72f4aac5b69a3e913e43, type: 3}
   lowPitchRng: 0.7
-  highPitchRng: 1.5
+  highPitchRng: 1.25
   useRandomGlobalPitch: 1
 --- !u!169 &2970943512982108980
 AudioLowPassFilter:

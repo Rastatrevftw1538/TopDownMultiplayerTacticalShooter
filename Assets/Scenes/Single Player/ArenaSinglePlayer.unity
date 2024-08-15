@@ -423,7 +423,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 68.73242, y: 63.566643}
+  m_Offset: {x: 68.73242, y: 64.00401}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -434,7 +434,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 256.19427, y: 157.93202}
+  m_Size: {x: 256.19427, y: 158.80676}
   m_EdgeRadius: 0
 --- !u!1 &101507629
 GameObject:
@@ -1283,17 +1283,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1516326830, guid: 304995720cd4925488467bc47552fe0b, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 616062688646629727, guid: 304995720cd4925488467bc47552fe0b, type: 3}
       propertyPath: m_Name
       value: Player - SinglePlayer
-      objectReference: {fileID: 0}
-    - target: {fileID: 1936208998593900187, guid: 304995720cd4925488467bc47552fe0b, type: 3}
-      propertyPath: m_Enabled
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2220085419125165740, guid: 304995720cd4925488467bc47552fe0b, type: 3}
       propertyPath: m_RootOrder
@@ -1347,13 +1339,9 @@ PrefabInstance:
       propertyPath: healthbarExternal
       value: 
       objectReference: {fileID: 1507783764}
-    - target: {fileID: 3504161299403921138, guid: 304995720cd4925488467bc47552fe0b, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
-    - target: {fileID: 5451148742923766489, guid: 304995720cd4925488467bc47552fe0b, type: 3}
-      propertyPath: m_Enabled
-      value: 1
+    - target: {fileID: 6987677917951702654, guid: 304995720cd4925488467bc47552fe0b, type: 3}
+      propertyPath: MaxDistance
+      value: 41.95791
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 304995720cd4925488467bc47552fe0b, type: 3}
@@ -1915,9 +1903,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levels:
-  - {fileID: 11400000, guid: 522ec6d3d53b112498ee0e2929c14121, type: 2}
-  - {fileID: 11400000, guid: 67eafc6c3abbbe340b784205e0d8ba53, type: 2}
-  - {fileID: 11400000, guid: b4c454c77fe8f9949b3e48e1b5e5065a, type: 2}
+  - {fileID: 11400000, guid: 4ca8613de84dc39449478303253b93f4, type: 2}
+  - {fileID: 11400000, guid: 4ca8613de84dc39449478303253b93f4, type: 2}
+  - {fileID: 11400000, guid: 4ca8613de84dc39449478303253b93f4, type: 2}
   currentSpawnArea: {fileID: 0}
   currentLevelDoor: {fileID: 0}
   currentWave: 0
