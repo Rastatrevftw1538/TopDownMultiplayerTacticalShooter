@@ -227,9 +227,5 @@ PrefabInstance:
       propertyPath: m_Name
       value: Level 3 Holder
       objectReference: {fileID: 0}
-    - target: {fileID: 6764691266926744458, guid: 96ad03548ecfe04438241008192b08a9, type: 3}
-      propertyPath: m_NavMeshData
-      value: 
-      objectReference: {fileID: 23800000, guid: 1a1156e3fab750048af248c6f99a2e6f, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 96ad03548ecfe04438241008192b08a9, type: 3}
