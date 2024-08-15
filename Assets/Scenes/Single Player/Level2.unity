@@ -679,6 +679,10 @@ PrefabInstance:
       propertyPath: m_SortingLayerID
       value: -1133693717
       objectReference: {fileID: 0}
+    - target: {fileID: 727540472870100924, guid: a00dc92c2b6f3284ab28b817c88dedfd, type: 3}
+      propertyPath: m_NavMeshData
+      value: 
+      objectReference: {fileID: 23800000, guid: ed1e7bbee72b22e4abcd88e881c37cd9, type: 2}
     - target: {fileID: 727540473302050100, guid: a00dc92c2b6f3284ab28b817c88dedfd, type: 3}
       propertyPath: m_SortingLayer
       value: 0
