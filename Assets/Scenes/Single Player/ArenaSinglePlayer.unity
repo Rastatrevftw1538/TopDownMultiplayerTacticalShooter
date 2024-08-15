@@ -1287,6 +1287,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player - SinglePlayer
       objectReference: {fileID: 0}
+    - target: {fileID: 1394335429370971273, guid: 304995720cd4925488467bc47552fe0b, type: 3}
+      propertyPath: BPMShotPrefab
+      value: 
+      objectReference: {fileID: 7104469245715165804, guid: 06adf3d91df67454598026014d019eb4, type: 3}
+    - target: {fileID: 1394335429370971273, guid: 304995720cd4925488467bc47552fe0b, type: 3}
+      propertyPath: DMGShotPrefab
+      value: 
+      objectReference: {fileID: 6510951561365929970, guid: 7e7cd1d79f3d93b4d8719a19356b52b9, type: 3}
+    - target: {fileID: 1394335429370971273, guid: 304995720cd4925488467bc47552fe0b, type: 3}
+      propertyPath: ATKSPDShotPrefab
+      value: 
+      objectReference: {fileID: 2636580434940076663, guid: 928d12fe0dd34204eb725c8775f6a964, type: 3}
     - target: {fileID: 2220085419125165740, guid: 304995720cd4925488467bc47552fe0b, type: 3}
       propertyPath: m_RootOrder
       value: 17
@@ -1907,8 +1919,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levels:
-  - {fileID: 11400000, guid: 4ca8613de84dc39449478303253b93f4, type: 2}
-  - {fileID: 11400000, guid: 4ca8613de84dc39449478303253b93f4, type: 2}
+  - {fileID: 11400000, guid: 522ec6d3d53b112498ee0e2929c14121, type: 2}
+  - {fileID: 11400000, guid: 67eafc6c3abbbe340b784205e0d8ba53, type: 2}
   - {fileID: 11400000, guid: 4ca8613de84dc39449478303253b93f4, type: 2}
   currentSpawnArea: {fileID: 0}
   currentLevelDoor: {fileID: 0}
@@ -1916,7 +1928,7 @@ MonoBehaviour:
   spawnInterval: 3
   enemiesKilled: 0
   currentLevel: 0
-  pauseWaves: 0
+  pauseWaves: 1
   toBuffer: 1
   startedRoutine: 0
 --- !u!4 &1622067068

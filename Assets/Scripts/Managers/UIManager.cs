@@ -71,7 +71,7 @@ public class UIManager : Singleton<UIManager>
         if(powerupCd >= 0)
         {
             powerupCd -= Time.deltaTime;
-            powerupUICd.fillAmount -= powerupCd * Time.deltaTime; 
+            powerupUICd.fillAmount -= powerupCd; 
         }
     }
 
@@ -127,6 +127,7 @@ public class UIManager : Singleton<UIManager>
     CooldownType lastType;
     public void StartCooldownUI(CooldownType type, Sprite icon, float cdTime)
     {
+        //Debug.LogError("active time of the powerup is: " + cdTime);
         lastType = type;
         //SET THE SPRITE
         if (type == CooldownType.Powerup)
@@ -137,17 +138,15 @@ public class UIManager : Singleton<UIManager>
 
             powerupCd = cdTime;
             powerupUICd.fillAmount = 1f;
-        }
 
-        Invoke(nameof(ResetCooldownUI), cdTime);
+            Invoke(nameof(ResetCooldownUI), cdTime);
+        }
     }
 
     private void ResetCooldownUI()
     {
-        if (lastType == CooldownType.Powerup)
-        {
-            powerupUIIcon.gameObject.SetActive(false);
-        }
+        Debug.LogError("called reset ui");
+        powerupUIIcon.gameObject.SetActive(false);
     }
 
     IEnumerator FlashEnemyRemaining()

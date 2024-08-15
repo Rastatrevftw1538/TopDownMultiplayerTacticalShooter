@@ -51,6 +51,13 @@ public class WeaponSinglePlayer : MonoBehaviour
 
     private StatusEffectData _statusEffectData = null;
     [HideInInspector]public int bonusPointsPerShot;
+    public GameObject BPMShotPrefab;
+    public GameObject DMGShotPrefab;
+    public GameObject ATKSPDShotPrefab;
+
+    private TrailRenderer BPMShotTrail;
+    private TrailRenderer DMGShotTrail;
+    private TrailRenderer ATKSPDShotTrail;
     //AudioSource playerAudioSource;
 
 
@@ -80,6 +87,32 @@ public class WeaponSinglePlayer : MonoBehaviour
         spreadCone.enabled = true;
 
         EvtSystem.EventDispatcher.AddListener<ApplyStatusEffects>(ApplyStatusEffects);
+
+        BPMShotPrefab.TryGetComponent<TrailRenderer>(out BPMShotTrail);
+        DMGShotPrefab.TryGetComponent<TrailRenderer>(out DMGShotTrail);
+        ATKSPDShotPrefab.TryGetComponent<TrailRenderer>(out ATKSPDShotTrail);
+        if (!BPMShotTrail)
+        {
+            BPMShotTrail = BPMShotPrefab.GetComponent<TrailRenderer>();
+            BPMShotTrail.widthMultiplier = 2f;
+            BPMShotTrail.startColor = Color.magenta;
+            BPMShotTrail.endColor = Color.blue;
+        }
+
+        if (!DMGShotTrail)
+        {
+            DMGShotTrail = DMGShotPrefab.GetComponent<TrailRenderer>();
+            DMGShotTrail.widthMultiplier = 1.5f;
+            DMGShotTrail.startColor = Color.blue;
+            DMGShotTrail.endColor = Color.blue;
+        }
+
+        if (!ATKSPDShotTrail)
+        {
+            ATKSPDShotTrail = ATKSPDShotPrefab.GetComponent<TrailRenderer>();
+            ATKSPDShotTrail.startColor = Color.yellow;
+            ATKSPDShotTrail.endColor = Color.yellow;
+        }
     }
 
     public float getDamage(){
@@ -251,6 +284,7 @@ public class WeaponSinglePlayer : MonoBehaviour
     GameObject tempParticle;
     TrailRenderer trailRenderer;
     CameraShake cameraShake;
+    [HideInInspector] public TrailRenderer trailRendererToUse;
     void RpcOnFire(RaycastHit2D hit, Vector3 spreadDirection, Vector3 collisionPoint, String whatWasHit, bool onBeat)
     {
         //Debug.Log("Collision Point: " + collisionPoint);
@@ -280,14 +314,26 @@ public class WeaponSinglePlayer : MonoBehaviour
         if (CheckBPM())
         {
             if (!trailRenderer) trailRenderer = trailRender.GetComponent<TrailRenderer>();
+            trailRendererToUse = BPMShotTrail;
 
-            trailRenderer.widthMultiplier = 2f;
-            trailRenderer.startColor = Color.magenta;
-            trailRenderer.endColor = Color.blue;
+            trailRenderer.widthMultiplier = trailRendererToUse.widthMultiplier;
 
-            //some camera shake stuff (unoptimized)
-            //camera shake
-            //StartCoroutine(cameraShake.CustomCameraShake(0.1f, 0.1f));
+            if (player.CurrentStatusEffect() == "Damage Buff")
+            {
+                trailRendererToUse = DMGShotTrail;
+                trailRenderer.widthMultiplier *= DMGShotTrail.widthMultiplier;
+            }
+            else if (player.CurrentStatusEffect() == "Fire Rate")
+            {
+                trailRendererToUse = ATKSPDShotTrail;
+            }
+            else
+            {
+                trailRenderer.colorGradient = trailRendererToUse.colorGradient;
+/*                trailRenderer.startColor = trailRendererToUse.startColor;
+                trailRenderer.endColor = trailRendererToUse.endColor;*/
+            }
+
             cameraShake.CustomCameraShake(impulseSource);
             if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(weaponSpecs.shootOnBeatSound, transform, 0.2f);
 
@@ -298,6 +344,25 @@ public class WeaponSinglePlayer : MonoBehaviour
         {
             tempParticle = Instantiate(particleEffect, collisionPoint, new Quaternion(0, 0, 0, 0));
             if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(weaponSpecs.shootSound, transform, 0.1f);
+        }
+
+        if (player)
+        {
+            if(!trailRenderer) trailRenderer = trailRender.GetComponent<TrailRenderer>();
+            if (player.CurrentStatusEffect() == "Damage Buff")
+            {
+                /*trailRenderer.startColor = DMGShotTrail.startColor;
+                trailRenderer.endColor = DMGShotTrail.endColor;*/
+                trailRenderer.colorGradient = DMGShotTrail.colorGradient;
+                trailRenderer.widthMultiplier = DMGShotTrail.widthMultiplier;
+            }
+            else if (player.CurrentStatusEffect() == "Fire Rate")
+            {
+                /* trailRenderer.startColor = ATKSPDShotTrail.startColor;
+                 trailRenderer.endColor = ATKSPDShotTrail.endColor;*/
+                trailRenderer.colorGradient = ATKSPDShotTrail.colorGradient;
+                trailRenderer.widthMultiplier = ATKSPDShotTrail.widthMultiplier;
+            }
         }
 
         trailRender.SetTargetPosition(collisionPoint);

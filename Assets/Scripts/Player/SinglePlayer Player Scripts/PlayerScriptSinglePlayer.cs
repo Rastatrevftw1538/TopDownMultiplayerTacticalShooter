@@ -373,6 +373,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
 
     public void RemoveEffect()
     {
+        Debug.LogError("Status effect expired...");
         _statusEffectData = null;
         _currentEffectTime = 0f;
         _nextTickTime = 0f;
@@ -391,7 +392,6 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
     //CALLS IT MULTIPLE TIMES
     private void CmdHandleEffect()
     {
-        //Debug.LogError("Calls effect handling");
         if(_statusEffectData != null)
             HandleEffect();
     }
@@ -510,6 +510,12 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
                 //EvtSystem.EventDispatcher.AddListener<ApplyStatusEffects>(SetStatusEffectData);
             }
         }
+    }
+
+    public string CurrentStatusEffect()
+    {
+        if (_statusEffectData == null) return "";
+        return _statusEffectData.Name;
     }
 
     public void ApplyDOT(PlayerHealthSinglePlayer playerHealthScript)
