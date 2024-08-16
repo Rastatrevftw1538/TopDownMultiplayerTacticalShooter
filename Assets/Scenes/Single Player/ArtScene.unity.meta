@@ -1,5 +1,10 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/BetterTilemap/Tile Map TEst.meta
+guid: 4cfe5fb0c8caad445b7404b1a9edf40c
+folderAsset: yes
+========
 guid: 53c19639055e6447f8a1101c0b218024
+>>>>>>>> Taryn:Assets/Scenes/Single Player/ArtScene.unity.meta
 DefaultImporter:
   externalObjects: {}
   userData: 

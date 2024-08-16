@@ -11,6 +11,9 @@ TagManager:
   - Red
   - Blue
   - Enemy
+  - LevelDoor
+  - SpawnHolder
+  - NPC
   layers:
   - Default
   - TransparentFX
@@ -23,9 +26,9 @@ TagManager:
   - Base
   - Objects
   - Unselectable
-  - 
-  - 
-  - 
+  - Grass
+  - Metal
+  - Concrete
   - 
   - 
   - 

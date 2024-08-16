@@ -45,22 +45,27 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
     public float runSpeedNormal;
     [HideInInspector]
     public float walkSpeedNormal;
+    private bool m_IsPaused = false;
 
     [Header("Player Components")]
     public UnityEngine.Vector2 movement;
     public UnityEngine.Quaternion rotation;
     public Rigidbody2D rb;
+    //public GameObject pointer;
+    //public GameObject endOfBarrel;
     private GameObject playerBodyArms;
     private GameObject playerBodyBody;
 
     private SpriteRenderer playerBodyArmsSkelSprite;
     private SpriteRenderer playerBodyBodySkelSprite;
+    private SpriteRenderer playerBodyHeadSprite;
     private StatusEffectData _statusEffectData;
 
     [Header("Player Status")]
     public bool isRunning;
     private bool isShooting;
     private bool canMove = true;
+    public List<AudioClip> terrainFootSteps = new List<AudioClip>();
     #endregion
 
     #region Player Team
@@ -88,9 +93,13 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
         MoveStateY = new PlayerMoveState(this, StateMachine, "MoveVertical");
 
         playerBodyArms = GameObject.Find("PlayerBody - Arms").gameObject;
-        playerBodyArmsSkelSprite = playerBodyArms.transform.GetChild(0).GetComponent<SpriteRenderer>();
+        //playerBodyArmsSkelSprite = playerBodyArms.transform.GetChild(0).GetComponent<SpriteRenderer>();
+        playerBodyArmsSkelSprite = GameObject.Find("Arms and Gun").GetComponent<SpriteRenderer>();
         playerBodyBody = GameObject.Find("PlayerBody - Body").gameObject;
         playerBodyBodySkelSprite = playerBodyBody.transform.GetChild(0).GetComponent<SpriteRenderer>();
+        playerBodyHeadSprite = GameObject.Find("Head").gameObject.GetComponent<SpriteRenderer>();
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Start() {
@@ -99,10 +108,41 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
         walkSpeedNormal = walkSpeed;
 
         //this.GetComponent<WeaponSinglePlayer>().spreadCone.enabled = true;
-        Anim = gameObject.transform.GetChild(0).GetComponent<Animator>();
+        Anim = GetComponentInChildren<Animator>();
 
         //AUTOMATICALLY SET THE PLAYER'S ANIMATION STATE TO IDLE
         StateMachine.Initialize(IdleState);
+    }
+
+    int lastLayer;
+    private AudioClip GetFootStepAudio()
+    {
+        if (terrainFootSteps.Count == 0) return null;
+        switch (lastLayer)
+        {
+            //FOR NOWWWWWWWWWWWW
+            //11 IS GRASS
+            //12 IS METAL
+            //13 IS CONCRETE
+            case 11:
+                return terrainFootSteps[0];
+            case 12:
+                return terrainFootSteps[1];
+            case 13:
+                return terrainFootSteps[2];
+            default:
+                return terrainFootSteps[0];
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        //11 is the current environment starting layer...
+        if (collision.gameObject.layer >= 11)
+        {
+            lastLayer = collision.gameObject.layer;
+            GetFootStepAudio();
+        }
     }
     public SetDeviceType PlayerDevice
     {
@@ -120,6 +160,9 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
         }
     }
 
+
+    float fxCooldown = 0.75f;
+    float fxTimer;
     public void FixedUpdate()
     {
         if (deviceType == SetDeviceType.Auto)
@@ -159,22 +202,63 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
             };
             movement = new UnityEngine.Vector2(movement.x, movement.y).normalized * (isRunning ? runSpeed : walkSpeed) * 0.25f;
 
+            if (movement.x > 0)
+            {
+                playerBodyBodySkelSprite.flipX = false;
+            }
+            else
+            {
+                playerBodyBodySkelSprite.flipX = true;
+            }
+
+            if(movement.magnitude > 0)
+            {
+                if (fxTimer >= fxCooldown) {
+                    //CallSoundFXTerrain();
+                    fxTimer = 0;
+                }
+                else
+                {
+                    fxTimer += Time.fixedDeltaTime;
+                }
+
+                Anim.SetFloat("Idle", 0);
+                Anim.SetFloat("Moving", movement.normalized.magnitude);
+            }else
+            {
+                Anim.SetFloat("Idle", 1);
+                Anim.SetFloat("Moving", 0);
+            }
+
             UnityEngine.Vector3 mousePosition = Input.mousePosition;
-            mousePosition.z = -playerCamera.transform.position.z;
+            mousePosition.z = (playerCamera.transform.position.z);
             UnityEngine.Vector3 mouseWorldPosition = playerCamera.ScreenToWorldPoint(mousePosition);
             UnityEngine.Vector3 aimDirection = mouseWorldPosition - transform.position;
             rotation = UnityEngine.Quaternion.LookRotation(UnityEngine.Vector3.forward, aimDirection);
             //print(rotation);
 
-            if(0f >= playerBodyArms.transform.localEulerAngles.z || playerBodyArms.transform.localEulerAngles.z <= 180f){
-                playerBodyArmsSkelSprite.flipY = true;
-                playerBodyBodySkelSprite.flipX = true;
+            /*if(0f >= playerBodyArms.transform.localEulerAngles.z || playerBodyArms.transform.localEulerAngles.z <= 180f){
+                playerBodyArmsSkelSprite.flipY = false;
+                playerBodyBodySkelSprite.flipX = false;
                 //Debug.Log("Z Rotation is: "+playerBodyArms.transform.localEulerAngles.z);
             }
             else{
                 playerBodyArmsSkelSprite.flipY = false;
-                playerBodyBodySkelSprite.flipX = false;
+                playerBodyBodySkelSprite.flipX = true;
                 //Debug.Log("Z Rotation is: "+playerBodyArms.transform.localEulerAngles.z);
+            }*/
+
+            if( playerBodyArms.transform.rotation.z >= 0 && playerBodyArms.transform.rotation.z <= 180)
+            {
+                playerBodyBodySkelSprite.flipX = true;
+                playerBodyArmsSkelSprite.flipY = true;
+                playerBodyHeadSprite.flipY = true;
+            }
+            else if (playerBodyArms.transform.rotation.z < 0 && playerBodyArms.transform.rotation.z >= -180)
+            {
+                playerBodyBodySkelSprite.flipX = false;
+                playerBodyArmsSkelSprite.flipY = false;
+                playerBodyHeadSprite.flipY = false;
             }
         }
         #endregion
@@ -207,6 +291,14 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
         //StateMachine.CurrentState.PhysicsUpdate();
     }
 
+    AudioSource audioSource;
+    private void CallSoundFXTerrain()
+    {
+        //SoundFXManager.Instance.PlaySoundFXClip(GetFootStepAudio(), transform);
+        if (!audioSource) return;
+            audioSource.PlayOneShot(GetFootStepAudio());
+    }
+
     public void SetVelocity(float x, float y)
     {
         movement.Set(x, y);
@@ -217,7 +309,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
     private void CmdMove(UnityEngine.Vector2 movement)
     {
         //RpcMove(movement);
-        transform.Translate(movement * Time.fixedDeltaTime);    
+        transform.Translate(movement * Time.fixedDeltaTime);
     }
     private void CmdRotate(UnityEngine.Quaternion rotation)
     {
@@ -244,6 +336,12 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
                 player.layer = LayerMask.NameToLayer("Enemy");
         }
             
+    }
+    public void DisplayCursor(bool display)
+    {
+        m_IsPaused = display;
+        Cursor.lockState = display ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = display;
     }
 
     #region 'IEffectable' INTERFACE FUNCTIONS

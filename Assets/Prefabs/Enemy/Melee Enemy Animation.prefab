@@ -172,7 +172,6 @@ MonoBehaviour:
   attackSpd: 0
   respawnTime: 2
   <pointsPerHit>k__BackingField: 30
-  target: {fileID: 0}
   healthbarExternal: {fileID: 8616342454603650037}
   _damageTaken: 0
   isAlive: 1
@@ -192,7 +191,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.44497585, y: -0.5930345}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -203,7 +202,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 6.873681, y: 11.351143}
   m_EdgeRadius: 0
 --- !u!50 &34968587809017443
 Rigidbody2D:
@@ -267,7 +266,7 @@ Animator:
   m_GameObject: {fileID: 1104590173044452979}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 614c2b6a8fe04418b8f916dc9352cee8, type: 2}
+  m_Controller: {fileID: 9100000, guid: dabbfdd7f71464fe5ae6a0f1c3a53057, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

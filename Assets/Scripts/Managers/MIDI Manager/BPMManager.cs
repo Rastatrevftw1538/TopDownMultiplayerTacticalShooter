@@ -3,26 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sanford.Multimedia.Midi;
 
-public class BPMManager : MonoBehaviour
+public class BPMManager : Singleton<BPMManager>
 {
     [Header("BPM Indicator")]
     public GameObject BPMIndicatorBar;
     public GameObject BPMIndicatorProgress;
     public GameObject BPMIndicatorToHit;
-    private AudioClip gameSong;
-    private static BPMManager _instance;
-
-    public static BPMManager instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                Debug.LogError("No Instance of BPM Manager");
-            }
-            return _instance;
-        }
-    }
+    public List<AudioClip> gameSongs = new List<AudioClip>();
+    [HideInInspector] public AudioSource audioSource;
+    [HideInInspector] public AudioLowPassFilter filter;
 
     private const float c_MINUTE = 60f;
     private float m_MIN = 0f;
@@ -37,10 +26,16 @@ public class BPMManager : MonoBehaviour
 
     private void Awake()
     {
-        _instance = this;
-       // gameSong = GameObject.Find("Audio Manager").GetComponent<AudioSource>().clip;
-        gameSong = GetComponent<AudioSource>().clip;
-        BPM = UniBpmAnalyzer.AnalyzeBpm(gameSong);
+        // gameSong = GameObject.Find("Audio Manager").GetComponent<AudioSource>().clip;
+        AudioClip randSong = gameSongs[Random.Range(0, gameSongs.Count)];
+
+        audioSource = GetComponent<AudioSource>();
+        audioSource.clip = randSong;
+        audioSource.Play();
+
+        filter = GetComponent<AudioLowPassFilter>();
+
+        BPM = UniBpmAnalyzer.AnalyzeBpm(randSong);
         BPM = BPM/2; //FIXING THE BPM (SOME SONGS WILL BE DIFFERENT)
     }
 
@@ -59,7 +54,7 @@ public class BPMManager : MonoBehaviour
     public Color canClick = Color.red; //JUST FOR DEBUGGING AND HELPING DESIGNERS VISUALIZE WHEN TO CLICK, WILL TRANSITION INTO MATH
     public void FixedUpdate()
     {
-        percentToBeat += Time.deltaTime;
+        percentToBeat += Time.deltaTime * Time.timeScale;
 
         if (percentToBeat >= BPS)
             percentToBeat = m_MIN;
@@ -83,13 +78,13 @@ public class BPMManager : MonoBehaviour
     private void MoveBPMIndicator()
     {
         //WIP
-        if (!BPMProgressTransform)
+        /*if (!BPMProgressTransform)
             BPMProgressTransform = BPMIndicatorProgress.transform;
 
         BPMIndicatorProgress.transform.position = new Vector3(
             BPMProgressTransform.position.x + Time.deltaTime * BPM,
             BPMProgressTransform.position.y,
-            BPMProgressTransform.position.z);
+            BPMProgressTransform.position.z);*/
     }
 
     public bool CanClick()

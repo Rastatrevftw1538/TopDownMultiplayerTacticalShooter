@@ -102,18 +102,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52057e91a2239384396929be4a89f748, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
   currentHealth: 0
+  <maxHealth>k__BackingField: 0
   damage: 10
   attackSpd: 0
   respawnTime: 2
   <pointsPerHit>k__BackingField: 30
-  target: {fileID: 0}
   healthbarExternal: {fileID: 8810559833810199638}
   _damageTaken: 0
   isAlive: 1
   canHit: 1
   hitDisplaySeconds: 0
+  <hitSound>k__BackingField: {fileID: 0}
+  <movementSound>k__BackingField: {fileID: 0}
+  <firingSound>k__BackingField: {fileID: 0}
+  <defeatSound>k__BackingField: {fileID: 0}
   hitDisplays: []
 --- !u!61 &5017096138429100914
 BoxCollider2D:
@@ -583,8 +586,8 @@ NavMeshAgent:
   m_GameObject: {fileID: 7184683741945739692}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
-  m_Speed: 5
+  m_Radius: 0.7
+  m_Speed: 7
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120

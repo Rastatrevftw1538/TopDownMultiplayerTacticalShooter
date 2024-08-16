@@ -5,20 +5,36 @@ using UnityEngine;
 using UnityEngine.UI;
 using static PlayerScriptSinglePlayer;
 
+[RequireComponent(typeof(PlayerScriptSinglePlayer))]
 public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
 
-    public const float maxHealth = 100;
-
-    public float currentHealth = maxHealth;
+    [Header("Player Stats")]
+    public float maxHealth = 100;
+    public float currentHealth;
+    public float iFrames;
     public float respawnTime;
 
+    [Header("Components")]
     private Slider healthbarInternal;
     [SerializeField] private Image healthbarExternal;
 
     private bool hasSentEvent = false;
     private bool isAlive = true;
     private bool isRespawning = false;
-    private Transform[] spawnPointList;
+    private bool canHit = true;
+    private Animator Anim; //move to statemachine later
+    private SpriteRenderer[] sprites;
+
+    [Header("Flash Color")]
+    public Color flashColor = Color.red;
+    public float flashTime = 0.25f;
+
+    [Header("Player Sounds")]
+    [SerializeField] private AudioClip gotHitAudio;
+    [SerializeField] private AudioClip diedAudio;
+    [SerializeField] private AudioClip spawnAudio;
+    private string lastLayerOn;
+
     public bool checkIfAlive
     {
         get { return isAlive; }
@@ -28,32 +44,94 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
         return currentHealth;
     }
 
+    private void SetFlashColor(Color color)
+    {
+        foreach(SpriteRenderer spriteRenderer in sprites)
+        {
+            if(spriteRenderer.gameObject.name != "Pointer")
+            spriteRenderer.color = color;
+        }
+    }
+
     private void Awake()
     {
+        sprites = GetComponentsInChildren<SpriteRenderer>();
         healthbarInternal = GetComponentInChildren<Slider>();
+        Anim = GetComponentInChildren<Animator>();
+
+        currentHealth = maxHealth;
+    }
+
+    private void Start()
+    {
+        PlaySound(spawnAudio, 0.4f);
+    }
+
+    public void AddHealth(float amount)
+    {
+        if (currentHealth + amount > maxHealth)
+            currentHealth = maxHealth;
+        else
+            currentHealth += amount;
+
+        CheckHealth();
     }
 
     public void TakeDamage(float amount)
     {
-        //CHECK IF THE DAMAGE PASSED IN WAS NEGATIVE, IF IT WAS, THIS FUNCTION WILL ADD HEALTH INSTEAD
-        amount = 
-            amount > 0 ? amount : amount * -1;
+        if (!canHit) return;
 
-        if(currentHealth > 0)
-            currentHealth -= amount;
+        PlaySound(gotHitAudio);
 
-        healthbarExternal.fillAmount = currentHealth / maxHealth;
+        //subtract health
+        currentHealth -= amount;
+        canHit = false;
 
-        checkHealth();
+        //did you die?
+        CheckHealth();
+        //animation
+        StartCoroutine(nameof(GotHitAnim));
+        //dmg flash
+        StartCoroutine(nameof(DamageFlash));
+    }
+
+
+    private IEnumerator DamageFlash()
+    {
+        //iframes
+        Invoke(nameof(SetCanHitTrue), iFrames);
+
+        //camera shake
+        StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.1f, 0.35f));
+
+        SetFlashColor(flashColor);
+        float currentFlashAmt = 0f;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < flashTime)
+        {
+            elapsedTime += Time.deltaTime;
+
+            currentFlashAmt = Mathf.Lerp(1f, 0f, (elapsedTime / flashTime));
+
+            yield return new WaitForSeconds(0.5f);
+
+            SetFlashColor(Color.white);
+        }
+    }
+
+    private void SetCanHitTrue()
+    {
+        canHit = true;
+    }
+
+    private bool CanHit()
+    {
+        return canHit;
     }
 
     private void Update()
     {
-        if (healthbarInternal != null)
-        {
-            healthbarInternal.value = currentHealth;
-        }
-
         if (healthbarExternal != null)
         {
             //Debug.Log("Health: " + (float)currentHealth);
@@ -61,86 +139,68 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
             //Debug.Log("Health Changed - Bar: " + healthbarExternal.fillAmount + " Health: " + currentHealth);
         }
 
-        if (!hasSentEvent)
+        /*if (healthbarInternal != null)
         {
-            checkHealth();
-            hasSentEvent = true;
-        }
+            healthbarInternal.value = currentHealth / maxHealth;
+        }*/
     }
-    /*
-    void OnChangedHealth(int oldHealth, int health)
-    {
-        if (healthbarInternal != null)
-        {
-            healthbarInternal.value = health;
-        }
 
-        if (healthbarExternal != null)
-        {
-            Debug.Log("Health: "+(float)health);
-            healthbarExternal.fillAmount = (float)health/(float)maxHealth;
-            Debug.Log("Health Changed - Bar: "+healthbarExternal.fillAmount+" Health: "+currentHealth);
-        }
-        //Debug.Log("Health Changed");
+    WeaponSinglePlayer weapon;
+    PlayerScriptSinglePlayer player;
+
+    void SetPlayerWep(bool set)
+    {
+        if (!player) player = this.GetComponent<PlayerScriptSinglePlayer>();
+        player.setCanMove(set);
+        if (!weapon) weapon = this.GetComponent<WeaponSinglePlayer>();
+        weapon.enabled = weapon.enabled = false; ;
     }
-    */
     void RpcDie()
     {
+        PlaySound(diedAudio);
         // Stop player movement
-        this.GetComponent<PlayerScriptSinglePlayer>().setCanMove(false);
-        this.GetComponent<WeaponSinglePlayer>().enabled = false;
+        SetPlayerWep(false);
         isAlive = false;
-        // Teleport player back to spawn
-        // Restore health after 3 seconds
-        //StartCoroutine(RestoreHealth());
 
-        //RAISE THE EVENT SO THE GAMEMODE MANAGER CAN TRACK THIS MESSAGE
-        PlayerDied playerDied = new PlayerDied();
-        playerDied.playerThatDied = this.gameObject;
-
-        ///FOR NOW RYAN DOOOO NOTT FORGETT
-        //if (!isRespawning)
-            //EvtSystem.EventDispatcher.Raise<PlayerDied>(playerDied);
-            //Respawn(respawnTime);
-
-        UIManager.Instance.ShowDefeat();
+        if(UIManager.Instance) UIManager.Instance.ShowDefeat();
     }
+
+    private void PlaySound(AudioClip sound, float volume = 1f)
+    {
+        if (!SoundFXManager.Instance) return;
+        SoundFXManager.Instance.PlaySoundFXClip(sound, transform, volume);
+    }
+
     private void RestoreHealth()
     {
         currentHealth = maxHealth;
         isAlive = true;
         isRespawning = false;
-        GetComponent<WeaponSinglePlayer>().enabled = true;
-        GetComponent<PlayerScriptSinglePlayer>().setCanMove(true);
 
-        //TO ENSURE THE SAME EVENTS DON'T GET RAISED MORE THAN ONCE
-        hasSentEvent = false;
-
-       // Debug.LogError("<color=yellow>RESPAWNED SUCCESSFULLY.</color>");
+        SetPlayerWep(true);
     }
 
     public void Respawn(float respawnTime)
     {
-        //Debug.LogError(this.name+"DIED!");
-        /*TODO: Replace with game starting points*/
-        /*foreach (Transform spawnPoints in spawnPointList) {
-                Debug.LogError("got respawn point");
-                if (spawnPoints.CompareTag(this.GetComponent<PlayerScriptSinglePlayer>().PlayerTeam.ToString())) {
-                    transform.position = spawnPoints.position;
-                }
-        }*/
-
         isRespawning = true;
         //ACTUALLY RESTORE HEALTH TO THE PLAYER
         Invoke(nameof(RestoreHealth), respawnTime);
     }
 
-    private void checkHealth()
+    private void CheckHealth()
     {
+        healthbarExternal.fillAmount = currentHealth / maxHealth;
         if (currentHealth <= 0)
         {
             currentHealth = 0;
             RpcDie();
         }
+    }
+    
+    private IEnumerator GotHitAnim()
+    {
+        Anim.SetBool("GotHit", true);
+        yield return new WaitForSeconds(iFrames);
+        Anim.SetBool("GotHit", false);
     }
 }

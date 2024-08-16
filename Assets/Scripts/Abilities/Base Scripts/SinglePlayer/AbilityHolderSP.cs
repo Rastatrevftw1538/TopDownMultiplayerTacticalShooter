@@ -78,7 +78,7 @@ public class AbilityHolderSP : MonoBehaviour
                         startAbility();
                     }
                     
-                    Debug.LogWarning("<color=orange>Ability: " + abilities[indx].abilityName + " has been activated. </color>");
+                    //Debug.LogWarning("<color=orange>Ability: " + abilities[indx].abilityName + " has been activated. </color>");
                 }
             break;
             
@@ -99,12 +99,12 @@ public class AbilityHolderSP : MonoBehaviour
                 if(cooldownTime > 0){ //WHILE THE ABILITY IS ON COOLDOWN
                     cooldownTime -= Time.deltaTime; //SUBTRACT TIME FROM THE COOLDOWN TIMER UNTIL THE ABILITY IS READY AGAIN
 
-                    Debug.LogWarning("<color=orange>Ability: " + abilities[indx].abilityName + " is on cooldown. </color>");
+                    //Debug.LogWarning("<color=orange>Ability: " + abilities[indx].abilityName + " is on cooldown. </color>");
                 }
                 else{
                     state = AbilityState.ready; //AND THEN SET THE ABILITY TO READY
 
-                    Debug.LogWarning("<color=orange>Ability: " + abilities[indx].abilityName + " is now ready to use. </color>");
+                    //Debug.LogWarning("<color=orange>Ability: " + abilities[indx].abilityName + " is now ready to use. </color>");
                 }
             break;  
 

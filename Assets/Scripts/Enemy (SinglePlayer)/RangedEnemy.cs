@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.AI;
+using System.Threading.Tasks;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class RangedEnemy : MonoBehaviour, IEnemy
 {
     [Header("Enemy Stats")]
-    public float maxHealth;
     [SerializeField] private float currentHealth;
+    [field: SerializeField] public float maxHealth { get; set; }
     public float respawnTime = 2f;
     [SerializeField] private Transform target;
     private NavMeshAgent agent; 
@@ -21,6 +23,8 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     [Header("Enemy Components")]
     [SerializeField] private Image healthbarExternal;
     [SerializeField] private GameObject projectile;
+    [field: SerializeField] public float dropChance { get; set; }
+    [field: SerializeField] public GameObject dropObject { get; set; }
 
     [Header("Debug")]
     [SerializeField] private float _damageTaken = 0;
@@ -30,6 +34,14 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     [Header("Hit Display")]
     //public GameObject hitDisplay;
     public float hitDisplaySeconds;
+    [field: SerializeField] public AudioClip hitSound { get; set; }
+    [field: SerializeField] public AudioClip movementSound { get; set; }
+    [field: SerializeField] public AudioClip firingSound { get; set; }
+    [field: SerializeField] public AudioClip defeatSound { get; set; }
+    [Header("Flash Color")]
+    public Color flashColor = Color.red;
+    public float flashTime = 0.25f;
+    public SpriteRenderer spriteRenderer;
 
     private void Awake()
     {
@@ -47,24 +59,23 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         agent.updateUpAxis = false;
 
         shotCooldown = startShotCooldown;
-        
-                if (target == null && player != null)
-                {
-                    target = player.gameObject.transform;
-                }
-                else if (target == null && player == null)
-                {
-                    target = GameObject.Find("Player - SinglePlayer").transform;
-                    player = target.GetComponent<PlayerHealthSinglePlayer>();
-                }
-        //player = PlayerHealthSinglePlayer.Instance;
-        //target = PlayerHealthSinglePlayer.Instance.gameObject.transform;
+
+        if(!player)
+            player = GameObject.FindWithTag("Player").GetComponent<PlayerHealthSinglePlayer>();
+        if (!target)
+        {
+            target = GameObject.FindWithTag("Player").transform;
+        }
     }
 
     private void Update()
     {
         //healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
         agent.SetDestination(target.position);
+        if(agent.velocity.magnitude > 0)
+        {
+            PlaySound(movementSound, 0.5f);
+        }
 
         //DISTANCE BEFORE STOPPING
         if(agent.remainingDistance <= stoppingDistance)
@@ -96,17 +107,38 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     {
         //attack
         if (other.gameObject.tag == "Player")
-        {
-            if (!player)
-                player = other.gameObject.GetComponent<PlayerHealthSinglePlayer>();
-
+        { 
             player.TakeDamage(touchDamage);
         }
     }
 
+    private IEnumerator DamageFlash()
+    {
+        SetFlashColor(flashColor);
+        float currentFlashAmt = 0f;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < flashTime)
+        {
+            elapsedTime += Time.deltaTime;
+
+            currentFlashAmt = Mathf.Lerp(1f, 0f, (elapsedTime / flashTime));
+
+            yield return new WaitForSeconds(0.5f);
+
+            SetFlashColor(Color.white);
+        }
+    }
+
+    private void SetFlashColor(Color color)
+    {
+        spriteRenderer.color = color;
+    }
+
     private void Attack()
     {
-        GameObject currentProjectile = Instantiate(projectile, transform.position, transform.rotation);
+        //PlaySound(firingSound);
+        Instantiate(projectile, transform.position, transform.rotation);
         shotCooldown = startShotCooldown;
     }
 
@@ -127,6 +159,8 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     private float timeSinceLastShot;
     public void TakeDamage(float amount)
     {
+        PlaySound(hitSound, 0.15f);
+        StartCoroutine(nameof(DamageFlash));
         //FIRST CHECK IF THE BASE'S HEALTH IS BELOW 0
         if (currentHealth > 0)
             currentHealth -= amount;
@@ -143,6 +177,12 @@ public class RangedEnemy : MonoBehaviour, IEnemy
 
         //SLOW ENEMY
 
+    }
+
+    private void PlaySound(AudioClip sound, float volume = 1f)
+    {
+        if (!SoundFXManager.Instance) return;
+            SoundFXManager.Instance.PlaySoundFXClip(sound, transform, volume);
     }
 
     public List<GameObject> hitDisplays = new List<GameObject>();
@@ -182,14 +222,25 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         Invoke(nameof(RestoreHealth), respawnTime);
     }
 
+    public void DropOnDeath()
+    {
+        int randDropProb = Random.Range(0, 100);
+
+        if(randDropProb <= dropChance)
+        Instantiate(dropObject, transform.position, Quaternion.identity);
+    }
+
     void RpcDie()
     {
+        DropOnDeath();
+
         isAlive = false;
         //this.transform.parent.gameObject.SetActive(false);
         //Respawn(respawnTime);
+        PlaySound(defeatSound, 0.1f);
         Destroy(this.transform.parent.gameObject);
 
-        SPGameManager.Instance.enemiesKilled++;
+       if(WaveManager.Instance) WaveManager.Instance.enemiesKilled++;
     }
 
     private void CheckHealth()
@@ -202,88 +253,3 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         }
     }
 }
-/*
-bool foundWhatHit = false;
-//training dummy
-if (!foundWhatHit)
-{
-    TrainingDummy dummyHealth = objectOrigin.GetComponent<TrainingDummy>();
-    if (dummyHealth != null && !foundWhatHit)
-    {
-        if (dummyHealth.canHit)
-        {
-            //CLICKED ON BEAT?
-            if (BPMManager.instance.canClick == Color.green)
-            {
-                Debug.LogError("ON BEAT :)!! HIT DUMMY FOR " + damage * damageMultiplierBPM);
-                damageDone = (damage * damageMultiplierBPM);
-            }
-            else
-            {
-                Debug.LogError("NOT ON BEAT :(!! HIT DUMMY FOR " + damage);
-                damageDone = (damage);
-            }
-            dummyHealth.TakeDamage(damageDone);
-        }
-
-        foundWhatHit = true;
-    }
-}
-
-//enemy
-
-if (!foundWhatHit)
-{
-    Debug.LogError("made it here1");
-    RangedEnemy dummyHealth = objectOrigin.GetComponent<RangedEnemy>();
-    if (dummyHealth != null && !foundWhatHit)
-    {
-        Debug.LogError("made it here1a");
-        if (dummyHealth.canHit)
-        {
-            Debug.LogError("made it here1b");
-            //CLICKED ON BEAT?
-            if (BPMManager.instance.canClick == Color.green)
-            {
-                Debug.LogError("ON BEAT :)!! HIT ENEMY FOR " + damage * damageMultiplierBPM);
-                damageDone = (damage * damageMultiplierBPM);
-            }
-            else
-            {
-                Debug.LogError("NOT ON BEAT :(!! HIT ENEMY FOR " + damage);
-                damageDone = (damage);
-            }
-            dummyHealth.TakeDamage(damageDone);
-        }
-
-        foundWhatHit = true;
-    }
-}
-
-if (!foundWhatHit)
-{
-    Debug.LogError("made it here2");
-    MeleeEnemy dummyHealth = objectOrigin.GetComponent<MeleeEnemy>();
-    if (dummyHealth != null && !foundWhatHit)
-    {
-        Debug.LogError("made it here2a");
-        if (dummyHealth.canHit)
-        {
-            Debug.LogError("made it here2b");
-            //CLICKED ON BEAT?
-            if (BPMManager.instance.canClick == Color.green)
-            {
-                Debug.LogError("ON BEAT :)!! HIT ENEMY FOR " + damage * damageMultiplierBPM);
-                damageDone = (damage * damageMultiplierBPM);
-            }
-            else
-            {
-                Debug.LogError("NOT ON BEAT :(!! HIT ENEMY FOR " + damage);
-                damageDone = (damage);
-            }
-            dummyHealth.TakeDamage(damageDone);
-        }
-
-        foundWhatHit = true;
-    }
-}*/
