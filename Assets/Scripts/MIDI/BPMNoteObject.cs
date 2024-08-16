@@ -7,7 +7,6 @@ public class BPMNoteObject : MonoBehaviour
 {
     bool canBePressed;
     public KeyCode keyToPress;
-    BPMManager bpmManager;
     private Rigidbody2D rb;
     // Start is called before the first frame update
     void Start()
@@ -44,6 +43,7 @@ public class BPMNoteObject : MonoBehaviour
         {
             if (canBePressed)
             {
+                //BPMManager.instance.canClick = Color.green;
                 gameObject.SetActive(false);
 
                 //BPMManager.Instance.NoteHit();
@@ -71,8 +71,8 @@ public class BPMNoteObject : MonoBehaviour
             }
         }
 
-        if (hasStarted) //rb.MovePosition(new Vector2(rb.position.x * Time.deltaTime * beatTempo, 0f));
-            transform.position += new Vector3(beatTempo/50 * Time.deltaTime, 0f, 0f);
+        if (hasStarted) //rb.MovePosition(new Vector2(rb.position.x + beatTempo * Time.fixedDeltaTime, 0f));
+            transform.position += new Vector3(beatTempo * Time.deltaTime, 0f, 0f);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -80,6 +80,7 @@ public class BPMNoteObject : MonoBehaviour
         if (collision.CompareTag("Activator"))
         {
             canBePressed = true;
+            BPMManager.instance.canClick = Color.green;
         }
     }
 
@@ -90,7 +91,7 @@ public class BPMNoteObject : MonoBehaviour
         if (collision.CompareTag("Activator"))
         {
             canBePressed = false;
-
+            BPMManager.instance.canClick = Color.red;
             BPMManager.instance.NoteMissed(this.gameObject);
         }
     }

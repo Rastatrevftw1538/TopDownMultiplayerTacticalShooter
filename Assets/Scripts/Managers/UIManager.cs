@@ -201,14 +201,6 @@ public class UIManager : Singleton<UIManager>
         pointsDisplay.text = points.ToString();
     }
 
-    public void SubtractPoints(float num)
-    {
-        if (!pointsDisplay) return;
-
-        points -= num;
-        pointsDisplay.text = points.ToString();
-    }
-
     //BPMManager bpmManager;
     public void ShowDefeat()
     {

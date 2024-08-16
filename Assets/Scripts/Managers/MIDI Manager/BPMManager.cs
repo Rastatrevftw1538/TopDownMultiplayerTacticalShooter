@@ -157,7 +157,7 @@ public class BPMManager : MonoBehaviour
         audioSource.Play();
 
         BPM = UniBpmAnalyzer.AnalyzeBpm(randSong);
-        BPM = BPM / 2; //FIXING THE BPM (SOME SONGS WILL BE DIFFERENT)
+        BPM = BPM / 4; //FIXING THE BPM (SOME SONGS WILL BE DIFFERENT)
 
         percentToBeat = 0f;
         BPS = c_MINUTE / BPM;
