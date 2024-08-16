@@ -109,7 +109,7 @@ public class AbilityHolderSP : MonoBehaviour
                 if(cooldownTime > 0){ //WHILE THE ABILITY IS ON COOLDOWN
                     cooldownTime -= Time.deltaTime; //SUBTRACT TIME FROM THE COOLDOWN TIMER UNTIL THE ABILITY IS READY AGAIN
                     abilityCooldownUI.fillAmount -= abilities[indx].cooldownTime * Time.deltaTime; //SET THE UI TO MATCH
-                    UIManager.Instance.StartCooldownUI(UIManager.CooldownType.Ability, abilities[indx].abilityIcon, abilities[indx].cooldownTime);
+                    UIManager.Instance.StartCooldownUI(UIManager.CooldownType.Ability, abilities[indx].abilityIcon, abilities[indx].cooldownTime, abilities[indx].name);
                     //Debug.LogWarning("<color=orange>Ability: " + abilities[indx].abilityName + " is on cooldown. </color>");
                 }
                 else{

@@ -19,6 +19,7 @@ TagManager:
   - Activator
   - BPM Holder
   - Note Spawn
+  - Destroy Note
   layers:
   - Default
   - TransparentFX

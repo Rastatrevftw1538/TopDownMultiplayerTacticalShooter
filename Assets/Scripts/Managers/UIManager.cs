@@ -21,6 +21,7 @@ public class UIManager : Singleton<UIManager>
     public UIArrowToShow uiArrowToTarget;
     public AudioClip defeatSound;
     public AudioClip victorySound;
+    public TextMeshProUGUI powerupText;
     public GameObject powerupUI;
     private Image powerupUICd;
     private Image powerupUIIcon;
@@ -129,13 +130,15 @@ public class UIManager : Singleton<UIManager>
     }
 
     CooldownType lastType;
-    public void StartCooldownUI(CooldownType type, Sprite icon, float cdTime)
+    public void StartCooldownUI(CooldownType type, Sprite icon, float cdTime, string name)
     {
         //Debug.LogError("active time of the powerup is: " + cdTime);
         lastType = type;
         //SET THE SPRITE
         if (type == CooldownType.Powerup)
         {
+            powerupText.text = name;
+            powerupText.gameObject.SetActive(true);
             if (icon != null)
                 powerupUIIcon.sprite = icon;
             powerupUIIcon.gameObject.SetActive(true);
@@ -143,6 +146,7 @@ public class UIManager : Singleton<UIManager>
             powerupCd = cdTime;
             powerupUICd.fillAmount = 1f;
 
+            StartCoroutine(nameof(FlashBuffName));
             Invoke(nameof(ResetCooldownUI), cdTime);
         }
     }
@@ -151,6 +155,13 @@ public class UIManager : Singleton<UIManager>
     {
         //Debug.LogError("called reset ui");
         powerupUIIcon.gameObject.SetActive(false);
+    }
+
+    IEnumerator FlashBuffName()
+    {
+        yield return new WaitForSeconds(1f);
+        powerupText.text = name;
+        powerupText.gameObject.SetActive(false);
     }
 
     IEnumerator FlashEnemyRemaining()

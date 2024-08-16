@@ -9,6 +9,7 @@ public class BuffPickup : MonoBehaviour, IInteractable
     public AudioClip pickupSound;
     public float points;
     private SpriteRenderer sprite;
+    string buffName;
 
     [Header("Float Speed & Height")]
     public float floatSpeed;
@@ -16,7 +17,7 @@ public class BuffPickup : MonoBehaviour, IInteractable
     public void Interact()
     {
         if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(pickupSound, transform);
-        if (UIManager.Instance) UIManager.Instance.StartCooldownUI(UIManager.CooldownType.Powerup, sprite.sprite, statusEffect.activeTime);
+        if (UIManager.Instance) UIManager.Instance.StartCooldownUI(UIManager.CooldownType.Powerup, sprite.sprite, statusEffect.activeTime, buffName);
         player.ApplyEffect(statusEffect);
         Debug.LogError("Picked up powerup of type: " + statusEffect.Name);
         if (UIManager.Instance) UIManager.Instance.AddPoints(points);
@@ -28,6 +29,7 @@ public class BuffPickup : MonoBehaviour, IInteractable
     {
         initialY = transform.position.y;
         TryGetComponent<SpriteRenderer>(out sprite);
+        buffName = statusEffect.name;
     }
 
     void Update()
