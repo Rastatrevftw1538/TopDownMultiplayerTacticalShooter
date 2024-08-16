@@ -47,6 +47,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     public GameObject defeatParticles;
     public GameObject onBeatDefeatParticles;
     static BPMManager bpmManager;
+    private Animator anim;
 
     private void Awake()
     {
@@ -63,6 +64,8 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         agent.updateRotation = false;
         agent.updateUpAxis = false;
         initColor = spriteRenderer.color;
+        spriteRenderer.transform.TryGetComponent<Animator>(out anim);
+
 
         shotCooldown = startShotCooldown;
 
@@ -80,11 +83,23 @@ public class RangedEnemy : MonoBehaviour, IEnemy
 
     private void Update()
     {
+        if (!player)
+            player = GameObject.FindWithTag("Player").GetComponent<PlayerHealthSinglePlayer>();
+        if (!target)
+        {
+            target = GameObject.FindWithTag("Player").transform;
+        }
+
         //healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
         agent.SetDestination(target.position);
         if(agent.velocity.magnitude > 0)
         {
-            PlaySound(movementSound, 0.5f);
+            anim.SetBool("Idle", false);
+            PlaySound(movementSound, 0.2f);
+        }
+        else
+        {
+            anim.SetBool("Idle", true);
         }
 
         //DISTANCE BEFORE STOPPING
@@ -104,7 +119,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
                 if (hit.collider.CompareTag("Player"))
                 {
                     shotCooldown = 0f;
-                    Attack();
+                    StartCoroutine(nameof(Attack));
                 }
         }
         else
@@ -151,11 +166,14 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         spriteRenderer.color = color;
     }
 
-    private void Attack()
+    private IEnumerator Attack()
     {
+        anim.SetBool("IsAttacking", true);
         //PlaySound(firingSound);
-        Instantiate(projectile, spriteRenderer.gameObject.transform.position, transform.rotation);
+        Instantiate(projectile, transform.position, transform.rotation);
         shotCooldown = startShotCooldown;
+        yield return new WaitForSeconds(shotCooldown);
+        anim.SetBool("IsAttacking", false);
     }
 
     public bool checkIfAlive

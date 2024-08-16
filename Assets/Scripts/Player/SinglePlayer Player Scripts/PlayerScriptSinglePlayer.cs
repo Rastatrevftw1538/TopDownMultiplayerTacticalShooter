@@ -373,6 +373,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
 
     public void RemoveEffect()
     {
+        //Debug.LogError("Status effect expired...");
         _statusEffectData = null;
         _currentEffectTime = 0f;
         _nextTickTime = 0f;
@@ -391,7 +392,6 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
     //CALLS IT MULTIPLE TIMES
     private void CmdHandleEffect()
     {
-        //Debug.LogError("Calls effect handling");
         if(_statusEffectData != null)
             HandleEffect();
     }
@@ -400,7 +400,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
     private void SetStatusEffectData(ApplyStatusEffects evtData)
     {
         //EvtSystem.EventDispatcher.RemoveListener<ApplyStatusEffects>(deleteListener);
-        Debug.LogError("Object recieved from event: " + evtData.player);
+        //Debug.LogError("Object recieved from event: " + evtData.player);
         RpcSetStatusEffectData(evtData);
     }
 
@@ -426,7 +426,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
             if (_currentEffectTime >= _statusEffectData.activeTime) 
             {
                 RemoveEffect(); 
-                Debug.LogError("status effect expired"); 
+                //Debug.LogError("status effect expired"); 
                 ClearStatusEffects(); 
             }
 
@@ -456,7 +456,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
 
 
                         //SUPER HARD CODED FOR NOWWW, IT'S OKAY
-                        Debug.LogError("THE NAME OF THE EFFECT IS: " + _statusEffectData.Name);
+                        //Debug.LogError("THE NAME OF THE EFFECT IS: " + _statusEffectData.Name);
 
                         if (!hasApplied)
                         {
@@ -510,6 +510,12 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
                 //EvtSystem.EventDispatcher.AddListener<ApplyStatusEffects>(SetStatusEffectData);
             }
         }
+    }
+
+    public string CurrentStatusEffect()
+    {
+        if (_statusEffectData == null) return "";
+        return _statusEffectData.Name;
     }
 
     public void ApplyDOT(PlayerHealthSinglePlayer playerHealthScript)
