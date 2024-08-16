@@ -83,6 +83,11 @@ public class BPMNoteObject : MonoBehaviour
             canBePressed = true;
             BPMManager.instance.canClick = Color.green;
         }
+
+        if (collision.CompareTag("Destroy Note"))
+        {
+            Destroy(this.gameObject);
+        }
     }
 
     BPMManager bpmManager;
@@ -109,6 +114,11 @@ public class BPMNoteObject : MonoBehaviour
             canBePressed = false;
             BPMManager.instance.NoteMissed(this.gameObject);
             Destroy(this.gameObject, 0.1f);
+        }
+
+        if(collision.CompareTag("Destroy Note"))
+        {
+            Destroy(this.gameObject);
         }
     }
 }
