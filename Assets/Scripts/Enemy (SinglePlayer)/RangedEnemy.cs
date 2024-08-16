@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.AI;
 using System.Threading.Tasks;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
+using UnityEditor;
 
 public class RangedEnemy : MonoBehaviour, IEnemy
 {
@@ -24,7 +25,8 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     [SerializeField] private Image healthbarExternal;
     [SerializeField] private GameObject projectile;
     [field: SerializeField] public float dropChance { get; set; }
-    [field: SerializeField] public GameObject dropObject { get; set; }
+    [field: SerializeField] public List<GameObject> dropObjects { get; set; }
+    [SerializeField] private LayerMask targetLayers;
 
     [Header("Debug")]
     [SerializeField] private float _damageTaken = 0;
@@ -42,6 +44,10 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     public Color flashColor = Color.red;
     public float flashTime = 0.25f;
     public SpriteRenderer spriteRenderer;
+    public GameObject defeatParticles;
+    public GameObject onBeatDefeatParticles;
+    static BPMManager bpmManager;
+    private Animator anim;
 
     private void Awake()
     {
@@ -57,6 +63,9 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         agent = GetComponentInParent<NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
+        initColor = spriteRenderer.color;
+        spriteRenderer.transform.TryGetComponent<Animator>(out anim);
+
 
         shotCooldown = startShotCooldown;
 
@@ -66,15 +75,31 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         {
             target = GameObject.FindWithTag("Player").transform;
         }
+        if (!bpmManager)
+        {
+            bpmManager = FindObjectOfType<BPMManager>();
+        }
     }
 
     private void Update()
     {
+        if (!player)
+            player = GameObject.FindWithTag("Player").GetComponent<PlayerHealthSinglePlayer>();
+        if (!target)
+        {
+            target = GameObject.FindWithTag("Player").transform;
+        }
+
         //healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
         agent.SetDestination(target.position);
         if(agent.velocity.magnitude > 0)
         {
-            PlaySound(movementSound, 0.5f);
+            anim.SetBool("Idle", false);
+            PlaySound(movementSound, 0.2f);
+        }
+        else
+        {
+            anim.SetBool("Idle", true);
         }
 
         //DISTANCE BEFORE STOPPING
@@ -87,9 +112,15 @@ public class RangedEnemy : MonoBehaviour, IEnemy
             agent.isStopped = false;
         }
 
-        if (shotCooldown <= 0)
+        if (shotCooldown <= 0 && (agent.remainingDistance*1.5f >= stoppingDistance || agent.remainingDistance <= stoppingDistance))
         {
-            Attack();
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, target.position - transform.position, stoppingDistance*1.5f, targetLayers);
+            if (hit.collider)
+                if (hit.collider.CompareTag("Player"))
+                {
+                    shotCooldown = 0f;
+                    StartCoroutine(nameof(Attack));
+                }
         }
         else
         {
@@ -98,7 +129,6 @@ public class RangedEnemy : MonoBehaviour, IEnemy
 
         Vector2 direction = new Vector2(target.position.x - transform.position.x, target.position.y - transform.position.y); //FIND DIRECTION OF PLAYER
         transform.up = direction; //ROTATES THE ENEMY TO THE PLAYER 
-
         //attack
     }
 
@@ -112,6 +142,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         }
     }
 
+    Color initColor;
     private IEnumerator DamageFlash()
     {
         SetFlashColor(flashColor);
@@ -126,7 +157,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
 
             yield return new WaitForSeconds(0.5f);
 
-            SetFlashColor(Color.white);
+            SetFlashColor(initColor);
         }
     }
 
@@ -135,11 +166,14 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         spriteRenderer.color = color;
     }
 
-    private void Attack()
+    private IEnumerator Attack()
     {
+        anim.SetBool("IsAttacking", true);
         //PlaySound(firingSound);
         Instantiate(projectile, transform.position, transform.rotation);
         shotCooldown = startShotCooldown;
+        yield return new WaitForSeconds(shotCooldown);
+        anim.SetBool("IsAttacking", false);
     }
 
     public bool checkIfAlive
@@ -225,22 +259,52 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     public void DropOnDeath()
     {
         int randDropProb = Random.Range(0, 100);
-
-        if(randDropProb <= dropChance)
-        Instantiate(dropObject, transform.position, Quaternion.identity);
+        int randDropIdx = Random.Range(0, dropObjects.Count);
+        if (randDropProb <= dropChance && dropObjects[randDropIdx])
+            Instantiate(dropObjects[randDropIdx], transform.position, Quaternion.identity);
     }
 
     void RpcDie()
     {
         DropOnDeath();
-
+        PlayParticleDefeat();
         isAlive = false;
         //this.transform.parent.gameObject.SetActive(false);
         //Respawn(respawnTime);
         PlaySound(defeatSound, 0.1f);
         Destroy(this.transform.parent.gameObject);
+        UpdateEnemiesKilled();
+    }
 
-       if(WaveManager.Instance) WaveManager.Instance.enemiesKilled++;
+    void PlayParticleDefeat()
+    {
+        GameObject temp;
+        if (CheckBPM())
+        {
+            temp = Instantiate(onBeatDefeatParticles, transform.position, Quaternion.identity);
+        }
+        else
+        {
+            temp = Instantiate(defeatParticles, transform.position, Quaternion.identity);
+        }
+        Destroy(temp, 0.4f);
+    }
+
+    bool CheckBPM()
+    {
+        if (!bpmManager) FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
+        if (bpmManager.CanClick())
+        {
+            return true;
+        }
+        return false;
+    }
+
+    void UpdateEnemiesKilled()
+    {
+        if (!WaveManager.Instance) return;
+        WaveManager.Instance.enemiesKilled++;
+        WaveManager.Instance.UpdateEnemiesLeft();
     }
 
     private void CheckHealth()

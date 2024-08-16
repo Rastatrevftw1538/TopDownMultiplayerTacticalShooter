@@ -347,7 +347,7 @@ public class Weapon : NetworkBehaviour
         }
         
         var bulletInstance = Instantiate(bulletPrefab, firePoint.position, new Quaternion(0, 0, 0, 0));
-        BulletScript trailRender = bulletInstance.GetComponent<BulletScript>();
+        BulletScriptSP trailRender = bulletInstance.GetComponent<BulletScriptSP>();
         GameObject particleEffect = trailRender.effectPrefab;
         ParticleSystem particleSystem = particleEffect.GetComponent<ParticleSystem>();
         var main = particleSystem.main;

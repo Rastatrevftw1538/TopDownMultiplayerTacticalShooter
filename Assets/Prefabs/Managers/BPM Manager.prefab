@@ -47,17 +47,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e51fc2ac93119e48a178f15b12c7f8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BPMIndicatorBar: {fileID: 0}
-  BPMIndicatorProgress: {fileID: 0}
-  BPMIndicatorToHit: {fileID: 0}
+  BPM: 0
+  canClick: {r: 1, g: 0, b: 0, a: 1}
+  BPMNote: {fileID: 0}
+  BPMNoteSpawn: {fileID: 0}
+  startPlaying: 0
   gameSongs:
   - {fileID: 8300000, guid: 4c5681dd823552648a71683c16af6dea, type: 3}
+  - {fileID: 8300000, guid: bb40ad684d0aa0942a568c413fb71da5, type: 3}
+  - {fileID: 8300000, guid: 944d39949e2b6984eb5698155427f58d, type: 3}
+  - {fileID: 8300000, guid: b91bb1fbb07977b44a0594440611fbc8, type: 3}
   - {fileID: 8300000, guid: 26364aaf1f64b40c1a047b0bacfbd10e, type: 3}
   audioSource: {fileID: 0}
   filter: {fileID: 0}
-  BPM: 0
-  errorWindow: 0.15
-  canClick: {r: 1, g: 0, b: 0, a: 1}
+  pointsPerNote: 200
+  pointsPerGoodNote: 300
+  pointsPerPerfectNote: 1000
+  pointsDeductOnMiss: 0
+  normErrorWindow: 0.25
+  goodErrorWindow: 0.15
+  perfectErrorWindow: 0.05
+  beatScroller: {fileID: 0}
+  normHitFeedback: {fileID: 5408956092281702196, guid: 1e43ecbff3130244dbd40d4dbbff1af0, type: 3}
+  goodHitFeedback: {fileID: 1744159560460124382, guid: c1fce66f1ec1edd488ca945c8df9d647, type: 3}
+  perfectHitFeedback: {fileID: 4693532575558850268, guid: 171b8a8d428884845a533c8d61e31489, type: 3}
+  missHitFeedback: {fileID: 8695352219130985062, guid: 3d76a64a95114584fb469998dd509c4e, type: 3}
+  actualFeedback: {fileID: 0}
+  currentMultiplier: 1
+  multiplierTracker: 0
+  multiplierThresholds: 02000000050000000a000000
 --- !u!82 &3513524578336109788
 AudioSource:
   m_ObjectHideFlags: 0
@@ -69,10 +87,10 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 0.45
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -167,6 +185,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   soundFXObject: {fileID: 2294200199544277999, guid: 3b81ebaa073b72f4aac5b69a3e913e43, type: 3}
+  lowPitchRng: 0.8
+  highPitchRng: 1.15
+  useRandomGlobalPitch: 1
 --- !u!169 &2970943512982108980
 AudioLowPassFilter:
   m_ObjectHideFlags: 0

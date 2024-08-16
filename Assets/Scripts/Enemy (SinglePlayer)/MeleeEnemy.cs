@@ -23,7 +23,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     [Header("Enemy Components")]
     [SerializeField] private Image healthbarExternal;
     [field: SerializeField] public float dropChance { get; set; }
-    [field: SerializeField] public GameObject dropObject { get; set; }
+    [field: SerializeField] public List<GameObject> dropObjects { get; set; }
 
     [Header("Debug")]
     [SerializeField] private float _damageTaken = 0;
@@ -40,7 +40,12 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     [Header("Flash Color")]
     public Color flashColor = Color.red;
     public float flashTime = 0.25f;
-    private SpriteRenderer[] sprites;
+    private SpriteRenderer sprite;
+    public GameObject healthBar;
+    public GameObject defeatParticles;
+    public GameObject onBeatDefeatParticles;
+    static BPMManager bpmManager;
+
 
     private void Awake()
     {
@@ -55,9 +60,11 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         //agent = GetComponent<NavMashAgent>();
         anim = GetComponent<Animator>();
         agent = GetComponentInParent<NavMeshAgent>();
-        sprites = GetComponentsInChildren<SpriteRenderer>();
+        sprite = GetComponent<SpriteRenderer>();
+        initColor = sprite.color;
         agent.updateRotation = false;
         agent.updateUpAxis = false;
+        StartCoroutine(nameof(SpawnedAnim));
 
         /*if (target == null && player != null)
         {
@@ -74,26 +81,60 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         {
             target = GameObject.FindWithTag("Player").transform;
         }
+
+        if (!bpmManager)
+        {
+            bpmManager = FindObjectOfType<BPMManager>();
+        }
     }
 
     private void Update()
     {
-        //healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
-        agent.SetDestination(target.position);
-
-        //move to state machine
-        anim.SetFloat("IsMoving", 1);
-        //Vector2 direction = new Vector2(target.position.x - transform.position.x, target.position.y - transform.position.y); //FIND DIRECTION OF PLAYER
-        //transform.up = direction; //ROTATES THE ENEMY TO THE PLAYER 
-
-        //attack
-
-        if (agent.velocity.magnitude > 0)
+        if (!player)
+            player = GameObject.FindWithTag("Player").GetComponent<PlayerHealthSinglePlayer>();
+        if (!target)
         {
-            PlaySound(movementSound, 0.5f);
+            target = GameObject.FindWithTag("Player").transform;
+        }
+
+        //healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
+        if (spawnedAnimDone)
+        {
+            agent.SetDestination(target.position);
+
+            //move to state machine
+            //Vector2 direction = new Vector2(target.position.x - transform.position.x, target.position.y - transform.position.y); //FIND DIRECTION OF PLAYER
+            //transform.up = direction; //ROTATES THE ENEMY TO THE PLAYER 
+
+            //attack
+            if (agent.velocity.magnitude > 0)
+            {
+                PlaySound(movementSound, 0.2f);
+                anim.SetFloat("IsMoving", 1);
+                CheckFlip(agent.velocity.x);
+            }
         }
     }
 
+    bool spawnedAnimDone;
+    private IEnumerator SpawnedAnim()
+    {
+        spawnedAnimDone = false;
+        anim.SetBool("Spawned", true);
+        yield return new WaitForSeconds(1f);
+        anim.SetBool("Spawned", false);
+        spawnedAnimDone = true;
+    }
+
+    void CheckFlip(float velocity)
+    {
+        if (velocity > 0)
+            sprite.flipX = false;
+        else
+            sprite.flipX = true;
+    }
+
+    Color initColor;
     private IEnumerator DamageFlash()
     {
         SetFlashColor(flashColor);
@@ -108,23 +149,20 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
 
             yield return new WaitForSeconds(0.5f);
 
-            SetFlashColor(Color.white);
+            SetFlashColor(initColor);
         }
     }
 
     private void SetFlashColor(Color color)
     {
-        foreach (SpriteRenderer spriteRenderer in sprites)
-        {
-            if (spriteRenderer.gameObject.name != "Pointer")
-                spriteRenderer.color = color;
-        }
+        sprite.color = color;
     }
 
     static PlayerHealthSinglePlayer player;
-    void OnTriggerEnter2D(Collider2D other)
+    bool isAttacking;
+    void OnTriggerStay2D(Collider2D other)
     {
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player" && !isAttacking)
         {
             //player.TakeDamage(damage);
             StartCoroutine(nameof(Attack));
@@ -138,11 +176,12 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
 
     private IEnumerator Attack()
     {
+        isAttacking = true;
         anim.SetBool("IsAttacking", true);
         player.TakeDamage(damage);
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(attackSpd);
         anim.SetBool("IsAttacking", false);
-
+        isAttacking = false;
     }
 
     [HideInInspector] public bool dropOnDeath { get; set; }
@@ -241,15 +280,15 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     public void DropOnDeath()
     {
         int randDropProb = Random.Range(0, 100);
-
-        if (randDropProb <= dropChance)
-            Instantiate(dropObject, transform.position, Quaternion.identity);
+        int randDropIdx = Random.Range(0, dropObjects.Count);
+        if (randDropProb <= dropChance && dropObjects[randDropIdx])
+            Instantiate(dropObjects[randDropIdx], transform.position, Quaternion.identity);
     }
 
     void RpcDie()
     {
         DropOnDeath();
-
+        PlayParticleDefeat();
         PlaySound(defeatSound, 0.1f);
         isAlive = false;
         //this.transform.parent.gameObject.SetActive(false);
@@ -257,7 +296,38 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         Destroy(this.transform.parent.gameObject);
 
         //IDEALLY, we move this to the interface
-        if (WaveManager.Instance) WaveManager.Instance.enemiesKilled++;
+        UpdateEnemiesKilled();
+    }
+
+    void PlayParticleDefeat()
+    {
+        GameObject temp;
+        if (CheckBPM())
+        {
+            temp = Instantiate(onBeatDefeatParticles, transform.position, Quaternion.identity);
+        }
+        else
+        {
+            temp = Instantiate(defeatParticles, transform.position, Quaternion.identity);
+        }
+        Destroy(temp, 0.4f);
+    }
+
+    bool CheckBPM()
+    {
+        if (!bpmManager) FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
+        if (bpmManager.CanClick())
+        {
+            return true;
+        }
+        return false;
+    }
+
+    void UpdateEnemiesKilled()
+    {
+        if (!WaveManager.Instance) return;
+        WaveManager.Instance.enemiesKilled++;
+        WaveManager.Instance.UpdateEnemiesLeft();
     }
 
     private void CheckHealth()

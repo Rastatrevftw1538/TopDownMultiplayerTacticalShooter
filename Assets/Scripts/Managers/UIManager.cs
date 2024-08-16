@@ -3,16 +3,31 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Rendering;
+using Cinemachine;
+using UnityEngine.UI;
+using UnityEngine.Rendering.Universal;
+using System;
+using System.Text;
 
 public class UIManager : Singleton<UIManager>
 {
     [Header("Display/UI")]
     public TextMeshProUGUI waveDisplay;
+    public TextMeshProUGUI enemiesLeftDisplay;
     public TextMeshProUGUI pointsDisplay;
     public GameObject victoryScreen;
     public GameObject defeatScreen;
+    public UIArrowToShow uiArrowToTarget;
     public AudioClip defeatSound;
     public AudioClip victorySound;
+    public GameObject powerupUI;
+    private Image powerupUICd;
+    private Image powerupUIIcon;
+    public CinemachineImpulseListener impulseListener;
+    private CinemachineVirtualCamera cinemachineCam;
+    public bool shouldStartZoomed;
+    //public UIArrowToShow arrowToPoint;
 
     public float points;
 
@@ -21,22 +36,85 @@ public class UIManager : Singleton<UIManager>
     public float waveFlashLength;
     public Color waveFlashColor;
 
+    [HideInInspector] public enum CooldownType
+    {
+        Powerup, Ability
+    }
+
     void Start()
     {
         SetPoints(0f);
+        //postProcessing = GetComponent<Volume>();
+        //arrowToPoint = GetComponent<UIArrowToShow>();
+
+        powerupUIIcon = powerupUI.transform.GetChild(0).GetComponent<Image>();
+        powerupUICd = powerupUI.transform.GetChild(1).GetComponent<Image>();
+
+        StartCoroutine(nameof(WorldZoomStart));
     }
 
-    void FixedUpdate()
+    float abilityCd;
+    float powerupCd;
+    void Update()
     {
+        if(powerupCd >= 0)
+        {
+            powerupCd -= Time.deltaTime;
+            powerupUICd.fillAmount -= powerupCd; 
+        }
+    }
 
+    private void FixedUpdate()
+    {
+        //camera start zoom
+        if (!didZoom && shouldStartZoomed)
+        {
+            if (cinemachineCam.m_Lens.OrthographicSize >= initialOrtho)
+                cinemachineCam.m_Lens.OrthographicSize -= zoomSpeed * Time.fixedDeltaTime * Time.timeScale;
+            else
+            {
+                cinemachineCam.m_Lens.OrthographicSize = initialOrtho;
+                didZoom = true;
+            }
+        }
+    }
+
+    /*public void SetArrowTarget(GameObject arrowTrgt)
+    {
+        arrowToPoint.enabled = true;
+        arrowToPoint.SetArrowTarget(arrowTrgt);
+    }*/
+
+    bool didZoom = false;
+    public float zoomSpeed = 10f;
+    float initialOrtho;
+    public IEnumerator WorldZoomStart()
+    {
+        didZoom = true;
+        if (!cinemachineCam) cinemachineCam = GameObject.FindGameObjectWithTag("Cinemachine Camera").GetComponent<CinemachineVirtualCamera>();
+        initialOrtho = cinemachineCam.m_Lens.OrthographicSize;
+        cinemachineCam.m_Lens.OrthographicSize = 50f;
+
+        if (WaveManager.Instance) WaveManager.Instance.toBuffer = true;
+        yield return new WaitForSeconds(1f);
+        if (WaveManager.Instance) WaveManager.Instance.toBuffer = false;
+        didZoom = false;
     }
 
     public void ChangeWaveNumber(float num)
     {
         if (!waveDisplay) return;
 
-        waveDisplay.text = "WAVE " + num;
+        waveDisplay.text = $"WAVE {num}";
         StartCoroutine(FlashWaveNumber());
+    }
+
+    float enemiesLeft;
+    public void UpdateEnemiesLeft(float num)
+    {
+        if(!enemiesLeftDisplay) return;
+        enemiesLeft = num;
+        StartCoroutine(nameof(FlashEnemyRemaining));
     }
 
     IEnumerator FlashWaveNumber()
@@ -50,12 +128,70 @@ public class UIManager : Singleton<UIManager>
         waveDisplay.color = tempColor;
     }
 
+    CooldownType lastType;
+    public void StartCooldownUI(CooldownType type, Sprite icon, float cdTime)
+    {
+        //Debug.LogError("active time of the powerup is: " + cdTime);
+        lastType = type;
+        //SET THE SPRITE
+        if (type == CooldownType.Powerup)
+        {
+            if (icon != null)
+                powerupUIIcon.sprite = icon;
+            powerupUIIcon.gameObject.SetActive(true);
+
+            powerupCd = cdTime;
+            powerupUICd.fillAmount = 1f;
+
+            Invoke(nameof(ResetCooldownUI), cdTime);
+        }
+    }
+
+    private void ResetCooldownUI()
+    {
+        //Debug.LogError("called reset ui");
+        powerupUIIcon.gameObject.SetActive(false);
+    }
+
+    IEnumerator FlashEnemyRemaining()
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        Color tempColor = waveDisplay.color;
+        stringBuilder.Append($"ENEMIES REMAINING: {enemiesLeft}");
+        enemiesLeftDisplay.text = stringBuilder.ToString();
+        for (int i = 0; i < waveFlashes; i++)
+        {
+            waveDisplay.color = waveFlashColor;
+            yield return new WaitForSeconds(waveFlashLength);
+        }
+        waveDisplay.color = tempColor;
+    }
+
     public void AddPoints(float num)
     {
-        if (!pointsDisplay) return;
-
+        if (!pointsDisplay || num == 0) return;
+        StringBuilder stringBuilder = new StringBuilder();
         points += num;
-        pointsDisplay.text = points.ToString();
+        stringBuilder.Append(points);
+
+        pointsDisplay.text = stringBuilder.ToString();
+    }
+
+    public void DeductPoints(float num)
+    {
+        if (!pointsDisplay || num == 0) return;
+        if (points - num < 0)
+        {
+            int min = 0;
+            pointsDisplay.text = min.ToString(); 
+            return;
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        points -= num;
+        stringBuilder.Append(points);
+
+        pointsDisplay.text = stringBuilder.ToString();
     }
 
     public void SetPoints(float num)
@@ -65,29 +201,27 @@ public class UIManager : Singleton<UIManager>
         pointsDisplay.text = points.ToString();
     }
 
-    public void SubtractPoints(float num)
-    {
-        if (!pointsDisplay) return;
-
-        points -= num;
-        pointsDisplay.text = points.ToString();
-    }
-
-    BPMManager bpmManager;
+    //BPMManager bpmManager;
     public void ShowDefeat()
     {
         //if (WaveManager.Instance != null)
         //    WaveManager.Instance.ResetWaveData();
-        if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
-        bpmManager.audioSource.Stop();
+        //if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
+        BPMManager.instance.audioSource.Stop();
 
         Cursor.visible = true;
         SetPoints(0);
-        if (BPMManager.Instance) BPMManager.Instance.audioSource.Stop();
+        if (BPMManager.instance) BPMManager.instance.audioSource.Stop();
         PlaySound(defeatSound, 0.3f);
         defeatScreen.SetActive(true);
-        StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.0f, 0.0f));
+        SetCameraShakeListener(false);
         Time.timeScale = 0.0f;
+    }
+
+    private void SetCameraShakeListener(bool set)
+    {
+        if (!impulseListener) return;
+            impulseListener.enabled = set;
     }
 
     private void PlaySound(AudioClip sound, float volume = 1f)
@@ -104,14 +238,13 @@ public class UIManager : Singleton<UIManager>
     
         }*/
 
-        if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
-        bpmManager.audioSource.Stop();
-
+        //if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
+        BPMManager.instance.audioSource.Stop();
+        SetCameraShakeListener(false);
         Cursor.visible = true;
         SetPoints(0);
         PlaySound(victorySound, 0.3f);
         victoryScreen.SetActive(true);
-        StartCoroutine(ClientCamera.Instance.cameraShake.CustomCameraShake(0.0f, 0.0f));
         Time.timeScale = 0.0f;
     }
 
@@ -135,17 +268,23 @@ public class UIManager : Singleton<UIManager>
         if (PlayerScriptSinglePlayer.Instance != null)
             Destroy(PlayerScriptSinglePlayer.Instance.gameObject);
 
-        if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
-        if(bpmManager) Destroy(bpmManager.gameObject);
+        /*if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
+        if(bpmManager) Destroy(bpmManager.gameObject);*/
+
+        Destroy(BPMManager.instance.gameObject);
 
         if (this.gameObject != null)
             Destroy(this.gameObject);
+
+        SetCameraShakeListener(true);
     }
 
     public void ReturnToMainMenu()
     {
-        if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
-        if(bpmManager) bpmManager.audioSource.Play();
+        SetCameraShakeListener(true);
+        //if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
+        //if(bpmManager) bpmManager.audioSource.Play();
+        BPMManager.instance.audioSource.Play();
 
         Time.timeScale = 1.0f;
         foreach (Scene sceneLoaded in SceneManager.GetAllScenes())
@@ -160,9 +299,21 @@ public class UIManager : Singleton<UIManager>
 
     public void ResetScene()
     {
-        if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
-        if (bpmManager) bpmManager.audioSource.Play();
+        SetCameraShakeListener(true);
+        //if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
+        //if (bpmManager) bpmManager.audioSource.Play();
+        BPMManager.instance.audioSource.Play();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void ShowUIArrow(Transform targetTransform)
+    {
+        uiArrowToTarget.Show(targetTransform);
+    }
+
+    public void HideUIArrow()
+    {
+        uiArrowToTarget.Hide();
     }
 }
 

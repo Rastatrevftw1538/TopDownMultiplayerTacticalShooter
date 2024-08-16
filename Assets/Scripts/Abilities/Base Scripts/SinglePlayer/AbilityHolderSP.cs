@@ -1,12 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AbilityHolderSP : MonoBehaviour
 {
     //WANT THERE TO BE A MULTITUDE OF ABILITIES THAT ARE ABLE TO BE ADDED
     [SerializeField] private StatusEffectData statusEffectData;
     public List<Ability> abilities = new List<Ability>();
+    public GameObject abilityUIHolder;
+    private Image abilityUIIcon;
+    private Image abilityCooldownUI;
     float cooldownTime;
     float activeTime;
     bool hasCorrectTag = false;
@@ -40,6 +44,12 @@ public class AbilityHolderSP : MonoBehaviour
     private void Start()
     {
         playerScript = gameObject.transform.parent.gameObject.GetComponent<PlayerScriptSinglePlayer>();
+        abilityUIIcon = abilityUIHolder.transform.GetChild(0).GetComponent<Image>();
+        abilityCooldownUI = abilityUIHolder.transform.GetChild(1).GetComponent<Image>();
+
+        if (abilities[indx].abilityIcon != null)
+            abilityUIIcon.sprite = abilities[indx].whichAbility.abilityIcon;
+
     }
 
     int indx;
@@ -71,11 +81,11 @@ public class AbilityHolderSP : MonoBehaviour
 
                     if (abilities[indx].hasDelay)
                     {
-                        Invoke(nameof(startAbility), abilities[indx].delayTime);
+                        Invoke(nameof(StartAbility), abilities[indx].delayTime);
                     }
                     else
                     {
-                        startAbility();
+                        StartAbility();
                     }
                     
                     //Debug.LogWarning("<color=orange>Ability: " + abilities[indx].abilityName + " has been activated. </color>");
@@ -98,16 +108,16 @@ public class AbilityHolderSP : MonoBehaviour
             case AbilityState.cooldown:
                 if(cooldownTime > 0){ //WHILE THE ABILITY IS ON COOLDOWN
                     cooldownTime -= Time.deltaTime; //SUBTRACT TIME FROM THE COOLDOWN TIMER UNTIL THE ABILITY IS READY AGAIN
-
+                    abilityCooldownUI.fillAmount -= abilities[indx].cooldownTime * Time.deltaTime; //SET THE UI TO MATCH
+                    UIManager.Instance.StartCooldownUI(UIManager.CooldownType.Ability, abilities[indx].abilityIcon, abilities[indx].cooldownTime);
                     //Debug.LogWarning("<color=orange>Ability: " + abilities[indx].abilityName + " is on cooldown. </color>");
                 }
                 else{
                     state = AbilityState.ready; //AND THEN SET THE ABILITY TO READY
-
+                    abilityCooldownUI.fillAmount = 0f; //SET THE UI TO MATCH
                     //Debug.LogWarning("<color=orange>Ability: " + abilities[indx].abilityName + " is now ready to use. </color>");
                 }
             break;  
-
         }
     }
 
@@ -123,47 +133,19 @@ public class AbilityHolderSP : MonoBehaviour
     #endregion
 
     #region Remote Call Functions
-    void startAbility()
+    void StartAbility()
     {
         abilities[indx].whichAbility.Activate(playerScript.gameObject); //ACTIVATE THE ABILITY OF INDEX
 
         state = AbilityState.active; //SET THE ABILITY TO READY
         activeTime = abilities[indx].activeTime; //SET THE ACTIVE TIME TO THE ABILITY'S ACTIVE TIME AND START THE TIMER
+        abilityCooldownUI.fillAmount = 1;
     }
+
     #endregion
     #region Collision Functions
     private void OnTriggerEnter2D(Collider2D other)
     {
-        //IEffectable effectable = other.GetComponent<IEffectable>();
-        //PlayerScript effectable = other.gameObject.GetComponent<PlayerScript>();
-        /*if(effectable != null)
-        {
-            PlayerScript target = other.GetComponent<PlayerScript>();
-            if (target != null && target != playerScript)
-            {
-                Debug.LogError(target.playerTeam);
-                if (abilities[indx].playerEffects == PlayerEffects.ENEMY)
-                {
-                    if (playerScript.playerTeam != target.playerTeam)
-                    {
-                        Debug.LogError("did a ENEMY THING");
-                        hasCorrectTag = true;
-                    }
-                }
-                else if (abilities[indx].playerEffects == PlayerEffects.TEAM)
-                {
-                    if (playerScript.playerTeam == target.playerTeam)
-                    {
-                        Debug.LogError("did a TEAM THING");
-                        hasCorrectTag = true;
-                    }
-                }
-            }
-        }*/
-        //playerScript = this.gameObject.gameObject.GetComponent<PlayerScript>();
-
-        // if (effectable != null)
-        //{
         if (other.gameObject.GetComponent<IEffectable>() == null)
             return;
 
@@ -171,9 +153,6 @@ public class AbilityHolderSP : MonoBehaviour
 
         if (CheckCorrectTag(abilities[indx].playerEffects, other))
             target.ApplyEffect(abilities[indx].statusEffectData);
-
-        //Debug.LogError("Applied from PLAYER TEAM: " + playerScript.PlayerTeam);
-        //}
     }
 
     private bool CheckCorrectTag(PlayerEffects playerEffects, Collider2D other)
@@ -182,22 +161,6 @@ public class AbilityHolderSP : MonoBehaviour
 
         switch (playerEffects)
         {
-            /*case PlayerEffects.ENEMY: //IF ENEMY IS THE TARGET
-            if (playerScript.playerTeam != target.playerTeam)
-            {
-                Debug.LogError("Used ENEMY");
-                return true;
-            }
-            break;
-
-            case PlayerEffects.TEAM: //IF TEAM IS THE TARGET
-            if (playerScript.playerTeam == target.playerTeam)
-            {
-                Debug.LogError("Used TEAM");
-                return true;
-            }
-            break;*/
-
             case PlayerEffects.PLAYER:
             if (playerScript.Equals(other.GetComponent<PlayerScriptSinglePlayer>()))
             {
@@ -210,27 +173,6 @@ public class AbilityHolderSP : MonoBehaviour
                 Debug.LogError("Used SELF?");
             return false;
         }
-
-        /*if(playerEffects == PlayerEffects.ENEMY)
-        {
-            if (playerScript.playerTeam != target.playerTeam)
-            {
-                Debug.LogError("did a ENEMY THING");
-                   return true;
-            }
-            else
-                return false;
-        }
-        else if (playerEffects == PlayerEffects.TEAM)
-        {
-            if (playerScript.playerTeam == target.playerTeam)
-            {
-                Debug.LogError("did a TEAM THING");
-                return true;
-            }
-            else
-                return false;
-        }*/
 
         Debug.LogError("got to the end??");
         return false;

@@ -13,9 +13,7 @@ MonoBehaviour:
   m_Name: Level03_Wave02
   m_EditorClassIdentifier: 
   _enemies:
-  - enemyPrefab: {fileID: 8616342455689032815, guid: ed11e4f1c822cbc4896722a3dd504166, type: 3}
-    cost: 1
   - enemyPrefab: {fileID: 5994701145239110951, guid: 7105842b1afb0c84bad44410fb35bea4, type: 3}
     cost: 1
-  _waveValue: 70
-  _amtEnemies: 0
+  _waveValue: 85
+  _amtEnemies: 20

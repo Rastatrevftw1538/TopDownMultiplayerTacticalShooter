@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5149506718368597020}
   - component: {fileID: 4053965492682505120}
-  - component: {fileID: 7184269193396625851}
+  - component: {fileID: 2306230828056890980}
   m_Layer: 0
   m_Name: BulletSP
   m_TagString: Untagged
@@ -132,7 +132,7 @@ TrailRenderer:
   m_MinVertexDistance: 0.01
   m_Autodestruct: 1
   m_Emitting: 1
---- !u!114 &7184269193396625851
+--- !u!114 &2306230828056890980
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -141,8 +141,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 209056261796185724}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b4e72bd317901024cb9c8adb33c08894, type: 3}
+  m_Script: {fileID: 11500000, guid: 3971067319d401a4a9ec23cdcda53cfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   effectPrefab: {fileID: 105608, guid: 9c6af9e56f998094e8a7ade8f0e2a0a9, type: 3}
-  _bulletSpeed: 65
+  onBeatEffectPrefab: {fileID: 183216, guid: d02459bf4a092d144baeb3ac2591eb3b, type: 3}
+  _bulletSpeed: 200
+  targetSet: 0
