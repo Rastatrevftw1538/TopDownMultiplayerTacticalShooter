@@ -1598,7 +1598,7 @@ MonoBehaviour:
   abilities:
   - {fileID: 11400000, guid: 396dad2db320741458415b40463c2caf, type: 2}
   abilityUIHolder: {fileID: 0}
-  debugKeys: 65000000
+  debugKeys: 30010000
 --- !u!1 &4027563251936908940
 GameObject:
   m_ObjectHideFlags: 0
