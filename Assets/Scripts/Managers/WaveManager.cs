@@ -36,6 +36,7 @@ public class WaveManager : Singleton<WaveManager>
         //START THE FIRST WAVE, FIRST LEVEL
         currentWave = 0;
         currentLevel = 0;
+        enemiesKilled = 0;
 
         pauseWaves = true;
         /*Invoke(nameof(StartWaveCO), 0f);*/

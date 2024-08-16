@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Networking.Transport.Error;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class BPMNoteObject : MonoBehaviour
 {
@@ -84,15 +85,30 @@ public class BPMNoteObject : MonoBehaviour
         }
     }
 
+    BPMManager bpmManager;
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (!gameObject.activeSelf) return;
 
         if (collision.CompareTag("Activator"))
         {
+            /*if (!BPMManager.instance)
+            {
+                bpmManager = FindObjectOfType<BPMManager>();
+
+                canBePressed = false;
+                bpmManager.canClick = Color.red;
+                bpmManager.NoteMissed(this.gameObject);
+            }
+            else
+            {
+                canBePressed = false;
+                BPMManager.instance.canClick = Color.red;
+                BPMManager.instance.NoteMissed(this.gameObject);
+            }*/
             canBePressed = false;
-            BPMManager.instance.canClick = Color.red;
             BPMManager.instance.NoteMissed(this.gameObject);
+            Destroy(this.gameObject, 0.1f);
         }
     }
 }
