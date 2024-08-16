@@ -48,12 +48,14 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
     public GameObject defeatParticles;
     public GameObject onBeatDefeatParticles;
     static BPMManager bpmManager;
+    private Animator anim;
 
     private void Awake()
     {
         //healthbarInternal = GetComponentInChildren<Slider>();
     }
 
+    Color initColor;
     private void Start()
     {
         currentHealth = maxHealth;
@@ -63,6 +65,8 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
         agent = GetComponentInParent<NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
+        spriteRenderer.transform.TryGetComponent<Animator>(out anim);
+        initColor = spriteRenderer.color;
 
         shotCooldown = startShotCooldown;
 
@@ -82,13 +86,18 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
     {
         //healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
         agent.SetDestination(target.position);
-        if(agent.velocity.magnitude > 0)
+        if (agent.velocity.magnitude > 0)
         {
-            PlaySound(movementSound, 0.5f);
+            anim.SetBool("Idle", false);
+            PlaySound(movementSound, 0.2f);
+        }
+        else
+        {
+            anim.SetBool("Idle", true);
         }
 
         //DISTANCE BEFORE STOPPING
-        if(agent.remainingDistance <= stoppingDistance)
+        if (agent.remainingDistance <= stoppingDistance)
         {
             agent.isStopped = true;
         }
@@ -104,7 +113,7 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
                 if (hit.collider.CompareTag("Player"))
                 {
                     shotCooldown = 0f;
-                    Attack();
+                    StartCoroutine(nameof(Attack));
                 }
         }
         else
@@ -141,7 +150,7 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
 
             yield return new WaitForSeconds(0.5f);
 
-            SetFlashColor(Color.white);
+            SetFlashColor(initColor);
         }
     }
 
@@ -150,19 +159,21 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
         spriteRenderer.color = color;
     }
 
-    private void Attack()
+    private IEnumerator Attack()
     {
+        anim.SetBool("IsAttacking", true);
         //PlaySound(firingSound);
         const float degrees = 360f;
         float degreeToShootAt;
-        for(int i = 0; i < amtProjectiles; i++)
+        for (int i = 0; i < amtProjectiles; i++)
         {
             degreeToShootAt = (degrees / amtProjectiles) * i;
             Quaternion rotation = Quaternion.Euler(0, 0, degreeToShootAt);
             Instantiate(projectile, spriteRenderer.gameObject.transform.position, rotation);
         }
-        //Instantiate(projectile, spriteRenderer.gameObject.transform.position, transform.rotation);
         shotCooldown = startShotCooldown;
+        yield return new WaitForSeconds(shotCooldown);
+        anim.SetBool("IsAttacking", false);
     }
 
     public bool checkIfAlive

@@ -127,6 +127,10 @@ public class BPMManager : MonoBehaviour
     public void Update()
     {
         if (!actualFeedback) actualFeedback = GameObject.FindGameObjectWithTag("BPM Holder");
+        if(!feedbackSprite) actualFeedback.transform.parent.GetChild(0).TryGetComponent<SpriteRenderer>(out feedbackSprite);
+        //if (!feedbackParticles) feedbackParticles = actualFeedback.transform.GetChild(0).gameObject;
+        if (!BPMNoteSpawn) BPMNoteSpawn = GameObject.FindGameObjectWithTag("Note Spawn").transform;
+
         if (!startPlaying)
         {
             if (Input.anyKeyDown)
@@ -177,7 +181,7 @@ public class BPMManager : MonoBehaviour
 
         if (percentToBeat >= BPS)
         {
-            Instantiate(BPMNote, BPMNoteSpawn.position, Quaternion.identity, BPMNoteSpawn.transform.parent);
+            Instantiate(BPMNote, BPMNoteSpawn.position, Quaternion.identity, BPMNoteSpawn.transform);
             percentToBeat = m_MIN;
         }
         
@@ -263,6 +267,7 @@ public class BPMManager : MonoBehaviour
     {
         NoteHit();
         UIManager.Instance.AddPoints(pointsPerGoodNote * currentMultiplier);
+
 
         feedbackSprite.sprite = goodHitFeedbackSprite.sprite;
         currentParticles = Instantiate(goodHitFeedbackParticles, feedbackSprite.transform);

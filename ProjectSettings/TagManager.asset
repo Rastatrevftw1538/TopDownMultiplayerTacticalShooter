@@ -18,6 +18,7 @@ TagManager:
   - UI Camera
   - Activator
   - BPM Holder
+  - Note Spawn
   layers:
   - Default
   - TransparentFX
