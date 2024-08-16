@@ -33,7 +33,7 @@ public class BPMManager : MonoBehaviour
     public float perfectErrorWindow;
 
     [Header("Hit On Beat Feedback")]
-    public BeatScroller beatScroller;
+    //public BeatScroller beatScroller;
 
     public GameObject
         normHitFeedback, 
@@ -126,13 +126,14 @@ public class BPMManager : MonoBehaviour
 
     public void Update()
     {
+        if (!actualFeedback) actualFeedback = GameObject.FindGameObjectWithTag("BPM Holder");
         if (!startPlaying)
         {
             if (Input.anyKeyDown)
             {
                 Debug.LogError("got an input!");
                 startPlaying = true;
-                beatScroller.hasStarted = true;
+                //beatScroller.hasStarted = true;
                 audioSource.Play();
                 audioSource.volume = initVol;
 

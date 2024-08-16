@@ -17,6 +17,7 @@ TagManager:
   - Cinemachine Camera
   - UI Camera
   - Activator
+  - BPM Holder
   layers:
   - Default
   - TransparentFX
@@ -33,7 +34,7 @@ TagManager:
   - Metal
   - Concrete
   - No Post
-  - 
+  - Spotlights
   - 
   - 
   - 
