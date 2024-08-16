@@ -43,10 +43,12 @@ public class WaveManager : Singleton<WaveManager>
         //StartCoroutine(nameof(StartWaveCO));
     }
 
+    PauseMenu pauseMenu;
     public bool toBuffer = true;
     public bool startedRoutine = false;
     void Update()
     {
+        if(!pauseMenu) pauseMenu = GameObject.FindObjectOfType<PauseMenu>();
         if (toBuffer || pauseWaves)
         {
             return;
@@ -114,9 +116,13 @@ public class WaveManager : Singleton<WaveManager>
 
     IEnumerator BeatLevelTransition()
     {
+        pauseMenu.canPause = false;
         Time.timeScale = 0.3f;
-        yield return new WaitForSecondsRealtime(1f);
+        yield return new WaitForSecondsRealtime(0.7f);
+        pauseMenu.canPause = true;
         Time.timeScale = 1f;
+
+
     }
 
     Animator currentAnim;

@@ -43,6 +43,7 @@ public class UIManager : Singleton<UIManager>
         Powerup, Ability
     }
 
+    float initPowerupTextSize;
     void Start()
     {
         SetPoints(0f);
@@ -51,7 +52,7 @@ public class UIManager : Singleton<UIManager>
 
         powerupUIIcon = powerupUI.transform.GetChild(0).GetComponent<Image>();
         powerupUICd = powerupUI.transform.GetChild(1).GetComponent<Image>();
-
+        initPowerupTextSize = powerupText.fontSize;
         StartCoroutine(nameof(WorldZoomStart));
     }
 
@@ -65,7 +66,10 @@ public class UIManager : Singleton<UIManager>
             powerupUICd.fillAmount -= powerupCd; 
         }
 
-        TweenColorText(pointsDisplay);
+        if (startFlashBuff)
+        {
+            powerupText.fontSize += 1f * Time.deltaTime;
+        }
     }
 
     private void FixedUpdate()
@@ -160,10 +164,13 @@ public class UIManager : Singleton<UIManager>
         powerupUIIcon.gameObject.SetActive(false);
     }
 
+    bool startFlashBuff;
     IEnumerator FlashBuffName()
     {
+        startFlashBuff = true;
+        powerupText.fontSize = 1f;
         yield return new WaitForSeconds(1f);
-        powerupText.text = name;
+        startFlashBuff = false;
         powerupText.gameObject.SetActive(false);
     }
 
@@ -265,19 +272,6 @@ public class UIManager : Singleton<UIManager>
     public void SetWaveDisplay(bool set)
     {
         waveDisplay.gameObject.SetActive(set);
-    }
-
-    private void TweenColor(SpriteRenderer spriteRenderer)
-    {
-        System.Action<ITween<Color>> updateColor = (t) =>
-        {
-            spriteRenderer.color = t.CurrentValue;
-        };
-
-        Color endColor = UnityEngine.Random.ColorHSV(0.0f, 1.0f, 0.0f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f);
-
-        // completion defaults to null if not passed in
-        //Circle.gameObject.Tween("ColorCircle", spriteRenderer.color, endColor, 1.0f, TweenScaleFunctions.QuadraticEaseOut, updateColor);
     }
 
     private void TweenColorText(TextMeshProUGUI TMP)

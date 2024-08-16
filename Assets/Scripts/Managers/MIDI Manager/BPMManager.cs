@@ -124,8 +124,10 @@ public class BPMManager : MonoBehaviour
         startPlaying = false;
     }
 
+    PauseMenu pauseMenu;
     public void Update()
     {
+        if (!pauseMenu) pauseMenu = GameObject.FindObjectOfType<PauseMenu>();
         if (!actualFeedback) actualFeedback = GameObject.FindGameObjectWithTag("BPM Holder");
         if(!feedbackSprite) actualFeedback.transform.parent.GetChild(0).TryGetComponent<SpriteRenderer>(out feedbackSprite);
         //if (!feedbackParticles) feedbackParticles = actualFeedback.transform.GetChild(0).gameObject;
@@ -146,7 +148,7 @@ public class BPMManager : MonoBehaviour
         }
 
         //play a different song once the current one ends
-        if (!audioSource.isPlaying)
+        if (!audioSource.isPlaying && !pauseMenu._isPaused)
         {
             RestartSong();
         }

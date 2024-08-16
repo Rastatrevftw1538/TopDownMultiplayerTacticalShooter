@@ -93,6 +93,7 @@ public class TalkableMeleeEnemy : Sentient, ITalkable
     public void Talk(DialogueText dialogueText)
     {
         //start conversation
+        PauseMenu.Instance.canPause = false;
         dialogueController.DisplayNextParagraph(dialogueText, this, CharacterTalkSprite);
     }
 }

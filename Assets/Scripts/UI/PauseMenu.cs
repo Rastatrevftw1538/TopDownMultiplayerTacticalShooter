@@ -9,15 +9,17 @@ public class PauseMenu : Singleton<PauseMenu>
 {
     public GameObject pauseMenu;
     public KeyCode pauseKey;
-    private bool _isPaused;
+    public bool canPause;
+    [HideInInspector] public bool _isPaused;
     private AudioSource _audioSource;
     private AudioLowPassFilter _audioLowPassFilter;
     private CameraShake cameraShake;
     void Awake()
     {
-        //_audioSource = GetComponent<AudioSource>();
+        TryGetComponent<AudioSource>(out _audioSource);
         //_audioLowPassFilter = GetComponent<AudioLowPassFilter>();
         _isPaused = false;
+        canPause = true;
         pauseMenu.SetActive(false);
     }
 
@@ -28,19 +30,22 @@ public class PauseMenu : Singleton<PauseMenu>
 
     private void Update()
     {
-        if (Input.GetKeyDown(pauseKey) && !_isPaused)
+        if (Input.GetKeyDown(pauseKey) && !_isPaused && canPause)
             Display();
-        else if(Input.GetKeyDown(pauseKey) && _isPaused)
+        else if(Input.GetKeyDown(pauseKey) && _isPaused && canPause)
             ReturnToGame();
     }
 
     BPMManager bpmManager;
     public void Display()
     {
-        //if (!bpmManager) bpmManager = FindObjectOfType<BPMManager>();
-        //bpmManager.audioSource.Stop();
+        bpmManager = BPMManager.instance;
+        BPMManager.instance.audioSource.Pause();
+
+        _audioSource.Play();
+
         StartCoroutine(cameraShake.CustomCameraShake(0.0f, 0.0f));
-        PauseMusicEffect(true);
+        //PauseMusicEffect(true);
         _isPaused = true;
         pauseMenu.SetActive(true);
         Time.timeScale = 0f;
@@ -62,7 +67,7 @@ public class PauseMenu : Singleton<PauseMenu>
 
     private void PauseMusicEffect(bool set)
     {
-        if (!bpmManager) bpmManager = FindObjectOfType<BPMManager>();
+        /*if (!bpmManager) bpmManager = FindObjectOfType<BPMManager>();
         if (!_audioLowPassFilter) _audioLowPassFilter = bpmManager.filter;
 
         if (!bpmManager || !_audioLowPassFilter) return;
@@ -77,17 +82,17 @@ public class PauseMenu : Singleton<PauseMenu>
         {
             bpmManager.audioSource.volume = 0.55f;
             _audioLowPassFilter.lowpassResonanceQ = 1f;
-        }
+        }*/
     }
 
     public void ReturnToGame()
     {
-        //if (!bpmManager) bpmManager = FindObjectOfType<BPMManager>();
-        //bpmManager.audioSource.Play();
-
-        PauseMusicEffect(false);
-        _isPaused = false;
+        _audioSource.Stop();
         Time.timeScale = 1.0f;
+        BPMManager.instance.audioSource.UnPause();
+
+        //PauseMusicEffect(false);
+        _isPaused = false;
         pauseMenu.SetActive(false);
         //SetComponents(false);
     }
