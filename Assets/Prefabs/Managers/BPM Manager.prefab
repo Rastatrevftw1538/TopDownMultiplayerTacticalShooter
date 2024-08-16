@@ -48,8 +48,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BPM: 0
-  errorWindow: 0.15
   canClick: {r: 1, g: 0, b: 0, a: 1}
+  BPMNote: {fileID: 0}
+  BPMNoteSpawn: {fileID: 0}
   startPlaying: 0
   gameSongs:
   - {fileID: 8300000, guid: 4c5681dd823552648a71683c16af6dea, type: 3}
@@ -62,7 +63,7 @@ MonoBehaviour:
   pointsPerNote: 200
   pointsPerGoodNote: 300
   pointsPerPerfectNote: 1000
-  pointsDeductOnMiss: 10
+  pointsDeductOnMiss: 0
   normErrorWindow: 0.25
   goodErrorWindow: 0.15
   perfectErrorWindow: 0.05

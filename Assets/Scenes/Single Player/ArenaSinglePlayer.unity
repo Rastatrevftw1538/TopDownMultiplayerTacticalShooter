@@ -2984,6 +2984,7 @@ GameObject:
   - component: {fileID: 1053337985}
   - component: {fileID: 1053337987}
   - component: {fileID: 1053337986}
+  - component: {fileID: 1053337989}
   m_Layer: 14
   m_Name: No Post Cam
   m_TagString: Untagged
@@ -3091,6 +3092,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1053337989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1053337984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54a74973d697fa048987e21d6b5c3b93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1098926183
 GameObject:
   m_ObjectHideFlags: 0
@@ -4310,8 +4323,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levels:
-  - {fileID: 11400000, guid: 4ca8613de84dc39449478303253b93f4, type: 2}
-  - {fileID: 11400000, guid: 4ca8613de84dc39449478303253b93f4, type: 2}
+  - {fileID: 11400000, guid: 522ec6d3d53b112498ee0e2929c14121, type: 2}
+  - {fileID: 11400000, guid: 67eafc6c3abbbe340b784205e0d8ba53, type: 2}
   - {fileID: 11400000, guid: 4ca8613de84dc39449478303253b93f4, type: 2}
   currentSpawnArea: {fileID: 0}
   currentLevelDoor: {fileID: 0}

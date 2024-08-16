@@ -171,7 +171,8 @@ public class UIManager : Singleton<UIManager>
     {
         if (!pointsDisplay || num == 0) return;
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.Append(points + num);
+        points += num;
+        stringBuilder.Append(points);
 
         pointsDisplay.text = stringBuilder.ToString();
     }
@@ -187,7 +188,8 @@ public class UIManager : Singleton<UIManager>
         }
 
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.Append(points - num);
+        points -= num;
+        stringBuilder.Append(points);
 
         pointsDisplay.text = stringBuilder.ToString();
     }

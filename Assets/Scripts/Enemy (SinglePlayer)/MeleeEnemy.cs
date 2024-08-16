@@ -64,6 +64,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         initColor = sprite.color;
         agent.updateRotation = false;
         agent.updateUpAxis = false;
+        StartCoroutine(nameof(SpawnedAnim));
 
         /*if (target == null && player != null)
         {
@@ -89,20 +90,40 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
 
     private void Update()
     {
-        //healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
-        agent.SetDestination(target.position);
-
-        //move to state machine
-        anim.SetFloat("IsMoving", 1);
-        //Vector2 direction = new Vector2(target.position.x - transform.position.x, target.position.y - transform.position.y); //FIND DIRECTION OF PLAYER
-        //transform.up = direction; //ROTATES THE ENEMY TO THE PLAYER 
-
-        //attack
-        if (agent.velocity.magnitude > 0)
+        if (!player)
+            player = GameObject.FindWithTag("Player").GetComponent<PlayerHealthSinglePlayer>();
+        if (!target)
         {
-            PlaySound(movementSound, 0.5f);
+            target = GameObject.FindWithTag("Player").transform;
         }
-        CheckFlip(agent.velocity.x);
+
+        //healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
+        if (spawnedAnimDone)
+        {
+            agent.SetDestination(target.position);
+
+            //move to state machine
+            //Vector2 direction = new Vector2(target.position.x - transform.position.x, target.position.y - transform.position.y); //FIND DIRECTION OF PLAYER
+            //transform.up = direction; //ROTATES THE ENEMY TO THE PLAYER 
+
+            //attack
+            if (agent.velocity.magnitude > 0)
+            {
+                PlaySound(movementSound, 0.2f);
+                anim.SetFloat("IsMoving", 1);
+                CheckFlip(agent.velocity.x);
+            }
+        }
+    }
+
+    bool spawnedAnimDone;
+    private IEnumerator SpawnedAnim()
+    {
+        spawnedAnimDone = false;
+        anim.SetBool("Spawned", true);
+        yield return new WaitForSeconds(1f);
+        anim.SetBool("Spawned", false);
+        spawnedAnimDone = true;
     }
 
     void CheckFlip(float velocity)

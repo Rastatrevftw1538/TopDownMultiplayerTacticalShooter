@@ -218,7 +218,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1926956556111981982}
-  - component: {fileID: 44879652}
+  - component: {fileID: 5389132025986728967}
   - component: {fileID: 2656607692588302123}
   - component: {fileID: 6761560370728645253}
   m_Layer: 0
@@ -243,7 +243,7 @@ Transform:
   m_Father: {fileID: 5994701145239110948}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &44879652
+--- !u!114 &5389132025986728967
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -252,23 +252,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 3167820307694051131}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d3c509a556313b45ab29200f0445d3e, type: 3}
+  m_Script: {fileID: 11500000, guid: a471b36f74530fe4280d663114a76ef3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   currentHealth: 0
-  <maxHealth>k__BackingField: 100
+  <maxHealth>k__BackingField: 200
   respawnTime: 2
   target: {fileID: 0}
-  stoppingDistance: 7
-  startShotCooldown: 1
-  touchDamage: 10
-  <pointsPerHit>k__BackingField: 50
+  stoppingDistance: 10
+  startShotCooldown: 3
+  touchDamage: 25
+  <pointsPerHit>k__BackingField: 100
   healthbarExternal: {fileID: 8955757222723708882}
-  projectile: {fileID: 2252358114905661944, guid: ee2f2386eaf7bcd4aae1f965652cc1ec, type: 3}
+  projectile: {fileID: 2252358114905661944, guid: 7786ce3b919d2f04895b194e22103ac7, type: 3}
+  amtProjectiles: 10
   <dropChance>k__BackingField: 20
   <dropObjects>k__BackingField:
-  - {fileID: 1502816407527625270, guid: 5a538fcb1bd30f3449302f3ac057dbd0, type: 3}
   - {fileID: 6356963789510888943, guid: 453a761dda8d1b048bcc2ddb5dc3c711, type: 3}
+  - {fileID: 1502816407527625270, guid: 5a538fcb1bd30f3449302f3ac057dbd0, type: 3}
   - {fileID: 6384325973079197979, guid: ccb46c434963ac649a3a180fece6995a, type: 3}
   - {fileID: 731148143281714143, guid: 3b15ee1e7356b2e40bbb06154f614236, type: 3}
   targetLayers:
@@ -280,13 +281,13 @@ MonoBehaviour:
   hitDisplaySeconds: 0
   <hitSound>k__BackingField: {fileID: 8300000, guid: 1632bb2757c1434418a2d330b0b26f5e, type: 3}
   <movementSound>k__BackingField: {fileID: 0}
-  <firingSound>k__BackingField: {fileID: 8300000, guid: d976eb466e232cb45987fd1ca8db20b8, type: 3}
+  <firingSound>k__BackingField: {fileID: 8300000, guid: 72b281817f4c63a428bda1a48f5ff021, type: 3}
   <defeatSound>k__BackingField: {fileID: 8300000, guid: bcdaf08509ea36d4cbd1435cdb1e11b3, type: 3}
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashTime: 0.25
   spriteRenderer: {fileID: 1569154942041402958}
   defeatParticles: {fileID: 195900, guid: ec61825cb06be72419bb09eee03af08c, type: 3}
-  onBeatDefeatParticles: {fileID: 149926, guid: ad487a21ffb7f334b914ec85242b5c7e, type: 3}
+  onBeatDefeatParticles: {fileID: 144926, guid: fcb242a204cb73e46bb764583d0bf1fa, type: 3}
   hitDisplays: []
 --- !u!50 &2656607692588302123
 Rigidbody2D:
@@ -322,9 +323,9 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.050411306, y: 0.059739094}
+  m_Offset: {x: 0.06716333, y: -0.15650235}
   serializedVersion: 2
-  m_Radius: 0.7669731
+  m_Radius: 1.219112
 --- !u!1 &3904490942584820499
 GameObject:
   m_ObjectHideFlags: 0
@@ -575,7 +576,7 @@ GameObject:
   - component: {fileID: 5994701145239110948}
   - component: {fileID: 1697827055}
   m_Layer: 0
-  m_Name: Ranged Enemy
+  m_Name: Advanced Ranged_Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -772,8 +773,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8795046521737221230}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.04, y: -1.04, z: -0.03834985}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_LocalPosition: {x: 0.05, y: -1.709, z: -0.03834985}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6992607461546990593}
@@ -822,7 +823,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 5
   m_Sprite: {fileID: 21300000, guid: 3aedb55b55a5a489d91a9798e6aa01a5, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.2628258, g: 1, b: 0.0990566, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
