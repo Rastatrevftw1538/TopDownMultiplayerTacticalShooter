@@ -49,7 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statusEffect: {fileID: 11400000, guid: 2908520060481884889d4b3b96c89d4d, type: 2}
   pickupSound: {fileID: 8300000, guid: bfb7936f47489894db5970f08d94617d, type: 3}
-  points: 0
+  points: 100
   floatSpeed: 1
   floatHeight: 1
 --- !u!212 &6356963789510888941
