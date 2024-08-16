@@ -91,6 +91,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         }
 
         //healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
+        
         agent.SetDestination(target.position);
         if(agent.velocity.magnitude > 0)
         {
@@ -101,7 +102,6 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         {
             anim.SetBool("Idle", true);
         }
-
         //DISTANCE BEFORE STOPPING
         if(agent.remainingDistance <= stoppingDistance)
         {
