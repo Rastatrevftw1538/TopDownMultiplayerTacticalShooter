@@ -79,8 +79,12 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         {
             bpmManager = FindObjectOfType<BPMManager>();
         }
+
+        raycastCDinit = raycastCD;
     }
 
+    float raycastCD = 0.5f;
+    float raycastCDinit;
     private void Update()
     {
         if (!player)
@@ -114,13 +118,21 @@ public class RangedEnemy : MonoBehaviour, IEnemy
 
         if (shotCooldown <= 0 && (agent.remainingDistance*1.5f >= stoppingDistance || agent.remainingDistance <= stoppingDistance))
         {
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, target.position - transform.position, stoppingDistance*1.5f, targetLayers);
-            if (hit.collider)
-                if (hit.collider.CompareTag("Player"))
-                {
-                    shotCooldown = 0f;
-                    StartCoroutine(nameof(Attack));
-                }
+            if (raycastCD <= 0)
+            {
+                RaycastHit2D hit = Physics2D.Raycast(transform.position, target.position - transform.position, stoppingDistance * 1.5f, targetLayers);
+                if (hit.collider)
+                    if (hit.collider.CompareTag("Player"))
+                    {
+                        shotCooldown = 0f;
+                        StartCoroutine(nameof(Attack));
+                        raycastCD = raycastCDinit;
+                    }
+            }
+            else
+            {
+                raycastCD -= Time.deltaTime;
+            }
         }
         else
         {

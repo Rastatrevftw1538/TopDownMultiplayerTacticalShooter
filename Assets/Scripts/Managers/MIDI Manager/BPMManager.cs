@@ -91,7 +91,7 @@ public class BPMManager : MonoBehaviour
         filter = GetComponent<AudioLowPassFilter>();
 
         BPM = UniBpmAnalyzer.AnalyzeBpm(randSong);
-        BPM = BPM / 2; //FIXING THE BPM (SOME SONGS WILL BE DIFFERENT)
+        BPM = BPM / 4; //FIXING THE BPM (SOME SONGS WILL BE DIFFERENT)
 
         //GameObject.Find("NoteManager").GetComponent<BeatScroller>().hasStarted = true;
         percentToBeat = 0f;
@@ -137,7 +137,7 @@ public class BPMManager : MonoBehaviour
         {
             if (Input.anyKeyDown)
             {
-                Debug.LogError("got an input!");
+                //Debug.LogError("got an input!");
                 startPlaying = true;
                 //beatScroller.hasStarted = true;
                 audioSource.Play();
@@ -151,6 +151,27 @@ public class BPMManager : MonoBehaviour
         if (!audioSource.isPlaying && !pauseMenu._isPaused)
         {
             RestartSong();
+        }
+
+        if (!startPlaying) return;
+        percentToBeat += Time.deltaTime * Time.timeScale;
+
+        if (percentToBeat >= BPS)
+        {
+            Instantiate(BPMNote, BPMNoteSpawn.position, Quaternion.identity, BPMNoteSpawn.transform);
+            percentToBeat = m_MIN;
+        }
+
+        //if(percentToBeat <= lowerRange || percentToBeat <= upperRange)
+        if ((percentToBeat <= lowerRange && percentToBeat >= m_MIN) || (percentToBeat >= upperRange && percentToBeat <= m_MAX))
+        {
+            canClick = Color.green;
+            //Debug.LogError("DO Click");
+        }
+        else
+        {
+            canClick = Color.red;
+            //Debug.LogError("CANT Click");
         }
     }
 
@@ -173,31 +194,6 @@ public class BPMManager : MonoBehaviour
         //BETWEENT THESE TWO VALUES, IS WHEN THE PLAYER IS GOOD TO SHOOT FOR A BONUS
         upperRange = m_MAX - normErrorWindow;
         lowerRange = m_MIN + normErrorWindow;
-    }
-
-    public void FixedUpdate()
-    {
-        if (!startPlaying) return;
-
-        percentToBeat += Time.fixedDeltaTime * Time.timeScale;
-
-        if (percentToBeat >= BPS)
-        {
-            Instantiate(BPMNote, BPMNoteSpawn.position, Quaternion.identity, BPMNoteSpawn.transform);
-            percentToBeat = m_MIN;
-        }
-        
-        //if(percentToBeat <= lowerRange || percentToBeat <= upperRange)
-        if((percentToBeat <= lowerRange && percentToBeat >= m_MIN) || (percentToBeat >= upperRange && percentToBeat <= m_MAX))
-        {
-            canClick = Color.green;
-            //Debug.LogError("DO Click");
-        }
-        else
-        {
-            canClick = Color.red;
-            //Debug.LogError("CANT Click");
-        }
     }
 
     public bool CanClick()
@@ -242,7 +238,7 @@ public class BPMManager : MonoBehaviour
     {
         multiplierTracker = 0;
         currentMultiplier = 1;
-        Debug.LogError("Not hit on time");
+        //Debug.LogError("Not hit on time");
         actualFeedback.gameObject.SetActive(true);
 
         feedbackSprite.sprite = missFeedbackSprite.sprite;

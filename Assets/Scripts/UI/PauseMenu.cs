@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using UnityEditor;
 #endif
 
-public class PauseMenu : Singleton<PauseMenu>
+public class PauseMenu : MonoBehaviour 
 {
+    public static PauseMenu instance;
     public GameObject pauseMenu;
     public KeyCode pauseKey;
     public bool canPause;
@@ -16,6 +17,7 @@ public class PauseMenu : Singleton<PauseMenu>
     private CameraShake cameraShake;
     void Awake()
     {
+        instance = this;
         TryGetComponent<AudioSource>(out _audioSource);
         //_audioLowPassFilter = GetComponent<AudioLowPassFilter>();
         _isPaused = false;

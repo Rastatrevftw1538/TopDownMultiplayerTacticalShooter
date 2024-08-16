@@ -33,7 +33,7 @@ public class BPMNoteObject : MonoBehaviour
     static float perfectNoteDist;
     static Transform hitLocation;
 
-    const float why = 15f;
+    //const float why = 30f;
     // Update is called once per frame
 
     Vector2 beatTempoDir;
@@ -50,8 +50,8 @@ public class BPMNoteObject : MonoBehaviour
                 //BPMManager.Instance.NoteHit();
 
                 //check dist between the note and the hit target in abs value
-                float dist = Mathf.Abs(Vector2.Distance(transform.position, hitLocation.position) - why);
-                //Debug.LogError("Distance between that hit was " + dist);
+                float dist = Mathf.Abs(Vector2.Distance(transform.position, hitLocation.position));
+                Debug.LogError("Distance between that hit was " + dist);
                 if (dist > normNoteDist)
                 {
                     //Debug.LogError("Norm");
@@ -73,7 +73,8 @@ public class BPMNoteObject : MonoBehaviour
         }
 
         if (hasStarted) //rb.MovePosition(new Vector2(rb.position.x + beatTempo * Time.fixedDeltaTime, 0f));
-            transform.position += new Vector3(beatTempo * Time.deltaTime, 0f, 0f);
+            //transform.position += new Vector3(beatTempo * Time.deltaTime, 0f, 0f);
+            transform.position -= new Vector3(0f, beatTempo * Time.deltaTime, 0f);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

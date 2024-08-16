@@ -48,7 +48,7 @@ public class WaveManager : Singleton<WaveManager>
     public bool startedRoutine = false;
     void Update()
     {
-        if(!pauseMenu) pauseMenu = GameObject.FindObjectOfType<PauseMenu>();
+        if (!pauseMenu) pauseMenu = PauseMenu.instance;
         if (toBuffer || pauseWaves)
         {
             return;

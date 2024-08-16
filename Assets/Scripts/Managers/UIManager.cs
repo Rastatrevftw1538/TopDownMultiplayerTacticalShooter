@@ -65,11 +65,6 @@ public class UIManager : Singleton<UIManager>
             powerupCd -= Time.deltaTime;
             powerupUICd.fillAmount -= powerupCd; 
         }
-
-        if (startFlashBuff)
-        {
-            powerupText.fontSize += 1f * Time.deltaTime;
-        }
     }
 
     private void FixedUpdate()
@@ -167,10 +162,7 @@ public class UIManager : Singleton<UIManager>
     bool startFlashBuff;
     IEnumerator FlashBuffName()
     {
-        startFlashBuff = true;
-        powerupText.fontSize = 1f;
         yield return new WaitForSeconds(1f);
-        startFlashBuff = false;
         powerupText.gameObject.SetActive(false);
     }
 
