@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using UnityEngine.Rendering.Universal;
 using System;
 using System.Text;
+using DigitalRuby.Tween;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -63,6 +64,8 @@ public class UIManager : Singleton<UIManager>
             powerupCd -= Time.deltaTime;
             powerupUICd.fillAmount -= powerupCd; 
         }
+
+        TweenColorText(pointsDisplay);
     }
 
     private void FixedUpdate()
@@ -184,7 +187,7 @@ public class UIManager : Singleton<UIManager>
         StringBuilder stringBuilder = new StringBuilder();
         points += num;
         stringBuilder.Append(points);
-
+        TweenColorText(pointsDisplay);
         pointsDisplay.text = stringBuilder.ToString();
     }
 
@@ -262,6 +265,32 @@ public class UIManager : Singleton<UIManager>
     public void SetWaveDisplay(bool set)
     {
         waveDisplay.gameObject.SetActive(set);
+    }
+
+    private void TweenColor(SpriteRenderer spriteRenderer)
+    {
+        System.Action<ITween<Color>> updateColor = (t) =>
+        {
+            spriteRenderer.color = t.CurrentValue;
+        };
+
+        Color endColor = UnityEngine.Random.ColorHSV(0.0f, 1.0f, 0.0f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f);
+
+        // completion defaults to null if not passed in
+        //Circle.gameObject.Tween("ColorCircle", spriteRenderer.color, endColor, 1.0f, TweenScaleFunctions.QuadraticEaseOut, updateColor);
+    }
+
+    private void TweenColorText(TextMeshProUGUI TMP)
+    {
+        System.Action<ITween<Color>> updateColor = (t) =>
+        {
+            TMP.color = t.CurrentValue;
+        };
+
+        Color endColor = UnityEngine.Random.ColorHSV(0.0f, 1.0f, 0.0f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f);
+
+        // completion defaults to null if not passed in
+        TMP.gameObject.Tween("PointsDisplay", TMP.color, endColor, 1.0f, TweenScaleFunctions.QuadraticEaseOut, updateColor);
     }
 
     public void ResetSingletons()

@@ -84,8 +84,9 @@ public class WaveManager : Singleton<WaveManager>
             StartCoroutine(nameof(StartWaveCO));
         }
         //if increasing the index by 1 wont be out of bounds...
-        else if (!(idxCheckL >= levels.Count))
+        else if (!(idxCheckL >= levels.Count))//COMPLETED A LEVEL
         {
+            StartCoroutine(nameof(BeatLevelTransition));
             //that must mean you beat all the waves in the level, so increase the level count and reset the wave count
             currentWave = 0;
             currentLevel++;
@@ -109,6 +110,13 @@ public class WaveManager : Singleton<WaveManager>
     public void SetLevelDoor(bool set)
     {
          currentLevelDoor.SetActive(set);
+    }
+
+    IEnumerator BeatLevelTransition()
+    {
+        Time.timeScale = 0.3f;
+        yield return new WaitForSecondsRealtime(1f);
+        Time.timeScale = 1f;
     }
 
     Animator currentAnim;
