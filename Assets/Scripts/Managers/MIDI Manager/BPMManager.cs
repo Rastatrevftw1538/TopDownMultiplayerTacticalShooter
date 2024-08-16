@@ -90,8 +90,8 @@ public class BPMManager : MonoBehaviour
 
         filter = GetComponent<AudioLowPassFilter>();
 
-        BPM = UniBpmAnalyzer.AnalyzeBpm(randSong);
-        BPM = BPM / 4; //FIXING THE BPM (SOME SONGS WILL BE DIFFERENT)
+        BPM = UniBpmAnalyzer.AnalyzeBpm(randSong) / 2f;
+        //BPM = BPM / 4; //FIXING THE BPM (SOME SONGS WILL BE DIFFERENT)
 
         //GameObject.Find("NoteManager").GetComponent<BeatScroller>().hasStarted = true;
         percentToBeat = 0f;
@@ -125,13 +125,21 @@ public class BPMManager : MonoBehaviour
     }
 
     PauseMenu pauseMenu;
+    [HideInInspector] public bool levelBeatPhase;
     public void Update()
     {
+        if (!BPMNoteSpawn) BPMNoteSpawn = GameObject.FindGameObjectWithTag("Note Spawn").transform;
+        if (percentToBeat >= BPS && audioSource.isPlaying && !levelBeatPhase && startPlaying)
+        {
+            Instantiate(BPMNote, BPMNoteSpawn.position, Quaternion.identity, BPMNoteSpawn.transform);
+            percentToBeat = m_MIN;
+        }
+        percentToBeat += Time.deltaTime * Time.timeScale;
+
         if (!pauseMenu) pauseMenu = GameObject.FindObjectOfType<PauseMenu>();
         if (!actualFeedback) actualFeedback = GameObject.FindGameObjectWithTag("BPM Holder");
         if(!feedbackSprite) actualFeedback.transform.parent.GetChild(0).TryGetComponent<SpriteRenderer>(out feedbackSprite);
         //if (!feedbackParticles) feedbackParticles = actualFeedback.transform.GetChild(0).gameObject;
-        if (!BPMNoteSpawn) BPMNoteSpawn = GameObject.FindGameObjectWithTag("Note Spawn").transform;
 
         if (!startPlaying)
         {
@@ -143,24 +151,17 @@ public class BPMManager : MonoBehaviour
                 audioSource.Play();
                 audioSource.volume = initVol;
 
-                WaveManager.Instance.pauseWaves = false;
+               // WaveManager.Instance.pauseWaves = false;
             }
         }
 
-        //play a different song once the current one ends
-        if (!audioSource.isPlaying && !pauseMenu._isPaused)
+        //play a different song once the current one ends, and dont do this if you're paused, and dont do this if the level had just been beat.
+        if (!audioSource.isPlaying && !pauseMenu._isPaused && !levelBeatPhase)
         {
             RestartSong();
         }
 
         if (!startPlaying) return;
-        percentToBeat += Time.deltaTime * Time.timeScale;
-
-        if (percentToBeat >= BPS)
-        {
-            Instantiate(BPMNote, BPMNoteSpawn.position, Quaternion.identity, BPMNoteSpawn.transform);
-            percentToBeat = m_MIN;
-        }
 
         //if(percentToBeat <= lowerRange || percentToBeat <= upperRange)
         if ((percentToBeat <= lowerRange && percentToBeat >= m_MIN) || (percentToBeat >= upperRange && percentToBeat <= m_MAX))
@@ -179,13 +180,14 @@ public class BPMManager : MonoBehaviour
     {
         int rand = Random.Range(0, gameSongs.Count);
         while (rand == lastPlayedSong) rand = Random.Range(0, gameSongs.Count);
+        lastPlayedSong = rand;
 
         AudioClip randSong = gameSongs[rand];
         audioSource.clip = randSong;
         audioSource.Play();
 
-        BPM = UniBpmAnalyzer.AnalyzeBpm(randSong);
-        BPM = BPM / 4; //FIXING THE BPM (SOME SONGS WILL BE DIFFERENT)
+        BPM = UniBpmAnalyzer.AnalyzeBpm(randSong) / 2f;
+        //BPM = BPM / 4; //FIXING THE BPM (SOME SONGS WILL BE DIFFERENT)
 
         percentToBeat = 0f;
         BPS = c_MINUTE / BPM;

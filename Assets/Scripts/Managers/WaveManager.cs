@@ -38,7 +38,6 @@ public class WaveManager : Singleton<WaveManager>
         currentLevel = 0;
         enemiesKilled = 0;
 
-        pauseWaves = true;
         /*Invoke(nameof(StartWaveCO), 0f);*/
         //StartCoroutine(nameof(StartWaveCO));
     }
@@ -116,12 +115,15 @@ public class WaveManager : Singleton<WaveManager>
 
     IEnumerator BeatLevelTransition()
     {
+        BPMManager.instance.audioSource.Pause();
+        BPMManager.instance.levelBeatPhase = true;
         pauseMenu.canPause = false;
         Time.timeScale = 0.3f;
         yield return new WaitForSecondsRealtime(0.7f);
         pauseMenu.canPause = true;
         Time.timeScale = 1f;
-
+        BPMManager.instance.audioSource.UnPause();
+        BPMManager.instance.levelBeatPhase = false;
 
     }
 

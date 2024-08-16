@@ -187,6 +187,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
                 //print("Camera Set");
                 //playerCamera.cullingMask += LayerMask.GetMask("Objects");
             //}
+
             if (Input.GetKey(KeyCode.LeftShift))
             {
                 isRunning = true;
@@ -212,30 +213,35 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
                 playerBodyBodySkelSprite.flipX = true;
             }
 
-            if(movement.magnitude > 0)
+            if (canMove)
             {
-                if (fxTimer >= fxCooldown) {
-                    //CallSoundFXTerrain();
-                    fxTimer = 0;
+                if (movement.magnitude > 0)
+                {
+                    if (fxTimer >= fxCooldown)
+                    {
+                        //CallSoundFXTerrain();
+                        fxTimer = 0;
+                    }
+                    else
+                    {
+                        fxTimer += Time.fixedDeltaTime;
+                    }
+
+                    Anim.SetFloat("Idle", 0);
+                    Anim.SetFloat("Moving", movement.normalized.magnitude);
                 }
                 else
                 {
-                    fxTimer += Time.fixedDeltaTime;
+                    Anim.SetFloat("Idle", 1);
+                    Anim.SetFloat("Moving", 0);
                 }
 
-                Anim.SetFloat("Idle", 0);
-                Anim.SetFloat("Moving", movement.normalized.magnitude);
-            }else
-            {
-                Anim.SetFloat("Idle", 1);
-                Anim.SetFloat("Moving", 0);
+                UnityEngine.Vector3 mousePosition = Input.mousePosition;
+                mousePosition.z = (Camera.main.transform.position.z);
+                UnityEngine.Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+                UnityEngine.Vector3 aimDirection = mouseWorldPosition - transform.position;
+                rotation = UnityEngine.Quaternion.LookRotation(UnityEngine.Vector3.forward, aimDirection);
             }
-
-            UnityEngine.Vector3 mousePosition = Input.mousePosition;
-            mousePosition.z = (Camera.main.transform.position.z);
-            UnityEngine.Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-            UnityEngine.Vector3 aimDirection = mouseWorldPosition - transform.position;
-            rotation = UnityEngine.Quaternion.LookRotation(UnityEngine.Vector3.forward, aimDirection);
             //print(rotation);
 
             /*if(0f >= playerBodyArms.transform.localEulerAngles.z || playerBodyArms.transform.localEulerAngles.z <= 180f){

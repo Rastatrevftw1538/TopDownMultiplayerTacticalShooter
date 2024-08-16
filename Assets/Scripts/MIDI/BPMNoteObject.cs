@@ -25,7 +25,7 @@ public class BPMNoteObject : MonoBehaviour
 
         TryGetComponent<Rigidbody2D>(out rb);
     }
-    static float beatTempo;
+    static float beatTempo = 0f;
     static bool hasStarted;
     static bool hasChecked;
     static float normNoteDist;
@@ -40,6 +40,8 @@ public class BPMNoteObject : MonoBehaviour
 
     void Update()
     {
+        if(!hasStarted) hasStarted = BPMManager.instance.startPlaying;
+        if (beatTempo == 0f) beatTempo = BPMManager.instance.BPM;
         if (Input.GetKeyDown(keyToPress))
         {
             if (canBePressed)
@@ -62,19 +64,34 @@ public class BPMNoteObject : MonoBehaviour
                     //Debug.LogError("Good");
                     BPMManager.instance.GoodHit();
                 }
-                else if(dist > perfectNoteDist)
+                else if (dist > perfectNoteDist)
                 {
-                   // Debug.LogError("Perfect");
-                    BPMManager.instance.PerfectHit(); 
+                    // Debug.LogError("Perfect");
+                    BPMManager.instance.PerfectHit();
                 }
 
                 Destroy(this.gameObject, 0.1f);
             }
         }
+    }
 
-        if (hasStarted) //rb.MovePosition(new Vector2(rb.position.x + beatTempo * Time.fixedDeltaTime, 0f));
-            //transform.position += new Vector3(beatTempo * Time.deltaTime, 0f, 0f);
-            transform.position -= new Vector3(0f, beatTempo * Time.deltaTime, 0f);
+    Vector2 movement;
+    private void FixedUpdate()
+    {
+        movement = new Vector2(0, 1).normalized;
+        Vector3 moveVector = beatTempo * Time.fixedDeltaTime * Time.timeScale * transform.TransformDirection(movement);
+        if (hasStarted) rb.velocity = new Vector2(moveVector.x, -moveVector.y) * 2;
+            //transform.position = Vector3.Lerp(transform.position, hitLocation.position, Time.fixedDeltaTime * Time.timeScale);
+            //transform.position -= new Vector3(0f, beatTempo * Time.fixedDeltaTime * Time.timeScale, 0f);
+
+        //so that the beat will actually continue to move past the hit location, and not get stuck directly on top of it
+        /*if (Mathf.Abs(Vector2.Distance(transform.position, hitLocation.position)) <= 0.3f)
+        {
+            Vector2 past = new Vector2(hitLocation.position.x, hitLocation.position.y - 5);
+            transform.position = Vector3.MoveTowards(transform.position, past, beatTempo * Time.fixedDeltaTime * Time.timeScale);
+        }*/
+        //transform.position += new Vector3(beatTempo * Time.deltaTime, 0f, 0f);
+        //transform.position -= new Vector3(0f, beatTempo * Time.deltaTime, 0f);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -91,13 +108,13 @@ public class BPMNoteObject : MonoBehaviour
         }
     }
 
-    BPMManager bpmManager;
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (!gameObject.activeSelf) return;
 
         if (collision.CompareTag("Activator"))
         {
+            //BPMManager.instance.canClick = Color.red;
             /*if (!BPMManager.instance)
             {
                 bpmManager = FindObjectOfType<BPMManager>();
