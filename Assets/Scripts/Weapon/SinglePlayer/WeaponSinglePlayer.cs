@@ -303,15 +303,18 @@ public class WeaponSinglePlayer : MonoBehaviour
         }*/
 
 
-        var bulletInstance = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+        //var bulletInstance = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+        GameObject bulletInstance = ObjectPool.instance.GetPooledObject();
+        bulletInstance.transform.position = firePoint.position;
+        bulletInstance.SetActive(true);
+
         BulletScriptSP trailRender = bulletInstance.GetComponent<BulletScriptSP>();
+        StartCoroutine(trailRender.SetSelfInactive(0.5f));
         trailRender.SetTargetPosition(collisionPoint);
         TrailRenderer trailRenderer = trailRender.GetComponent<TrailRenderer>();
         if (!particleEffect) particleEffect = trailRender.effectPrefab;
         if(!particleSystemIns) particleSystemIns = particleEffect.GetComponent<ParticleSystem>();
         if(!cameraShake) cameraShake = CameraShake.Instance;
-
-        Destroy(tempParticle, 0.5f);
 
         //IF ON BEAT, MAKE THE TRAIL RENDER DIFFERENT COLOR
         if (CheckBPM())
@@ -347,6 +350,8 @@ public class WeaponSinglePlayer : MonoBehaviour
             tempParticle = Instantiate(particleEffect, collisionPoint, Quaternion.identity);
             if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(weaponSpecs.shootSound, transform, 0.1f);
         }
+
+        Destroy(tempParticle, 0.5f);
 
         if (player)
         {

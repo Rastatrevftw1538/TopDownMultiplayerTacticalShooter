@@ -181,7 +181,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     private IEnumerator Attack()
     {
         anim.SetBool("IsAttacking", true);
-        //PlaySound(firingSound);
+        PlaySound(firingSound , 0.2f);
         Instantiate(projectile, transform.position, transform.rotation);
         shotCooldown = startShotCooldown;
         yield return new WaitForSeconds(shotCooldown);
@@ -205,7 +205,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     private float timeSinceLastShot;
     public void TakeDamage(float amount)
     {
-        PlaySound(hitSound, 0.15f);
+        PlaySound(hitSound, 0.2f);
         StartCoroutine(nameof(DamageFlash));
         //FIRST CHECK IF THE BASE'S HEALTH IS BELOW 0
         if (currentHealth > 0)

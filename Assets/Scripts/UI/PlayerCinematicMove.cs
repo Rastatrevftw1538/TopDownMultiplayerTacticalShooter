@@ -73,15 +73,15 @@ public class PlayerCinematicMove : MonoBehaviour
         playerTransform.position = Vector3.Lerp(playerTransform.position, target.position, .03f); //Move the player towards the target
 
         //set player collider to trigger so they cant get stuck on walls
-        BoxCollider2D boxCollider;
-        if(player.gameObject.TryGetComponent<BoxCollider2D>(out boxCollider))
-            boxCollider.isTrigger = true;
+        //BoxCollider2D boxCollider;
+        //if(player.gameObject.TryGetComponent<BoxCollider2D>(out boxCollider))
+        //    boxCollider.isTrigger = true;
 
         playerAnim.SetFloat("Moving", 1); //set the players walk animation to true
 
         yield return new WaitUntil(() => reached == true); //wait until the player reachs the destination
 
-        if(boxCollider) boxCollider.isTrigger = false;
+        //if(boxCollider) boxCollider.isTrigger = false;
 
         //Debug.LogError("done..!");
         player.setCanMove(true); //set their binds to active again
