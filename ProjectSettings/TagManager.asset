@@ -58,3 +58,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: NoLight
+    uniqueID: 3859995683
+    locked: 0
