@@ -15,10 +15,10 @@ MonoBehaviour:
   active: 1
   threshold:
     m_OverrideState: 1
-    m_Value: 0.77
+    m_Value: 1.1
   intensity:
     m_OverrideState: 1
-    m_Value: 5.92
+    m_Value: 100
   scatter:
     m_OverrideState: 1
     m_Value: 0.122
@@ -29,7 +29,7 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: {r: 0, g: 0.3843541, b: 1, a: 1}
   highQualityFiltering:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: 1
   skipIterations:
     m_OverrideState: 0
@@ -39,7 +39,7 @@ MonoBehaviour:
     m_Value: {fileID: 2800000, guid: f4e339a9935fe0948a5bfa56982dddd9, type: 3}
   dirtIntensity:
     m_OverrideState: 1
-    m_Value: 6.34
+    m_Value: 6.5
 --- !u!114 &-3063922239987843170
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -52,13 +52,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 221518ef91623a7438a71fef23660601, type: 3}
   m_Name: WhiteBalance
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   temperature:
     m_OverrideState: 1
-    m_Value: -19.3
+    m_Value: -26
   tint:
     m_OverrideState: 1
-    m_Value: -4.4
+    m_Value: -16
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116,13 +116,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 558a8e2b6826cf840aae193990ba9f2e, type: 3}
   m_Name: ShadowsMidtonesHighlights
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   shadows:
-    m_OverrideState: 1
-    m_Value: {x: 0.70393264, y: 0.7699948, z: 1, w: 0}
+    m_OverrideState: 0
+    m_Value: {x: 0.57398534, y: 0.6894587, z: 1, w: 0.07736952}
   midtones:
     m_OverrideState: 1
-    m_Value: {x: 0.53479075, y: 1, z: 0.53191686, w: 0.19674921}
+    m_Value: {x: 0.08347094, y: 1, z: 0.9904099, w: 0.13539638}
   highlights:
     m_OverrideState: 1
     m_Value: {x: 0.4616902, y: 0.43407494, z: 1, w: 0.10265182}

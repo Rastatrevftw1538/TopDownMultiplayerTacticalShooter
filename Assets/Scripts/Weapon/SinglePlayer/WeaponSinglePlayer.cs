@@ -254,6 +254,7 @@ public class WeaponSinglePlayer : MonoBehaviour
                     if (objectOrigin != null)
                     {
                         IEnemy enemy = objectOrigin.GetComponent<IEnemy>();
+                        if (enemy == null) return;
                         float dmg = damage * damageMultiplier;
                         float points = enemy.pointsPerHit + bonusPointsPerShot;
                         if (CheckBPM() && enemy != null)

@@ -20,6 +20,7 @@ TagManager:
   - BPM Holder
   - Note Spawn
   - Destroy Note
+  - BossHealthBar
   layers:
   - Default
   - TransparentFX

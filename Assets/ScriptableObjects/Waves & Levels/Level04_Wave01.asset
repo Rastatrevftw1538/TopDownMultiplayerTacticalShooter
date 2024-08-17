@@ -9,12 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5b977f2f6baa054bb9114a13ad1993b, type: 3}
-  m_Name: Test
+  m_Script: {fileID: 11500000, guid: f028d3969a5640043b30e83ad07b47e3, type: 3}
+  m_Name: Level04_Wave01
   m_EditorClassIdentifier: 
-  speakerName: Rondo
-  speakerType: NPC
-  paragraphs:
-  - Hello World!
-  - Make sure you use WASD to move!
-  - And shoot on beat!
+  _enemies:
+  - enemyPrefab: {fileID: 8056571283625822282, guid: 44e0a3af6423b1d47972d165f16dc191, type: 3}
+    cost: 100
+  _waveValue: 100
+  _amtEnemies: 1

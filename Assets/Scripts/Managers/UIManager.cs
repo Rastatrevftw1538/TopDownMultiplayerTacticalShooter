@@ -222,6 +222,7 @@ public class UIManager : Singleton<UIManager>
         //if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
         BPMManager.instance.audioSource.Stop();
 
+        PauseMenu.instance.canPause = false;
         Cursor.visible = true;
         SetPoints(0);
         if (BPMManager.instance) BPMManager.instance.audioSource.Stop();
@@ -252,6 +253,7 @@ public class UIManager : Singleton<UIManager>
         }*/
 
         //if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
+        PauseMenu.instance.canPause = false;
         BPMManager.instance.audioSource.Stop();
         SetCameraShakeListener(false);
         Cursor.visible = true;
@@ -298,6 +300,7 @@ public class UIManager : Singleton<UIManager>
         if(bpmManager) Destroy(bpmManager.gameObject);*/
 
         Destroy(BPMManager.instance.gameObject);
+        Destroy(PauseMenu.instance.gameObject);
 
         if (this.gameObject != null)
             Destroy(this.gameObject);
