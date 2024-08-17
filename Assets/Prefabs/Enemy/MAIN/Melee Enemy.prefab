@@ -168,7 +168,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 0
   <maxHealth>k__BackingField: 100
-  damage: 10
+  damage: 20
   attackSpd: 0.5
   respawnTime: 2
   <pointsPerHit>k__BackingField: 30
