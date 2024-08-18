@@ -16,11 +16,6 @@ public class Level : ScriptableObject
         //levelDoor = GameObject.FindWithTag("LevelDoor");
     }
 
-    public void StartLevel(Wave wave, GameObject spawnArea)
-    {
-        wave.GenerateEnemies(spawnArea);
-    }
-
     public void SetLevelCompletion(bool set)
     {
         _isCompleted = set;

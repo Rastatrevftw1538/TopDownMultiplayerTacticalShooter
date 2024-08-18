@@ -6,14 +6,22 @@ public class ObjectPool : MonoBehaviour
 {
     public static ObjectPool instance;
 
-    private List<GameObject> pooledObjects = new List<GameObject>();
-    public int amtToPool = 20;
+    private List<GameObject> pooledProjObjects = new List<GameObject>();
+    public int amtProjToPool = 20;
+
+    private List<GameObject> pooledBulletObjects = new List<GameObject>();
+    public int amtBulletsToPool = 20;
 
     private List<AudioSource> pooledAudioSrcs = new List<AudioSource>();
     public int amtAudioToPool = 20;
 
+    private List<GameObject> pooledProjAdvObjects = new List<GameObject>();
+    public int amtProjAdvToPool = 30;
+
     [SerializeField] GameObject prefab;
     [SerializeField] AudioSource audioPrefab;
+    [SerializeField] GameObject projPrefab;
+    [SerializeField] GameObject projAdvPrefab;
 
     private void Awake()
     {
@@ -23,13 +31,14 @@ public class ObjectPool : MonoBehaviour
         }
     }
 
+    //move into delegates and <T> later
     void Start()
     {
-        for(int i = 0; i < amtToPool; i++)
+        for(int i = 0; i < amtBulletsToPool; i++)
         {
             GameObject obj = Instantiate(prefab);
             obj.SetActive(false);
-            pooledObjects.Add(obj);
+            pooledBulletObjects.Add(obj);
         }
 
         for (int i = 0; i < amtAudioToPool; i++)
@@ -38,29 +47,38 @@ public class ObjectPool : MonoBehaviour
             obj.gameObject.SetActive(false);
             pooledAudioSrcs.Add(obj);
         }
-    }
 
-    void Update()
-    {
-        
+        for (int i = 0; i < amtProjToPool; i++)
+        {
+            GameObject obj = Instantiate(projPrefab);
+            obj.SetActive(false);
+            pooledProjObjects.Add(obj);
+        }
+
+        for (int i = 0; i < amtProjAdvToPool; i++)
+        {
+            GameObject obj = Instantiate(projAdvPrefab);
+            obj.SetActive(false);
+            pooledProjAdvObjects.Add(obj);
+        }
     }
 
     public GameObject GetPooledObject()
     {
-        Debug.LogError("Got pooled obj ");
-        for (int i = 0; i < pooledObjects.Count; i++)
+        //Debug.LogError("Got pooled obj ");
+        for (int i = 0; i < pooledBulletObjects.Count; i++)
         {
-            if (!pooledObjects[i].activeInHierarchy)
+            if (!pooledBulletObjects[i].activeInHierarchy)
             {
-                Debug.LogError(" returning -> " + pooledObjects[i].name);
-                return pooledObjects[i];
+                //Debug.LogError(" returning -> " + pooledBulletObjects[i].name);
+                return pooledBulletObjects[i];
             }
         }
 
         //if you got here, then the pool is full. So, instantiate a new object and return it.
         GameObject inst = Instantiate(prefab);
         inst.SetActive(false);
-        pooledObjects.Add(inst);
+        pooledBulletObjects.Add(inst);
         return inst;
     }
 
@@ -78,6 +96,43 @@ public class ObjectPool : MonoBehaviour
         AudioSource inst = Instantiate(audioPrefab);
         inst.gameObject.SetActive(false);
         pooledAudioSrcs.Add(inst);
+        return inst;
+    }
+
+    public GameObject GetPooledProjObject()
+    {
+       // Debug.LogError("Got pooled obj ");
+        for (int i = 0; i < pooledProjObjects.Count; i++)
+        {
+            if (!pooledProjObjects[i].activeInHierarchy)
+            {
+                //Debug.LogError(" returning -> " + pooledProjObjects[i].name);
+                return pooledProjObjects[i];
+            }
+        }
+
+        //if you got here, then the pool is full. So, instantiate a new object and return it.
+        GameObject inst = Instantiate(projPrefab);
+        inst.SetActive(false);
+        pooledProjObjects.Add(inst);
+        return inst;
+    }
+
+    public GameObject GetPooledProjAdvObject()
+    {
+        for (int i = 0; i < pooledProjAdvObjects.Count; i++)
+        {
+            if (!pooledProjAdvObjects[i].activeInHierarchy)
+            {
+                //Debug.LogError(" returning -> " + pooledProjObjects[i].name);
+                return pooledProjAdvObjects[i];
+            }
+        }
+
+        //if you got here, then the pool is full. So, instantiate a new object and return it.
+        GameObject inst = Instantiate(projAdvPrefab);
+        inst.SetActive(false);
+        pooledProjAdvObjects.Add(inst);
         return inst;
     }
 }

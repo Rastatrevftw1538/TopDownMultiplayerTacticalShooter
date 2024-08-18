@@ -24,6 +24,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     [Header("Enemy Components")]
     [SerializeField] private Image healthbarExternal;
     [SerializeField] private GameObject projectile;
+    [SerializeField] private GameObject body;
     [field: SerializeField] public float dropChance { get; set; }
     [field: SerializeField] public List<GameObject> dropObjects { get; set; }
     [SerializeField] private LayerMask targetLayers;
@@ -65,7 +66,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         agent.updateUpAxis = false;
         initColor = spriteRenderer.color;
         spriteRenderer.transform.TryGetComponent<Animator>(out anim);
-
+        if (!body) body = spriteRenderer.gameObject.transform.GetChild(0).gameObject;
 
         shotCooldown = startShotCooldown;
 
@@ -182,7 +183,11 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     {
         anim.SetBool("IsAttacking", true);
         PlaySound(firingSound , 0.2f);
-        Instantiate(projectile, transform.position, transform.rotation);
+        //Instantiate(projectile, transform.position, transform.rotation);
+        GameObject proj = ObjectPool.instance.GetPooledProjObject();
+        proj.transform.position = body.transform.position;
+        proj.transform.rotation = transform.rotation;
+        proj.SetActive(true);
         shotCooldown = startShotCooldown;
         yield return new WaitForSeconds(shotCooldown);
         anim.SetBool("IsAttacking", false);

@@ -53,7 +53,7 @@ public class BPMNoteObject : MonoBehaviour
 
                 //check dist between the note and the hit target in abs value
                 float dist = Mathf.Abs(Vector2.Distance(transform.position, hitLocation.position));
-                Debug.LogError("Distance between that hit was " + dist);
+                //Debug.LogError("Distance between that hit was " + dist);
                 if (dist > normNoteDist)
                 {
                     //Debug.LogError("Norm");

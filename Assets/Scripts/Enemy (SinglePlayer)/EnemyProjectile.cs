@@ -20,8 +20,8 @@ public class EnemyProjectile : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        int rand = Random.Range(0, shootSounds.Count);
-        if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(shootSounds[rand], transform, 0.05f);
+        //int rand = Random.Range(0, shootSounds.Count);
+        //if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(shootSounds[rand], transform, 0.05f);
         trailRenderer = GetComponent<TrailRenderer>();
         trailRenderer.emitting = true;
         rb = GetComponent<Rigidbody2D>();
@@ -29,29 +29,34 @@ public class EnemyProjectile : MonoBehaviour
     }
 
     // Update is called once per frame
+    UnityEngine.Vector3 moveVector;
     void Update()
     {
         //transform.Translate(speed * Vector2.up * Time.fixedDeltaTime * Time.timeScale);
-        UnityEngine.Vector3 moveVector = speed * Time.fixedDeltaTime * Time.timeScale * transform.TransformDirection(Vector2.up);
+        moveVector = speed * Time.fixedDeltaTime * Time.timeScale * transform.TransformDirection(Vector2.up);
         rb.velocity = new UnityEngine.Vector2(moveVector.x, moveVector.y);
         lifeTime += Time.deltaTime;
 
         if (lifeTime >= projectileLifeTime)
-            DestroyProjectile();
+            ResetData();
+            //DestroyProjectile();
     }
 
+    PlayerHealthSinglePlayer playerHealth;
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.tag == "Player")
         {
-            PlayerHealthSinglePlayer playerHealth = other.gameObject.GetComponent<PlayerHealthSinglePlayer>();
+            if(!playerHealth) other.gameObject.TryGetComponent<PlayerHealthSinglePlayer>(out playerHealth);
             playerHealth.TakeDamage(damage);
-            DestroyProjectile();
+            //DestroyProjectile();
+            ResetData();
         }
 
         if (other.gameObject.tag == "Wall")
         {
-            DestroyProjectile();
+            //DestroyProjectile();
+            ResetData();
         }
     }
 
@@ -59,7 +64,8 @@ public class EnemyProjectile : MonoBehaviour
     {
         if (other.gameObject.tag == "Wall")
         {
-            DestroyProjectile();
+            //DestroyProjectile();
+            ResetData();
         }
     }
 
@@ -67,6 +73,15 @@ public class EnemyProjectile : MonoBehaviour
     {
         //PlayParticles();
         Destroy(gameObject);
+    }
+
+    private void ResetData()
+    {
+        //Debug.Log("Resetting Data");
+        moveVector = Vector3.zero;
+        rb.velocity = Vector2.zero;
+        lifeTime = 0f;
+        gameObject.SetActive(false);
     }
 
     private void PlayParticles()

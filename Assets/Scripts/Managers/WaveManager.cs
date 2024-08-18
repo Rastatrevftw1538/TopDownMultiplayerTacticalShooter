@@ -12,6 +12,7 @@ public class WaveManager : Singleton<WaveManager>
     public List<Level> levels = new List<Level>();
     public GameObject currentSpawnArea;
     public GameObject currentLevelDoor;
+    public GameObject spawnAnimPrefab;
     //LOADING THE CURRENT SPAWN AREA IN ScenePartLoader.cs
     //STARTING THE CURRENT LEVEL IN ScenePartLoader.cs
 
@@ -129,20 +130,10 @@ public class WaveManager : Singleton<WaveManager>
 
     Animator currentAnim;
     SpriteRenderer currentSpawnSprite;
-    private IEnumerator PlaySpawnAnim()
+/*    private IEnumerator PlaySpawnAnim()
     {
-        currentAnim = currentSpawnArea.GetComponent<Animator>();
-        currentSpawnSprite = currentSpawnArea.GetComponent<SpriteRenderer>();
-
-        if (currentAnim && currentSpawnSprite)
-        {
-            currentAnim.enabled = true;
-            currentAnim.SetTrigger("Played");
-            yield return new WaitForSeconds(1f);
-        }
-        currentSpawnSprite.enabled = false;
-        currentAnim.enabled = false;
-    }
+        
+    }*/
 
     public void StartWave()
     {
@@ -174,7 +165,7 @@ public class WaveManager : Singleton<WaveManager>
         if (currentSpawnArea)
         {
             levels[currentLevel].PlaySpawnSound(currentSpawnArea.transform);
-            levels[currentLevel].waves[currentWave].GenerateEnemies(currentSpawnArea);
+            levels[currentLevel].waves[currentWave].GenerateEnemies(currentSpawnArea, spawnAnimPrefab);
         }
     }
 

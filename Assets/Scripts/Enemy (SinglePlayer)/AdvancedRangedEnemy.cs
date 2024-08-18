@@ -6,6 +6,7 @@ using UnityEngine.AI;
 using System.Threading.Tasks;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 using UnityEditor;
+using UnityEngine.Pool;
 
 public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
 {
@@ -25,6 +26,7 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
     [SerializeField] private Image healthbarExternal;
     [SerializeField] private GameObject projectile;
     [SerializeField] private float amtProjectiles;
+    [SerializeField] private GameObject body;
     [field: SerializeField] public float dropChance { get; set; }
     [field: SerializeField] public List<GameObject> dropObjects { get; set; }
     [SerializeField] private LayerMask targetLayers;
@@ -49,7 +51,6 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
     public GameObject onBeatDefeatParticles;
     static BPMManager bpmManager;
     private Animator anim;
-
     private void Awake()
     {
         //healthbarInternal = GetComponentInChildren<Slider>();
@@ -67,6 +68,7 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
         agent.updateUpAxis = false;
         spriteRenderer.transform.TryGetComponent<Animator>(out anim);
         initColor = spriteRenderer.color;
+        if(!body) body = spriteRenderer.gameObject.transform.GetChild(0).gameObject;
 
         shotCooldown = startShotCooldown;
 
@@ -169,7 +171,11 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
         {
             degreeToShootAt = (degrees / amtProjectiles) * i;
             Quaternion rotation = Quaternion.Euler(0, 0, degreeToShootAt);
-            Instantiate(projectile, spriteRenderer.gameObject.transform.position, rotation);
+            //Instantiate(projectile, spriteRenderer.gameObject.transform.position, rotation);
+            GameObject proj = ObjectPool.instance.GetPooledProjAdvObject();
+            proj.transform.rotation = rotation;
+            proj.transform.position = body.transform.position;
+            proj.SetActive(true);
         }
         shotCooldown = startShotCooldown;
         yield return new WaitForSeconds(shotCooldown);
