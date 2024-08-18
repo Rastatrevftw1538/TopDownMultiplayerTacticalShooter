@@ -164,18 +164,23 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
 
     float fxCooldown = 0.75f;
     float fxTimer;
+    bool setDevice = false;
     public void FixedUpdate()
     {
-        if (deviceType == SetDeviceType.Auto)
+        if (!setDevice)
         {
-            if (Application.platform == RuntimePlatform.Android)
+            if (deviceType == SetDeviceType.Auto)
             {
-                deviceType = SetDeviceType.Mobile;
+                if (Application.platform == RuntimePlatform.Android)
+                {
+                    deviceType = SetDeviceType.Mobile;
+                }
+                else if (Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.WindowsPlayer)
+                {
+                    deviceType = SetDeviceType.PC;
+                }
             }
-            else if (Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.WindowsPlayer)
-            {
-                deviceType = SetDeviceType.PC;
-            }
+            setDevice = true;
         }
 
         #region PC MOVEMENT

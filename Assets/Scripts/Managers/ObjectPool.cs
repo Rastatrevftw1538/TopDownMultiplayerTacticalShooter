@@ -10,7 +10,7 @@ public class ObjectPool : MonoBehaviour
     public int amtProjToPool = 20;
 
     private List<GameObject> pooledBulletObjects = new List<GameObject>();
-    public int amtBulletsToPool = 20;
+    public int amtBulletsToPool = 8;
 
     private List<AudioSource> pooledAudioSrcs = new List<AudioSource>();
     public int amtAudioToPool = 20;
@@ -18,10 +18,14 @@ public class ObjectPool : MonoBehaviour
     private List<GameObject> pooledProjAdvObjects = new List<GameObject>();
     public int amtProjAdvToPool = 30;
 
+    private List<GameObject> pooledEnemyDisplay = new List<GameObject>();
+    public int amtDisplayToPool = 20;
+
     [SerializeField] GameObject prefab;
     [SerializeField] AudioSource audioPrefab;
     [SerializeField] GameObject projPrefab;
     [SerializeField] GameObject projAdvPrefab;
+    [SerializeField] GameObject hitDisplayPrefab;
 
     private void Awake()
     {
@@ -32,34 +36,42 @@ public class ObjectPool : MonoBehaviour
     }
 
     //move into delegates and <T> later
+    //this is so ugly i know
     void Start()
     {
         for(int i = 0; i < amtBulletsToPool; i++)
         {
-            GameObject obj = Instantiate(prefab);
+            GameObject obj = Instantiate(prefab, gameObject.transform);
             obj.SetActive(false);
             pooledBulletObjects.Add(obj);
         }
 
         for (int i = 0; i < amtAudioToPool; i++)
         {
-            AudioSource obj = Instantiate(audioPrefab);
+            AudioSource obj = Instantiate(audioPrefab, gameObject.transform);
             obj.gameObject.SetActive(false);
             pooledAudioSrcs.Add(obj);
         }
 
         for (int i = 0; i < amtProjToPool; i++)
         {
-            GameObject obj = Instantiate(projPrefab);
+            GameObject obj = Instantiate(projPrefab, gameObject.transform);
             obj.SetActive(false);
             pooledProjObjects.Add(obj);
         }
 
         for (int i = 0; i < amtProjAdvToPool; i++)
         {
-            GameObject obj = Instantiate(projAdvPrefab);
+            GameObject obj = Instantiate(projAdvPrefab, gameObject.transform);
             obj.SetActive(false);
             pooledProjAdvObjects.Add(obj);
+        }
+
+        for (int i = 0; i < amtDisplayToPool; i++)
+        {
+            GameObject obj = Instantiate(hitDisplayPrefab, gameObject.transform);
+            obj.SetActive(false);
+            pooledEnemyDisplay.Add(obj);
         }
     }
 
@@ -133,6 +145,25 @@ public class ObjectPool : MonoBehaviour
         GameObject inst = Instantiate(projAdvPrefab);
         inst.SetActive(false);
         pooledProjAdvObjects.Add(inst);
+        return inst;
+    }
+
+    public GameObject GetPooledDisplayHit()
+    {
+        //Debug.LogError("Got pooled obj ");
+        for (int i = 0; i < pooledEnemyDisplay.Count; i++)
+        {
+            if (!pooledEnemyDisplay[i].activeInHierarchy)
+            {
+                //Debug.LogError(" returning -> " + pooledBulletObjects[i].name);
+                return pooledEnemyDisplay[i];
+            }
+        }
+
+        //if you got here, then the pool is full. So, instantiate a new object and return it.
+        GameObject inst = Instantiate(hitDisplayPrefab);
+        inst.SetActive(false);
+        pooledEnemyDisplay.Add(inst);
         return inst;
     }
 }

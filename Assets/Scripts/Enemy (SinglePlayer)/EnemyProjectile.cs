@@ -23,7 +23,6 @@ public class EnemyProjectile : MonoBehaviour
         //int rand = Random.Range(0, shootSounds.Count);
         //if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(shootSounds[rand], transform, 0.05f);
         trailRenderer = GetComponent<TrailRenderer>();
-        trailRenderer.emitting = true;
         rb = GetComponent<Rigidbody2D>();
         //particleSystem = GetComponent<ParticleSystem>();
     }
@@ -78,7 +77,7 @@ public class EnemyProjectile : MonoBehaviour
     private void ResetData()
     {
         //Debug.Log("Resetting Data");
-        moveVector = Vector3.zero;
+        //moveVector = Vector3.zero;
         rb.velocity = Vector2.zero;
         lifeTime = 0f;
         gameObject.SetActive(false);

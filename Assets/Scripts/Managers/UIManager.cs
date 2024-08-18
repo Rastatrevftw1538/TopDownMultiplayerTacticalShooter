@@ -17,6 +17,7 @@ public class UIManager : Singleton<UIManager>
     public TextMeshProUGUI waveDisplay;
     public TextMeshProUGUI enemiesLeftDisplay;
     public TextMeshProUGUI pointsDisplay;
+    public TextMeshProUGUI multiplierDisplay;
     public GameObject victoryScreen;
     public GameObject defeatScreen;
     public UIArrowToShow uiArrowToTarget;
@@ -53,7 +54,7 @@ public class UIManager : Singleton<UIManager>
         powerupUIIcon = powerupUI.transform.GetChild(0).GetComponent<Image>();
         powerupUICd = powerupUI.transform.GetChild(1).GetComponent<Image>();
         initPowerupTextSize = powerupText.fontSize;
-        StartCoroutine(nameof(WorldZoomStart));
+        StartCoroutine(WorldZoomStart());
     }
 
     float abilityCd;
@@ -117,7 +118,7 @@ public class UIManager : Singleton<UIManager>
     {
         if(!enemiesLeftDisplay) return;
         enemiesLeft = num;
-        StartCoroutine(nameof(FlashEnemyRemaining));
+        StartCoroutine(FlashEnemyRemaining());
     }
 
     IEnumerator FlashWaveNumber()
@@ -148,9 +149,28 @@ public class UIManager : Singleton<UIManager>
             powerupCd = cdTime;
             powerupUICd.fillAmount = 1f;
 
-            StartCoroutine(nameof(FlashBuffName));
+            StartCoroutine(FlashBuffName());
             Invoke(nameof(ResetCooldownUI), cdTime);
         }
+    }
+
+    float basicHit = 1f;
+    float critHit = 30f;
+    public void DisplayHit(float num, Transform hitTransform)
+    {
+        GameObject displayHit = ObjectPool.instance.GetPooledDisplayHit();
+        displayHit.transform.position = new Vector2(hitTransform.position.x, hitTransform.position.y + 2);
+        DamageDisplay damageDisplay;
+
+        displayHit.TryGetComponent<DamageDisplay>(out damageDisplay);
+        damageDisplay.text.text = num.ToString();
+
+        if (num >= basicHit && num <= critHit)
+            damageDisplay.color = Color.white;
+        else
+            damageDisplay.color = Color.yellow;
+
+        damageDisplay.gameObject.SetActive(true);
     }
 
     private void ResetCooldownUI()
@@ -164,6 +184,18 @@ public class UIManager : Singleton<UIManager>
     {
         yield return new WaitForSeconds(1f);
         powerupText.gameObject.SetActive(false);
+    }
+
+    Animator multiplierAnim;
+    public void PlayMultiplierAnim(float streak, Color color)
+    {
+        if (!multiplierAnim) multiplierDisplay.TryGetComponent<Animator>(out multiplierAnim);
+        multiplierAnim.Play("Multiplier", -1, 0f);
+        multiplierDisplay.color = color;
+
+        StringBuilder sb = new StringBuilder();
+        sb.Append(streak + "x");
+        multiplierDisplay.text = sb.ToString();
     }
 
     IEnumerator FlashEnemyRemaining()

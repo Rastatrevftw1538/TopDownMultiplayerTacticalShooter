@@ -17,6 +17,7 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
     [SerializeField] private Transform target;
     private NavMeshAgent agent; 
     public float stoppingDistance;
+    public float retreatDistance;
     public float startShotCooldown;
     public float touchDamage;
     [field: SerializeField] public float pointsPerHit { get; set; }
@@ -115,7 +116,7 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
                 if (hit.collider.CompareTag("Player"))
                 {
                     shotCooldown = 0f;
-                    StartCoroutine(nameof(Attack));
+                    StartCoroutine(Attack());
                 }
         }
         else
@@ -172,10 +173,15 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
             degreeToShootAt = (degrees / amtProjectiles) * i;
             Quaternion rotation = Quaternion.Euler(0, 0, degreeToShootAt);
             //Instantiate(projectile, spriteRenderer.gameObject.transform.position, rotation);
+
+            //resetting object pool data
             GameObject proj = ObjectPool.instance.GetPooledProjAdvObject();
+            TrailRenderer trail;
+            if (proj.TryGetComponent(out trail)) trail.emitting = false;
             proj.transform.rotation = rotation;
             proj.transform.position = body.transform.position;
             proj.SetActive(true);
+            if (proj.TryGetComponent(out trail)) trail.emitting = true;
         }
         shotCooldown = startShotCooldown;
         yield return new WaitForSeconds(shotCooldown);
@@ -200,7 +206,7 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
     public void TakeDamage(float amount)
     {
         PlaySound(hitSound, 0.15f);
-        StartCoroutine(nameof(DamageFlash));
+        StartCoroutine(DamageFlash());
         //FIRST CHECK IF THE BASE'S HEALTH IS BELOW 0
         if (currentHealth > 0)
             currentHealth -= amount;

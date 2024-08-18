@@ -16,6 +16,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     [SerializeField] private Transform target;
     private NavMeshAgent agent; 
     public float stoppingDistance;
+    public float retreatDistance;
     public float startShotCooldown;
     public float touchDamage;
     [field: SerializeField] public float pointsPerHit { get; set; }
@@ -95,10 +96,10 @@ public class RangedEnemy : MonoBehaviour, IEnemy
             target = GameObject.FindWithTag("Player").transform;
         }
 
-        //healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
-        
+        healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
         agent.SetDestination(target.position);
-        if(agent.velocity.magnitude > 0)
+
+        if (agent.velocity.magnitude > 0)
         {
             anim.SetBool("Idle", false);
             PlaySound(movementSound, 0.2f);
@@ -184,10 +185,15 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         anim.SetBool("IsAttacking", true);
         PlaySound(firingSound , 0.2f);
         //Instantiate(projectile, transform.position, transform.rotation);
+
+        //resetting object pool data
         GameObject proj = ObjectPool.instance.GetPooledProjObject();
+        TrailRenderer trail;
+        if (proj.TryGetComponent(out trail)) trail.emitting = false;
         proj.transform.position = body.transform.position;
         proj.transform.rotation = transform.rotation;
         proj.SetActive(true);
+        if (proj.TryGetComponent(out trail)) trail.emitting = true;
         shotCooldown = startShotCooldown;
         yield return new WaitForSeconds(shotCooldown);
         anim.SetBool("IsAttacking", false);
@@ -225,7 +231,6 @@ public class RangedEnemy : MonoBehaviour, IEnemy
 
         DisplayHit(amount);
         healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
-
         //SLOW ENEMY
 
     }

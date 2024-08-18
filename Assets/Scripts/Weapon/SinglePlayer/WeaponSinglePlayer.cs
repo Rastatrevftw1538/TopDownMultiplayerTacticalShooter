@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using System.Diagnostics;
 using Cinemachine;
 using Debug = UnityEngine.Debug;
+using UnityEngine.InputSystem;
 
 public class WeaponSinglePlayer : MonoBehaviour
 {
@@ -141,36 +142,45 @@ public class WeaponSinglePlayer : MonoBehaviour
 
     public void Update()
     {
-        if (weaponSpecs.name != gunName)
-            SetDefaultValues();
-    }
+        //if (weaponSpecs.name != gunName)
+        //    SetDefaultValues();
 
-    bool onBeat;
-    private void FixedUpdate()
-    {
-        if (isReloading)
-            return;
-        float coneScale = 1f + (spread * coneSpreadFactor);
-        spreadCone.transform.localScale = new Vector3(Mathf.Clamp(coneScale, 0, 35), spreadCone.transform.localScale.y, 1f); //HERE
-        spreadCone.color = new Color(1, 0, 0, Mathf.Clamp((Mathf.Clamp(spread, 0f, 100f) - 0) / (100 - 0), 0.25f, 0.75f));
-
-        if (player.PlayerDevice == PlayerScriptSinglePlayer.SetDeviceType.Mobile){ 
-            shootingGun = shootingJoystick.isShooting;
+        //for showcase, making this compatible with controller too
+        if (player.PlayerDevice == PlayerScriptSinglePlayer.SetDeviceType.PC)
+        {
+            //Debug.LogError(Input.GetAxisRaw("Shoot Gun"));
+            if (Input.GetAxisRaw("Shoot Gun") == 1)
+                shootingGun = true;
+            else
+                shootingGun = false;
         }
-        else if(player.PlayerDevice == PlayerScriptSinglePlayer.SetDeviceType.PC){
-            shootingGun = Input.GetMouseButton(0);
+        //else(player.PlayerDevice == PlayerScriptSinglePlayer.SetDeviceType.Mobile)
+        else
+        {
+            shootingGun = shootingJoystick.isShooting;
         }
 
         if (shootingGun && Time.time >= nextFireTime && !outOfAmmo)
         {
             nextFireTime = Time.time + fireRate;
             Vector2 direction = firePoint.transform.up;
-            CmdFire(direction);
+            RpcFire(direction);
         }
 
-        if(!shootingGun){
+        if (!shootingGun)
+        {
             spread = 0f;
         }
+    }
+
+    bool onBeat;
+    private void FixedUpdate()
+    {
+        //if (isReloading)
+        //    return;
+        //float coneScale = 1f + (spread * coneSpreadFactor);
+        //spreadCone.transform.localScale = new Vector3(Mathf.Clamp(coneScale, 0, 35), spreadCone.transform.localScale.y, 1f); //HERE
+        //spreadCone.color = new Color(1, 0, 0, Mathf.Clamp((Mathf.Clamp(spread, 0f, 100f) - 0) / (100 - 0), 0.25f, 0.75f));
     }
 
     IEnumerator Reload()
@@ -198,10 +208,10 @@ public class WeaponSinglePlayer : MonoBehaviour
         allowedToFire = true;
     }
     //[Command]
-    public void CmdFire(Vector2 direction)
+    /*public void CmdFire(Vector2 direction)
     {
         RpcFire(direction);
-    }
+    }*/
 
     BPMManager bpmManager;
     private bool CheckBPM()
@@ -249,20 +259,23 @@ public class WeaponSinglePlayer : MonoBehaviour
             switch (hit.collider.tag)
             {
                 case "Enemy":
-                    Transform objectOrigin = hit.collider.transform;
+                    //Debug.LogError("Hit: " + hit.collider.gameObject.name);
+                    Transform objectOrigin = hit.collider.transform.root.GetChild(0);
+                    //Debug.LogError("Trying to access: " + objectOrigin.name);
                     whatWasHit = "Enemy";
                     if (objectOrigin != null)
                     {
                         IEnemy enemy = objectOrigin.GetComponent<IEnemy>();
                         if (enemy == null) return;
-                        float dmg = damage * damageMultiplier;
-                        float points = enemy.pointsPerHit + bonusPointsPerShot;
+                        float dmg = damage * damageMultiplier * BPMManager.instance.currentMultiplier;
+                        float points = enemy.pointsPerHit + bonusPointsPerShot * BPMManager.instance.currentMultiplier;
                         if (CheckBPM() && enemy != null)
                         {
                             dmg *= damageMultiplierBPM;
                             points *= damageMultiplierBPM;
                         }
                         enemy.TakeDamage(dmg);
+                        UIManager.Instance.DisplayHit(dmg, objectOrigin);
                         UIManager.Instance.AddPoints(points);
                     }
                     break;
@@ -312,7 +325,9 @@ public class WeaponSinglePlayer : MonoBehaviour
         BulletScriptSP trailRender = bulletInstance.GetComponent<BulletScriptSP>();
         StartCoroutine(trailRender.SetSelfInactive(0.5f));
         trailRender.SetTargetPosition(collisionPoint);
+
         TrailRenderer trailRenderer = trailRender.GetComponent<TrailRenderer>();
+
         if (!particleEffect) particleEffect = trailRender.effectPrefab;
         if(!particleSystemIns) particleSystemIns = particleEffect.GetComponent<ParticleSystem>();
         if(!cameraShake) cameraShake = CameraShake.Instance;
@@ -372,7 +387,6 @@ public class WeaponSinglePlayer : MonoBehaviour
                 trailRenderer.widthMultiplier = ATKSPDShotTrail.widthMultiplier;
             }
         }
-
         //trailRender.SetTargetPosition(collisionPoint);
         //Debug.Log("Bullet Fired Client " + collisionPoint + " direction " + spreadDirection);
     }

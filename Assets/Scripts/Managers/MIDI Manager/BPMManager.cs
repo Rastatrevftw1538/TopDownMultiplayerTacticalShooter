@@ -91,6 +91,12 @@ public class BPMManager : MonoBehaviour
         filter = GetComponent<AudioLowPassFilter>();
 
         BPM = UniBpmAnalyzer.AnalyzeBpm(randSong) / 2f;
+        if(BPM >= 100)
+        {
+            normErrorWindow -= .10f;
+            goodErrorWindow -= .05f;
+        }
+
         //BPM = BPM / 4; //FIXING THE BPM (SOME SONGS WILL BE DIFFERENT)
 
         //GameObject.Find("NoteManager").GetComponent<BeatScroller>().hasStarted = true;
@@ -210,24 +216,39 @@ public class BPMManager : MonoBehaviour
     public int currentMultiplier;
     public int multiplierTracker;
     public int[] multiplierThresholds;
+    public int streak;
 
     public void NoteHit()
     {
+        streak++;
         actualFeedback.gameObject.SetActive(true);
         //feedbackParticles.Clear();
         //feedbackParticles.Stop();
         if (currentMultiplier - 1 < multiplierThresholds.Length)
         {
             multiplierTracker++;
+            UIManager.Instance.PlayMultiplierAnim(streak, CheckColor()); // play the streak animation
             if (multiplierTracker >= multiplierThresholds[currentMultiplier - 1])
             {
                 multiplierTracker = 0;
                 currentMultiplier++;
             };
         }
+
         // UIManager.Instance.AddPoints(points * currentMultiplier);
         //Debug.LogError("Hit on time");
         Invoke(nameof(DestroyParticles), 0.5f);
+    }
+
+    Color CheckColor()
+    {
+        switch (currentMultiplier)
+        {
+            case 1: return Color.white;
+            case 2: return Color.yellow;
+            case 3: return Color.cyan;
+            default: return Color.white;
+        }
     }
 
     void DestroyParticles()
@@ -238,8 +259,10 @@ public class BPMManager : MonoBehaviour
     ParticleSystem currentParticles;
     public void NoteMissed(GameObject source)
     {
+        streak = 0;
         multiplierTracker = 0;
         currentMultiplier = 1;
+        UIManager.Instance.PlayMultiplierAnim(multiplierTracker, CheckColor());
         //Debug.LogError("Not hit on time");
         actualFeedback.gameObject.SetActive(true);
 

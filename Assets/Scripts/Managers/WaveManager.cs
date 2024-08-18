@@ -83,12 +83,12 @@ public class WaveManager : Singleton<WaveManager>
             //then increase the wave count and start the next wave
             currentWave++;
 
-            StartCoroutine(nameof(StartWaveCO));
+            StartCoroutine(StartWaveCO());
         }
         //if increasing the index by 1 wont be out of bounds...
         else if (!(idxCheckL >= levels.Count))//COMPLETED A LEVEL
         {
-            StartCoroutine(nameof(BeatLevelTransition));
+            StartCoroutine(BeatLevelTransition());
             //that must mean you beat all the waves in the level, so increase the level count and reset the wave count
             currentWave = 0;
             currentLevel++;
@@ -137,7 +137,7 @@ public class WaveManager : Singleton<WaveManager>
 
     public void StartWave()
     {
-        StartCoroutine(nameof(StartWaveCO));
+        StartCoroutine(StartWaveCO());
     }
 
     public float GetAmtEnemies()
