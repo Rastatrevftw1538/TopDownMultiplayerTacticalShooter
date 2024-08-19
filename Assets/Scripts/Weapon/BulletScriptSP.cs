@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class BulletScriptSP : MonoBehaviour
@@ -15,7 +16,8 @@ public class BulletScriptSP : MonoBehaviour
     void Start()
     {
         _startPosition = transform.position;
-        Invoke(nameof(DestroySelf), 0.5f);
+        //Invoke(nameof(SetSelfInactive), 0.5f);
+        //Invoke(nameof(DestroySelf), 0.5f);
         //Debug.LogError("this bullet wants to go to: " + _targetPosition);
     }
 
@@ -63,8 +65,16 @@ public class BulletScriptSP : MonoBehaviour
         Debug.LogError("doin a thang");
     }
 
-    void DestroySelf()
+    public void ResetData()
     {
-        Destroy(gameObject);
+        targetSet = false;
+        _progress = 0;
+        _startPosition = transform.position;
+    }
+
+    public IEnumerator SetSelfInactive(float time)
+    {
+        yield return new WaitForSeconds(time);
+        gameObject.SetActive(false);
     }
 }

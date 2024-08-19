@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Networking.Transport.Error;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class BPMNoteObject : MonoBehaviour
 {
     bool canBePressed;
     public KeyCode keyToPress;
-    BPMManager bpmManager;
     private Rigidbody2D rb;
     // Start is called before the first frame update
     void Start()
@@ -25,7 +25,7 @@ public class BPMNoteObject : MonoBehaviour
 
         TryGetComponent<Rigidbody2D>(out rb);
     }
-    static float beatTempo;
+    static float beatTempo = 0f;
     static bool hasStarted;
     static bool hasChecked;
     static float normNoteDist;
@@ -33,46 +33,65 @@ public class BPMNoteObject : MonoBehaviour
     static float perfectNoteDist;
     static Transform hitLocation;
 
-    const float why = 15f;
+    //const float why = 30f;
     // Update is called once per frame
 
     Vector2 beatTempoDir;
 
     void Update()
     {
+        if(!hasStarted) hasStarted = BPMManager.instance.startPlaying;
+        if (beatTempo == 0f) beatTempo = BPMManager.instance.BPM;
         if (Input.GetKeyDown(keyToPress))
         {
             if (canBePressed)
             {
+                //BPMManager.instance.canClick = Color.green;
                 gameObject.SetActive(false);
 
                 //BPMManager.Instance.NoteHit();
 
                 //check dist between the note and the hit target in abs value
-                float dist = Mathf.Abs(Vector2.Distance(transform.position, hitLocation.position) - why);
-                Debug.LogError("Distance between that hit was " + dist);
+                float dist = Mathf.Abs(Vector2.Distance(transform.position, hitLocation.position));
+                //Debug.LogError("Distance between that hit was " + dist);
                 if (dist > normNoteDist)
                 {
-                    Debug.LogError("Norm");
+                    //Debug.LogError("Norm");
                     BPMManager.instance.NormalHit();
                 }
                 else if (dist > goodNoteDist)
                 {
-                    Debug.LogError("Good");
+                    //Debug.LogError("Good");
                     BPMManager.instance.GoodHit();
                 }
-                else if(dist > perfectNoteDist)
+                else if (dist > perfectNoteDist)
                 {
-                    Debug.LogError("Perfect");
-                    BPMManager.instance.PerfectHit(); 
+                    // Debug.LogError("Perfect");
+                    BPMManager.instance.PerfectHit();
                 }
 
                 Destroy(this.gameObject, 0.1f);
             }
         }
+    }
 
-        if (hasStarted) //rb.MovePosition(new Vector2(rb.position.x * Time.deltaTime * beatTempo, 0f));
-            transform.position += new Vector3(beatTempo/50 * Time.deltaTime, 0f, 0f);
+    Vector2 movement;
+    private void FixedUpdate()
+    {
+        movement = new Vector2(0, 1).normalized;
+        Vector3 moveVector = beatTempo * Time.fixedDeltaTime * Time.timeScale * transform.TransformDirection(movement);
+        if (hasStarted) rb.velocity = new Vector2(moveVector.x, -moveVector.y) * 2;
+            //transform.position = Vector3.Lerp(transform.position, hitLocation.position, Time.fixedDeltaTime * Time.timeScale);
+            //transform.position -= new Vector3(0f, beatTempo * Time.fixedDeltaTime * Time.timeScale, 0f);
+
+        //so that the beat will actually continue to move past the hit location, and not get stuck directly on top of it
+        /*if (Mathf.Abs(Vector2.Distance(transform.position, hitLocation.position)) <= 0.3f)
+        {
+            Vector2 past = new Vector2(hitLocation.position.x, hitLocation.position.y - 5);
+            transform.position = Vector3.MoveTowards(transform.position, past, beatTempo * Time.fixedDeltaTime * Time.timeScale);
+        }*/
+        //transform.position += new Vector3(beatTempo * Time.deltaTime, 0f, 0f);
+        //transform.position -= new Vector3(0f, beatTempo * Time.deltaTime, 0f);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -80,6 +99,12 @@ public class BPMNoteObject : MonoBehaviour
         if (collision.CompareTag("Activator"))
         {
             canBePressed = true;
+            BPMManager.instance.canClick = Color.green;
+        }
+
+        if (collision.CompareTag("Destroy Note"))
+        {
+            Destroy(this.gameObject);
         }
     }
 
@@ -89,9 +114,29 @@ public class BPMNoteObject : MonoBehaviour
 
         if (collision.CompareTag("Activator"))
         {
-            canBePressed = false;
+            //BPMManager.instance.canClick = Color.red;
+            /*if (!BPMManager.instance)
+            {
+                bpmManager = FindObjectOfType<BPMManager>();
 
+                canBePressed = false;
+                bpmManager.canClick = Color.red;
+                bpmManager.NoteMissed(this.gameObject);
+            }
+            else
+            {
+                canBePressed = false;
+                BPMManager.instance.canClick = Color.red;
+                BPMManager.instance.NoteMissed(this.gameObject);
+            }*/
+            canBePressed = false;
             BPMManager.instance.NoteMissed(this.gameObject);
+            Destroy(this.gameObject, 0.1f);
+        }
+
+        if(collision.CompareTag("Destroy Note"))
+        {
+            Destroy(this.gameObject);
         }
     }
 }

@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using UnityEngine.Rendering.Universal;
 using System;
 using System.Text;
+using DigitalRuby.Tween;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -16,11 +17,13 @@ public class UIManager : Singleton<UIManager>
     public TextMeshProUGUI waveDisplay;
     public TextMeshProUGUI enemiesLeftDisplay;
     public TextMeshProUGUI pointsDisplay;
+    public TextMeshProUGUI multiplierDisplay;
     public GameObject victoryScreen;
     public GameObject defeatScreen;
     public UIArrowToShow uiArrowToTarget;
     public AudioClip defeatSound;
     public AudioClip victorySound;
+    public TextMeshProUGUI powerupText;
     public GameObject powerupUI;
     private Image powerupUICd;
     private Image powerupUIIcon;
@@ -41,6 +44,7 @@ public class UIManager : Singleton<UIManager>
         Powerup, Ability
     }
 
+    float initPowerupTextSize;
     void Start()
     {
         SetPoints(0f);
@@ -49,8 +53,8 @@ public class UIManager : Singleton<UIManager>
 
         powerupUIIcon = powerupUI.transform.GetChild(0).GetComponent<Image>();
         powerupUICd = powerupUI.transform.GetChild(1).GetComponent<Image>();
-
-        StartCoroutine(nameof(WorldZoomStart));
+        initPowerupTextSize = powerupText.fontSize;
+        StartCoroutine(WorldZoomStart());
     }
 
     float abilityCd;
@@ -114,7 +118,7 @@ public class UIManager : Singleton<UIManager>
     {
         if(!enemiesLeftDisplay) return;
         enemiesLeft = num;
-        StartCoroutine(nameof(FlashEnemyRemaining));
+        StartCoroutine(FlashEnemyRemaining());
     }
 
     IEnumerator FlashWaveNumber()
@@ -129,13 +133,15 @@ public class UIManager : Singleton<UIManager>
     }
 
     CooldownType lastType;
-    public void StartCooldownUI(CooldownType type, Sprite icon, float cdTime)
+    public void StartCooldownUI(CooldownType type, Sprite icon, float cdTime, string name)
     {
         //Debug.LogError("active time of the powerup is: " + cdTime);
         lastType = type;
         //SET THE SPRITE
         if (type == CooldownType.Powerup)
         {
+            powerupText.text = name;
+            powerupText.gameObject.SetActive(true);
             if (icon != null)
                 powerupUIIcon.sprite = icon;
             powerupUIIcon.gameObject.SetActive(true);
@@ -143,14 +149,53 @@ public class UIManager : Singleton<UIManager>
             powerupCd = cdTime;
             powerupUICd.fillAmount = 1f;
 
+            StartCoroutine(FlashBuffName());
             Invoke(nameof(ResetCooldownUI), cdTime);
         }
+    }
+
+    float basicHit = 1f;
+    float critHit = 30f;
+    public void DisplayHit(float num, Transform hitTransform)
+    {
+        GameObject displayHit = ObjectPool.instance.GetPooledDisplayHit();
+        displayHit.transform.position = new Vector2(hitTransform.position.x, hitTransform.position.y + 2);
+        DamageDisplay damageDisplay;
+
+        displayHit.TryGetComponent<DamageDisplay>(out damageDisplay);
+        damageDisplay.text.text = num.ToString();
+
+        if (num >= basicHit && num <= critHit)
+            damageDisplay.color = Color.white;
+        else
+            damageDisplay.color = Color.yellow;
+
+        damageDisplay.gameObject.SetActive(true);
     }
 
     private void ResetCooldownUI()
     {
         //Debug.LogError("called reset ui");
         powerupUIIcon.gameObject.SetActive(false);
+    }
+
+    bool startFlashBuff;
+    IEnumerator FlashBuffName()
+    {
+        yield return new WaitForSeconds(1f);
+        powerupText.gameObject.SetActive(false);
+    }
+
+    Animator multiplierAnim;
+    public void PlayMultiplierAnim(float streak, Color color)
+    {
+        if (!multiplierAnim) multiplierDisplay.TryGetComponent<Animator>(out multiplierAnim);
+        multiplierAnim.Play("Multiplier", -1, 0f);
+        multiplierDisplay.color = color;
+
+        StringBuilder sb = new StringBuilder();
+        sb.Append(streak + "x");
+        multiplierDisplay.text = sb.ToString();
     }
 
     IEnumerator FlashEnemyRemaining()
@@ -171,8 +216,9 @@ public class UIManager : Singleton<UIManager>
     {
         if (!pointsDisplay || num == 0) return;
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.Append(points + num);
-
+        points += num;
+        stringBuilder.Append(points);
+        TweenColorText(pointsDisplay);
         pointsDisplay.text = stringBuilder.ToString();
     }
 
@@ -187,7 +233,8 @@ public class UIManager : Singleton<UIManager>
         }
 
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.Append(points - num);
+        points -= num;
+        stringBuilder.Append(points);
 
         pointsDisplay.text = stringBuilder.ToString();
     }
@@ -199,14 +246,6 @@ public class UIManager : Singleton<UIManager>
         pointsDisplay.text = points.ToString();
     }
 
-    public void SubtractPoints(float num)
-    {
-        if (!pointsDisplay) return;
-
-        points -= num;
-        pointsDisplay.text = points.ToString();
-    }
-
     //BPMManager bpmManager;
     public void ShowDefeat()
     {
@@ -215,6 +254,7 @@ public class UIManager : Singleton<UIManager>
         //if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
         BPMManager.instance.audioSource.Stop();
 
+        PauseMenu.instance.canPause = false;
         Cursor.visible = true;
         SetPoints(0);
         if (BPMManager.instance) BPMManager.instance.audioSource.Stop();
@@ -245,6 +285,7 @@ public class UIManager : Singleton<UIManager>
         }*/
 
         //if (!bpmManager) bpmManager = GameObject.FindObjectOfType<BPMManager>().GetComponent<BPMManager>();
+        PauseMenu.instance.canPause = false;
         BPMManager.instance.audioSource.Stop();
         SetCameraShakeListener(false);
         Cursor.visible = true;
@@ -257,6 +298,19 @@ public class UIManager : Singleton<UIManager>
     public void SetWaveDisplay(bool set)
     {
         waveDisplay.gameObject.SetActive(set);
+    }
+
+    private void TweenColorText(TextMeshProUGUI TMP)
+    {
+        System.Action<ITween<Color>> updateColor = (t) =>
+        {
+            TMP.color = t.CurrentValue;
+        };
+
+        Color endColor = UnityEngine.Random.ColorHSV(0.0f, 1.0f, 0.0f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f);
+
+        // completion defaults to null if not passed in
+        TMP.gameObject.Tween("PointsDisplay", TMP.color, endColor, 1.0f, TweenScaleFunctions.QuadraticEaseOut, updateColor);
     }
 
     public void ResetSingletons()
@@ -278,6 +332,7 @@ public class UIManager : Singleton<UIManager>
         if(bpmManager) Destroy(bpmManager.gameObject);*/
 
         Destroy(BPMManager.instance.gameObject);
+        Destroy(PauseMenu.instance.gameObject);
 
         if (this.gameObject != null)
             Destroy(this.gameObject);

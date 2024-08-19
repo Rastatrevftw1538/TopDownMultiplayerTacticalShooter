@@ -107,6 +107,7 @@ public class DialogueController : MonoBehaviour
 
     IEnumerator EndConversation()
     {
+        PauseMenu.instance.canPause = true;
         Cursor.visible = false;
         Time.timeScale = 1f;
         if (lastNPC.CompleteToCont) WaveManager.Instance.pauseWaves = false; //unpause waves if that was the desired result
@@ -138,6 +139,7 @@ public class DialogueController : MonoBehaviour
 
     private void EndConversation(DialogueText dialogueText)
     {
+        PauseMenu.instance.canPause = true;
         Cursor.visible = false;
         Time.timeScale = 1f;
         if (lastNPC.CompleteToCont) WaveManager.Instance.pauseWaves = false; //unpause waves if that was the desired result

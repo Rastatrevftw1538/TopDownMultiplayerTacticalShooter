@@ -67,6 +67,7 @@ public class TalkableMeleeEnemy : Sentient, ITalkable
             isConvoKeyPressed = false;
         }
 
+        if (!waveManager) return;
         if (waveToTalk != -1  && (waveToTalk-1 == waveManager.currentWave) && !StartedConvo)
         {
             if (CompleteToCont)
@@ -85,7 +86,7 @@ public class TalkableMeleeEnemy : Sentient, ITalkable
     public override void Interact()
     {
         StartedConvo = true;
-        //Debug.LogError("interacting...");
+        Debug.LogError("interacting...");
         Talk(dialogueText);
     }
 
@@ -93,6 +94,7 @@ public class TalkableMeleeEnemy : Sentient, ITalkable
     public void Talk(DialogueText dialogueText)
     {
         //start conversation
+        PauseMenu.instance.canPause = false;
         dialogueController.DisplayNextParagraph(dialogueText, this, CharacterTalkSprite);
     }
 }

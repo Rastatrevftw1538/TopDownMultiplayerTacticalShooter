@@ -10,7 +10,7 @@ public class BeatScroller : MonoBehaviour //scrolls the arrows downwards
 	// Use this for initialization
 	void Start ()
     {
-        beatTempo = FindObjectOfType<BPMManager>().BPM;
+        //beatTempo = FindObjectOfType<BPMManager>().BPM;
         //beatTempo = beatTempo / 4f;
 	}
 	

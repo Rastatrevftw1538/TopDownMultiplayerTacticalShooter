@@ -33,7 +33,7 @@ public class BPMManager : MonoBehaviour
     public float perfectErrorWindow;
 
     [Header("Hit On Beat Feedback")]
-    public BeatScroller beatScroller;
+    //public BeatScroller beatScroller;
 
     public GameObject
         normHitFeedback, 
@@ -90,8 +90,14 @@ public class BPMManager : MonoBehaviour
 
         filter = GetComponent<AudioLowPassFilter>();
 
-        BPM = UniBpmAnalyzer.AnalyzeBpm(randSong);
-        BPM = BPM / 2; //FIXING THE BPM (SOME SONGS WILL BE DIFFERENT)
+        BPM = UniBpmAnalyzer.AnalyzeBpm(randSong) / 2f;
+        if(BPM >= 100)
+        {
+            normErrorWindow -= .10f;
+            goodErrorWindow -= .05f;
+        }
+
+        //BPM = BPM / 4; //FIXING THE BPM (SOME SONGS WILL BE DIFFERENT)
 
         //GameObject.Find("NoteManager").GetComponent<BeatScroller>().hasStarted = true;
         percentToBeat = 0f;
@@ -124,64 +130,47 @@ public class BPMManager : MonoBehaviour
         startPlaying = false;
     }
 
+    PauseMenu pauseMenu;
+    [HideInInspector] public bool levelBeatPhase;
     public void Update()
     {
+        if (!BPMNoteSpawn) BPMNoteSpawn = GameObject.FindGameObjectWithTag("Note Spawn").transform;
+        if (percentToBeat >= BPS && audioSource.isPlaying && !levelBeatPhase && startPlaying)
+        {
+            Instantiate(BPMNote, BPMNoteSpawn.position, Quaternion.identity, BPMNoteSpawn.transform);
+            percentToBeat = m_MIN;
+        }
+        percentToBeat += Time.deltaTime * Time.timeScale;
+
+        if (!pauseMenu) pauseMenu = GameObject.FindObjectOfType<PauseMenu>();
+        if (!actualFeedback) actualFeedback = GameObject.FindGameObjectWithTag("BPM Holder");
+        if(!feedbackSprite) actualFeedback.transform.parent.GetChild(0).TryGetComponent<SpriteRenderer>(out feedbackSprite);
+        //if (!feedbackParticles) feedbackParticles = actualFeedback.transform.GetChild(0).gameObject;
+
         if (!startPlaying)
         {
             if (Input.anyKeyDown)
             {
-                Debug.LogError("got an input!");
+                //Debug.LogError("got an input!");
                 startPlaying = true;
-                beatScroller.hasStarted = true;
+                //beatScroller.hasStarted = true;
                 audioSource.Play();
                 audioSource.volume = initVol;
 
-                WaveManager.Instance.pauseWaves = false;
+               // WaveManager.Instance.pauseWaves = false;
             }
         }
 
-        //play a different song once the current one ends
-        if (!audioSource.isPlaying)
+        //play a different song once the current one ends, and dont do this if you're paused, and dont do this if the level had just been beat.
+        if (!audioSource.isPlaying && !pauseMenu._isPaused && !levelBeatPhase)
         {
             RestartSong();
         }
-    }
 
-    void RestartSong()
-    {
-        int rand = Random.Range(0, gameSongs.Count);
-        while (rand == lastPlayedSong) rand = Random.Range(0, gameSongs.Count);
-
-        AudioClip randSong = gameSongs[rand];
-        audioSource.clip = randSong;
-        audioSource.Play();
-
-        BPM = UniBpmAnalyzer.AnalyzeBpm(randSong);
-        BPM = BPM / 2; //FIXING THE BPM (SOME SONGS WILL BE DIFFERENT)
-
-        percentToBeat = 0f;
-        BPS = c_MINUTE / BPM;
-        m_MAX = BPS;
-
-        //BETWEENT THESE TWO VALUES, IS WHEN THE PLAYER IS GOOD TO SHOOT FOR A BONUS
-        upperRange = m_MAX - normErrorWindow;
-        lowerRange = m_MIN + normErrorWindow;
-    }
-
-    public void FixedUpdate()
-    {
         if (!startPlaying) return;
 
-        percentToBeat += Time.fixedDeltaTime * Time.timeScale;
-
-        if (percentToBeat >= BPS)
-        {
-            Instantiate(BPMNote, BPMNoteSpawn.position, Quaternion.identity, BPMNoteSpawn.transform.parent);
-            percentToBeat = m_MIN;
-        }
-        
         //if(percentToBeat <= lowerRange || percentToBeat <= upperRange)
-        if((percentToBeat <= lowerRange && percentToBeat >= m_MIN) || (percentToBeat >= upperRange && percentToBeat <= m_MAX))
+        if ((percentToBeat <= lowerRange && percentToBeat >= m_MIN) || (percentToBeat >= upperRange && percentToBeat <= m_MAX))
         {
             canClick = Color.green;
             //Debug.LogError("DO Click");
@@ -191,6 +180,28 @@ public class BPMManager : MonoBehaviour
             canClick = Color.red;
             //Debug.LogError("CANT Click");
         }
+    }
+
+    void RestartSong()
+    {
+        int rand = Random.Range(0, gameSongs.Count);
+        while (rand == lastPlayedSong) rand = Random.Range(0, gameSongs.Count);
+        lastPlayedSong = rand;
+
+        AudioClip randSong = gameSongs[rand];
+        audioSource.clip = randSong;
+        audioSource.Play();
+
+        BPM = UniBpmAnalyzer.AnalyzeBpm(randSong) / 2f;
+        //BPM = BPM / 4; //FIXING THE BPM (SOME SONGS WILL BE DIFFERENT)
+
+        percentToBeat = 0f;
+        BPS = c_MINUTE / BPM;
+        m_MAX = BPS;
+
+        //BETWEENT THESE TWO VALUES, IS WHEN THE PLAYER IS GOOD TO SHOOT FOR A BONUS
+        upperRange = m_MAX - normErrorWindow;
+        lowerRange = m_MIN + normErrorWindow;
     }
 
     public bool CanClick()
@@ -205,24 +216,39 @@ public class BPMManager : MonoBehaviour
     public int currentMultiplier;
     public int multiplierTracker;
     public int[] multiplierThresholds;
+    public int streak;
 
     public void NoteHit()
     {
+        streak++;
         actualFeedback.gameObject.SetActive(true);
         //feedbackParticles.Clear();
         //feedbackParticles.Stop();
         if (currentMultiplier - 1 < multiplierThresholds.Length)
         {
             multiplierTracker++;
+            UIManager.Instance.PlayMultiplierAnim(streak, CheckColor()); // play the streak animation
             if (multiplierTracker >= multiplierThresholds[currentMultiplier - 1])
             {
                 multiplierTracker = 0;
                 currentMultiplier++;
             };
         }
+
         // UIManager.Instance.AddPoints(points * currentMultiplier);
         //Debug.LogError("Hit on time");
         Invoke(nameof(DestroyParticles), 0.5f);
+    }
+
+    Color CheckColor()
+    {
+        switch (currentMultiplier)
+        {
+            case 1: return Color.white;
+            case 2: return Color.yellow;
+            case 3: return Color.cyan;
+            default: return Color.white;
+        }
     }
 
     void DestroyParticles()
@@ -233,9 +259,11 @@ public class BPMManager : MonoBehaviour
     ParticleSystem currentParticles;
     public void NoteMissed(GameObject source)
     {
+        streak = 0;
         multiplierTracker = 0;
         currentMultiplier = 1;
-        Debug.LogError("Not hit on time");
+        UIManager.Instance.PlayMultiplierAnim(multiplierTracker, CheckColor());
+        //Debug.LogError("Not hit on time");
         actualFeedback.gameObject.SetActive(true);
 
         feedbackSprite.sprite = missFeedbackSprite.sprite;
@@ -262,6 +290,7 @@ public class BPMManager : MonoBehaviour
     {
         NoteHit();
         UIManager.Instance.AddPoints(pointsPerGoodNote * currentMultiplier);
+
 
         feedbackSprite.sprite = goodHitFeedbackSprite.sprite;
         currentParticles = Instantiate(goodHitFeedbackParticles, feedbackSprite.transform);

@@ -56,16 +56,18 @@ public class AbilityHolderSP : MonoBehaviour
     private void Update()
     {
         //Debug.LogError("PLAYER TEAM: " + playerScript.PlayerTeam);
-
+        //Debug.LogError(e);
         //DIFFERENT ABILITY STATES
         switch (state){
             //READY
             case AbilityState.ready:
                 //IF THE DEBUG KEY IS PRESSED, ACTIVATE THE ABILITY
                 //if(Input.GetKeyDown(debugKeys[0]) || Input.GetKeyDown(debugKeys[1]))//USE THIS IF EVENTS ARE BREAKING THE GAME
-                if (e != null && debugKeys.Contains(e.keyCode)) //COMMENT THIS OUT IF EVENTS ARE BREAKING THE GAME
+                //if (e != null && debugKeys.Contains(e.keyCode)) //COMMENT THIS OUT IF EVENTS ARE BREAKING THE GAME
+                if (Input.GetAxisRaw("Dash") == 1) //showcase optimization
                 {
-                    indx = debugKeys.FindIndex(x => x == e.keyCode); //COMMENT THIS OUT IF EVENTS ARE BREAKING THE GAME
+                    //indx = debugKeys.FindIndex(x => x == e.keyCode); //COMMENT THIS OUT IF EVENTS ARE BREAKING THE GAME
+                    indx = 0; //!<<<<<<<<<<<<<<! FIX>
                     //USE THIS IF EVENTS ARE BREAKING THE GAME
                     /*if (Input.GetKeyDown(debugKeys[0]))
                     {
@@ -109,7 +111,7 @@ public class AbilityHolderSP : MonoBehaviour
                 if(cooldownTime > 0){ //WHILE THE ABILITY IS ON COOLDOWN
                     cooldownTime -= Time.deltaTime; //SUBTRACT TIME FROM THE COOLDOWN TIMER UNTIL THE ABILITY IS READY AGAIN
                     abilityCooldownUI.fillAmount -= abilities[indx].cooldownTime * Time.deltaTime; //SET THE UI TO MATCH
-                    UIManager.Instance.StartCooldownUI(UIManager.CooldownType.Ability, abilities[indx].abilityIcon, abilities[indx].cooldownTime);
+                    UIManager.Instance.StartCooldownUI(UIManager.CooldownType.Ability, abilities[indx].abilityIcon, abilities[indx].cooldownTime, abilities[indx].name);
                     //Debug.LogWarning("<color=orange>Ability: " + abilities[indx].abilityName + " is on cooldown. </color>");
                 }
                 else{
