@@ -10,11 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5b977f2f6baa054bb9114a13ad1993b, type: 3}
-  m_Name: Test
+  m_Name: ArmsLine
   m_EditorClassIdentifier: 
-  speakerName: Rondo
+  speakerName: FormerlyLongArmLarold
   speakerType: NPC
   paragraphs:
-  - Hello World!
-  - Make sure you use WASD to move!
-  - And shoot on beat!
+  - You know, my arms used to hang down below my knees... but the unseen hand changed
+    me
