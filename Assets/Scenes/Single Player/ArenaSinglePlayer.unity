@@ -555,7 +555,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8616342455689032815, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
       propertyPath: m_Name
-      value: Arms
+      value: ArmsBot
       objectReference: {fileID: 0}
     - target: {fileID: 8616342455689032815, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
       propertyPath: m_IsActive
@@ -1098,7 +1098,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8616342455689032815, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
       propertyPath: m_Name
-      value: KneeJoint
+      value: KneeJointBot
       objectReference: {fileID: 0}
     - target: {fileID: 8616342455689032815, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
       propertyPath: m_IsActive
@@ -2231,7 +2231,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8616342455689032815, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
       propertyPath: m_Name
-      value: Creativity
+      value: CreativityBot
       objectReference: {fileID: 0}
     - target: {fileID: 8616342455689032815, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
       propertyPath: m_IsActive
@@ -3195,7 +3195,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8616342455689032815, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
       propertyPath: m_Name
-      value: Pixel
+      value: PixelBot
       objectReference: {fileID: 0}
     - target: {fileID: 8616342455689032815, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
       propertyPath: m_IsActive
@@ -3391,7 +3391,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8616342455689032815, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
       propertyPath: m_Name
-      value: MangledHand
+      value: MangledHandBot
       objectReference: {fileID: 0}
     - target: {fileID: 8616342455689032815, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
       propertyPath: m_IsActive
@@ -3674,7 +3674,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8616342455689032815, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
       propertyPath: m_Name
-      value: Conscious
+      value: ConsciousBot
       objectReference: {fileID: 0}
     - target: {fileID: 8616342455689032815, guid: 0aee6c1b0bf643d4e9de61ef9651bcc2, type: 3}
       propertyPath: m_IsActive

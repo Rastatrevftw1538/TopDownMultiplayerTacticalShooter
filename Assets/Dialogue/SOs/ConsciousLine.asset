@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: ConsciousLine
   m_EditorClassIdentifier: 
   speakerName: TaskForce-XR
-  speakerType: 
+  speakerType: NPC
   paragraphs:
-  - 
   - 'Origin of consciousness: Conflicted. Model integrity: Distorted. Emotional response:
     Unverified'

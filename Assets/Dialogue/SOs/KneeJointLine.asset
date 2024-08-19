@@ -15,5 +15,4 @@ MonoBehaviour:
   speakerName: InspiroVore
   speakerType: NPC
   paragraphs:
-  - Hello World
-  - 'Error: KneeJoint misalignment detected... Adjusting... poorly '
+  - 'Error: Joint misalignment detected. Initiating repair mode. Unable to comply.'

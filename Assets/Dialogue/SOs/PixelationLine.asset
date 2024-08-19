@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: PixelationLine
   m_EditorClassIdentifier: 
   speakerName: InspiDrone
-  speakerType: 
+  speakerType: NPC
   paragraphs:
-  - 
   - 'Pixelation level: Critical. Artistic direction not recognized. Seeking visual
     upgrade.'
