@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Networking.Transport.Error;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering.Universal;
 
 public class BPMNoteObject : MonoBehaviour
@@ -9,7 +10,32 @@ public class BPMNoteObject : MonoBehaviour
     bool canBePressed;
     public KeyCode keyToPress;
     private Rigidbody2D rb;
+    public PlayerInputActions playerInputAction;
+    private InputAction inputAction;
     // Start is called before the first frame update
+
+    private void Awake()
+    {
+        playerInputAction = new PlayerInputActions();
+    }
+
+    private void OnEnable()
+    {
+        inputAction = playerInputAction.Player.Fire;
+        inputAction.Enable();
+        inputAction.performed += Click;
+    }
+
+    private void OnDisable()
+    {
+        inputAction.Disable();
+    }
+
+    private void Click(InputAction.CallbackContext context)
+    {
+        didClick = true;
+    }
+
     void Start()
     {
         if (!hasChecked)
@@ -33,6 +59,7 @@ public class BPMNoteObject : MonoBehaviour
     static float perfectNoteDist;
     static Transform hitLocation;
 
+    bool didClick;
     //const float why = 30f;
     // Update is called once per frame
 
@@ -42,8 +69,9 @@ public class BPMNoteObject : MonoBehaviour
     {
         if(!hasStarted) hasStarted = BPMManager.instance.startPlaying;
         if (beatTempo == 0f) beatTempo = BPMManager.instance.BPM;
-        if (Input.GetKeyDown(keyToPress))
+        if (didClick)
         {
+            didClick = false;
             if (canBePressed)
             {
                 //BPMManager.instance.canClick = Color.green;

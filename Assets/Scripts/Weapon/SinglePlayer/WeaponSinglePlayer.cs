@@ -14,6 +14,8 @@ public class WeaponSinglePlayer : MonoBehaviour
     public WeaponDataSP weaponSpecs;
     public Transform firePoint;
     private Vector3 endPoint;
+    public PlayerInputActions playerInputAction;
+    private InputAction fire;
 
     private float coneSpreadFactor = 0.1f;
     public SpriteRenderer weaponLooks;
@@ -67,6 +69,7 @@ public class WeaponSinglePlayer : MonoBehaviour
     private void Awake() {
         player = this.transform.GetComponent<PlayerScriptSinglePlayer>();
         impulseSource = this.GetComponentInParent<CinemachineImpulseSource>();
+        playerInputAction = new PlayerInputActions();
 
         if (weaponSpecs != null){
             damage = weaponSpecs.damagePerBullet;
@@ -116,6 +119,36 @@ public class WeaponSinglePlayer : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        fire = playerInputAction.Player.Fire;
+        fire.Enable();
+        fire.performed += Fire;
+    }
+
+    private void OnDisable()
+    {
+        fire.performed -= Fire;
+        fire.Disable();
+    }
+    
+    bool sentEvent;
+    private void Fire(InputAction.CallbackContext context)
+    {
+        if (Time.time >= nextFireTime && !outOfAmmo)
+        {
+            nextFireTime = Time.time + fireRate;
+            Vector2 direction = firePoint.transform.up;
+            RpcFire(direction);
+        }
+
+        if (!sentEvent)
+        {
+            if(BPMManager.instance != null) BPMManager.instance.hasMoved = true;
+            sentEvent = true;
+        }
+    }
+
     public float getDamage(){
         return this.damage;
     }
@@ -149,10 +182,10 @@ public class WeaponSinglePlayer : MonoBehaviour
         if (player.PlayerDevice == PlayerScriptSinglePlayer.SetDeviceType.PC)
         {
             //Debug.LogError(Input.GetAxisRaw("Shoot Gun"));
-            if (Input.GetAxisRaw("Shoot Gun") == 1)
-                shootingGun = true;
-            else
-                shootingGun = false;
+            //if (Input.GetAxisRaw("Shoot Gun") == 1)
+            //    shootingGun = true;
+            //else
+            //    shootingGun = false;
         }
         //else(player.PlayerDevice == PlayerScriptSinglePlayer.SetDeviceType.Mobile)
         else
@@ -160,12 +193,12 @@ public class WeaponSinglePlayer : MonoBehaviour
             shootingGun = shootingJoystick.isShooting;
         }
 
-        if (shootingGun && Time.time >= nextFireTime && !outOfAmmo)
+        /*if (shootingGun && Time.time >= nextFireTime && !outOfAmmo)
         {
             nextFireTime = Time.time + fireRate;
             Vector2 direction = firePoint.transform.up;
             RpcFire(direction);
-        }
+        }*/
 
         if (!shootingGun)
         {

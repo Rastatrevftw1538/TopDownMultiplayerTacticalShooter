@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1b330291c0079d4bae342792277847b, type: 3}
   m_Name: New Enemy Spawn Point
   m_EditorClassIdentifier: 
-  enemiesToSpawn: []
+  enemiesToSpawn:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}

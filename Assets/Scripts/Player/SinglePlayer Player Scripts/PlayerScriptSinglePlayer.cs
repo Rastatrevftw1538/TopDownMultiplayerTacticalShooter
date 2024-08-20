@@ -5,6 +5,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.InputSystem;
+using UnityEngine.Assertions.Must;
 
 [RequireComponent(typeof(PlayerHealthSinglePlayer))]
 public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEffectable
@@ -54,6 +56,9 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
     public Rigidbody2D rb;
     //public GameObject pointer;
     //public GameObject endOfBarrel;
+    public PlayerInputActions playerInputAction;
+    private InputAction move;
+    private InputAction look;
     private GameObject playerBodyArms;
     private GameObject playerBodyBody;
 
@@ -82,6 +87,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
 
     private void Awake()
     {
+        playerInputAction = new PlayerInputActions();
         //STATUS EFFECT SETTERS
         EvtSystem.EventDispatcher.AddListener<PlayerDied>(ClearStatusEffects);
         EvtSystem.EventDispatcher.AddListener<ApplyStatusEffects>(SetStatusEffectData);
@@ -101,6 +107,57 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
         playerBodyHeadSprite = playerBodyArms.transform.GetChild(0).Find("Head").gameObject.GetComponent<SpriteRenderer>();
 
         audioSource = GetComponent<AudioSource>();
+    }
+
+    UnityEngine.Vector2 rightStick;
+    UnityEngine.Vector2 warpPos;
+    UnityEngine.Vector2 overflow;
+    public UnityEngine.Vector2 bias = new UnityEngine.Vector2(0f, -1f);
+    public UnityEngine.Vector2 sensitivity = new UnityEngine.Vector2(1500f, 1500f);
+    void OnEnable()
+    {
+        move = playerInputAction.Player.Move;
+        move.Enable();
+
+        look = playerInputAction.Player.MousePosition;
+        look.performed += LookAround;
+        look.Enable();
+    }
+
+    void OnDisable()
+    {
+        move.Disable();
+        look.Disable();
+    }
+
+    void LookAround(InputAction.CallbackContext context)
+    {
+        /*if (context.control.device is Mouse)
+            Debug.LogError("looking around using mouse");
+        else
+            Debug.LogError("looking around using" + context.control.device);*/
+        /*UnityEngine.Vector3 mousePosition;
+        if (context.control.device is Mouse) mousePosition = look.ReadValue<UnityEngine.Vector2>();
+        else mousePosition = look.ReadValue<UnityEngine.Vector2>();*/
+
+        //Debug.LogError("using a mouse");
+        UnityEngine.Vector2 mousePosition = look.ReadValue<UnityEngine.Vector2>();
+        UnityEngine.Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+        UnityEngine.Vector3 aimDirection = mouseWorldPosition - transform.position;
+        rotation = UnityEngine.Quaternion.LookRotation(UnityEngine.Vector3.forward, aimDirection);
+ 
+        if(!(context.control.device is Mouse))
+        {
+            //Debug.LogError("using a " + context.control.device);
+            rightStick = Gamepad.current.rightStick.ReadValue();
+            //if (rightStick.magnitude < 0.1f) return;
+            //mousePosition.z = (Camera.main.transform.position.z);
+            UnityEngine.Vector2 mousePos = new UnityEngine.Vector2(Input.mousePosition.x, Input.mousePosition.y);
+            warpPos = mousePos + bias + overflow + sensitivity * Time.deltaTime * rightStick;
+            warpPos = new UnityEngine.Vector2(Mathf.Clamp(warpPos.x, 0, Screen.width), Mathf.Clamp(warpPos.y, 0, Screen.height));
+            overflow = new UnityEngine.Vector2(warpPos.x % 1, warpPos.y % 1);
+            Mouse.current.WarpCursorPosition(warpPos);
+        }
     }
 
     private void Start() {
@@ -165,6 +222,7 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
     float fxCooldown = 0.75f;
     float fxTimer;
     bool setDevice = false;
+    bool sentEvent = false;
     public void FixedUpdate()
     {
         if (!setDevice)
@@ -202,12 +260,13 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
                 isRunning = false;
             }
 
-            movement = new UnityEngine.Vector2
+            /*movement = new UnityEngine.Vector2
             {
                 x = Input.GetAxisRaw("Horizontal"),
                 y = Input.GetAxisRaw("Vertical")
-            };
-            movement = new UnityEngine.Vector2(movement.x, movement.y).normalized * (isRunning ? runSpeed : walkSpeed) * 0.25f;
+            };*/
+            movement = move.ReadValue<UnityEngine.Vector2>();
+            movement = 0.25f * (isRunning ? runSpeed : walkSpeed) * new UnityEngine.Vector2(movement.x, movement.y).normalized;
 
             if (movement.x > 0)
             {
@@ -222,6 +281,11 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
             {
                 if (movement.magnitude > 0)
                 {
+                    if (!sentEvent)
+                    {
+                        sentEvent = true;
+                        if (BPMManager.instance != null) BPMManager.instance.hasMoved = true;
+                    }
                     if (fxTimer >= fxCooldown)
                     {
                         //CallSoundFXTerrain();
@@ -241,12 +305,14 @@ public class PlayerScriptSinglePlayer : Singleton<PlayerScriptSinglePlayer>, IEf
                     Anim.SetFloat("Moving", 0);
                 }
 
-                UnityEngine.Vector3 mousePosition = Input.mousePosition;
-                mousePosition.z = (Camera.main.transform.position.z);
+                //UnityEngine.Vector3 mousePosition = Input.mousePosition;
+                /*mousePosition.z = (Camera.main.transform.position.z);
                 UnityEngine.Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
                 UnityEngine.Vector3 aimDirection = mouseWorldPosition - transform.position;
-                rotation = UnityEngine.Quaternion.LookRotation(UnityEngine.Vector3.forward, aimDirection);
+                rotation = UnityEngine.Quaternion.LookRotation(UnityEngine.Vector3.forward, aimDirection);*/
             }
+
+
             //print(rotation);
 
             /*if(0f >= playerBodyArms.transform.localEulerAngles.z || playerBodyArms.transform.localEulerAngles.z <= 180f){

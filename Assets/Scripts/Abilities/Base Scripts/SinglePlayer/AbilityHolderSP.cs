@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class AbilityHolderSP : MonoBehaviour
@@ -40,6 +41,7 @@ public class AbilityHolderSP : MonoBehaviour
 
     //WILL BE REPLACED WITH IF THE BUTTON ON THE UI IS CLICKED OR NOT
     public List<KeyCode> debugKeys = new List<KeyCode>();
+    //public InputAction inputAction;
 
     private void Start()
     {
@@ -66,6 +68,7 @@ public class AbilityHolderSP : MonoBehaviour
                 //if (e != null && debugKeys.Contains(e.keyCode)) //COMMENT THIS OUT IF EVENTS ARE BREAKING THE GAME
                 if (Input.GetAxisRaw("Dash") == 1) //showcase optimization
                 {
+                    
                     //indx = debugKeys.FindIndex(x => x == e.keyCode); //COMMENT THIS OUT IF EVENTS ARE BREAKING THE GAME
                     indx = 0; //!<<<<<<<<<<<<<<! FIX>
                     //USE THIS IF EVENTS ARE BREAKING THE GAME

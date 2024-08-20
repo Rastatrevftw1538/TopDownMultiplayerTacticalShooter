@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Sanford.Multimedia.Midi;
+using UnityEngine.InputSystem;
 
 public class BPMManager : MonoBehaviour
 {
@@ -131,6 +132,7 @@ public class BPMManager : MonoBehaviour
     }
 
     PauseMenu pauseMenu;
+    [HideInInspector] public bool hasMoved = false;
     [HideInInspector] public bool levelBeatPhase;
     public void Update()
     {
@@ -147,9 +149,10 @@ public class BPMManager : MonoBehaviour
         if(!feedbackSprite) actualFeedback.transform.parent.GetChild(0).TryGetComponent<SpriteRenderer>(out feedbackSprite);
         //if (!feedbackParticles) feedbackParticles = actualFeedback.transform.GetChild(0).gameObject;
 
+        //wait until the player move or does something to start the music
         if (!startPlaying)
         {
-            if (Input.anyKeyDown)
+            if (Input.anyKeyDown || hasMoved)
             {
                 //Debug.LogError("got an input!");
                 startPlaying = true;
@@ -157,7 +160,7 @@ public class BPMManager : MonoBehaviour
                 audioSource.Play();
                 audioSource.volume = initVol;
 
-               // WaveManager.Instance.pauseWaves = false;
+                // WaveManager.Instance.pauseWaves = false;
             }
         }
 
