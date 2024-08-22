@@ -325,8 +325,8 @@ MonoBehaviour:
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashTime: 0.25
   spriteRenderer: {fileID: 1569154942041402958}
-  defeatParticles: {fileID: 195900, guid: ec61825cb06be72419bb09eee03af08c, type: 3}
-  onBeatDefeatParticles: {fileID: 144926, guid: fcb242a204cb73e46bb764583d0bf1fa, type: 3}
+  defeatParticles: {fileID: 4398157796693943865, guid: 029e252b1cd242847b0d8ecc55e639dc, type: 3}
+  onBeatDefeatParticles: {fileID: 1923262073259047561, guid: 35702368fcb8a6d4a8ad75ee530584ed, type: 3}
   hitDisplays: []
 --- !u!1 &3904490942584820499
 GameObject:

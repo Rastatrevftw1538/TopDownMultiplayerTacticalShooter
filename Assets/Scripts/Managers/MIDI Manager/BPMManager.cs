@@ -219,25 +219,26 @@ public class BPMManager : MonoBehaviour
     public int currentMultiplier;
     public int multiplierTracker;
     public int[] multiplierThresholds;
-    public int streak;
+    public int streak = 0;
 
     public void NoteHit()
     {
         streak++;
+        Debug.Log("current streak: " + streak);
         actualFeedback.gameObject.SetActive(true);
+
         //feedbackParticles.Clear();
         //feedbackParticles.Stop();
         if (currentMultiplier - 1 < multiplierThresholds.Length)
         {
             multiplierTracker++;
-            UIManager.Instance.PlayMultiplierAnim(streak, CheckColor()); // play the streak animation
             if (multiplierTracker >= multiplierThresholds[currentMultiplier - 1])
             {
                 multiplierTracker = 0;
                 currentMultiplier++;
             };
         }
-
+        UIManager.Instance.PlayMultiplierAnim(streak, CheckColor()); // play the streak animation
         // UIManager.Instance.AddPoints(points * currentMultiplier);
         //Debug.LogError("Hit on time");
         Invoke(nameof(DestroyParticles), 0.5f);
@@ -248,8 +249,8 @@ public class BPMManager : MonoBehaviour
         switch (currentMultiplier)
         {
             case 1: return Color.white;
-            case 2: return Color.yellow;
-            case 3: return Color.cyan;
+            case 2: return Color.cyan;
+            case >= 3: return Color.yellow;
             default: return Color.white;
         }
     }
@@ -273,7 +274,7 @@ public class BPMManager : MonoBehaviour
         currentParticles = Instantiate(missFeedbackParticles, feedbackSprite.transform);
         //feedbackParticles = missFeedbackParticles;
         //feedbackParticles.Play();
-        Destroy(source, 0.5f);
+        Destroy(source, 0.1f);
 
         if (pointsDeductOnMiss == 0) return;
         UIManager.Instance.DeductPoints(pointsDeductOnMiss);

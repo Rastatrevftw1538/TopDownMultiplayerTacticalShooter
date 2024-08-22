@@ -191,8 +191,8 @@ MonoBehaviour:
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashTime: 0.25
   healthBar: {fileID: 0}
-  defeatParticles: {fileID: 195900, guid: ec61825cb06be72419bb09eee03af08c, type: 3}
-  onBeatDefeatParticles: {fileID: 149926, guid: ad487a21ffb7f334b914ec85242b5c7e, type: 3}
+  defeatParticles: {fileID: 8426743826634955987, guid: 09c90249fd3d2fa48b5bed306316785d, type: 3}
+  onBeatDefeatParticles: {fileID: 9220515769154310303, guid: 494bd438585415c4eb132143404449b2, type: 3}
   hitDisplays: []
 --- !u!114 &6253976956638043257
 MonoBehaviour:

@@ -64,6 +64,7 @@ MonoBehaviour:
   pointsPerGoodNote: 300
   pointsPerPerfectNote: 1000
   pointsDeductOnMiss: 0
+  missNoteWindow: 0.35
   normErrorWindow: 0.25
   goodErrorWindow: 0.15
   perfectErrorWindow: 0.1
@@ -72,10 +73,12 @@ MonoBehaviour:
   perfectHitFeedback: {fileID: 4693532575558850268, guid: 171b8a8d428884845a533c8d61e31489, type: 3}
   missHitFeedback: {fileID: 8695352219130985062, guid: 3d76a64a95114584fb469998dd509c4e, type: 3}
   actualFeedback: {fileID: 0}
+  hasMoved: 0
   levelBeatPhase: 0
   currentMultiplier: 1
   multiplierTracker: 0
   multiplierThresholds: 02000000050000000a000000
+  streak: 0
 --- !u!82 &3513524578336109788
 AudioSource:
   m_ObjectHideFlags: 0
@@ -88,7 +91,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.45
+  m_Volume: 0.8
   m_Pitch: 1
   Loop: 0
   Mute: 0

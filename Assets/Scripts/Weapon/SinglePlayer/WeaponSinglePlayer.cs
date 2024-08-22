@@ -397,7 +397,7 @@ public class WeaponSinglePlayer : MonoBehaviour
         else
         {
             tempParticle = Instantiate(particleEffect, collisionPoint, Quaternion.identity);
-            if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(weaponSpecs.shootSound, transform, 0.1f);
+            if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(weaponSpecs.shootSound, transform, 0.15f);
         }
 
         Destroy(tempParticle, 0.5f);
