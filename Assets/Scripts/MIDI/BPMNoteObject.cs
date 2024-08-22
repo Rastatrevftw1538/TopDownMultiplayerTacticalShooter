@@ -12,6 +12,7 @@ public class BPMNoteObject : MonoBehaviour
     private Rigidbody2D rb;
     public PlayerInputActions playerInputAction;
     private InputAction inputAction;
+    static PauseMenu pauseCheck;
     // Start is called before the first frame update
 
     private void Awake()
@@ -47,6 +48,8 @@ public class BPMNoteObject : MonoBehaviour
             beatTempo = BPMManager.instance.BPM;
             hitLocation = GameObject.FindGameObjectWithTag("Activator").transform;
             hasChecked = true;
+
+            pauseCheck = PauseMenu.instance;
         }
 
         TryGetComponent<Rigidbody2D>(out rb);
@@ -69,7 +72,7 @@ public class BPMNoteObject : MonoBehaviour
     {
         if(!hasStarted) hasStarted = BPMManager.instance.startPlaying;
         if (beatTempo == 0f) beatTempo = BPMManager.instance.BPM;
-        if (didClick)
+        if (didClick && !pauseCheck._isPaused)
         {
             didClick = false;
             if (canBePressed)
