@@ -1765,6 +1765,10 @@ PrefabInstance:
       propertyPath: m_Parameters.generateLightingData
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6831654324770439277, guid: 304995720cd4925488467bc47552fe0b, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6987677917951702654, guid: 304995720cd4925488467bc47552fe0b, type: 3}
       propertyPath: MaxDistance
       value: 41.95791
