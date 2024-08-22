@@ -16,5 +16,5 @@ MonoBehaviour:
   speakerType: NPC
   paragraphs:
   - Hello World!
-  - Make sure you use WASD to move!
-  - And shoot on beat!
+  - Make sure you use WASD to move, and LShift to activate your Dash ability!
+  - And remember, shoot on beat!!!
