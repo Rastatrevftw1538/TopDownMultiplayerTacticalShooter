@@ -7,7 +7,7 @@ public abstract class Sentient : MonoBehaviour, IInteractable
 {
     //vars for finding the distance between the NPC and the player
     [SerializeField] private SpriteRenderer _interactSprite;
-    [SerializeField] private Transform _playerTransform;
+     private Transform _playerTransform;
     private const float INTERACT_DISTANCE = 5.0f;
 
     //vars for finding what wave the games on
@@ -17,8 +17,8 @@ public abstract class Sentient : MonoBehaviour, IInteractable
     private void Start()
     {
 
-        //finding the player
-        //_playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        
+     
 
         //finding what wave the games on
         waveCheck = FindObjectOfType<WaveManager>();
@@ -27,7 +27,12 @@ public abstract class Sentient : MonoBehaviour, IInteractable
 
     private void Update()
     {
-        if(Keyboard.current.lKey.wasPressedThisFrame && IsWithinInteractDistance())
+        if (!_playerTransform)
+        {
+            //finding the player
+            _playerTransform = GameObject.Find("Player - SinglePlayer").transform;
+        }
+        if (Keyboard.current.lKey.wasPressedThisFrame && IsWithinInteractDistance())
         {
             Interact();
         }
@@ -54,7 +59,7 @@ public abstract class Sentient : MonoBehaviour, IInteractable
 
     private bool IsWithinInteractDistance()
     {
-        if (Vector2.Distance(_playerTransform.position, transform.position) < INTERACT_DISTANCE)
+        if (Vector2.Distance( _playerTransform.position, transform.position) < INTERACT_DISTANCE)
         {
             return true;
         }
