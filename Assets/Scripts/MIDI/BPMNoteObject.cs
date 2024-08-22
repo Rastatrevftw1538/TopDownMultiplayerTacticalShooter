@@ -70,6 +70,7 @@ public class BPMNoteObject : MonoBehaviour
 
     void Update()
     {
+        if (!pauseCheck) pauseCheck = PauseMenu.instance;
         if(!hasStarted) hasStarted = BPMManager.instance.startPlaying;
         if (beatTempo == 0f) beatTempo = BPMManager.instance.BPM;
         if (didClick && !pauseCheck._isPaused)
