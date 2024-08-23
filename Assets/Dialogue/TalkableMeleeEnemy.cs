@@ -20,6 +20,7 @@ public class TalkableMeleeEnemy : Sentient, ITalkable
         if(WaveManager.Instance) waveManager = WaveManager.Instance;
         TryCircle();
         if(!dialogueController) dialogueController = FindObjectOfType<DialogueController>();
+        base._interactSprite.enabled = false;
     }
 
     void TryCircle()
@@ -43,6 +44,22 @@ public class TalkableMeleeEnemy : Sentient, ITalkable
             {
                 Interact();
             }
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            base._interactSprite.enabled = true;
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            base._interactSprite.enabled = false;
         }
     }
 

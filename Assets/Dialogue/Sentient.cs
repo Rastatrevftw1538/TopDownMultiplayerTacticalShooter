@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public abstract class Sentient : MonoBehaviour, IInteractable
 {
     //vars for finding the distance between the NPC and the player
-    [SerializeField] private SpriteRenderer _interactSprite;
+    public SpriteRenderer _interactSprite;
      private Transform _playerTransform;
     private const float INTERACT_DISTANCE = 5.0f;
 
