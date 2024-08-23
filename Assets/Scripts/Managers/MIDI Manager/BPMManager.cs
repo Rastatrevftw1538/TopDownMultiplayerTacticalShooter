@@ -91,13 +91,11 @@ public class BPMManager : MonoBehaviour
 
         filter = GetComponent<AudioLowPassFilter>();
 
-        BPM = UniBpmAnalyzer.AnalyzeBpm(randSong) / 2f;
+        BPM = UniBpmAnalyzer.AnalyzeBpm(randSong) / 2;
         if(BPM >= 100)
         {
-            normErrorWindow -= .10f;
-            goodErrorWindow -= .05f;
+            BPM = BPM / 2;
         }
-
         //BPM = BPM / 4; //FIXING THE BPM (SOME SONGS WILL BE DIFFERENT)
 
         //GameObject.Find("NoteManager").GetComponent<BeatScroller>().hasStarted = true;
@@ -246,6 +244,9 @@ public class BPMManager : MonoBehaviour
 
     Color CheckColor()
     {
+        if (streak >= 75) return Color.red;
+        if (streak >= 100) return Color.green;
+
         switch (currentMultiplier)
         {
             case 1: return Color.white;
