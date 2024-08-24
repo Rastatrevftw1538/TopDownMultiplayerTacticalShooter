@@ -245,8 +245,8 @@ public class BPMManager : MonoBehaviour
 
     Color CheckColor()
     {
-        if (streak >= 75) return Color.red;
         if (streak >= 100) return Color.green;
+        if (streak >= 75) return Color.red;
 
         switch (currentMultiplier)
         {
