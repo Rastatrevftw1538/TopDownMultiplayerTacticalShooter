@@ -132,10 +132,11 @@ public class BPMManager : MonoBehaviour
     PauseMenu pauseMenu;
     [HideInInspector] public bool hasMoved = false;
     [HideInInspector] public bool levelBeatPhase;
+    [HideInInspector] public bool inDialogue;
     public void Update()
     {
         if (!BPMNoteSpawn) BPMNoteSpawn = GameObject.FindGameObjectWithTag("Note Spawn").transform;
-        if (percentToBeat >= BPS && audioSource.isPlaying && !levelBeatPhase && startPlaying)
+        if (percentToBeat >= BPS && audioSource.isPlaying && !levelBeatPhase && startPlaying &&!inDialogue)
         {
             Instantiate(BPMNote, BPMNoteSpawn.position, Quaternion.identity, BPMNoteSpawn.transform);
             percentToBeat = m_MIN;
@@ -163,7 +164,7 @@ public class BPMManager : MonoBehaviour
         }
 
         //play a different song once the current one ends, and dont do this if you're paused, and dont do this if the level had just been beat.
-        if (!audioSource.isPlaying && !pauseMenu._isPaused && !levelBeatPhase)
+        if (!audioSource.isPlaying && !pauseMenu._isPaused && !levelBeatPhase && !inDialogue)
         {
             RestartSong();
         }

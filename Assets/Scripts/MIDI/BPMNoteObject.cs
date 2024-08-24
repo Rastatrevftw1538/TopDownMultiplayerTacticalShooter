@@ -57,6 +57,7 @@ public class BPMNoteObject : MonoBehaviour
     static float beatTempo = 0f;
     static bool hasStarted;
     static bool hasChecked;
+    static bool inDialogue;
     static float normNoteDist;
     static float goodNoteDist;
     static float perfectNoteDist;
@@ -73,7 +74,8 @@ public class BPMNoteObject : MonoBehaviour
         if (!pauseCheck) pauseCheck = PauseMenu.instance;
         if(!hasStarted) hasStarted = BPMManager.instance.startPlaying;
         if (beatTempo == 0f) beatTempo = BPMManager.instance.BPM;
-        if (didClick && !pauseCheck._isPaused)
+        inDialogue = BPMManager.instance.inDialogue;
+        if (didClick && !pauseCheck._isPaused &&!inDialogue)
         {
             didClick = false;
             if (canBePressed)

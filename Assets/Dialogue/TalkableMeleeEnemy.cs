@@ -89,7 +89,7 @@ public class TalkableMeleeEnemy : Sentient, ITalkable
         {
             if (CompleteToCont)
             {
-                Debug.LogError("must talk to NPC to continue");
+                //Debug.LogError("must talk to NPC to continue");
                 waveManager.pauseWaves = true;
             }
         }
@@ -103,7 +103,7 @@ public class TalkableMeleeEnemy : Sentient, ITalkable
     public override void Interact()
     {
         StartedConvo = true;
-        Debug.LogError("interacting...");
+        //Debug.LogError("interacting...");
         Talk(dialogueText);
     }
 
@@ -111,6 +111,8 @@ public class TalkableMeleeEnemy : Sentient, ITalkable
     public void Talk(DialogueText dialogueText)
     {
         //start conversation
+        //PAUSE MUSIC
+        if (BPMManager.instance != null) BPMManager.instance.audioSource.Pause();
         PauseMenu.instance.canPause = false;
         dialogueController.DisplayNextParagraph(dialogueText, this, CharacterTalkSprite);
     }

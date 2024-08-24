@@ -80,6 +80,7 @@ public class DialogueController : MonoBehaviour
 
     private void StartConversation(DialogueText dialogueText)
     {
+        if(BPMManager.instance != null) BPMManager.instance.inDialogue = true;
         Cursor.visible = true;
         Time.timeScale = 0f;
         //activate a DialogueText game object
@@ -108,6 +109,8 @@ public class DialogueController : MonoBehaviour
     IEnumerator EndConversation()
     {
         PauseMenu.instance.canPause = true;
+        if (BPMManager.instance != null) BPMManager.instance.inDialogue = false;
+        if (BPMManager.instance != null) BPMManager.instance.audioSource.UnPause();
         Cursor.visible = false;
         Time.timeScale = 1f;
         if (lastNPC.CompleteToCont) WaveManager.Instance.pauseWaves = false; //unpause waves if that was the desired result
@@ -140,6 +143,8 @@ public class DialogueController : MonoBehaviour
     private void EndConversation(DialogueText dialogueText)
     {
         PauseMenu.instance.canPause = true;
+        if (BPMManager.instance != null) BPMManager.instance.inDialogue = false;
+        if (BPMManager.instance != null) BPMManager.instance.audioSource.UnPause();
         Cursor.visible = false;
         Time.timeScale = 1f;
         if (lastNPC.CompleteToCont) WaveManager.Instance.pauseWaves = false; //unpause waves if that was the desired result
