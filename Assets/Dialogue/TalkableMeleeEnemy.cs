@@ -20,6 +20,7 @@ public class TalkableMeleeEnemy : Sentient, ITalkable
         if(WaveManager.Instance) waveManager = WaveManager.Instance;
         TryCircle();
         if(!dialogueController) dialogueController = FindObjectOfType<DialogueController>();
+        base._interactSprite.enabled = false;
     }
 
     void TryCircle()
@@ -46,6 +47,22 @@ public class TalkableMeleeEnemy : Sentient, ITalkable
         }
     }
 
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            base._interactSprite.enabled = true;
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            base._interactSprite.enabled = false;
+        }
+    }
+
     Vector2 press;
     private void Update()
     {
@@ -67,11 +84,12 @@ public class TalkableMeleeEnemy : Sentient, ITalkable
             isConvoKeyPressed = false;
         }
 
+        if (!waveManager) return;
         if (waveToTalk != -1  && (waveToTalk-1 == waveManager.currentWave) && !StartedConvo)
         {
             if (CompleteToCont)
             {
-                Debug.LogError("must talk to NPC to continue");
+                //Debug.LogError("must talk to NPC to continue");
                 waveManager.pauseWaves = true;
             }
         }
@@ -93,6 +111,9 @@ public class TalkableMeleeEnemy : Sentient, ITalkable
     public void Talk(DialogueText dialogueText)
     {
         //start conversation
+        //PAUSE MUSIC
+        if (BPMManager.instance != null) BPMManager.instance.audioSource.Pause();
+        PauseMenu.instance.canPause = false;
         dialogueController.DisplayNextParagraph(dialogueText, this, CharacterTalkSprite);
     }
 }

@@ -49,7 +49,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   addHealth: 50
-  points: 0
+  points: 100
   pickupSound: {fileID: 8300000, guid: bfb7936f47489894db5970f08d94617d, type: 3}
   floatSpeed: 2
   floatHeight: 0.5

@@ -17,13 +17,18 @@ public class CrosshairCursor : MonoBehaviour
     }
 
     // Update is called once per frame
+    Camera cam;
     void Update()
     {
+        if (!cam)
+        {
+            cam = Camera.main;
+        }
         //terrible i know
         //if(!playerCamera) playerCamera = GameObject.Find("ClientCamera").GetComponent<Camera>();
 
-        Vector3 mouseCursorPos = Camera.main.ScreenToWorldPoint(Input.mousePosition );
-        mouseCursorPos.z = Camera.main.transform.position.z + Camera.main.nearClipPlane;
+        Vector3 mouseCursorPos = cam.ScreenToWorldPoint(Input.mousePosition );
+        mouseCursorPos.z = cam.transform.position.z + cam.nearClipPlane;
         //transform.position = new Vector3(mouseCursorPos.x, mouseCursorPos.y, 0);
         transform.position = mouseCursorPos;
     }

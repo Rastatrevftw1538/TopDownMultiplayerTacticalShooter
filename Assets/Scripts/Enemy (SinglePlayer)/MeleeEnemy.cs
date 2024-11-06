@@ -29,6 +29,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     [SerializeField] private float _damageTaken = 0;
     [SerializeField] private bool isAlive = true;
     public bool canHit = true;
+    [SerializeField] GameObject HitDisplay;
 
     [Header("Hit Display")]
     //public GameObject hitDisplay;
@@ -55,7 +56,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     private void Start()
     {
         currentHealth = maxHealth;
-        healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
+        //healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
 
         //agent = GetComponent<NavMashAgent>();
         anim = GetComponent<Animator>();
@@ -64,6 +65,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
         initColor = sprite.color;
         agent.updateRotation = false;
         agent.updateUpAxis = false;
+        StartCoroutine(nameof(SpawnedAnim));
 
         /*if (target == null && player != null)
         {
@@ -89,20 +91,40 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
 
     private void Update()
     {
-        //healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
-        agent.SetDestination(target.position);
-
-        //move to state machine
-        anim.SetFloat("IsMoving", 1);
-        //Vector2 direction = new Vector2(target.position.x - transform.position.x, target.position.y - transform.position.y); //FIND DIRECTION OF PLAYER
-        //transform.up = direction; //ROTATES THE ENEMY TO THE PLAYER 
-
-        //attack
-        if (agent.velocity.magnitude > 0)
+        if (!player)
+            player = GameObject.FindWithTag("Player").GetComponent<PlayerHealthSinglePlayer>();
+        if (!target)
         {
-            PlaySound(movementSound, 0.5f);
+            target = GameObject.FindWithTag("Player").transform;
         }
-        CheckFlip(agent.velocity.x);
+
+        //healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
+        if (spawnedAnimDone)
+        {
+            agent.SetDestination(target.position);
+
+            //move to state machine
+            //Vector2 direction = new Vector2(target.position.x - transform.position.x, target.position.y - transform.position.y); //FIND DIRECTION OF PLAYER
+            //transform.up = direction; //ROTATES THE ENEMY TO THE PLAYER 
+
+            //attack
+            if (agent.velocity.magnitude > 0)
+            {
+                PlaySound(movementSound, 0.2f);
+                anim.SetFloat("IsMoving", 1);
+                CheckFlip(agent.velocity.x);
+            }
+        }
+    }
+
+    bool spawnedAnimDone;
+    private IEnumerator SpawnedAnim()
+    {
+        spawnedAnimDone = false;
+        anim.SetBool("Spawned", true);
+        yield return new WaitForSeconds(1f);
+        anim.SetBool("Spawned", false);
+        spawnedAnimDone = true;
     }
 
     void CheckFlip(float velocity)
@@ -222,11 +244,12 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     public List<GameObject> hitDisplays = new List<GameObject>();
     private void DisplayHit(float amount)
     {
+        //UIManager.Instance.DisplayHit(amount, transform);
         //INSTANTIATE A HITDISPLAY
         //GameObject currentDisplay = Instantiate(hitDisplay, gameObject.transform);
         //hitDisplays.Add(currentDisplay);
 
-       // currentDisplay.transform.position.y += 0.10f;
+        // currentDisplay.transform.position.y += 0.10f;
     }
 
     private void EndVulnerability()

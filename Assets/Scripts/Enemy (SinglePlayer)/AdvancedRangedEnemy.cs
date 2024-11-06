@@ -6,6 +6,7 @@ using UnityEngine.AI;
 using System.Threading.Tasks;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 using UnityEditor;
+using UnityEngine.Pool;
 
 public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
 {
@@ -16,6 +17,7 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
     [SerializeField] private Transform target;
     private NavMeshAgent agent; 
     public float stoppingDistance;
+    public float retreatDistance;
     public float startShotCooldown;
     public float touchDamage;
     [field: SerializeField] public float pointsPerHit { get; set; }
@@ -25,6 +27,7 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
     [SerializeField] private Image healthbarExternal;
     [SerializeField] private GameObject projectile;
     [SerializeField] private float amtProjectiles;
+    [SerializeField] private GameObject body;
     [field: SerializeField] public float dropChance { get; set; }
     [field: SerializeField] public List<GameObject> dropObjects { get; set; }
     [SerializeField] private LayerMask targetLayers;
@@ -48,12 +51,13 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
     public GameObject defeatParticles;
     public GameObject onBeatDefeatParticles;
     static BPMManager bpmManager;
-
+    private Animator anim;
     private void Awake()
     {
         //healthbarInternal = GetComponentInChildren<Slider>();
     }
 
+    Color initColor;
     private void Start()
     {
         currentHealth = maxHealth;
@@ -63,6 +67,9 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
         agent = GetComponentInParent<NavMeshAgent>();
         agent.updateRotation = false;
         agent.updateUpAxis = false;
+        spriteRenderer.transform.TryGetComponent<Animator>(out anim);
+        initColor = spriteRenderer.color;
+        if(!body) body = spriteRenderer.gameObject.transform.GetChild(0).gameObject;
 
         shotCooldown = startShotCooldown;
 
@@ -82,13 +89,18 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
     {
         //healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
         agent.SetDestination(target.position);
-        if(agent.velocity.magnitude > 0)
+        if (agent.velocity.magnitude > 0)
         {
-            PlaySound(movementSound, 0.5f);
+            anim.SetBool("Idle", false);
+            PlaySound(movementSound, 0.2f);
+        }
+        else
+        {
+            anim.SetBool("Idle", true);
         }
 
         //DISTANCE BEFORE STOPPING
-        if(agent.remainingDistance <= stoppingDistance)
+        if (agent.remainingDistance <= stoppingDistance)
         {
             agent.isStopped = true;
         }
@@ -104,7 +116,7 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
                 if (hit.collider.CompareTag("Player"))
                 {
                     shotCooldown = 0f;
-                    Attack();
+                    StartCoroutine(Attack());
                 }
         }
         else
@@ -141,7 +153,7 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
 
             yield return new WaitForSeconds(0.5f);
 
-            SetFlashColor(Color.white);
+            SetFlashColor(initColor);
         }
     }
 
@@ -150,19 +162,30 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
         spriteRenderer.color = color;
     }
 
-    private void Attack()
+    private IEnumerator Attack()
     {
+        anim.SetBool("IsAttacking", true);
         //PlaySound(firingSound);
         const float degrees = 360f;
         float degreeToShootAt;
-        for(int i = 0; i < amtProjectiles; i++)
+        for (int i = 0; i < amtProjectiles; i++)
         {
             degreeToShootAt = (degrees / amtProjectiles) * i;
             Quaternion rotation = Quaternion.Euler(0, 0, degreeToShootAt);
-            Instantiate(projectile, spriteRenderer.gameObject.transform.position, rotation);
+            //Instantiate(projectile, spriteRenderer.gameObject.transform.position, rotation);
+
+            //resetting object pool data
+            GameObject proj = ObjectPool.instance.GetPooledProjAdvObject();
+            TrailRenderer trail;
+            if (proj.TryGetComponent(out trail)) trail.emitting = false;
+            proj.transform.rotation = rotation;
+            proj.transform.position = body.transform.position;
+            proj.SetActive(true);
+            if (proj.TryGetComponent(out trail)) trail.emitting = true;
         }
-        //Instantiate(projectile, spriteRenderer.gameObject.transform.position, transform.rotation);
         shotCooldown = startShotCooldown;
+        yield return new WaitForSeconds(shotCooldown);
+        anim.SetBool("IsAttacking", false);
     }
 
     public bool checkIfAlive
@@ -183,7 +206,7 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
     public void TakeDamage(float amount)
     {
         PlaySound(hitSound, 0.15f);
-        StartCoroutine(nameof(DamageFlash));
+        StartCoroutine(DamageFlash());
         //FIRST CHECK IF THE BASE'S HEALTH IS BELOW 0
         if (currentHealth > 0)
             currentHealth -= amount;

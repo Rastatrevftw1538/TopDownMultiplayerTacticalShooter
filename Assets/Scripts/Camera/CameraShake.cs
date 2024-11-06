@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using Cinemachine;
+using UnityEngine.InputSystem;
 
 public class CameraShake : Singleton<CameraShake>
 {
@@ -20,6 +21,15 @@ public class CameraShake : Singleton<CameraShake>
 	public void CustomCameraShake(CinemachineImpulseSource source)
 	{
         source.GenerateImpulseWithForce(shakeAmount);
+		//for controllers,
+		if(Gamepad.current != null) StartCoroutine(ControllerVibrate());
+	}
+
+	public IEnumerator ControllerVibrate()
+	{ 
+		Gamepad.current.SetMotorSpeeds(0.2f, 0.3f);
+        yield return new WaitForSecondsRealtime(0.1f);
+		Gamepad.current.SetMotorSpeeds(0, 0);
 	}
 
 	void OnEnable()

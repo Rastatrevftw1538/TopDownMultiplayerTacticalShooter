@@ -94,9 +94,9 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
         //did you die?
         CheckHealth();
         //animation
-        StartCoroutine(nameof(GotHitAnim));
+        StartCoroutine(GotHitAnim());
         //dmg flash
-        StartCoroutine(nameof(DamageFlash));
+        StartCoroutine(DamageFlash());
     }
 
     private IEnumerator DamageFlash()

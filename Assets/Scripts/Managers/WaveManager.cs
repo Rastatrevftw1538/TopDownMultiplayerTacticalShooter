@@ -12,6 +12,7 @@ public class WaveManager : Singleton<WaveManager>
     public List<Level> levels = new List<Level>();
     public GameObject currentSpawnArea;
     public GameObject currentLevelDoor;
+    public GameObject spawnAnimPrefab;
     //LOADING THE CURRENT SPAWN AREA IN ScenePartLoader.cs
     //STARTING THE CURRENT LEVEL IN ScenePartLoader.cs
 
@@ -36,16 +37,18 @@ public class WaveManager : Singleton<WaveManager>
         //START THE FIRST WAVE, FIRST LEVEL
         currentWave = 0;
         currentLevel = 0;
+        enemiesKilled = 0;
 
-        pauseWaves = true;
         /*Invoke(nameof(StartWaveCO), 0f);*/
         //StartCoroutine(nameof(StartWaveCO));
     }
 
+    PauseMenu pauseMenu;
     public bool toBuffer = true;
     public bool startedRoutine = false;
     void Update()
     {
+        if (!pauseMenu) pauseMenu = PauseMenu.instance;
         if (toBuffer || pauseWaves)
         {
             return;
@@ -80,11 +83,12 @@ public class WaveManager : Singleton<WaveManager>
             //then increase the wave count and start the next wave
             currentWave++;
 
-            StartCoroutine(nameof(StartWaveCO));
+            StartCoroutine(StartWaveCO());
         }
         //if increasing the index by 1 wont be out of bounds...
-        else if (!(idxCheckL >= levels.Count))
+        else if (!(idxCheckL >= levels.Count))//COMPLETED A LEVEL
         {
+            StartCoroutine(BeatLevelTransition());
             //that must mean you beat all the waves in the level, so increase the level count and reset the wave count
             currentWave = 0;
             currentLevel++;
@@ -110,26 +114,30 @@ public class WaveManager : Singleton<WaveManager>
          currentLevelDoor.SetActive(set);
     }
 
+    IEnumerator BeatLevelTransition()
+    {
+        BPMManager.instance.audioSource.Pause();
+        BPMManager.instance.levelBeatPhase = true;
+        pauseMenu.canPause = false;
+        Time.timeScale = 0.3f;
+        yield return new WaitForSecondsRealtime(0.7f);
+        pauseMenu.canPause = true;
+        Time.timeScale = 1f;
+        BPMManager.instance.audioSource.UnPause();
+        BPMManager.instance.levelBeatPhase = false;
+
+    }
+
     Animator currentAnim;
     SpriteRenderer currentSpawnSprite;
-    private IEnumerator PlaySpawnAnim()
+/*    private IEnumerator PlaySpawnAnim()
     {
-        currentAnim = currentSpawnArea.GetComponent<Animator>();
-        currentSpawnSprite = currentSpawnArea.GetComponent<SpriteRenderer>();
-
-        if (currentAnim && currentSpawnSprite)
-        {
-            currentAnim.enabled = true;
-            currentAnim.SetTrigger("Played");
-            yield return new WaitForSeconds(1f);
-        }
-        currentSpawnSprite.enabled = false;
-        currentAnim.enabled = false;
-    }
+        
+    }*/
 
     public void StartWave()
     {
-        StartCoroutine(nameof(StartWaveCO));
+        StartCoroutine(StartWaveCO());
     }
 
     public float GetAmtEnemies()
@@ -157,7 +165,7 @@ public class WaveManager : Singleton<WaveManager>
         if (currentSpawnArea)
         {
             levels[currentLevel].PlaySpawnSound(currentSpawnArea.transform);
-            levels[currentLevel].waves[currentWave].GenerateEnemies(currentSpawnArea);
+            levels[currentLevel].waves[currentWave].GenerateEnemies(currentSpawnArea, spawnAnimPrefab);
         }
     }
 
