@@ -1,5 +1,32 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7847002090702441213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/MainMenu/Buttons/Select_Button
+  m_EditorClassIdentifier: 
+  Path: event:/MainMenu/Buttons/Select_Button
+  Guid:
+    Data1: 797578557
+    Data2: 1152799350
+    Data3: -1821223795
+    Data4: 756606991
+  Banks:
+  - {fileID: -3998632246882594302}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1389
 --- !u!114 &-7723426702344596070
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -150,10 +177,10 @@ MonoBehaviour:
   Path: ../../FMOD Projects/ClaimToFate/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638677749495088012
+  lastModified: 638679849646910915
   FileSizes:
   - Name: Desktop
-    Value: 2498720
+    Value: 5636288
   Exists: 1
 --- !u!114 &-3620162124045504668
 MonoBehaviour:
@@ -263,6 +290,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 2798
+--- !u!114 &-2196778602975798015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Music/Theme/ThemeSong
+  m_EditorClassIdentifier: 
+  Path: event:/Music/Theme/ThemeSong
+  Guid:
+    Data1: 133219550
+    Data2: 1152558361
+    Data3: -1317096541
+    Data4: 1405356855
+  Banks:
+  - {fileID: -3998632246882594302}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 231984
 --- !u!114 &-1411490922118778136
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -434,12 +488,16 @@ MonoBehaviour:
   - {fileID: -2722587245788715633}
   - {fileID: 6173425949880911064}
   - {fileID: 10933155234487155}
+  - {fileID: -7847002090702441213}
+  - {fileID: 5898397755043056545}
+  - {fileID: 7331733404490471162}
+  - {fileID: -2196778602975798015}
   EditorParameters: []
   MasterBanks:
   - {fileID: -3998632246882594302}
   StringsBanks:
   - {fileID: 5420462945149612958}
-  cacheTime: 638677749495118014
+  cacheTime: 638679849646935941
   cacheVersion: 131621
 --- !u!114 &10933155234487155
 MonoBehaviour:
@@ -585,11 +643,38 @@ MonoBehaviour:
   Path: ../../FMOD Projects/ClaimToFate/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638677749495118014
+  lastModified: 638679849646935941
   FileSizes:
   - Name: Desktop
-    Value: 2026
+    Value: 2246
   Exists: 1
+--- !u!114 &5898397755043056545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/MainMenu/Buttons/Play_Button
+  m_EditorClassIdentifier: 
+  Path: event:/MainMenu/Buttons/Play_Button
+  Guid:
+    Data1: 931349482
+    Data2: 1118808598
+    Data3: 359985597
+    Data4: -1242232734
+  Banks:
+  - {fileID: -3998632246882594302}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1384
 --- !u!114 &6173425949880911064
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -644,6 +729,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 1068
+--- !u!114 &7331733404490471162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/MainMenu/Buttons/Hover_Button
+  m_EditorClassIdentifier: 
+  Path: event:/MainMenu/Buttons/Hover_Button
+  Guid:
+    Data1: 1728904187
+    Data2: 1176919985
+    Data3: 1725064841
+    Data4: -1361987712
+  Banks:
+  - {fileID: -3998632246882594302}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 461
 --- !u!114 &8659243611223264755
 MonoBehaviour:
   m_ObjectHideFlags: 0

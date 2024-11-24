@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4710133205501826452}
   - component: {fileID: 4710133205501826453}
   - component: {fileID: 4710133205501826451}
+  - component: {fileID: -4604638870869928932}
   m_Layer: 0
   m_Name: Audio Manager
   m_TagString: Untagged
@@ -40,7 +41,7 @@ AudioSource:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4710133205501826454}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 4c5681dd823552648a71683c16af6dea, type: 3}
@@ -151,3 +152,34 @@ MonoBehaviour:
   SMGSoundReload: {fileID: 8300000, guid: aa77b9d1d652dda47bde850a8ee58b39, type: 3}
   ShotGunSoundReload: {fileID: 8300000, guid: 4bb4d6e3e0ef940458ef8d0ebe720837, type: 3}
   SniperSoundReload: {fileID: 8300000, guid: 08f05bf3e78feef489ed7944a0b5f91f, type: 3}
+--- !u!114 &-4604638870869928932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4710133205501826454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 133219550
+      Data2: 1152558361
+      Data3: -1317096541
+      Data4: 1405356855
+    Path: event:/Music/Theme/ThemeSong
+  Event: 
+  EventPlayTrigger: 1
+  EventStopTrigger: 2
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 1
+  OverrideMaxDistance: 20
