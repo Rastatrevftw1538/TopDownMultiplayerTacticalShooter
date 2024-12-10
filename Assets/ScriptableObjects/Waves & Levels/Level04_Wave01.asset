@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f028d3969a5640043b30e83ad07b47e3, type: 3}
+  m_Name: Level04_Wave01
+  m_EditorClassIdentifier: 
+  _enemies:
+  - enemyPrefab: {fileID: 8056571283625822282, guid: 44e0a3af6423b1d47972d165f16dc191, type: 3}
+    cost: 100
+  _waveValue: 100
+  _amtEnemies: 1

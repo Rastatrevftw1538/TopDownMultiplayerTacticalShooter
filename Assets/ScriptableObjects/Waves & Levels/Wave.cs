@@ -15,7 +15,7 @@ public class Wave : ScriptableObject
     private float tempWaveValue;
     private bool isComplete;
 
-    public void GenerateEnemies(GameObject spawnAreas)
+    public void GenerateEnemies(GameObject spawnAreas, GameObject spawnAnimPrefab)
     {
         tempWaveValue = _waveValue;
         ResetData();
@@ -35,8 +35,6 @@ public class Wave : ScriptableObject
             if (_waveValue - randEnemyCost >= 0)
             {
                 int rando = Random.Range(0, spawnAreas.transform.childCount);
-                GameObject currentSpawn = spawnAreas.transform.GetChild(rando).gameObject;
-                
                 //_spawnedEnemies.Add(Instantiate(_enemies[randEnemyId].enemyPrefab, currentSpawn.transform));
                 _generatedEnemies.Add(_enemies[randEnemyId].enemyPrefab);
                 //Debug.LogError("there are now" + _amtEnemies);
@@ -51,7 +49,7 @@ public class Wave : ScriptableObject
 
         _waveValue = tempWaveValue;
         enemiesToSpawn = _generatedEnemies;
-        SpawnEnemies(spawnAreas);
+        SpawnEnemies(spawnAreas, spawnAnimPrefab);
     }
 
     public void ResetData()
@@ -63,7 +61,7 @@ public class Wave : ScriptableObject
         _amtEnemies = 0;
     }
 
-    public void SpawnEnemies(GameObject spawnArea)
+    public void SpawnEnemies(GameObject spawnArea, GameObject spawnAnimPrefab)
     {
         isComplete = false;
         foreach(GameObject enemy in enemiesToSpawn)
@@ -72,6 +70,8 @@ public class Wave : ScriptableObject
             int rando = Random.Range(0, spawnArea.transform.childCount);
             float randomOffset = Random.Range(0, 0.5f);
             GameObject currentSpawn = spawnArea.transform.GetChild(rando).gameObject;
+            GameObject spawnParticles = Instantiate(spawnAnimPrefab, currentSpawn.transform.position, Quaternion.identity, currentSpawn.transform);
+
             Vector3 minorDiff = new Vector3(currentSpawn.transform.position.x, currentSpawn.transform.position.y + randomOffset, currentSpawn.transform.position.z);
             
             //Ensures enemy spawns on the correct axis

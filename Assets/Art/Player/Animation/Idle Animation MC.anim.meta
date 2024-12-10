@@ -1,8 +1,15 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Dialogue/Audiowide-Regular SDF.asset.meta
+guid: 4eefc7d2e616cec4fa4ebf26d82dc65e
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+========
 guid: 18e97aa859f8547e8a6c4a129937bcd0
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 0
+>>>>>>>> Ryan:Assets/Art/Player/Animation/Idle Animation MC.anim.meta
   userData: 
   assetBundleName: 
   assetBundleVariant: 

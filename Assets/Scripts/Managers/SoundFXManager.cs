@@ -14,19 +14,31 @@ public class SoundFXManager : Singleton<SoundFXManager>
     {
         if (audioClip == null) return;
 
-        AudioSource audioSource = Instantiate(soundFXObject, spawnTransform.position, Quaternion.identity);
+        //AudioSource audioSource = Instantiate(soundFXObject, spawnTransform.position, Quaternion.identity);
+        AudioSource audioSource = ObjectPool.instance.GetPooledAudioSource();
 
-        if (useRandomGlobalPitch)
+        if (audioSource != null)
         {
-            float rand = Random.Range(lowPitchRng, highPitchRng);
-            audioSource.pitch = rand;
+            if (useRandomGlobalPitch)
+            {
+                float rand = Random.Range(lowPitchRng, highPitchRng);
+                audioSource.pitch = rand;
+            }
+
+            audioSource.clip = audioClip;
+            audioSource.volume = volume;
+            audioSource.gameObject.SetActive(true);
+            audioSource.Play();
+            float clipLength = audioSource.clip.length;
+
+            //Destroy(audioSource.gameObject, clipLength);
+            StartCoroutine(SetAudioInactive(audioSource));
         }
-        audioSource.clip = audioClip;
-        audioSource.volume = volume;
+    }
 
-        audioSource.Play();
-        float clipLength = audioSource.clip.length;
-
-        Destroy(audioSource.gameObject, clipLength);
+    IEnumerator SetAudioInactive(AudioSource audioSrc)
+    {
+        yield return new WaitUntil(() => !audioSrc.isPlaying);
+        audioSrc.gameObject.SetActive(false);
     }
 }

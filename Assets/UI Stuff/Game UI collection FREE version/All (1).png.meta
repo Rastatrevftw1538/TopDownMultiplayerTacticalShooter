@@ -44,7 +44,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
@@ -90,6 +90,42 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Windows Store Apps
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -11599,9 +11635,9 @@ TextureImporter:
       All (1)_418: -890837577
       All (1)_21: -1456019607
       All (1)_194: 359074770
-      All (1)_94: 1365066671
-      All (1)_9: 1518427202
       All (1)_203: 9006283
+      All (1)_9: 1518427202
+      All (1)_94: 1365066671
       All (1)_150: 1358631114
       All (1)_411: 641866372
       All (1)_337: 559202509
@@ -11718,26 +11754,26 @@ TextureImporter:
       All (1)_27: -77209339
       All (1)_127: 1894930315
       All (1)_469: 1540947633
-      All (1)_151: 1471340771
       All (1)_341: -749663441
+      All (1)_151: 1471340771
+      All (1)_490: 1243252797
       All (1)_304: 1441327351
       All (1)_272: -1901362121
       All (1)_130: -1487131159
       All (1)_89: 1003439438
       All (1)_189: -1320737900
-      All (1)_264: -353478797
       All (1)_479: 1793269291
       All (1)_138: -696410210
       All (1)_163: -1814053061
-      All (1)_490: 1243252797
-      All (1)_329: -878617351
+      All (1)_264: -353478797
       All (1)_70: -1464490346
-      All (1)_405: 1012186612
+      All (1)_329: -878617351
       All (1)_286: -2082259027
       All (1)_498: -1994332147
       All (1)_186: -22229143
       All (1)_513: -1035380657
       All (1)_361: 1670928936
+      All (1)_405: 1012186612
       All (1)_129: -2060384605
       All (1)_147: -742711169
       All (1)_492: 927861277
@@ -11749,8 +11785,8 @@ TextureImporter:
       All (1)_443: -1581192245
       All (1)_157: 1774670650
       All (1)_182: -969484960
-      All (1)_356: 448276389
       All (1)_538: -36491445
+      All (1)_356: 448276389
       All (1)_515: -1102071494
       All (1)_473: 484412610
       All (1)_465: -1938053922
@@ -11766,9 +11802,9 @@ TextureImporter:
       All (1)_239: 465465575
       All (1)_260: -68763411
       All (1)_388: -353186468
-      All (1)_327: 1564237428
       All (1)_453: -763288947
       All (1)_468: 899828430
+      All (1)_327: 1564237428
       All (1)_29: -1364438841
       All (1)_434: 1338770849
       All (1)_428: -186563139

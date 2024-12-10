@@ -16,6 +16,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     [SerializeField] private Transform target;
     private NavMeshAgent agent; 
     public float stoppingDistance;
+    public float retreatDistance;
     public float startShotCooldown;
     public float touchDamage;
     [field: SerializeField] public float pointsPerHit { get; set; }
@@ -24,6 +25,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     [Header("Enemy Components")]
     [SerializeField] private Image healthbarExternal;
     [SerializeField] private GameObject projectile;
+    [SerializeField] private GameObject body;
     [field: SerializeField] public float dropChance { get; set; }
     [field: SerializeField] public List<GameObject> dropObjects { get; set; }
     [SerializeField] private LayerMask targetLayers;
@@ -65,7 +67,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         agent.updateUpAxis = false;
         initColor = spriteRenderer.color;
         spriteRenderer.transform.TryGetComponent<Animator>(out anim);
-
+        if (!body) body = spriteRenderer.gameObject.transform.GetChild(0).gameObject;
 
         shotCooldown = startShotCooldown;
 
@@ -79,8 +81,12 @@ public class RangedEnemy : MonoBehaviour, IEnemy
         {
             bpmManager = FindObjectOfType<BPMManager>();
         }
+
+        raycastCDinit = raycastCD;
     }
 
+    float raycastCD = 0.5f;
+    float raycastCDinit;
     private void Update()
     {
         if (!player)
@@ -90,10 +96,10 @@ public class RangedEnemy : MonoBehaviour, IEnemy
             target = GameObject.FindWithTag("Player").transform;
         }
 
-        //healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
-        
+        healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
         agent.SetDestination(target.position);
-        if(agent.velocity.magnitude > 0)
+
+        if (agent.velocity.magnitude > 0)
         {
             anim.SetBool("Idle", false);
             PlaySound(movementSound, 0.2f);
@@ -114,13 +120,21 @@ public class RangedEnemy : MonoBehaviour, IEnemy
 
         if (shotCooldown <= 0 && (agent.remainingDistance*1.5f >= stoppingDistance || agent.remainingDistance <= stoppingDistance))
         {
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, target.position - transform.position, stoppingDistance*1.5f, targetLayers);
-            if (hit.collider)
-                if (hit.collider.CompareTag("Player"))
-                {
-                    shotCooldown = 0f;
-                    StartCoroutine(nameof(Attack));
-                }
+            if (raycastCD <= 0)
+            {
+                RaycastHit2D hit = Physics2D.Raycast(transform.position, target.position - transform.position, stoppingDistance * 1.5f, targetLayers);
+                if (hit.collider)
+                    if (hit.collider.CompareTag("Player"))
+                    {
+                        shotCooldown = 0f;
+                        StartCoroutine(nameof(Attack));
+                        raycastCD = raycastCDinit;
+                    }
+            }
+            else
+            {
+                raycastCD -= Time.deltaTime;
+            }
         }
         else
         {
@@ -169,8 +183,17 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     private IEnumerator Attack()
     {
         anim.SetBool("IsAttacking", true);
-        //PlaySound(firingSound);
-        Instantiate(projectile, transform.position, transform.rotation);
+        PlaySound(firingSound , 0.2f);
+        //Instantiate(projectile, transform.position, transform.rotation);
+
+        //resetting object pool data
+        GameObject proj = ObjectPool.instance.GetPooledProjObject();
+        TrailRenderer trail;
+        if (proj.TryGetComponent(out trail)) trail.emitting = false;
+        proj.transform.position = body.transform.position;
+        proj.transform.rotation = transform.rotation;
+        proj.SetActive(true);
+        if (proj.TryGetComponent(out trail)) trail.emitting = true;
         shotCooldown = startShotCooldown;
         yield return new WaitForSeconds(shotCooldown);
         anim.SetBool("IsAttacking", false);
@@ -193,7 +216,7 @@ public class RangedEnemy : MonoBehaviour, IEnemy
     private float timeSinceLastShot;
     public void TakeDamage(float amount)
     {
-        PlaySound(hitSound, 0.15f);
+        PlaySound(hitSound, 0.2f);
         StartCoroutine(nameof(DamageFlash));
         //FIRST CHECK IF THE BASE'S HEALTH IS BELOW 0
         if (currentHealth > 0)
@@ -208,7 +231,6 @@ public class RangedEnemy : MonoBehaviour, IEnemy
 
         DisplayHit(amount);
         healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
-
         //SLOW ENEMY
 
     }

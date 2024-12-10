@@ -19,7 +19,7 @@ public class BuffPickup : MonoBehaviour, IInteractable
         if (SoundFXManager.Instance) SoundFXManager.Instance.PlaySoundFXClip(pickupSound, transform);
         if (UIManager.Instance) UIManager.Instance.StartCooldownUI(UIManager.CooldownType.Powerup, sprite.sprite, statusEffect.activeTime, buffName);
         player.ApplyEffect(statusEffect);
-        Debug.LogError("Picked up powerup of type: " + statusEffect.Name);
+        //Debug.LogError("Picked up powerup of type: " + statusEffect.Name);
         if (UIManager.Instance) UIManager.Instance.AddPoints(points);
         Destroy(gameObject);
     }

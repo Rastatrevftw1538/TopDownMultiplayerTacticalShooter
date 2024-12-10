@@ -29,6 +29,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     [SerializeField] private float _damageTaken = 0;
     [SerializeField] private bool isAlive = true;
     public bool canHit = true;
+    [SerializeField] GameObject HitDisplay;
 
     [Header("Hit Display")]
     //public GameObject hitDisplay;
@@ -55,7 +56,7 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     private void Start()
     {
         currentHealth = maxHealth;
-        healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
+        //healthbarExternal.fillAmount = (float)currentHealth / (float)maxHealth;
 
         //agent = GetComponent<NavMashAgent>();
         anim = GetComponent<Animator>();
@@ -243,11 +244,12 @@ public class MeleeEnemy : MonoBehaviour, IEnemy
     public List<GameObject> hitDisplays = new List<GameObject>();
     private void DisplayHit(float amount)
     {
+        //UIManager.Instance.DisplayHit(amount, transform);
         //INSTANTIATE A HITDISPLAY
         //GameObject currentDisplay = Instantiate(hitDisplay, gameObject.transform);
         //hitDisplays.Add(currentDisplay);
 
-       // currentDisplay.transform.position.y += 0.10f;
+        // currentDisplay.transform.position.y += 0.10f;
     }
 
     private void EndVulnerability()
