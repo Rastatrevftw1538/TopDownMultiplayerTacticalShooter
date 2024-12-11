@@ -1,5 +1,32 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7861092513654823324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/UI/Feedback/Victory
+  m_EditorClassIdentifier: 
+  Path: event:/UI/Feedback/Victory
+  Guid:
+    Data1: -917935975
+    Data2: 1109428123
+    Data3: -1882272082
+    Data4: 2059657144
+  Banks:
+  - {fileID: -3998632246882594302}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &-7847002090702441213
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27,33 +54,6 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 1389
---- !u!114 &-7723426702344596070
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/UI/Defeat
-  m_EditorClassIdentifier: 
-  Path: event:/UI/Defeat
-  Guid:
-    Data1: 1569147937
-    Data2: 1162136792
-    Data3: -1697030513
-    Data4: -1905362437
-  Banks:
-  - {fileID: -3998632246882594302}
-  IsStream: 0
-  Is3D: 0
-  IsOneShot: 1
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 0
 --- !u!114 &-6782398937951513982
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72,33 +72,6 @@ MonoBehaviour:
     Data2: 1210397978
     Data3: 13147327
     Data4: 1447682267
-  Banks:
-  - {fileID: -3998632246882594302}
-  IsStream: 0
-  Is3D: 0
-  IsOneShot: 1
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 0
---- !u!114 &-5811012712409796561
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/UI/Victory
-  m_EditorClassIdentifier: 
-  Path: event:/UI/Victory
-  Guid:
-    Data1: -917935975
-    Data2: 1109428123
-    Data3: -1882272082
-    Data4: 2059657144
   Banks:
   - {fileID: -3998632246882594302}
   IsStream: 0
@@ -177,11 +150,38 @@ MonoBehaviour:
   Path: ../../FMOD Projects/ClaimToFate/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638679849646910915
+  lastModified: 638694614723069003
   FileSizes:
   - Name: Desktop
-    Value: 5636288
+    Value: 5664576
   Exists: 1
+--- !u!114 &-3917729898028821178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Player(Fate)/Fate_Spawn
+  m_EditorClassIdentifier: 
+  Path: event:/Player(Fate)/Fate_Spawn
+  Guid:
+    Data1: -661971486
+    Data2: 1263242468
+    Data3: 1419363481
+    Data4: -510903191
+  Banks:
+  - {fileID: -3998632246882594302}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1846
 --- !u!114 &-3620162124045504668
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -471,7 +471,6 @@ MonoBehaviour:
   - {fileID: -1411490922118778136}
   - {fileID: -2656824874692363914}
   - {fileID: 5256370571803289781}
-  - {fileID: -7723426702344596070}
   - {fileID: 908684118083965631}
   - {fileID: -5184713506328354897}
   - {fileID: 8659243611223264755}
@@ -480,7 +479,6 @@ MonoBehaviour:
   - {fileID: -1092693153064380914}
   - {fileID: -1091522736390647188}
   - {fileID: 9177679624194904433}
-  - {fileID: -5811012712409796561}
   - {fileID: 6767039353772835566}
   - {fileID: -2601056567618262797}
   - {fileID: -4366125075876226952}
@@ -492,12 +490,15 @@ MonoBehaviour:
   - {fileID: 5898397755043056545}
   - {fileID: 7331733404490471162}
   - {fileID: -2196778602975798015}
+  - {fileID: 5028607810812966719}
+  - {fileID: -7861092513654823324}
+  - {fileID: -3917729898028821178}
   EditorParameters: []
   MasterBanks:
   - {fileID: -3998632246882594302}
   StringsBanks:
   - {fileID: 5420462945149612958}
-  cacheTime: 638679849646935941
+  cacheTime: 638694614723104044
   cacheVersion: 131621
 --- !u!114 &10933155234487155
 MonoBehaviour:
@@ -601,6 +602,33 @@ MonoBehaviour:
   IsGlobal: 0
   Labels: []
   Exists: 1
+--- !u!114 &5028607810812966719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/UI/Feedback/Defeat
+  m_EditorClassIdentifier: 
+  Path: event:/UI/Feedback/Defeat
+  Guid:
+    Data1: 1569147937
+    Data2: 1162136792
+    Data3: -1697030513
+    Data4: -1905362437
+  Banks:
+  - {fileID: -3998632246882594302}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &5256370571803289781
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -643,10 +671,10 @@ MonoBehaviour:
   Path: ../../FMOD Projects/ClaimToFate/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638679849646935941
+  lastModified: 638694614723104044
   FileSizes:
   - Name: Desktop
-    Value: 2246
+    Value: 2292
   Exists: 1
 --- !u!114 &5898397755043056545
 MonoBehaviour:

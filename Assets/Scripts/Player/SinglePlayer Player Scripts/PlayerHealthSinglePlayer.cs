@@ -68,7 +68,8 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
 
     private void Start()
     {
-        PlaySound(spawnAudio, 0.4f);
+        //PlaySound(spawnAudio, 0.4f);
+        FMODUnity.RuntimeManager.PlayOneShot("event:/Player(Fate)/Fate_Spawn", GetComponent<Transform>().position);
     }
 
     public void AddHealth(float amount)
@@ -85,7 +86,8 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
     {
         if (!canHit) return;
 
-        PlaySound(gotHitAudio);
+        //PlaySound(gotHitAudio);
+        FMODUnity.RuntimeManager.PlayOneShot("event:/Player(Fate)/Fate_Hurt", GetComponent<Transform>().position);
 
         //subtract health
         currentHealth -= amount;
@@ -160,7 +162,8 @@ public class PlayerHealthSinglePlayer : Singleton<PlayerHealthSinglePlayer> {
     }
     void RpcDie()
     {
-        PlaySound(diedAudio);
+        //PlaySound(diedAudio);
+        FMODUnity.RuntimeManager.PlayOneShot("event:/Player(Fate)/Fate_Death", GetComponent<Transform>().position);
         // Stop player movement
         SetPlayerWep(false);
         isAlive = false;

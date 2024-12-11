@@ -33,17 +33,20 @@ public class MainMenu : MonoBehaviour
 
     public void PlayClickSound()
     {
-        audioSource.PlayOneShot(clickSound, 0.8f);
+        //audioSource.PlayOneShot(clickSound, 0.8f);
+        FMODUnity.RuntimeManager.PlayOneShot("event:/MainMenu/Buttons/Select_Button", GetComponent<Transform>().position);
     }
 
     public void PlayClickPlaySound()
     {
-        audioSource.PlayOneShot(clickSound, 0.8f);
+        //audioSource.PlayOneShot(clickSound, 0.8f);
+        FMODUnity.RuntimeManager.PlayOneShot("event:/MainMenu/Buttons/Play_Button", GetComponent<Transform>().position);
     }
 
     public void PlayHoverSound()
     {
-        audioSource.PlayOneShot(hoverSound, 0.8f);
+        //audioSource.PlayOneShot(hoverSound, 0.8f);
+        FMODUnity.RuntimeManager.PlayOneShot("event:/MainMenu/Buttons/Hover_Button", GetComponent<Transform>().position);
     }
 
     public void ReturnToMenu()
