@@ -373,6 +373,7 @@ public class Weapon : NetworkBehaviour
     private void PlaySound()
     {
         //playerAudioSource.PlayOneShot(weaponSpecs.bulletSound);
+        //FMODUnity.RuntimeManager.PlayOneShot("event:/Weapons/AR_Shoot", GetComponent<Transform>().position);
     }
 
     public void SetDefaultValues()
