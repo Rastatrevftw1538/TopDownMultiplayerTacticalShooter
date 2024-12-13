@@ -39,25 +39,30 @@ public class AudioManagers : MonoBehaviour
             case "AR":
                 //AudioSource.PlayClipAtPoint(ARSound, evtData.position);
                 //if (rand == 0)
-                    audioSource.PlayOneShot(ARSound);
+                    //audioSource.PlayOneShot(ARSound);
+                FMODUnity.RuntimeManager.PlayOneShot("event:/Weapons/AR_Shoot", GetComponent<Transform>().position);
                 //else
                 //    audioSource.PlayOneShot(ARSound2);
                 break;
             case "Pistol":
                 //AudioSource.PlayClipAtPoint(PistolSound, evtData.position);
                 audioSource.PlayOneShot(PistolSound);
+                //FMODUnity.RuntimeManager.PlayOneShot("", GetComponent<Transform>().position);
                 break;
             case "SMG":
                 //AudioSource.PlayClipAtPoint(SMGSound, evtData.position);
                 audioSource.PlayOneShot(SMGSound);
+                //FMODUnity.RuntimeManager.PlayOneShot("", GetComponent<Transform>().position);
                 break;
             case "Shotgun":
                 //AudioSource.PlayClipAtPoint(ShotgunSound, evtData.position, 0.3f);
                 audioSource.PlayOneShot(ShotgunSound, 0.3f);
+                //FMODUnity.RuntimeManager.PlayOneShot("", GetComponent<Transform>().position);
                 break;
             case "Sniper":
                 //AudioSource.PlayClipAtPoint(SniperSound, evtData.position);
                 audioSource.PlayOneShot(SniperSound);
+                //FMODUnity.RuntimeManager.PlayOneShot("", GetComponent<Transform>().position);
                 break;
         }
     }
@@ -67,19 +72,24 @@ public class AudioManagers : MonoBehaviour
         switch (evtData.GunName)
         {
             case "AR":
-                AudioSource.PlayClipAtPoint(ARSoundReload, evtData.position);
+                //AudioSource.PlayClipAtPoint(ARSoundReload, evtData.position);
+                FMODUnity.RuntimeManager.PlayOneShot("event:/Weapons/AR/AR_Reload", GetComponent<Transform>().position);
                 break;
             case "Pistol":
                 AudioSource.PlayClipAtPoint(PistolSoundReload, evtData.position);
+               //FMODUnity.RuntimeManager.PlayOneShot("", GetComponent<Transform>().position);
                 break;
             case "SMG":
                 AudioSource.PlayClipAtPoint(SMGSoundReload, evtData.position);
+                //FMODUnity.RuntimeManager.PlayOneShot("", GetComponent<Transform>().position);
                 break;
             case "Shotgun":
                 AudioSource.PlayClipAtPoint(ShotGunSoundReload, evtData.position);
+                //FMODUnity.RuntimeManager.PlayOneShot("", GetComponent<Transform>().position);
                 break;
             case "Sniper":
                 AudioSource.PlayClipAtPoint(SniperSoundReload, evtData.position);
+                //FMODUnity.RuntimeManager.PlayOneShot("", GetComponent<Transform>().position);
                 break;
         }
     }

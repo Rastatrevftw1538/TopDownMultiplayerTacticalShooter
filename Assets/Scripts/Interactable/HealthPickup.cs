@@ -7,7 +7,7 @@ public class HealthPickup : MonoBehaviour, IInteractable
     [Header("Health Stats")]
     public float addHealth;
     public float points;
-    public AudioClip pickupSound;
+    //public AudioClip pickupSound;
 
     [Header("Float Speed & Height")]
     public float floatSpeed;
