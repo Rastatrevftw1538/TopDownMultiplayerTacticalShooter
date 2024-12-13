@@ -92,6 +92,7 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
         if (agent.velocity.magnitude > 0)
         {
             anim.SetBool("Idle", false);
+            //FMODUnity.RuntimeManager.PlayOneShot("event:/Enemy1/Enemies_Footsteps", GetComponent<Transform>().position);
             PlaySound(movementSound, 0.2f);
         }
         else
@@ -165,6 +166,7 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
     private IEnumerator Attack()
     {
         anim.SetBool("IsAttacking", true);
+        FMODUnity.RuntimeManager.PlayOneShot("event:/Enemy1/Enemy_AttackR", GetComponent<Transform>().position);
         //PlaySound(firingSound);
         const float degrees = 360f;
         float degreeToShootAt;
@@ -205,7 +207,8 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
     private float timeSinceLastShot;
     public void TakeDamage(float amount)
     {
-        PlaySound(hitSound, 0.15f);
+        //PlaySound(hitSound, 0.15f);
+        FMODUnity.RuntimeManager.PlayOneShot("event:/Enemy1/Enemies_Hurt", GetComponent<Transform>().position);
         StartCoroutine(DamageFlash());
         //FIRST CHECK IF THE BASE'S HEALTH IS BELOW 0
         if (currentHealth > 0)
@@ -228,7 +231,7 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
     private void PlaySound(AudioClip sound, float volume = 1f)
     {
         if (!SoundFXManager.Instance) return;
-            SoundFXManager.Instance.PlaySoundFXClip(sound, transform, volume);
+        SoundFXManager.Instance.PlaySoundFXClip(sound, transform, volume);
     }
 
     public List<GameObject> hitDisplays = new List<GameObject>();
@@ -283,7 +286,8 @@ public class AdvancedRangedEnemy : MonoBehaviour, IEnemy
         isAlive = false;
         //this.transform.parent.gameObject.SetActive(false);
         //Respawn(respawnTime);
-        PlaySound(defeatSound, 0.1f);
+        //PlaySound(defeatSound, 0.1f);
+        FMODUnity.RuntimeManager.PlayOneShot("event:/Enemy1/Enemy_Death", GetComponent<Transform>().position);
         Destroy(this.transform.parent.gameObject);
         UpdateEnemiesKilled();
     }

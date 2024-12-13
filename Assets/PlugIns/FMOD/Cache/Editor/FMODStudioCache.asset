@@ -54,7 +54,7 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 1389
---- !u!114 &-6782398937951513982
+--- !u!114 &-6639875552390193449
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -64,9 +64,36 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/Enemy1/Enemies_Footsteps
+  m_Name: event:/Enemy1/Enemies_FootstepsR
   m_EditorClassIdentifier: 
-  Path: event:/Enemy1/Enemies_Footsteps
+  Path: event:/Enemy1/Enemies_FootstepsR
+  Guid:
+    Data1: -396660721
+    Data2: 1184310820
+    Data3: 788776092
+    Data4: -102932091
+  Banks:
+  - {fileID: -3998632246882594302}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 29538
+--- !u!114 &-6091200107405228606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Enemy1/Enemies_FootstepsM
+  m_EditorClassIdentifier: 
+  Path: event:/Enemy1/Enemies_FootstepsM
   Guid:
     Data1: 1956692204
     Data2: 1210397978
@@ -80,7 +107,7 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 0
+  Length: 320
 --- !u!114 &-5184713506328354897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -150,10 +177,10 @@ MonoBehaviour:
   Path: ../../FMOD Projects/ClaimToFate/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638694614723069003
+  lastModified: 638696422790136788
   FileSizes:
   - Name: Desktop
-    Value: 5664576
+    Value: 6096544
   Exists: 1
 --- !u!114 &-3917729898028821178
 MonoBehaviour:
@@ -343,7 +370,7 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 0
+  Length: 816
 --- !u!114 &-1342688523165054219
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -452,6 +479,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 1000
+--- !u!114 &-1050112145162783425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Enemy1/Enemy_AttackR
+  m_EditorClassIdentifier: 
+  Path: event:/Enemy1/Enemy_AttackR
+  Guid:
+    Data1: -1012322639
+    Data2: 1187395848
+    Data3: -862498149
+    Data4: 315421862
+  Banks:
+  - {fileID: -3998632246882594302}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1068
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -479,10 +533,8 @@ MonoBehaviour:
   - {fileID: -1092693153064380914}
   - {fileID: -1091522736390647188}
   - {fileID: 9177679624194904433}
-  - {fileID: 6767039353772835566}
   - {fileID: -2601056567618262797}
   - {fileID: -4366125075876226952}
-  - {fileID: -6782398937951513982}
   - {fileID: -2722587245788715633}
   - {fileID: 6173425949880911064}
   - {fileID: 10933155234487155}
@@ -493,12 +545,17 @@ MonoBehaviour:
   - {fileID: 5028607810812966719}
   - {fileID: -7861092513654823324}
   - {fileID: -3917729898028821178}
+  - {fileID: 8292102382517907738}
+  - {fileID: -1050112145162783425}
+  - {fileID: -6639875552390193449}
+  - {fileID: -6091200107405228606}
+  - {fileID: 3751363322464332455}
   EditorParameters: []
   MasterBanks:
   - {fileID: -3998632246882594302}
   StringsBanks:
   - {fileID: 5420462945149612958}
-  cacheTime: 638694614723104044
+  cacheTime: 638696422790166790
   cacheVersion: 131621
 --- !u!114 &10933155234487155
 MonoBehaviour:
@@ -602,6 +659,33 @@ MonoBehaviour:
   IsGlobal: 0
   Labels: []
   Exists: 1
+--- !u!114 &3751363322464332455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Weapons/AR_Reload
+  m_EditorClassIdentifier: 
+  Path: event:/Weapons/AR_Reload
+  Guid:
+    Data1: -1664592019
+    Data2: 1269320226
+    Data3: 1365361804
+    Data4: 1536844085
+  Banks:
+  - {fileID: -3998632246882594302}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1288
 --- !u!114 &5028607810812966719
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -671,10 +755,10 @@ MonoBehaviour:
   Path: ../../FMOD Projects/ClaimToFate/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638694614723104044
+  lastModified: 638696422790166790
   FileSizes:
   - Name: Desktop
-    Value: 2292
+    Value: 2418
   Exists: 1
 --- !u!114 &5898397755043056545
 MonoBehaviour:
@@ -730,33 +814,6 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
---- !u!114 &6767039353772835566
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/Enemy1/Enemy_Attack
-  m_EditorClassIdentifier: 
-  Path: event:/Enemy1/Enemy_Attack
-  Guid:
-    Data1: -1012322639
-    Data2: 1187395848
-    Data3: -862498149
-    Data4: 315421862
-  Banks:
-  - {fileID: -3998632246882594302}
-  IsStream: 0
-  Is3D: 0
-  IsOneShot: 1
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 1068
 --- !u!114 &7331733404490471162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -784,6 +841,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 461
+--- !u!114 &8292102382517907738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Enemy1/Enemy_AttackM
+  m_EditorClassIdentifier: 
+  Path: event:/Enemy1/Enemy_AttackM
+  Guid:
+    Data1: 1323725118
+    Data2: 1261620013
+    Data3: 145717914
+    Data4: -722179716
+  Banks:
+  - {fileID: -3998632246882594302}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &8659243611223264755
 MonoBehaviour:
   m_ObjectHideFlags: 0
